@@ -2,28 +2,29 @@
 <!-- TODO: NAB-326 change size of side/tool bar to 32px   -->
     <mat-sidenav-container class="app-mat-sidenav-container">
         <mat-sidenav color="primary" class="app-mat-viewnav" mode="side" disableClose="true" opened>
-            <a href="https://www.netgrif.com" class="main-toolbar-logo" fxLayoutAlign="center center">
+            <a [href]="config.services.urls.netgrif" class="main-toolbar-logo" fxLayoutAlign="center center">
                 <img src="../assets/netgrif_logo.svg" alt="Netgrif logo">
             </a>
             <mat-action-list>
                 <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.demo.step}}"
                                title="{{tutorial.demo.title}}" text="{{tutorial.demo.text}}"
                                stepPosition="{{tutorial.demo.position}}"
-                               (click)="openInTab('https://demo.netgrif.com/')"
+                               (click)="openInTab(config.services.urls.engine)"
                                matTooltip="Netgrif Demo" matTooltipPosition="right">
                     <mat-icon>play_arrow</mat-icon>
                 </mat-list-item>
                 <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.youtube.step}}"
                                title="{{tutorial.youtube.title}}" text="{{tutorial.youtube.text}}"
                                stepPosition="{{tutorial.youtube.position}}"
-                               (click)="openInTab('https://www.youtube.com/channel/UCNfqgnjskMMpy7QvOOKhKgw')"
+                               (click)="openInTab(config.services.urls.youtube)"
                                matTooltip="Youtube Channel" matTooltipPosition="right">
                     <mat-icon svgIcon="youtube"></mat-icon>
                 </mat-list-item>
                 <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.github.step}}"
                                title="{{tutorial.github.title}}" text="{{tutorial.github.text}}"
                                stepPosition="{{tutorial.github.position}}"
-                               (click)="openInTab('https://github.com/netgrif')"
+                               (click)="openInTab(config.services.urls.github)"
+
                                matTooltip="Github" matTooltipPosition="right">
                     <mat-icon svgIcon="github">device_hub</mat-icon>
                 </mat-list-item>
@@ -38,7 +39,7 @@
                 <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.bug.step}}"
                                title="{{tutorial.bug.title}}" text="{{tutorial.bug.text}}"
                                stepPosition="{{tutorial.bug.position}}"
-                               (click)="openInTab('https://servicedesk.netgrif.com')"
+                               (click)="openInTab(config.services.urls.issues)"
                                matTooltip="Report a bug" matTooltipPosition="right">
                     <mat-icon>bug_report</mat-icon>
                 </mat-list-item>
