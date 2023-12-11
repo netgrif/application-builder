@@ -1,22 +1,23 @@
 <div fxLayout="col wrap">
-    <mat-card fxFlex="100">
-        <mat-form-field fxFlex="25">
-            <mat-label>Add new language</mat-label>
-            <input type="text" matInput [formControl]="newLocaleFormControl" [matAutocomplete]="auto">
-            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="let locale of filteredLocales | async" [value]="locale">
-                    {{locale.prettyName}}
-                </mat-option>
-            </mat-autocomplete>
-        </mat-form-field>
-        <button mat-icon-button class="button-line" matTooltip="Add locale" (click)="addLocal()" [disabled]="invalidLocale()">
-            <mat-icon>add</mat-icon>
-        </button>
-    </mat-card>
+  <mat-card fxFlex="100">
+    <mat-form-field fxFlex="25">
+      <mat-label>Add new language</mat-label>
+      <input [formControl]="newLocaleFormControl" [matAutocomplete]="auto" matInput type="text">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
+        <mat-option *ngFor="let locale of filteredLocales | async" [value]="locale">
+          {{ locale.prettyName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <button (click)="addLocal()" [disabled]="invalidLocale()" class="button-line" mat-icon-button
+            matTooltip="Add locale">
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-card>
 
-    <div fxFlex="100" *ngIf="usedLocales().length > 0">
-        <h2>Translations:</h2>
-        <nab-progress *ngFor="let locale of usedLocales()" [locale]="locale">
-        </nab-progress>
-    </div>
+  <div *ngIf="usedLocales().length > 0" fxFlex="100">
+    <h2>Translations:</h2>
+    <nab-progress *ngFor="let locale of usedLocales()" [locale]="locale">
+    </nab-progress>
+  </div>
 </div>

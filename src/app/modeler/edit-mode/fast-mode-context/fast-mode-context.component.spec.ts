@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { FastModeContextComponent } from './fast-mode-context.component';
+import {FastModeContextComponent} from './fast-mode-context.component';
 
 describe('FastModeContextComponent', () => {
   let component: FastModeContextComponent;
@@ -8,9 +8,9 @@ describe('FastModeContextComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FastModeContextComponent ]
+      declarations: [FastModeContextComponent],
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

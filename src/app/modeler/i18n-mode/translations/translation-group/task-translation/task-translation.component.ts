@@ -1,39 +1,35 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ModelService} from '../../../../services/model.service';
+import {Component, Input} from '@angular/core';
 import {I18nTranslations, PetriNet} from '@netgrif/petriflow';
-import {Locale} from '../../../classes/locale';
+import {ModelService} from '../../../../services/model.service';
 
 @Component({
-    selector: 'nab-task-translation',
-    templateUrl: './task-translation.component.html',
-    styleUrls: ['./task-translation.component.scss']
+  selector: 'nab-task-translation',
+  templateUrl: './task-translation.component.html',
+  styleUrls: ['./task-translation.component.scss'],
 })
-export class TaskTranslationComponent implements OnInit {
+export class TaskTranslationComponent {
 
-    constructor(
-        private modelService: ModelService
-    ) {
-    }
+  constructor(
+    private modelService: ModelService,
+  ) {
+  }
 
-    get model(): PetriNet {
-        return this.modelService.model;
-    }
+  get model(): PetriNet {
+    return this.modelService.model;
+  }
 
-    get translation(): I18nTranslations {
-        return this._translation;
-    }
+  private _translation: I18nTranslations;
 
-    @Input()
-    set translation(value: I18nTranslations) {
-        this._translation = value;
-    }
+  get translation(): I18nTranslations {
+    return this._translation;
+  }
 
-    private _translation: I18nTranslations;
+  @Input()
+  set translation(value: I18nTranslations) {
+    this._translation = value;
+  }
 
-    ngOnInit(): void {
-    }
-
-    notLast(i: number) {
-        return i !== this.model.getTransitions().length - 1;
-    }
+  notLast(i: number) {
+    return i !== this.model.getTransitions().length - 1;
+  }
 }

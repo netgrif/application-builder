@@ -16,44 +16,44 @@ import {Component, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core
 import {FormBuilderModule} from '../form-builder.module';
 
 describe('FieldListComponent', () => {
-    let component: FieldListComponent;
-    let fixture: ComponentFixture<TestWrapperComponent>;
+  let component: FieldListComponent;
+  let fixture: ComponentFixture<TestWrapperComponent>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [TestWrapperComponent],
-            imports: [
-                CommonModule,
-                DragDropModule,
-                GridsterModule,
-                FormsModule,
-                HttpClientModule,
-                MaterialImportModule,
-                FlexLayoutModule,
-                AngularResizedEventModule,
-                ResizableModule,
-                RouterTestingModule,
-                BrowserAnimationsModule,
-                FormBuilderModule
-            ],
-            schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
-        }).compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [TestWrapperComponent],
+      imports: [
+        CommonModule,
+        DragDropModule,
+        GridsterModule,
+        FormsModule,
+        HttpClientModule,
+        MaterialImportModule,
+        FlexLayoutModule,
+        AngularResizedEventModule,
+        ResizableModule,
+        RouterTestingModule,
+        BrowserAnimationsModule,
+        FormBuilderModule,
+      ],
+      schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(TestWrapperComponent);
-        component = fixture.debugElement.children[0].componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TestWrapperComponent);
+    component = fixture.debugElement.children[0].componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
 
 @Component({
-    selector: 'nab-test-wrapper',
-    template: '<nab-field-list ></nab-field-list><div id="ctxMenu"></div>'
+  selector: 'nab-test-wrapper',
+  template: '<nab-field-list ></nab-field-list><div id="ctxMenu"></div>',
 })
 class TestWrapperComponent {
 }

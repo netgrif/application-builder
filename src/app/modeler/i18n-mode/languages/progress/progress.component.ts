@@ -1,24 +1,22 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Locale} from '../../classes/locale';
 import {I18nModeService} from '../../i18n-mode.service';
 
 @Component({
-    selector: 'nab-progress',
-    templateUrl: './progress.component.html',
-    styleUrls: ['./progress.component.scss']
+  selector: 'nab-progress',
+  templateUrl: './progress.component.html',
+  styleUrls: ['./progress.component.scss'],
 })
-export class ProgressComponent implements OnInit {
+export class ProgressComponent {
 
-    @Input()
-    locale: Locale;
+  @Input()
+  locale: Locale;
 
-    constructor(private i18nService: I18nModeService) {
-    }
+  constructor(private i18nService: I18nModeService) {
+  }
 
-    ngOnInit(): void {
-    }
 
-    removeLocale() {
-        this.i18nService.removeLocale(this.locale.languageCode);
-    }
+  removeLocale() {
+    this.i18nService.removeLocale(this.locale.languageCode);
+  }
 }

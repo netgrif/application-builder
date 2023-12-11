@@ -18,31 +18,31 @@ import {InfoLabelComponent} from './info-label/info-label.component';
 import {DataFieldsComponentModule} from '@netgrif/components';
 
 @NgModule({
-    declarations: [
-        FormBuilderComponent,
-        PaperComponent,
-        FieldListComponent,
-        GridsterComponent,
-        EditPanelComponent,
-        GridsterDataFieldComponent,
-        InfoLabelComponent,
-    ],
-    exports: [
-        FormBuilderComponent
-    ],
-    imports: [
-        CommonModule,
-        DragDropModule,
-        GridsterModule,
-        FormsModule,
-        HttpClientModule,
-        MaterialImportModule,
-        FlexLayoutModule,
-        AngularResizeEventModule,
-        ResizableModule,
-        ReactiveFormsModule,
-        DataFieldsComponentModule,
-    ]
+  declarations: [
+    FormBuilderComponent,
+    PaperComponent,
+    FieldListComponent,
+    GridsterComponent,
+    EditPanelComponent,
+    GridsterDataFieldComponent,
+    InfoLabelComponent,
+  ],
+  exports: [
+    FormBuilderComponent,
+  ],
+  imports: [
+    CommonModule,
+    DragDropModule,
+    GridsterModule,
+    FormsModule,
+    HttpClientModule,
+    MaterialImportModule,
+    FlexLayoutModule,
+    AngularResizeEventModule,
+    ResizableModule,
+    ReactiveFormsModule,
+    DataFieldsComponentModule,
+  ],
 })
 export class FormBuilderModule {
 }

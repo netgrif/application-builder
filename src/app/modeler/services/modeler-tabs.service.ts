@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
 import {PetriNet} from '@netgrif/petriflow';
+import {Subject} from 'rxjs';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class ModelerTabsService {
-    openTab: Subject<PetriNet>;
+  openTab: Subject<PetriNet>;
 
-    constructor() {
-        this.openTab = new Subject<PetriNet>();
-    }
+  constructor() {
+    this.openTab = new Subject<PetriNet>();
+  }
 }

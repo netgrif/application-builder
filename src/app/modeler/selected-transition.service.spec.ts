@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { SelectedTransitionService } from './selected-transition.service';
+import {SelectedTransitionService} from './selected-transition.service';
 
 describe('SelectedTransitionService', () => {
   let service: SelectedTransitionService;

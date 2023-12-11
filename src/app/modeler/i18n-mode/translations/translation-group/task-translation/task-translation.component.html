@@ -1,12 +1,14 @@
-<div fxLayout="column" *ngFor="let task of model.getTransitions(); let i = index">
-    <h3>{{task.label.value}} [{{task.id}}]</h3>
-    <nab-i18n-field [field]="task.label" [name]="'Title'" [translation]="translation"></nab-i18n-field>
-    <div *ngIf="task.getEvents?.length > 0">
-        <h4>Events:</h4>
-        <div *ngFor="let event of task.getEvents()">
-            <nab-i18n-field [field]="event.title" [name]="'Title'" class="events" [translation]="translation"></nab-i18n-field>
-            <nab-i18n-field [field]="event.message" [name]="'Message'" class="events" [translation]="translation"></nab-i18n-field>
-        </div>
+<div *ngFor="let task of model.getTransitions(); let i = index" fxLayout="column">
+  <h3>{{ task.label.value }} [{{ task.id }}]</h3>
+  <nab-i18n-field [field]="task.label" [name]="'Title'" [translation]="translation"></nab-i18n-field>
+  <div *ngIf="task.getEvents?.length > 0">
+    <h4>Events:</h4>
+    <div *ngFor="let event of task.getEvents()">
+      <nab-i18n-field [field]="event.title" [name]="'Title'" [translation]="translation"
+                      class="events"></nab-i18n-field>
+      <nab-i18n-field [field]="event.message" [name]="'Message'" [translation]="translation"
+                      class="events"></nab-i18n-field>
     </div>
-    <mat-divider *ngIf="notLast(i)"></mat-divider>
+  </div>
+  <mat-divider *ngIf="notLast(i)"></mat-divider>
 </div>

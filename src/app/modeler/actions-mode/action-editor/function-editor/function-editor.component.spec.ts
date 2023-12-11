@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { FunctionEditorComponent } from './function-editor.component';
+import {FunctionEditorComponent} from './function-editor.component';
 
 describe('FunctionEditorComponent', () => {
   let component: FunctionEditorComponent;
@@ -8,9 +8,9 @@ describe('FunctionEditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FunctionEditorComponent ]
+      declarations: [FunctionEditorComponent],
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

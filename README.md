@@ -1,13 +1,12 @@
 # Netgrif Application Builder
 
 [![License](https://img.shields.io/badge/license-NETGRIF%20Community%20License-green)](https://netgrif.com/license)
-[![Angular dependency](https://img.shields.io/github/package-json/dependency-version/netgrif/application-builder/@angular/core?color=red)](https://www.angular.io/))
+[![Angular dependency](https://img.shields.io/github/package-json/dependency-version/netgrif/application-builder/@angular/core?color=red)](https://www.angular.io/)
 [![Petriflow 1.0.1](https://img.shields.io/badge/Petriflow-1.0.1-0aa8ff)](https://petriflow.com)
 [![Docker Pulls](https://img.shields.io/docker/pulls/netgrif/application-builder)](https://hub.docker.com/r/netgrif/application-builder)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/netgrif/application-builder?display_name=tag&sort=semver)](https://github.com/netgrif/application-builder/releases)
-[![build](https://github.com/netgrif/application-builder/actions/workflows/master-build.yml/badge.svg)](https://github.com/netgrif/application-builder/actions/workflows/master-build.yml)
+[![Master Build](https://github.com/netgrif/application-builder/actions/workflows/master-build.yaml/badge.svg)](https://github.com/netgrif/application-builder/actions/workflows/master-build.yaml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=netgrif_application-builder&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=netgrif_application-builder)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=netgrif_application-builder&metric=coverage)](https://sonarcloud.io/dashboard?id=netgrif_application-builder)
 [![Known Vulnerabilities](https://snyk.io/test/github/netgrif/application-builder/badge.svg)](https://snyk.io/test/github/netgrif/application-builder)
 
 Netgrif Application Builder is an angular web application for implementing process-driven application in low-code language Petriflow.
@@ -25,7 +24,7 @@ Builder can be deployed as is directly from the release artifact or as a docker 
 
 ## Usage
 
-Builder is single-page application (SPA) implemented in Angular. You can deploy it as normal web page on any website hosting. You can use a [release artifact](https://github.com/netgrif/application-builder/releases/tag/v6.3.2) 
+Builder is single-page application (SPA) implemented in Angular. You can deploy it as normal web page on any website hosting. You can use a [release artifact](https://github.com/netgrif/application-builder/releases/tag/v6.3.2)
 to deploy the zip archive. The application is also published to [DockerHub](https://hub.docker.com/r/netgrif/application-builder) for container deployment.
 For running the application no further configuration is needed.
 
@@ -48,8 +47,8 @@ Application Engine can run as a standalone java application, as a docker image, 
 
 ### Components
 
-[Netgrif Components](https://github.com/netgrif/components) is an Angular library for creating SPA (Single-page application) compatible with Netgrif Application Engine. 
-The library provides all necessary tools for creating refined frontend application into NAE environment, 
+[Netgrif Components](https://github.com/netgrif/components) is an Angular library for creating SPA (Single-page application) compatible with Netgrif Application Engine.
+The library provides all necessary tools for creating refined frontend application into NAE environment,
 and to create own library of Angular web components to incorporate your own personal design to the platform.
 
 ## Reporting issues

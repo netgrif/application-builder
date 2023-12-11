@@ -1,47 +1,44 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {TranslationGroupConfiguration, Type} from './translation-group-configuration';
-import {Locale} from '../../classes/locale';
+import {Component, Input} from '@angular/core';
 import {I18nTranslations} from '@netgrif/petriflow';
+import {TranslationGroupConfiguration, Type} from './translation-group-configuration';
 
 @Component({
-    selector: 'nab-translation-group',
-    templateUrl: './translation-group.component.html',
-    styleUrls: ['./translation-group.component.scss']
+  selector: 'nab-translation-group',
+  templateUrl: './translation-group.component.html',
+  styleUrls: ['./translation-group.component.scss'],
 })
-export class TranslationGroupComponent implements OnInit {
+export class TranslationGroupComponent {
 
-    @Input()
-    config: TranslationGroupConfiguration;
-    private _translation: I18nTranslations;
+  @Input()
+  config: TranslationGroupConfiguration;
 
-    constructor() {
-    }
+  constructor() {
+  }
 
-    ngOnInit(): void {
-    }
+  private _translation: I18nTranslations;
 
-    get translation(): I18nTranslations {
-        return this._translation;
-    }
+  get translation(): I18nTranslations {
+    return this._translation;
+  }
 
-    @Input()
-    set translation(value: I18nTranslations) {
-        this._translation = value;
-    }
+  @Input()
+  set translation(value: I18nTranslations) {
+    this._translation = value;
+  }
 
-    isModel(): boolean {
-        return this.config.type === Type.MODEL;
-    }
+  isModel(): boolean {
+    return this.config.type === Type.MODEL;
+  }
 
-    isTask(): boolean {
-        return this.config.type === Type.TASK;
-    }
+  isTask(): boolean {
+    return this.config.type === Type.TASK;
+  }
 
-    isData(): boolean {
-        return this.config.type === Type.DATA;
-    }
+  isData(): boolean {
+    return this.config.type === Type.DATA;
+  }
 
-    isRole(): boolean {
-        return this.config.type === Type.ROLE;
-    }
+  isRole(): boolean {
+    return this.config.type === Type.ROLE;
+  }
 }

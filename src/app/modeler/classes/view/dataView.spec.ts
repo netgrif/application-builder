@@ -1,5 +1,5 @@
 describe('View', () => {
-    it('should create an instance', () => {
-        expect(true).toBeTruthy();
-    });
+  it('should create an instance', () => {
+    expect(true).toBeTruthy();
+  });
 });

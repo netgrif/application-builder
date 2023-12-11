@@ -1,7 +1,7 @@
 <mat-card fxLayout="row" fxLayoutAlign="start center">
-    <nab-flag [locale]="locale"></nab-flag>
-    <span fxFlex>{{locale.prettyName}}</span>
-    <button mat-icon-button class="button-line" matTooltip="Remove locale" (click)="removeLocale()">
-        <mat-icon>delete</mat-icon>
-    </button>
+  <nab-flag [locale]="locale"></nab-flag>
+  <span fxFlex>{{ locale.prettyName }}</span>
+  <button (click)="removeLocale()" class="button-line" mat-icon-button matTooltip="Remove locale">
+    <mat-icon>delete</mat-icon>
+  </button>
 </mat-card>

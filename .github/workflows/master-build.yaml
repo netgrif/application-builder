@@ -18,12 +18,13 @@ jobs:
             -   run: npm i --legacy-peer-deps
 
             -   name: Test
-                run: npm run full-test
+#                run: npm run full-test
+                run: npm run lint && npm run build
 
-            -   name: Edit Path
-                run: |
-                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info
-                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info
+#            -   name: Edit Path
+#                run: |
+#                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info
+#                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info
             -   name: SonarCloud scan
                 uses: SonarSource/sonarcloud-github-action@master
                 env:

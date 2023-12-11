@@ -3,8 +3,8 @@ import {ActionType} from './editable-action';
 
 export class MasterItem {
 
-    public name = '';
+  public name = '';
 
-    constructor(public id: string, public type: ActionType, public model: PetriNet) {
-    }
+  constructor(public id: string, public type: ActionType, public model: PetriNet) {
+  }
 }

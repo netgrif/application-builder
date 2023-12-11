@@ -1,109 +1,114 @@
 <div class="description" id="description">
-    <nab-action-editor-menu-description id="description-content"
-                                        #descriptionComponent></nab-action-editor-menu-description>
+  <nab-action-editor-menu-description #descriptionComponent
+                                      id="description-content"></nab-action-editor-menu-description>
 </div>
 <mat-sidenav-container autosize>
-    <mat-sidenav mode="side" #drawer
-                 mwlResizable
-                 [resizeCursorPrecision]="10"
-                 [resizeEdges]="{ left: true }">
-        <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
-                                [editor]="editor"></nab-action-editor-menu>
-    </mat-sidenav>
-    <mat-sidenav-content>
-        <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()" mwlResizable
-                             id="{{action.event + '_' + action.phase + '_' + index}}"
-                             [resizeCursorPrecision]="10"
-                             [resizeEdges]="{ bottom: true }"
-                             (resizing)="onResizeEvent($event, action.event + '_' + action.phase + '_' + index)">
+  <mat-sidenav #drawer [resizeCursorPrecision]="10"
+               [resizeEdges]="{ left: true }"
+               mode="side"
+               mwlResizable>
+    <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
+                            [editor]="editor"></nab-action-editor-menu>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()" (resizing)="onResizeEvent($event, action.event + '_' + action.phase + '_' + index)"
+                         [resizeCursorPrecision]="10"
+                         [resizeEdges]="{ bottom: true }"
+                         id="{{action.event + '_' + action.phase + '_' + index}}"
+                         mwlResizable>
 
-            <mat-expansion-panel-header>
-                action
-            </mat-expansion-panel-header>
-            <div fxLayout="row">
-                <div fxFlex fxLayoutGap="3em" fxLayoutAlign="start center">
-                    <button type="button" mat-button (click)="openDrawer()">
-                        <mat-icon *ngIf="drawer.opened; else closed">
-                            keyboard_arrow_left
-                        </mat-icon>
-                        <ng-template #closed>
-                            <mat-icon>
-                                keyboard_arrow_right
-                            </mat-icon>
-                        </ng-template>
-                        <mat-icon>
-                            functions
-                        </mat-icon>
-                        Functions
-                    </button>
-                </div>
+      <mat-expansion-panel-header>
+        action
+      </mat-expansion-panel-header>
+      <div fxLayout="row">
+        <div fxFlex fxLayoutAlign="start center" fxLayoutGap="3em">
+          <button (click)="openDrawer()" mat-button type="button">
+            <mat-icon *ngIf="drawer.opened; else closed">
+              keyboard_arrow_left
+            </mat-icon>
+            <ng-template #closed>
+              <mat-icon>
+                keyboard_arrow_right
+              </mat-icon>
+            </ng-template>
+            <mat-icon>
+              functions
+            </mat-icon>
+            Functions
+          </button>
+        </div>
 
-                <div fxFlex="50" fxLayoutGap="3em" fxLayoutAlign="end center">
-                    <mat-menu #referencesMenu="matMenu">
-                        <ng-container *ngFor="let configuration of editorConfigurations">
-                            <nab-action-editor-menu-item [trigger]="referenceItemTrigger" #referenceItem="menuInOtherComponent" [configuration]="configuration" [hidden]="!referencesOpened"></nab-action-editor-menu-item>
-                            <button mat-menu-item #referenceItemTrigger="matMenuTrigger" [matMenuTriggerFor]="referenceItem.menu">
-                                {{configuration.title}}
-                            </button>
-                        </ng-container>
-                    </mat-menu>
-                    <button #matButton fxFlexAlign="end center" type="button" mat-button
-                            #referencesTrigger="matMenuTrigger"
-                            [matMenuTriggerFor]="referencesMenu">
-                        <mat-icon>
-                            link
-                        </mat-icon>
-                        References
-                        <mat-icon *ngIf="referencesTrigger.menuOpen; else closedMenu">
-                            keyboard_arrow_up
-                        </mat-icon>
-                        <ng-template #closedMenu>
-                            <mat-icon>
-                                keyboard_arrow_down
-                            </mat-icon>
-                        </ng-template>
-                    </button>
-                </div>
-            </div>
-            <div fxLayout="column" fxLayoutAlign="start stretch" id="{{name + '_div'}}">
-                <ngx-monaco-editor class="full-size-editor" id="{{name + '_editor'}}" [options]="editorOptions"
-                                   [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>
-            </div>
-            <mat-action-row>
-                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center">
-                    <mat-form-field class="margin-left-8px">
-                        <mat-label>event</mat-label>
-                        <mat-select [(value)]="action.event"
-                                    (selectionChange)="actionTransitionEventsChanged(index)">
-                            <mat-option *ngFor="let option of TRANSITION_EVENT_TYPES"
-                                        value="{{option}}">{{option}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center">
-                    <mat-form-field class="margin-left-8px">
-                        <mat-label>phase</mat-label>
-                        <mat-select [(value)]="action.phase"
-                                    (selectionChange)="actionTransitionEventsChanged(index)">
-                            <mat-option *ngFor="let option of PHASE_TYPES"
-                                        value="{{option}}">{{option}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div *ngIf="action.type === 'DATA' || action.type === 'DATAREF'" fxLayout="row"
-                     fxLayoutAlign="start center">
-                    <mat-form-field class="margin-left-8px">
-                        <mat-label>event</mat-label>
-                        <mat-select [(value)]="action.event" (selectionChange)="actionDataEventsChanged(index)">
-                            <mat-option *ngFor="let option of DATA_EVENT_TYPES"
-                                        value="{{option}}">{{option}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <button mat-icon-button (click)="openDialog(index)">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </mat-action-row>
-        </mat-expansion-panel>
-    </mat-sidenav-content>
+        <div fxFlex="50" fxLayoutAlign="end center" fxLayoutGap="3em">
+          <mat-menu #referencesMenu="matMenu">
+            <ng-container *ngFor="let configuration of editorConfigurations">
+              <nab-action-editor-menu-item #referenceItem="menuInOtherComponent" [configuration]="configuration"
+                                           [hidden]="!referencesOpened"
+                                           [trigger]="referenceItemTrigger"></nab-action-editor-menu-item>
+              <button #referenceItemTrigger="matMenuTrigger" [matMenuTriggerFor]="referenceItem.menu" mat-menu-item>
+                {{ configuration.title }}
+              </button>
+            </ng-container>
+          </mat-menu>
+          <button #matButton #referencesTrigger="matMenuTrigger" [matMenuTriggerFor]="referencesMenu" fxFlexAlign="end center"
+                  mat-button
+                  type="button">
+            <mat-icon>
+              link
+            </mat-icon>
+            References
+            <mat-icon *ngIf="referencesTrigger.menuOpen; else closedMenu">
+              keyboard_arrow_up
+            </mat-icon>
+            <ng-template #closedMenu>
+              <mat-icon>
+                keyboard_arrow_down
+              </mat-icon>
+            </ng-template>
+          </button>
+        </div>
+      </div>
+      <div fxLayout="column" fxLayoutAlign="start stretch" id="{{name + '_div'}}">
+        <ngx-monaco-editor (onInit)="onInit($event)" [formControl]="formControl" [options]="editorOptions"
+                           class="full-size-editor" id="{{name + '_editor'}}"></ngx-monaco-editor>
+      </div>
+      <mat-action-row>
+        <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center">
+          <mat-form-field class="margin-left-8px">
+            <mat-label>event</mat-label>
+            <mat-select (selectionChange)="actionTransitionEventsChanged(index)"
+                        [(value)]="action.event">
+              <mat-option *ngFor="let option of TRANSITION_EVENT_TYPES"
+                          value="{{option}}">{{ option }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center">
+          <mat-form-field class="margin-left-8px">
+            <mat-label>phase</mat-label>
+            <mat-select (selectionChange)="actionTransitionEventsChanged(index)"
+                        [(value)]="action.phase">
+              <mat-option *ngFor="let option of PHASE_TYPES"
+                          value="{{option}}">{{ option }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div *ngIf="action.type === 'DATA' || action.type === 'DATAREF'" fxLayout="row"
+             fxLayoutAlign="start center">
+          <mat-form-field class="margin-left-8px">
+            <mat-label>event</mat-label>
+            <mat-select (selectionChange)="actionDataEventsChanged(index)" [(value)]="action.event">
+              <mat-option *ngFor="let option of DATA_EVENT_TYPES"
+                          value="{{option}}">{{ option }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <button (click)="openDialog(index)" mat-icon-button>
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-sidenav-content>
 </mat-sidenav-container>

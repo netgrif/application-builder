@@ -1,41 +1,41 @@
-<mat-accordion #accordion id="accordion" class="list-accordion">
-    <mat-expansion-panel class="actions-list-expansion-panel" #panel *ngFor="let actions of menuItems"
-                         [disabled]="actions.actions.length === 0">
-        <mat-expansion-panel-header>
-            <mat-panel-title>
+<mat-accordion #accordion class="list-accordion" id="accordion">
+  <mat-expansion-panel #panel *ngFor="let actions of menuItems" [disabled]="actions.actions.length === 0"
+                       class="actions-list-expansion-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
                 <span class="menu-span">
                     <mat-icon class="description-info-button">
-                        {{actions.badge}}
+                        {{ actions.badge }}
                     </mat-icon>
-                    <p class="menu-label">{{actions.label}}</p>
+                    <p class="menu-label">{{ actions.label }}</p>
                 </span>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-list>
-            <mat-list-item *ngFor="let item of actions.actions" class="menu-list-item">
-                <div fxLayout="row" fxFlex fxLayoutAlign="start center" class="test" *ngIf="item.label.length > 20">
-                    <button mat-button
-                            class="action-menu-panel"
-                            (click)="addTextToEditor(item.action)">
-                        <span matTooltip="{{item.label}}">{{item.label.substring(0, 20)}}...</span>
-                    </button>
-                </div>
-                <div fxLayout="row" fxFlex fxLayoutAlign="start center" class="test" *ngIf="item.label.length <= 20">
-                    <button mat-button
-                            class="action-menu-panel"
-                            (click)="addTextToEditor(item.action)">{{item.label}}
-                    </button>
-                </div>
-                <div fxLayout="row" fxFlex fxLayoutAlign="end center">
-                    <button mat-button
-                            *ngIf="item.description"
-                            class="description-info-button"
-                            (click)="handleClick(item)"
-                            (blur)="onBlur($event)">
-                        <mat-icon>info</mat-icon>
-                    </button>
-                </div>
-            </mat-list-item>
-        </mat-list>
-    </mat-expansion-panel>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-list>
+      <mat-list-item *ngFor="let item of actions.actions" class="menu-list-item">
+        <div *ngIf="item.label.length > 20" class="test" fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <button (click)="addTextToEditor(item.action)"
+                  class="action-menu-panel"
+                  mat-button>
+            <span matTooltip="{{item.label}}">{{ item.label.substring(0, 20) }}...</span>
+          </button>
+        </div>
+        <div *ngIf="item.label.length <= 20" class="test" fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <button (click)="addTextToEditor(item.action)"
+                  class="action-menu-panel"
+                  mat-button>{{ item.label }}
+          </button>
+        </div>
+        <div fxFlex fxLayout="row" fxLayoutAlign="end center">
+          <button (blur)="onBlur($event)"
+                  (click)="handleClick(item)"
+                  *ngIf="item.description"
+                  class="description-info-button"
+                  mat-button>
+            <mat-icon>info</mat-icon>
+          </button>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-expansion-panel>
 </mat-accordion>

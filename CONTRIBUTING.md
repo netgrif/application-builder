@@ -19,12 +19,12 @@ If you've found a bug, let us know about it.
 * Search the [Issues](https://github.com/netgrif/application-builder/issues) to check we're not already tracking it.
 * If you can't find an open issue that describes your
   problem, [open a new one](https://github.com/netgrif/application-builder/issues/new).
-    * Include a **title and clear description**
-    * Describe:
-        * What you did (ideally with a code sample or executed steps)
-        * What you expected to happen
-        * What actually happened, including any error messages or program output.
-        * Include the version of the platform and environment that you used to run the engine.
+  * Include a **title and clear description**
+  * Describe:
+    * What you did (ideally with a code sample or executed steps)
+    * What you expected to happen
+    * What actually happened, including any error messages or program output.
+    * Include the version of the platform and environment that you used to run the engine.
 
 ### Contributing Features
 

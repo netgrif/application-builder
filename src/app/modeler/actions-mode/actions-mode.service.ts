@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class ActionsModeService {
-    eventData: BehaviorSubject<string>;
+  eventData: BehaviorSubject<string>;
 
-    constructor() {
-        this.eventData = new BehaviorSubject('dataVariable');
-    }
+  constructor() {
+    this.eventData = new BehaviorSubject('dataVariable');
+  }
 }

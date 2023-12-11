@@ -23,7 +23,7 @@ import {I18nModeComponent} from './i18n-mode/i18n-mode.component';
 import {ResizableModule} from 'angular-resizable-element';
 import {DialogDeleteComponent} from '../dialogs/dialog-delete/dialog-delete.component';
 import {
-    DialogTransitionSettingsComponent
+  DialogTransitionSettingsComponent,
 } from '../dialogs/dialog-transition-settings/dialog-transition-settings.component';
 import {DialogAddLanguageComponent} from '../dialogs/dialog-add-language/dialog-add-language.component';
 import {MatIconRegistry} from '@angular/material/icon';
@@ -41,87 +41,87 @@ import {FlagComponent} from './i18n-mode/languages/flag/flag.component';
 import {FlagFallbackDirective} from './i18n-mode/languages/flag/flag-fallback.directive';
 import {TranslationGroupComponent} from './i18n-mode/translations/translation-group/translation-group.component';
 import {
-    ModelTranslationComponent
+  ModelTranslationComponent,
 } from './i18n-mode/translations/translation-group/model-translation/model-translation.component';
 import {I18nFieldComponent} from './i18n-mode/translations/i18n-field/i18n-field.component';
 import {
-    DataTranslationComponent
+  DataTranslationComponent,
 } from './i18n-mode/translations/translation-group/data-translation/data-translation.component';
 import {
-    RoleTranslationComponent
+  RoleTranslationComponent,
 } from './i18n-mode/translations/translation-group/role-translation/role-translation.component';
 import {
-    TaskTranslationComponent
+  TaskTranslationComponent,
 } from './i18n-mode/translations/translation-group/task-translation/task-translation.component';
 import {NgxDropzoneModule} from 'ngx-dropzone';
 
 @NgModule({
-    declarations: [
-        ModelerComponent,
-        ControlPanelComponent,
-        DialogManageRolesComponent,
-        EditPanelModelerComponent,
-        TriggerTreeComponent,
-        SimulationModeComponent,
-        EditModeComponent,
-        DataModeComponent,
-        RoleModeComponent,
-        ActionsModeComponent,
-        DialogArcAttachComponent,
-        I18nModeComponent,
-        DialogDeleteComponent,
-        DialogTransitionSettingsComponent,
-        DialogAddLanguageComponent,
-        ImportSuccessfulComponent,
-        FastModeContextComponent,
-        LanguagesComponent,
-        TranslationsComponent,
-        ProgressComponent,
-        FlagComponent,
-        FlagFallbackDirective,
-        TranslationGroupComponent,
-        ModelTranslationComponent,
-        I18nFieldComponent,
-        DataTranslationComponent,
-        RoleTranslationComponent,
-        TaskTranslationComponent
-    ],
-    exports: [
-        ActionEditorModule
-    ],
-    imports: [
-        CommonModule,
-        MaterialImportModule,
-        CdkImportModule,
-        FlexLayoutModule,
-        FormBuilderModule,
-        FormsModule,
-        RouterModule,
-        HotkeyModule.forRoot(),
-        ResizableModule,
-        ReactiveFormsModule,
-        JoyrideModule,
-        TaskContentComponentModule,
-        GridsterModule,
-        DataFieldsComponentModule,
-        ActionEditorModule,
-        NgxDropzoneModule
-    ]
+  declarations: [
+    ModelerComponent,
+    ControlPanelComponent,
+    DialogManageRolesComponent,
+    EditPanelModelerComponent,
+    TriggerTreeComponent,
+    SimulationModeComponent,
+    EditModeComponent,
+    DataModeComponent,
+    RoleModeComponent,
+    ActionsModeComponent,
+    DialogArcAttachComponent,
+    I18nModeComponent,
+    DialogDeleteComponent,
+    DialogTransitionSettingsComponent,
+    DialogAddLanguageComponent,
+    ImportSuccessfulComponent,
+    FastModeContextComponent,
+    LanguagesComponent,
+    TranslationsComponent,
+    ProgressComponent,
+    FlagComponent,
+    FlagFallbackDirective,
+    TranslationGroupComponent,
+    ModelTranslationComponent,
+    I18nFieldComponent,
+    DataTranslationComponent,
+    RoleTranslationComponent,
+    TaskTranslationComponent,
+  ],
+  exports: [
+    ActionEditorModule,
+  ],
+  imports: [
+    CommonModule,
+    MaterialImportModule,
+    CdkImportModule,
+    FlexLayoutModule,
+    FormBuilderModule,
+    FormsModule,
+    RouterModule,
+    HotkeyModule.forRoot(),
+    ResizableModule,
+    ReactiveFormsModule,
+    JoyrideModule,
+    TaskContentComponentModule,
+    GridsterModule,
+    DataFieldsComponentModule,
+    ActionEditorModule,
+    NgxDropzoneModule,
+  ],
 })
 export class ModelerModule {
-    constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
-        matIconRegistry.addSvgIcon('data', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/data.svg`));
-        matIconRegistry.addSvgIcon('cursor-default-outline', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/cursor-default-outline.svg`));
-        matIconRegistry.addSvgIcon('transition', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/transition.svg`));
-        matIconRegistry.addSvgIcon('place', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/place.svg`));
-        matIconRegistry.addSvgIcon('marking', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/marking.svg`));
-        matIconRegistry.addSvgIcon('arc', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/arc.svg`));
-        matIconRegistry.addSvgIcon('arcweight', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/arcweight.svg`));
-        matIconRegistry.addSvgIcon('arcdataref', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/arcdataref.svg`));
-        matIconRegistry.addSvgIcon('arcplaceref', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/arcplaceref.svg`));
-        matIconRegistry.addSvgIcon('resetarc', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/resetarc.svg`));
-        matIconRegistry.addSvgIcon('inhibitor', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/inhibitor.svg`));
-        matIconRegistry.addSvgIcon('read', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/read.svg`));
-        matIconRegistry.addSvgIcon('properties', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/properties.svg`));
-    }
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+    matIconRegistry.addSvgIcon('data', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/data.svg`));
+    matIconRegistry.addSvgIcon('cursor-default-outline', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/cursor-default-outline.svg`));
+    matIconRegistry.addSvgIcon('transition', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/transition.svg`));
+    matIconRegistry.addSvgIcon('place', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/place.svg`));
+    matIconRegistry.addSvgIcon('marking', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/marking.svg`));
+    matIconRegistry.addSvgIcon('arc', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/arc.svg`));
+    matIconRegistry.addSvgIcon('arcweight', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/arcweight.svg`));
+    matIconRegistry.addSvgIcon('arcdataref', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/arcdataref.svg`));
+    matIconRegistry.addSvgIcon('arcplaceref', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/arcplaceref.svg`));
+    matIconRegistry.addSvgIcon('resetarc', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/resetarc.svg`));
+    matIconRegistry.addSvgIcon('inhibitor', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/inhibitor.svg`));
+    matIconRegistry.addSvgIcon('read', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/read.svg`));
+    matIconRegistry.addSvgIcon('properties', domSanitizer.bypassSecurityTrustResourceUrl(`../../..${environment.deployUrl}assets/modeler/icons/properties.svg`));
+  }
 }

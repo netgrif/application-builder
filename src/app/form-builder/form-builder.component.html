@@ -1,18 +1,18 @@
-<mat-sidenav class="app-mat-sidenav" mode="side" fixedInViewport=true disableClose="true" opened>
-    <nab-field-list></nab-field-list>
+<mat-sidenav class="app-mat-sidenav" disableClose="true" fixedInViewport=true mode="side" opened>
+  <nab-field-list></nab-field-list>
 </mat-sidenav>
 
 <nab-info-label></nab-info-label>
 <nab-paper-component>
 </nab-paper-component>
 
-<mat-sidenav mwlResizable
-             [style.width.px]="width"
+<mat-sidenav (resizing)="onResizeEvent($event)"
              [resizeCursorPrecision]="10"
              [resizeEdges]="{ left: true }"
-             (resizing)="onResizeEvent($event)"
-             fixedInViewport=true
+             [style.width.px]="width"
+             class="app-mat-sidenav-right"
              disableClose="true"
-             class="app-mat-sidenav-right" mode="side" position="end" opened>
-    <nab-edit-panel></nab-edit-panel>
+             fixedInViewport=true
+             mode="side" mwlResizable opened position="end">
+  <nab-edit-panel></nab-edit-panel>
 </mat-sidenav>

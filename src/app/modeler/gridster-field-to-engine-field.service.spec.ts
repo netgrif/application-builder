@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { GridsterFieldToEngineFieldService } from './gridster-field-to-engine-field.service';
+import {GridsterFieldToEngineFieldService} from './gridster-field-to-engine-field.service';
 
 describe('GridsterFieldToEngineFieldService', () => {
   let service: GridsterFieldToEngineFieldService;

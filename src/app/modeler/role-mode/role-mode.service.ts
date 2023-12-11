@@ -1,12 +1,12 @@
 import {EventEmitter, Injectable} from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class RoleModeService {
-    event: EventEmitter<void>;
+  event: EventEmitter<void>;
 
-    constructor() {
-        this.event = new EventEmitter();
-    }
+  constructor() {
+    this.event = new EventEmitter();
+  }
 }

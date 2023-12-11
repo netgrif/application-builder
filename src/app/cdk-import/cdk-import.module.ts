@@ -4,7 +4,8 @@ import {CdkTreeModule} from '@angular/cdk/tree';
 @NgModule({
   declarations: [],
   imports: [
-    CdkTreeModule
-  ]
+    CdkTreeModule,
+  ],
 })
-export class CdkImportModule { }
+export class CdkImportModule {
+}

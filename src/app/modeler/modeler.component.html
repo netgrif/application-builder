@@ -13,19 +13,19 @@
 <!--</mat-tab-group>-->
 
 <mat-toolbar class="modelerToolbar">
-    <nab-control-panel [nav]="sidenav"></nab-control-panel>
+  <nab-control-panel [nav]="sidenav"></nab-control-panel>
 </mat-toolbar>
 
 <mat-sidenav-container class="container-sidenav">
-    <mat-sidenav #sidenav mode="over" position="end"
-                 mwlResizable
-                 [style.width.px]="width"
-                 [resizeCursorPrecision]="10"
-                 [resizeEdges]="{ left: true }"
-                 (resizing)="onResizeEvent($event)">
-        <nab-edit-panel-modeler [nav]="sidenav"></nab-edit-panel-modeler>
-    </mat-sidenav>
-    <mat-sidenav-content id="modeler_area" class="container-sidenav-content">
-        <router-outlet></router-outlet>
-    </mat-sidenav-content>
+  <mat-sidenav #sidenav (resizing)="onResizeEvent($event)" [resizeCursorPrecision]="10"
+               [resizeEdges]="{ left: true }"
+               [style.width.px]="width"
+               mode="over"
+               mwlResizable
+               position="end">
+    <nab-edit-panel-modeler [nav]="sidenav"></nab-edit-panel-modeler>
+  </mat-sidenav>
+  <mat-sidenav-content class="container-sidenav-content" id="modeler_area">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
 </mat-sidenav-container>

@@ -20,41 +20,41 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {JoyrideModule} from 'ngx-joyride';
 
 describe('ModelerComponent', () => {
-    let component: ModelerComponent;
-    let fixture: ComponentFixture<ModelerComponent>;
+  let component: ModelerComponent;
+  let fixture: ComponentFixture<ModelerComponent>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [],
-            imports: [
-                CommonModule,
-                MaterialImportModule,
-                CdkImportModule,
-                FlexLayoutModule,
-                FormsModule,
-                MatCheckboxModule,
-                MatTabsModule,
-                RouterModule,
-                MonacoEditorModule.forRoot(),
-                HotkeyModule.forRoot(),
-                MatSortModule,
-                ResizableModule,
-                ModelerModule,
-                RouterTestingModule.withRoutes([]),
-                JoyrideModule.forRoot(),
-                HttpClientTestingModule,
-                NoopAnimationsModule
-            ]
-        }).compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [],
+      imports: [
+        CommonModule,
+        MaterialImportModule,
+        CdkImportModule,
+        FlexLayoutModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatTabsModule,
+        RouterModule,
+        MonacoEditorModule.forRoot(),
+        HotkeyModule.forRoot(),
+        MatSortModule,
+        ResizableModule,
+        ModelerModule,
+        RouterTestingModule.withRoutes([]),
+        JoyrideModule.forRoot(),
+        HttpClientTestingModule,
+        NoopAnimationsModule,
+      ],
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ModelerComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ModelerComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

@@ -1,35 +1,32 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {CommandAction} from '../../classes/command-action';
 
 @Component({
-    selector: 'nab-action-editor-menu-description',
-    templateUrl: './action-editor-menu-description.component.html',
-    styleUrls: ['./action-editor-menu-description.component.scss']
+  selector: 'nab-action-editor-menu-description',
+  templateUrl: './action-editor-menu-description.component.html',
+  styleUrls: ['./action-editor-menu-description.component.scss'],
 })
-export class ActionEditorMenuDescriptionComponent implements OnInit {
+export class ActionEditorMenuDescriptionComponent {
 
-    descriptionVisible: boolean;
+  descriptionVisible: boolean;
 
-    action: CommandAction;
-    @ViewChild('descriptionCard') description: ElementRef;
+  action: CommandAction;
+  @ViewChild('descriptionCard') description: ElementRef;
 
-    constructor() {
-    }
+  constructor() {
+  }
 
-    ngOnInit(): void {
-    }
+  setAction(action: CommandAction): void {
+    this.action = action;
+  }
 
-    setAction(action: CommandAction): void {
-        this.action = action;
-    }
+  closeDescription(): void {
+    this.descriptionVisible = false;
+  }
 
-    closeDescription(): void {
-        this.descriptionVisible = false;
-    }
-
-    openDescriptionWithText(action: CommandAction): void {
-        this.action = action;
-        this.descriptionVisible = true;
-    }
+  openDescriptionWithText(action: CommandAction): void {
+    this.action = action;
+    this.descriptionVisible = true;
+  }
 
 }

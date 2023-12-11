@@ -1,39 +1,35 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ModelService} from '../../../../services/model.service';
+import {Component, Input} from '@angular/core';
 import {I18nTranslations, PetriNet} from '@netgrif/petriflow';
-import {Locale} from '../../../classes/locale';
+import {ModelService} from '../../../../services/model.service';
 
 @Component({
-    selector: 'nab-role-translation',
-    templateUrl: './role-translation.component.html',
-    styleUrls: ['./role-translation.component.scss']
+  selector: 'nab-role-translation',
+  templateUrl: './role-translation.component.html',
+  styleUrls: ['./role-translation.component.scss'],
 })
-export class RoleTranslationComponent implements OnInit {
+export class RoleTranslationComponent {
 
-    constructor(
-        private modelService: ModelService
-    ) {
-    }
+  constructor(
+    private modelService: ModelService,
+  ) {
+  }
 
-    get model(): PetriNet {
-        return this.modelService.model;
-    }
+  get model(): PetriNet {
+    return this.modelService.model;
+  }
 
-    get translation(): I18nTranslations {
-        return this._translation;
-    }
+  private _translation: I18nTranslations;
 
-    @Input()
-    set translation(value: I18nTranslations) {
-        this._translation = value;
-    }
+  get translation(): I18nTranslations {
+    return this._translation;
+  }
 
-    private _translation: I18nTranslations;
+  @Input()
+  set translation(value: I18nTranslations) {
+    this._translation = value;
+  }
 
-    ngOnInit(): void {
-    }
-
-    notLast(i: any) {
-        return i !== this.model.getRoles().length - 1;
-    }
+  notLast(i: any) {
+    return i !== this.model.getRoles().length - 1;
+  }
 }

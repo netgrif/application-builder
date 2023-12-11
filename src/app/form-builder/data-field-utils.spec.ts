@@ -1,4 +1,4 @@
-import { DataFieldUtils } from './data-field-utils';
+import {DataFieldUtils} from './data-field-utils';
 
 describe('DataFieldUtils', () => {
   it('should create an instance', () => {

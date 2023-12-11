@@ -1,52 +1,52 @@
 .toolbarButton {
-    width: 24px;
-    border-radius: 5%;
+  width: 24px;
+  border-radius: 5%;
 }
 
 mat-divider.style-fix {
-    height: 30px;
-    margin-top: 5px;
+  height: 30px;
+  margin-top: 5px;
 }
 
 .button--input {
-    display: none;
+  display: none;
 
 }
 
 .button-line {
-    line-height: 0;
-    border-radius: 5px !important;
+  line-height: 0;
+  border-radius: 5px !important;
 
-    mat-icon {
-        cursor: pointer;
-    }
+  mat-icon {
+    cursor: pointer;
+  }
 }
 
 .button-highlight {
-    //background: map-get($netgrif-blue, A200) !important; GLOBAL STYLE
+  //background: map-get($netgrif-blue, A200) !important; GLOBAL STYLE
 }
 
 .height-select {
-    height: 40px;
-    padding-right: 16px;
+  height: 40px;
+  padding-right: 16px;
 }
 
 .flexis {
-    display: flex;
+  display: flex;
 }
 
 .margin8px {
-    margin-left: 8px;
-    margin-right: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .language-select {
-    min-width: 20vw;
-    font-size: 16px;
-    padding-bottom: 0px !important;
+  min-width: 20vw;
+  font-size: 16px;
+  padding-bottom: 0px !important;
 
-    ::ng-deep .mat-form-field-wrapper {
-        margin-bottom: -1.35em;
-    }
+  ::ng-deep .mat-form-field-wrapper {
+    margin-bottom: -1.35em;
+  }
 }
 

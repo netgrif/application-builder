@@ -1,46 +1,47 @@
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {DialogRefactorComponent} from './dialog-refactor.component';
-import {MaterialImportModule} from '../../material-import/material-import.module';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ModelService} from '../../modeler/services/model.service';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {Model} from '@netgrif/petriflow';
 import {Subject} from 'rxjs';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MaterialImportModule} from '../../material-import/material-import.module';
+import {ModelService} from '../../modeler/services/model.service';
+
+import {DialogRefactorComponent} from './dialog-refactor.component';
 
 describe('DialogRefactorComponent', () => {
-    let component: DialogRefactorComponent;
-    let fixture: ComponentFixture<DialogRefactorComponent>;
+  let component: DialogRefactorComponent;
+  let fixture: ComponentFixture<DialogRefactorComponent>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [DialogRefactorComponent],
-            imports: [MaterialImportModule, NoopAnimationsModule],
-            providers: [
-                { provide: MatDialogRef, useValue: {
-                    beforeClosed() {
-                        return new Subject();
-                    }
-                    }
-                    },
-                { provide: MAT_DIALOG_DATA, useValue: [] },
-                { provide: ModelService, useClass: MockModelService}
-            ]
-        })
-            .compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [DialogRefactorComponent],
+      imports: [MaterialImportModule, NoopAnimationsModule],
+      providers: [
+        {
+          provide: MatDialogRef, useValue: {
+            beforeClosed() {
+              return new Subject();
+            },
+          },
+        },
+        {provide: MAT_DIALOG_DATA, useValue: []},
+        {provide: ModelService, useClass: MockModelService},
+      ],
+    })
+      .compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DialogRefactorComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(DialogRefactorComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
 
 class MockModelService {
-    model = new Model();
+  model = new Model();
 }

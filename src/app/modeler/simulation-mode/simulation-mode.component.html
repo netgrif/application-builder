@@ -1,7 +1,7 @@
-<div id="canvas-wrapper" class="canvas-wrapper">
-  <svg id="canvas" class="canvas"
-       #canvas
-       (mousedown)="doMouseDown($event)"
+<div class="canvas-wrapper" id="canvas-wrapper">
+  <svg #canvas (mousedown)="doMouseDown($event)"
        (mousemove)="doMouseMove($event)"
+       class="canvas"
+       id="canvas"
   ></svg>
 </div>

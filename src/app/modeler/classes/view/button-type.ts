@@ -2,11 +2,11 @@ import {DataView, DataViewType} from './dataView';
 
 export class ButtonType extends DataView {
 
-    constructor() {
-        super(DataViewType.BUTTON_TYPE);
-    }
+  constructor() {
+    super(DataViewType.BUTTON_TYPE);
+  }
 
-    toXml(): string {
-        return '<buttonType/>';
-    }
+  toXml(): string {
+    return '<buttonType/>';
+  }
 }

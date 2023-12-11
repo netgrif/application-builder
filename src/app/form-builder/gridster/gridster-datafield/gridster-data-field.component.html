@@ -1,45 +1,48 @@
-<div fxLayout="row" fxLayoutAlign="start center" class="gridster-item-content min-row-height" [ngSwitch]="dataField.dataVariable.type">
-    <nc-boolean-field *ngSwitchCase="DataType.BOOLEAN" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-boolean-field>
+<div [ngSwitch]="dataField.dataVariable.type" class="gridster-item-content min-row-height" fxLayout="row"
+     fxLayoutAlign="start center">
+  <nc-boolean-field *ngSwitchCase="DataType.BOOLEAN" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-boolean-field>
 
-    <nc-text-field *ngSwitchCase="DataType.TEXT" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-text-field>
+  <nc-text-field *ngSwitchCase="DataType.TEXT" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-text-field>
 
-    <nc-number-field *ngSwitchCase="DataType.NUMBER" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-number-field>
+  <nc-number-field *ngSwitchCase="DataType.NUMBER" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-number-field>
 
-    <nc-enumeration-field *ngSwitchCase="DataType.ENUMERATION" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-enumeration-field>
+  <nc-enumeration-field *ngSwitchCase="DataType.ENUMERATION" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-enumeration-field>
 
-    <nc-enumeration-field *ngSwitchCase="DataType.ENUMERATION_MAP" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-enumeration-field>
+  <nc-enumeration-field *ngSwitchCase="DataType.ENUMERATION_MAP" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-enumeration-field>
 
-    <nc-multichoice-field *ngSwitchCase="DataType.MULTICHOICE" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-multichoice-field>
+  <nc-multichoice-field *ngSwitchCase="DataType.MULTICHOICE" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-multichoice-field>
 
-    <nc-multichoice-field *ngSwitchCase="DataType.MULTICHOICE_MAP" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-multichoice-field>
+  <nc-multichoice-field *ngSwitchCase="DataType.MULTICHOICE_MAP" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-multichoice-field>
 
-    <nc-date-field *ngSwitchCase="DataType.DATE" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-date-field>
+  <nc-date-field *ngSwitchCase="DataType.DATE" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-date-field>
 
-    <nc-date-time-field *ngSwitchCase="DataType.DATETIME" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-date-time-field>
+  <nc-date-time-field *ngSwitchCase="DataType.DATETIME" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-date-time-field>
 
-    <nc-file-field *ngSwitchCase="DataType.FILE" [dataField]="engineField" [taskId]="''" [taskOffset]="0" fxFlex>
-    </nc-file-field>
+  <nc-file-field *ngSwitchCase="DataType.FILE" [dataField]="engineField" [taskId]="''" [taskOffset]="0" fxFlex>
+  </nc-file-field>
 
-    <nc-file-list-field *ngSwitchCase="DataType.FILE_LIST" [dataField]="engineField" [taskId]="''" [taskOffset]="0" fxFlex>
-    </nc-file-list-field>
+  <nc-file-list-field *ngSwitchCase="DataType.FILE_LIST" [dataField]="engineField" [taskId]="''" [taskOffset]="0"
+                      fxFlex>
+  </nc-file-list-field>
 
-    <nc-user-field *ngSwitchCase="DataType.USER" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-user-field>
+  <nc-user-field *ngSwitchCase="DataType.USER" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-user-field>
 
-    <nc-button-field *ngSwitchCase="DataType.BUTTON" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-button-field>
+  <nc-button-field *ngSwitchCase="DataType.BUTTON" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-button-field>
 
-    <nc-i18n-field *ngSwitchCase="'i18n'" [dataField]="engineField" [taskOffset]="0" fxFlex>
-    </nc-i18n-field>
+  <nc-i18n-field *ngSwitchCase="'i18n'" [dataField]="engineField" [taskOffset]="0" fxFlex>
+  </nc-i18n-field>
 
-    <span *ngSwitchDefault class="placeholder-text">Placeholder for {{dataField.dataVariable.type}} with id '{{dataField.dataVariable?.id}}'</span>
+  <span *ngSwitchDefault class="placeholder-text">Placeholder for {{ dataField.dataVariable.type }}
+    with id '{{ dataField.dataVariable?.id }}'</span>
 </div>

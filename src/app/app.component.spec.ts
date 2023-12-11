@@ -15,31 +15,30 @@ import {AppModule} from './app.module';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
 
 describe('AppComponent', () => {
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-            ],
-            imports: [
-                BrowserModule,
-                BrowserAnimationsModule,
-                MaterialImportModule,
-                FlexLayoutModule,
-                FormBuilderModule,
-                AppModule,
-                MatListModule,
-                AuthenticationModule,
-                RouterTestingModule,
-                HttpClientTestingModule,
-                JoyrideModule.forRoot(),
-            ],
-            schemas: [NO_ERRORS_SCHEMA],
-            providers: [{provide: ConfigurationService, useClass: AppBuilderConfigurationService}]
-        }).compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [],
+      imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        MaterialImportModule,
+        FlexLayoutModule,
+        FormBuilderModule,
+        AppModule,
+        MatListModule,
+        AuthenticationModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
+        JoyrideModule.forRoot(),
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [{provide: ConfigurationService, useClass: AppBuilderConfigurationService}],
+    }).compileComponents();
+  }));
 
-    it('should create the app', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.componentInstance;
-        expect(app).toBeTruthy();
-    });
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
 });

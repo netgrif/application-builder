@@ -5,14 +5,14 @@
       <mat-label>Language</mat-label>
       <mat-select [(ngModel)]="selectedLanguage" fxFlex="100">
         <mat-option *ngFor="let language of i18nModeService.locales" [value]="language.languageCode">
-          {{language.language}}
+          {{ language.language }}
         </mat-option>
       </mat-select>
     </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button [mat-dialog-close]="false">Cancel</button>
-    <button mat-button [mat-dialog-close]="selectedLanguage" cdkFocusInitial>Add</button>
+    <button [mat-dialog-close]="false" mat-button>Cancel</button>
+    <button [mat-dialog-close]="selectedLanguage" cdkFocusInitial mat-button>Add</button>
   </mat-dialog-actions>
 </div>
 

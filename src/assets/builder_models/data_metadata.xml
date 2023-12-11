@@ -1,184 +1,184 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:noNamespaceSchemaLocation="https://netgrif.github.io/petriflow/petriflow.schema.xsd">
-    <id>data_metadata</id>
-    <initials>DME</initials>
-    <title>Data Metadata Editor</title>
-    <defaultRole>true</defaultRole>
-    <transitionRole>false</transitionRole>
-    <!-- TRANSACTIONS -->
-    <!-- ROLES -->
-    <!-- PROCESS ROLE REFS -->
-    <!-- PROCESS USER REFS -->
-    <!-- DATA -->
-    <data type="text">
+  <id>data_metadata</id>
+  <initials>DME</initials>
+  <title>Data Metadata Editor</title>
+  <defaultRole>true</defaultRole>
+  <transitionRole>false</transitionRole>
+  <!-- TRANSACTIONS -->
+  <!-- ROLES -->
+  <!-- PROCESS ROLE REFS -->
+  <!-- PROCESS USER REFS -->
+  <!-- DATA -->
+  <data type="text">
+    <id>text_0</id>
+    <title>Id</title>
+  </data>
+  <data type="text">
+    <id>text_1</id>
+    <title>Title</title>
+  </data>
+  <data type="enumeration_map">
+    <id>enumeration_map_0</id>
+    <title>Type</title>
+    <options>
+      <option key="text">Text</option>
+      <option key="number">Number</option>
+      <option key="enumeration">Enumeration</option>
+      <option key="enumeration_map">Enumeration Map</option>
+      <option key="multichoice">Multichoice</option>
+      <option key="multichoice_map">Multichoice Map</option>
+      <option key="boolean">Boolean</option>
+      <option key="date">Date</option>
+      <option key="file">File</option>
+      <option key="fileList">File List</option>
+      <option key="user">User</option>
+      <option key="userList">User List</option>
+      <option key="dateTime">Datetime</option>
+      <option key="button">Button</option>
+      <option key="taskRef">Task Reference</option>
+      <option key="caseRef">Case Reference</option>
+      <option key="filter">Filter</option>
+    </options>
+  </data>
+  <data type="boolean">
+    <id>boolean_0</id>
+    <title>Immediate</title>
+  </data>
+  <data type="text">
+    <id>text_2</id>
+    <title>Description</title>
+  </data>
+  <data type="text">
+    <id>text_3</id>
+    <title>Placeholder</title>
+  </data>
+  <data type="text">
+    <id>text_4</id>
+    <title>Initial value</title>
+  </data>
+  <!-- TODO: options, component, encryption, length -->
+  <!-- I18NS -->
+  <!-- TRANSITIONS -->
+  <transition>
+    <id>t1</id>
+    <x>149</x>
+    <y>98</y>
+    <layout>
+      <offset>0</offset>
+    </layout>
+    <dataGroup>
+      <id>DataGroup_0</id>
+      <layout>grid</layout>
+      <dataRef>
         <id>text_0</id>
-        <title>Id</title>
-    </data>
-    <data type="text">
-        <id>text_1</id>
-        <title>Title</title>
-    </data>
-    <data type="enumeration_map">
-        <id>enumeration_map_0</id>
-        <title>Type</title>
-        <options>
-            <option key="text">Text</option>
-            <option key="number">Number</option>
-            <option key="enumeration">Enumeration</option>
-            <option key="enumeration_map">Enumeration Map</option>
-            <option key="multichoice">Multichoice</option>
-            <option key="multichoice_map">Multichoice Map</option>
-            <option key="boolean">Boolean</option>
-            <option key="date">Date</option>
-            <option key="file">File</option>
-            <option key="fileList">File List</option>
-            <option key="user">User</option>
-            <option key="userList">User List</option>
-            <option key="dateTime">Datetime</option>
-            <option key="button">Button</option>
-            <option key="taskRef">Task Reference</option>
-            <option key="caseRef">Case Reference</option>
-            <option key="filter">Filter</option>
-        </options>
-    </data>
-    <data type="boolean">
-        <id>boolean_0</id>
-        <title>Immediate</title>
-    </data>
-    <data type="text">
-        <id>text_2</id>
-        <title>Description</title>
-    </data>
-    <data type="text">
-        <id>text_3</id>
-        <title>Placeholder</title>
-    </data>
-    <data type="text">
-        <id>text_4</id>
-        <title>Initial value</title>
-    </data>
-<!-- TODO: options, component, encryption, length -->
-    <!-- I18NS -->
-    <!-- TRANSITIONS -->
-    <transition>
-        <id>t1</id>
-        <x>149</x>
-        <y>98</y>
+        <logic>
+          <behavior>editable</behavior>
+          <behavior>required</behavior>
+        </logic>
         <layout>
-            <offset>0</offset>
+          <x>0</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>2</cols>
+          <offset>0</offset>
+          <template>material</template>
+          <appearance>outline</appearance>
         </layout>
-        <dataGroup>
-            <id>DataGroup_0</id>
-            <layout>grid</layout>
-            <dataRef>
-                <id>text_0</id>
-                <logic>
-                    <behavior>editable</behavior>
-                    <behavior>required</behavior>
-                </logic>
-                <layout>
-                    <x>0</x>
-                    <y>0</y>
-                    <rows>1</rows>
-                    <cols>2</cols>
-                    <offset>0</offset>
-                    <template>material</template>
-                    <appearance>outline</appearance>
-                </layout>
-            </dataRef>
-            <dataRef>
-                <id>text_1</id>
-                <logic>
-                    <behavior>editable</behavior>
-                </logic>
-                <layout>
-                    <x>2</x>
-                    <y>0</y>
-                    <rows>1</rows>
-                    <cols>2</cols>
-                    <offset>0</offset>
-                    <template>material</template>
-                    <appearance>outline</appearance>
-                </layout>
-            </dataRef>
-            <dataRef>
-                <id>enumeration_map_0</id>
-                <logic>
-                    <behavior>editable</behavior>
-                    <behavior>required</behavior>
-                </logic>
-                <layout>
-                    <x>0</x>
-                    <y>1</y>
-                    <rows>1</rows>
-                    <cols>2</cols>
-                    <offset>0</offset>
-                    <template>material</template>
-                    <appearance>outline</appearance>
-                </layout>
-            </dataRef>
-            <dataRef>
-                <id>boolean_0</id>
-                <logic>
-                    <behavior>editable</behavior>
-                </logic>
-                <layout>
-                    <x>2</x>
-                    <y>1</y>
-                    <rows>1</rows>
-                    <cols>2</cols>
-                    <offset>0</offset>
-                    <template>material</template>
-                </layout>
-            </dataRef>
-            <dataRef>
-                <id>text_2</id>
-                <logic>
-                    <behavior>editable</behavior>
-                </logic>
-                <layout>
-                    <x>0</x>
-                    <y>2</y>
-                    <rows>1</rows>
-                    <cols>4</cols>
-                    <offset>0</offset>
-                    <template>material</template>
-                    <appearance>outline</appearance>
-                </layout>
-            </dataRef>
-            <dataRef>
-                <id>text_3</id>
-                <logic>
-                    <behavior>editable</behavior>
-                </logic>
-                <layout>
-                    <x>0</x>
-                    <y>3</y>
-                    <rows>1</rows>
-                    <cols>4</cols>
-                    <offset>0</offset>
-                    <template>material</template>
-                    <appearance>outline</appearance>
-                </layout>
-            </dataRef>
-            <dataRef>
-                <id>text_4</id>
-                <logic>
-                    <behavior>editable</behavior>
-                </logic>
-                <layout>
-                    <x>0</x>
-                    <y>4</y>
-                    <rows>1</rows>
-                    <cols>2</cols>
-                    <offset>0</offset>
-                    <template>material</template>
-                    <appearance>outline</appearance>
-                </layout>
-            </dataRef>
-        </dataGroup>
-    </transition>
-    <!-- PLACES -->
-    <!-- ARCS -->
+      </dataRef>
+      <dataRef>
+        <id>text_1</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>2</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>2</cols>
+          <offset>0</offset>
+          <template>material</template>
+          <appearance>outline</appearance>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>enumeration_map_0</id>
+        <logic>
+          <behavior>editable</behavior>
+          <behavior>required</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>1</y>
+          <rows>1</rows>
+          <cols>2</cols>
+          <offset>0</offset>
+          <template>material</template>
+          <appearance>outline</appearance>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>boolean_0</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>2</x>
+          <y>1</y>
+          <rows>1</rows>
+          <cols>2</cols>
+          <offset>0</offset>
+          <template>material</template>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>text_2</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>2</y>
+          <rows>1</rows>
+          <cols>4</cols>
+          <offset>0</offset>
+          <template>material</template>
+          <appearance>outline</appearance>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>text_3</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>3</y>
+          <rows>1</rows>
+          <cols>4</cols>
+          <offset>0</offset>
+          <template>material</template>
+          <appearance>outline</appearance>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>text_4</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>4</y>
+          <rows>1</rows>
+          <cols>2</cols>
+          <offset>0</offset>
+          <template>material</template>
+          <appearance>outline</appearance>
+        </layout>
+      </dataRef>
+    </dataGroup>
+  </transition>
+  <!-- PLACES -->
+  <!-- ARCS -->
 </document>
