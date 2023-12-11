@@ -1,0 +1,317 @@
+<div fxLayoutAlign="start center" class="control" (mouseover)="removeLastElement()">
+    <!--  <mat-form-field class="height-select">-->
+    <!--    <mat-select [(value)]="modeSelect">-->
+    <!--      <mat-option *ngFor="let opt of modeOptions" [value]="opt.key" [routerLink]="[opt.path]">-->
+    <!--        {{opt.value}}-->
+    <!--      </mat-option>-->
+    <!--    </mat-select>-->
+    <!--  </mat-form-field>-->
+    <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActiveView('modeler')}"
+            matTooltip="Edit view." [routerLink]="'./'" joyrideStep="{{tutorial.modeler.step}}"
+            title="{{tutorial.modeler.title}}" text="{{tutorial.modeler.text}}" (next)="tutorial.modeler.onNext()"
+            (prev)="tutorial.modeler.onPrev()" (done)="tutorial.onClose()" stepPosition="{{tutorial.modeler.position}}"
+            (click)="shutDownFastPn()">
+        <mat-icon [ngClass]="{'fill-svg': isActiveView('modeler')}">mode_edit_outline</mat-icon>
+    </button>
+
+    <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActiveView('simulation')}"
+            matTooltip="Simulation view." [routerLink]="'./simulation'" joyrideStep="{{tutorial.simulator.step}}"
+            title="{{tutorial.simulator.title}}" text="{{tutorial.simulator.text}}" (next)="tutorial.simulator.onNext()"
+            (prev)="tutorial.simulator.onPrev()" (done)="tutorial.onClose()"
+            stepPosition="{{tutorial.simulator.position}}" (click)="shutDownFastPn()">
+        <mat-icon [ngClass]="{'fill-svg': isActiveView('simulation')}">play_circle</mat-icon>
+    </button>
+
+    <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActiveView('data')}"
+            matTooltip="Data Edit view." [routerLink]="'./data'" joyrideStep="{{tutorial.dataEditor.step}}"
+            title="{{tutorial.dataEditor.title}}" text="{{tutorial.dataEditor.text}}"
+            (next)="tutorial.dataEditor.onNext()" (prev)="tutorial.dataEditor.onPrev()" (done)="tutorial.onClose()"
+            stepPosition="{{tutorial.dataEditor.position}}" (click)="shutDownFastPn()">
+        <mat-icon [ngClass]="{'fill-svg': isActiveView('data')}" svgIcon="data"></mat-icon>
+    </button>
+
+    <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActiveView('roles')}"
+            matTooltip="Role Edit view." [routerLink]="'./roles'" joyrideStep="{{tutorial.roleEditor.step}}"
+            title="{{tutorial.roleEditor.title}}" text="{{tutorial.roleEditor.text}}"
+            (next)="tutorial.roleEditor.onNext()" (prev)="tutorial.roleEditor.onPrev()" (done)="tutorial.onClose()"
+            stepPosition="{{tutorial.roleEditor.position}}" (click)="shutDownFastPn()">
+        <mat-icon [ngClass]="{'fill-svg': isActiveView('roles')}">group_add</mat-icon>
+    </button>
+
+    <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActiveView('actions')}"
+            matTooltip="Actions Edit view." [routerLink]="'./actions'" joyrideStep="{{tutorial.actions.step}}"
+            title="{{tutorial.actions.title}}" text="{{tutorial.actions.text}}" (next)="tutorial.actions.onNext()"
+            (prev)="tutorial.actions.onPrev()" (done)="tutorial.onClose()" stepPosition="{{tutorial.actions.position}}"
+            (click)="shutDownFastPn()">
+        <mat-icon [ngClass]="{'fill-svg': isActiveView('actions')}">code</mat-icon>
+    </button>
+
+    <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActiveView('i18n')}"
+            matTooltip="Internationalization view." [routerLink]="'./i18n'" joyrideStep="{{tutorial.i18n.step}}"
+            title="{{tutorial.i18n.title}}" text="{{tutorial.i18n.text}}" (next)="tutorial.i18n.onNext()"
+            (prev)="tutorial.i18n.onPrev()" (done)="tutorial.onClose()" stepPosition="{{tutorial.i18n.position}}"
+            (click)="shutDownFastPn(); refreshI18n()">
+        <mat-icon [ngClass]="{'fill-svg': isActiveView('i18n')}">translate</mat-icon>
+    </button>
+
+    <mat-divider [vertical]="true" class="style-fix margin8px"></mat-divider>
+
+    <!--OPEN-->
+    <button mat-icon-button class="button-line" matTooltip="Choose a XML file to open."
+            (click)="xmlFileInput.click(); shutDownFastPn()">
+        <input #xmlFileInput type="file" accept=".xml" id="otvorSubor" class="button--input" (change)="openModel($event)"/>
+        <label id="otvorSuborButton">
+            <mat-icon>upload</mat-icon>
+        </label>
+    </button>
+
+    <button mat-icon-button class="button-line" matTooltip="Choose a BPMN file to open."
+            (click)="bpmnFileInput.click(); shutDownFastPn()">
+        <input #bpmnFileInput type="file" accept=".bpmn" id="otvorSuborBpmn" class="button--input" (change)="importBpmn($event)"/>
+        <label id="otvorSuborBpmnButton">
+            <mat-icon>upload_file</mat-icon>
+        </label>
+    </button>
+
+    <!--SAVE AS XML-->
+    <button mat-icon-button class="button-line" matTooltip="Save as an XML file."
+            (click)="exportAsXML(); shutDownFastPn()">
+        <mat-icon>download</mat-icon>
+    </button>
+
+    <!--    SAVES MENU-->
+    <button mat-icon-button class="toolbarButton button-line" [matMenuTriggerFor]="savesMenu" matTooltip="Other import/export functions">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #savesMenu="matMenu" (click)="shutDownFastPn()">
+        <button mat-menu-item (click)="exportAsSVG()">
+            <mat-icon>save_as</mat-icon>
+            Export as SVG
+        </button>
+    </mat-menu>
+
+    <mat-divider [vertical]="true" class="style-fix margin8px"></mat-divider>
+
+    <div *ngIf="modeSelect === 'modeler'" class="flexis">
+
+        <!--CLEAR-->
+        <button mat-icon-button class="button-line"
+                matTooltip="Clear will delete the actual Petri net model, any unsaved changes will be lost."
+                (click)="clearModel(); shutDownFastPn()">
+            <mat-icon>delete_forever</mat-icon>
+        </button>
+
+        <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActive('model')}"
+                matTooltip="Model metadata" (click)="modelMetaData(); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isActive('model')}">settings</mat-icon>
+        </button>
+
+        <!--  OPEN MODEL MENU-->
+        <button mat-icon-button class="toolbarButton button-line" [ngClass]="{'button-highlight': isActive('model')}"
+                [matMenuTriggerFor]="modelMenu" matTooltip="Set Model Metadata OR Manage Process Permissions"
+                (click)="shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isActive('model')}">keyboard_arrow_down</mat-icon>
+        </button>
+
+        <!--  MODEL MENU-->
+        <mat-menu #modelMenu="matMenu">
+            <button mat-menu-item (click)="manageProcessPermisions()">
+                <mat-icon>people</mat-icon>
+                Manage Process Permissions
+            </button>
+        </mat-menu>
+
+        <mat-divider [vertical]="true" class="style-fix margin8px"></mat-divider>
+
+        <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActive('select')}"
+                matTooltip="Select tool" (click)="sideNav(); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isActive('select')}" svgIcon="cursor-default-outline"></mat-icon>
+        </button>
+
+        <!--TRANSITION-->
+        <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActive('transition') }"
+                matTooltip="Transition." (click)="reset('transition')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('transition')}" svgIcon="transition"></mat-icon>
+        </button>
+
+        <!--PLACE-->
+        <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActive('place') }"
+                matTooltip="Place." (click)="reset('place')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('place')}" svgIcon="place"></mat-icon>
+        </button>
+
+        <!--FAST PN-->
+        <button mat-icon-button class="button-line" matTooltip="Fast PN" [ngClass]="{'button-highlight': isFastPn()}"
+                (click)="startFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isActive('fastpn')}">bolt</mat-icon>
+        </button>
+
+        <!--ADD TOKEN-->
+        <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActive('addtoken')}"
+                matTooltip="Add token." (click)="reset('addtoken')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('addtoken')}">add_circle_outline</mat-icon>
+        </button>
+
+        <!--REMOVE TOKEN-->
+        <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActive('removetoken')}"
+                matTooltip="Remove token." (click)="reset('removetoken')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('removetoken')}" class="material-icons-outlined">remove_circle_outline</mat-icon>
+        </button>
+
+        <!--SET LABEL-->
+        <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActive('label')}"
+                matTooltip="Change Label." (click)="reset('label')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('label')}">drive_file_rename_outline</mat-icon>
+        </button>
+
+        <!--SET MARKING-->
+        <button mat-icon-button class="button-line" [ngClass]="{'button-highlight': isActive('marking')}"
+                matTooltip="Change Marking" (click)="reset('marking')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('marking')}" svgIcon="marking"></mat-icon>
+        </button>
+
+        <mat-divider [vertical]="true" class="style-fix margin8px"></mat-divider>
+
+        <!--ARC-->
+        <button mat-icon-button class="button-line" matTooltip="Arc." [ngClass]="{'button-highlight': isActive('arc')}"
+                (click)="reset('arc')">
+            <mat-icon svgIcon="arc" [ngClass]="{'fill-svg': isActive('arc')}"></mat-icon>
+        </button>
+
+        <!--ARC WEIGHT-->
+        <button mat-icon-button class="button-line" matTooltip="Arc Weight."
+                [ngClass]="{'button-highlight': isActive('arc_weight')}" (click)="reset('arc_weight')">
+            <mat-icon svgIcon="arcweight" [ngClass]="{'fill-svg': isActive('arc_weight')}"></mat-icon>
+        </button>
+
+        <!--ARC DATA REF-->
+        <button mat-icon-button class="button-line" matTooltip="Arc Data Reference."
+                [ngClass]="{'button-highlight': isActive('arc_dataref')}" (click)="reset('arc_dataref')">
+            <mat-icon svgIcon="arcdataref" [ngClass]="{'fill-svg': isActive('arc_dataref')}"></mat-icon>
+        </button>
+
+        <!--ARC PLACE REF-->
+        <button mat-icon-button class="button-line" matTooltip="Arc Place Reference."
+                [ngClass]="{'button-highlight': isActive('arc_placeref')}" (click)="reset('arc_placeref')">
+            <mat-icon svgIcon="arcplaceref" [ngClass]="{'fill-svg': isActive('arc_placeref')}"></mat-icon>
+        </button>
+
+        <!--RESET ARC-->
+        <button mat-icon-button class="button-line" matTooltip="Reset Arc."
+                [ngClass]="{'button-highlight': isActive('resetarc')}" (click)="reset('resetarc')">
+            <mat-icon svgIcon="resetarc" [ngClass]="{'fill-svg': isActive('resetarc')}"></mat-icon>
+        </button>
+
+        <!--INHIBITOR ARC-->
+        <button mat-icon-button class="button-line" matTooltip="Inhibitor Arc."
+                [ngClass]="{'button-highlight': isActive('inhibitorarc')}" (click)="reset('inhibitorarc')">
+            <mat-icon svgIcon="inhibitor" [ngClass]="{'fill-svg': isActive('inhibitorarc')}"></mat-icon>
+        </button>
+
+        <!--READ ARC-->
+        <button mat-icon-button class="button-line" matTooltip="Read Arc."
+                [ngClass]="{'button-highlight': isActive('readarc')}" (click)="reset('readarc')">
+            <mat-icon svgIcon="read" [ngClass]="{'fill-svg': isActive('readarc')}"></mat-icon>
+        </button>
+
+        <mat-divider [vertical]="true" class="style-fix margin8px"></mat-divider>
+
+        <!--ALIGN ELEMENTS-->
+        <button mat-icon-button class="button-line" matTooltip="Align elements (places and transitions) into a grid."
+                matTooltipPosition="right" (click)="alignElements(); shutDownFastPn()">
+            <mat-icon>vertical_align_center</mat-icon>
+        </button>
+
+        <!--DELETE-->
+        <button mat-icon-button class="button-line" matTooltip="Delete."
+                [ngClass]="{'button-highlight': isActive('delete')}" (click)="reset('delete')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('delete')}">delete_outline</mat-icon>
+        </button>
+
+        <!--MOVE-->
+        <button mat-icon-button class="button-line" matTooltip="Move."
+                [ngClass]="{'button-highlight': isActive('move') }" (click)="reset('move')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('move')}">open_with</mat-icon>
+        </button>
+
+        <mat-divider [vertical]="true" class="style-fix margin8px"></mat-divider>
+
+        <button mat-icon-button class="button-line" matTooltip="Model properties."
+                (click)="propertiesM(); shutDownFastPn()">
+            <mat-icon svgIcon="properties"></mat-icon>
+        </button>
+        <button mat-icon-button class="button-line" matTooltip="About." (click)="about(); shutDownFastPn()">
+            <mat-icon class="material-icons-outlined">info</mat-icon>
+        </button>
+
+    </div>
+
+    <div *ngIf="modeSelect === 'simulation'" class="flexis">
+        <!--  RESET SIMULATION-->
+        <button mat-icon-button class="button-line" matTooltip="Reset simulation."
+                (click)="resetSimulation()">
+            <mat-icon>restart_alt</mat-icon>
+        </button>
+
+        <!--  START SIMULATION-->
+        <button mat-icon-button class="button-line" matTooltip="Simulation by Tasks."
+                [ngClass]="{'button-highlight': isActive('fire')}" (click)="reset('fire')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('fire')}">play_arrow</mat-icon>
+        </button>
+
+        <!--  START TASK SIMULATION-->
+        <button mat-icon-button class="button-line" matTooltip="Simulation by Events."
+                [ngClass]="{'button-highlight': isActive('fire-task')}" (click)="reset('fire-task')">
+            <mat-icon [ngClass]="{'fill-svg': isActive('fire-task')}">fast_forward</mat-icon>
+        </button>
+    </div>
+
+    <div *ngIf="modeSelect === 'actions'">
+        <!--    <mat-form-field class="height-select padding16px">-->
+        <!--      <mat-select [(value)]="selectedDatas" (selectionChange)="changeDatas($event)">-->
+        <!--        <mat-option *ngFor="let opt of selectDatas" [value]="opt.key">-->
+        <!--          {{opt.value}}-->
+        <!--        </mat-option>-->
+        <!--      </mat-select>-->
+        <!--    </mat-form-field>-->
+        <button mat-icon-button class="button-line" matTooltip="Data Variables"
+                [ngClass]="{'button-highlight': isSelected('dataVariable')}"
+                (click)="changeData('dataVariable'); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isSelected('dataVariable')}">all_inbox</mat-icon>
+        </button>
+
+        <button mat-icon-button class="button-line" matTooltip="Transitions"
+                [ngClass]="{'button-highlight': isSelected('transition')}"
+                (click)="changeData('transition'); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isSelected('transition')}" class="material-icons-outlined">auto_awesome_motion</mat-icon>
+        </button>
+
+        <button mat-icon-button class="button-line" matTooltip="Roles"
+                [ngClass]="{'button-highlight': isSelected('role_actions')}" (click)="changeData('role_actions'); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isSelected('role_actions')}">person</mat-icon>
+        </button>
+
+        <button mat-icon-button class="button-line" matTooltip="Process & Case"
+                [ngClass]="{'button-highlight': isSelected('process_case')}" (click)="changeData('process_case'); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isSelected('process_case')}">device_hub</mat-icon>
+        </button>
+
+        <button mat-icon-button class="button-line" matTooltip="Functions"
+                [ngClass]="{'button-highlight': isSelected('functions')}" (click)="changeData('functions'); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isSelected('functions')}">functions</mat-icon>
+        </button>
+    </div>
+
+    <div *ngIf="modeSelect === 'i18n'">
+        <button mat-icon-button class="button-line" matTooltip="Languages"
+                [ngClass]="{'button-highlight': isActiveI18n('languages')}" (click)="resetI18n('languages'); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isActiveI18n('languages')}">language</mat-icon>
+        </button>
+
+        <button mat-icon-button class="button-line" matTooltip="Translations"
+                [ngClass]="{'button-highlight': isActiveI18n('translations')}" (click)="resetI18n('translations'); shutDownFastPn()">
+            <mat-icon [ngClass]="{'fill-svg': isActiveI18n('translations')}">translate</mat-icon>
+        </button>
+    </div>
+</div>
+

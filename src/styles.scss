@@ -1,0 +1,99 @@
+@use "netgif-theme";
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.app-mat-viewnav {
+    background-color: map-get(netgif-theme.$netgrif-blue, 600);
+
+    .selected {
+        border-left: map-get(netgif-theme.$netgrif-blue, A200);
+        background-color: map-get(netgif-theme.$netgrif-blue, 700);
+    }
+
+    mat-icon {
+        color: map-get(netgif-theme.$netgrif-blue, 200);
+    }
+}
+
+.active-item {
+    background: map-get(netgif-theme.$netgrif-blue, A200) !important;
+}
+
+.button-highlight {
+    background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .3) !important;
+}
+
+.active-item-gridster {
+    background: map-get(netgif-theme.$netgrif-blue, A200) !important;
+}
+
+.field-list-mat-list-item:hover {
+    .field-list-mat-list-item-title {
+        color: map-get(netgif-theme.$netgrif-blue, 500);
+    }
+}
+
+.field-list-mat-list-item-disabled-title {
+    color: #bbbbbb;
+}
+
+.field-list-expansion-header:hover {
+    color: map-get(netgif-theme.$netgrif-blue, 500);
+
+    .field-list-expansion-title {
+        color: map-get(netgif-theme.$netgrif-blue, 500);
+    }
+}
+
+.clear-search-icon {
+    &:hover {
+        background-color: map-get(netgif-theme.$netgrif-blue, A200);
+    }
+}
+
+.active-card {
+    background: map-get(netgif-theme.$netgrif-blue, 200);
+}
+
+.mat-tab-label:hover {
+    background: map-get(netgif-theme.$netgrif-blue, 50);
+}
+
+.mat-tab-label-active {
+    color: map-get(netgif-theme.$netgrif-blue, 500);
+    border-bottom: 2px solid map-get(netgif-theme.$netgrif-blue, 500);
+    opacity: 1;
+}
+
+.fill-svg {
+    color: map-get(netgif-theme.$netgrif-blue, A200) !important;
+    fill: map-get(netgif-theme.$netgrif-blue, A200) !important;
+    opacity: 1;
+}
+
+.button-line:hover {
+    background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .50) !important;
+}
+
+.data-selected {
+    background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .3);
+}
+
+.checkbox-background-warn {
+    .mat-checkbox-background {
+        background-color: map-get(netgif-theme.$netgrif-warn, 500) !important;
+    }
+}
+
+.checkbox-background-green {
+    .mat-checkbox-background {
+        background-color: #008800 !important;
+    }
+}

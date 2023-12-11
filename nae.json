@@ -1,0 +1,106 @@
+{
+    "$schema": "./node_modules/@netgrif/application-engine/src/schema/nae-schema.json",
+    "extends": "nae-default",
+    "providers": {
+        "auth": {
+            "address": "http://localhost:8080/api/",
+            "authentication": "Basic",
+            "endpoints": {
+                "login": "auth/login",
+                "logout": "auth/logout",
+                "signup": "auth/signup",
+                "verification": "auth/verify",
+                "verify": "auth/token/verify",
+                "invite": "auth/invite",
+                "reset": "auth/reset",
+                "recover": "/auth/recover"
+            },
+            "sessionBearer": "X-Auth-Token"
+        },
+        "resources": [
+            {
+                "name": "case",
+                "address": "http://localhost:8080/api/",
+                "format": "hal",
+                "openApi": "https://swagger.io"
+            },
+            {
+                "name": "task",
+                "address": "http://localhost:8080/api/",
+                "format": "json"
+            },
+            {
+                "name": "petrinet",
+                "address": "http://localhost:8080/api/",
+                "format": "json"
+            },
+            {
+                "name": "user",
+                "address": "http://localhost:8080/api/",
+                "format": "json"
+            },
+            {
+                "name": "dashboard",
+                "address": "http://localhost:8080/api/",
+                "format": "json"
+            }
+        ]
+    },
+    "views": {
+    },
+    "theme": {
+        "name": "nab",
+        "pallets": {
+            "light": {
+                "primary": {
+                    "50": "#e2eaf0",
+                    "100": "#b7c9d9",
+                    "200": "#87a6c0",
+                    "300": "#5782a7",
+                    "400": "#336794",
+                    "500": "#0f4c81",
+                    "600": "#0d4579",
+                    "700": "#0b3c6e",
+                    "800": "#083364",
+                    "900": "#042451",
+                    "A100": "#ffd180",
+                    "A200": "#ffab40",
+                    "A400": "#ff9100",
+                    "A700": "#ff6d00",
+                    "contrast": {
+                        "light": [
+                            "300",
+                            "400",
+                            "500",
+                            "600",
+                            "700",
+                            "800",
+                            "900"
+                        ],
+                        "dark": [
+                            "50",
+                            "100",
+                            "200"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "services": {
+        "log": {
+            "level": "ALL",
+            "logWithDate": true,
+            "serializeExtraParams": true,
+            "includeLogLevel": true,
+            "publishers": [
+                "console",
+                "localStorage"
+            ]
+        },
+        "dataFields": {
+            "template": "material",
+            "appearance": "outline"
+        }
+    }
+}

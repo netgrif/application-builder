@@ -1,0 +1,16 @@
+{
+    "took": 3,
+    "timed_out": false,
+    "_shards": {
+        "total": 5,
+        "successful": 5,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": 332,
+        "max_score": 0,
+        "hits": []
+    },
+    "status": 200
+}

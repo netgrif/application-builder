@@ -1,0 +1,16 @@
+<div id="fastPnContextMenu" #fastContext (mousedown)="mouseClickCounter($event)">
+    <div class="menuContent">
+        <button  mat-icon-button color="primary" (click)="useRegularArc()">
+            <mat-icon svgIcon="arc"></mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="useResetArc()">
+            <mat-icon svgIcon="resetarc"></mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="useInhibitorArc()">
+            <mat-icon svgIcon="inhibitor"></mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="useReadArc()">
+            <mat-icon svgIcon="read"></mat-icon>
+        </button>
+    </div>
+</div>

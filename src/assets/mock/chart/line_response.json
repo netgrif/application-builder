@@ -1,0 +1,36 @@
+{
+    "took": 1,
+    "timed_out": false,
+    "_shards": {
+        "total": 5,
+        "successful": 5,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": 332,
+        "max_score": 0,
+        "hits": []
+    },
+    "aggregations": {
+        "2": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "Mon May 06 00:00:00 CEST 2019",
+                    "doc_count": 12
+                },
+                {
+                    "key": "Tue Dec 18 00:00:00 CET 2018",
+                    "doc_count": 10
+                },
+                {
+                    "key": "Wed Dec 19 00:00:00 CET 2018",
+                    "doc_count": 10
+                }
+            ]
+        }
+    },
+    "status": 200
+}

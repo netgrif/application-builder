@@ -1,0 +1,16 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="110px" height="110px" viewBox="0 0 110 110" style="enable-background:new 0 0 110 110;" xml:space="preserve">
+id="read_arc" style="width: 110px; height: 110px;">
+
+
+	<rect x="71" y="3" width="36" height="36" fill="none" stroke="black" stroke-width="6"/>
+	<text x="89" y="54" font-size="12" font-family="verdana"/>
+	<text x="21" y="122" font-size="12" font-family="verdana"/>
+	<polyline points="33.72792206135786,76.27207793864214 61.80761184457488,48.19238815542512" fill="none" stroke-width="4" stroke="white"/>
+	<polyline points="33.72792206135786,76.27207793864214 71.80761184457488,38.19238815542512" fill="none" stroke-width="6" stroke="black"/>
+	<circle cx="65.6966991411009" cy="44.30330085889911" r="7.5" fill="solid" stroke="black" stroke-width="6"/>
+	<text x="56.10169550921107" y="69.70710678118655" font-size="12" font-family="verdana"/>
+	<circle cx="21" cy="89" r="18" fill="none" stroke="black" stroke-width="6"/>
+	<text x="21" y="95" font-size="12" font-family="verdana"/>
+</svg>

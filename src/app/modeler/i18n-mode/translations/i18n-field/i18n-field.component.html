@@ -1,0 +1,18 @@
+<div fxLayout="row" fxLayoutAlign="start center">
+    <span fxFlex="20">{{name}}</span>
+    <div fxFlex="5"></div>
+    <mat-form-field fxFlex="15">
+        <mat-label>String Id</mat-label>
+        <input matInput [(ngModel)]="field.name" disabled>
+    </mat-form-field>
+    <div fxFlex="5"></div>
+    <mat-form-field fxFlex="25">
+        <mat-label *ngIf="field.value">Default value</mat-label>
+        <input matInput [(ngModel)]="field.value" disabled>
+    </mat-form-field>
+    <div fxFlex="5"></div>
+    <mat-form-field fxFlex="25" *ngIf="translationField">
+        <mat-label>Translation</mat-label>
+        <input matInput [(ngModel)]="translationField.value">
+    </mat-form-field>
+</div>

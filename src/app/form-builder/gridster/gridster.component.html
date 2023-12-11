@@ -1,0 +1,17 @@
+<gridster [options]="options" (click)="deselect()">
+    <gridster-item [item]="field" *ngFor="let field of placedDataFields"
+                   [ngClass]="{'active-item-gridster': isActive(field)}" class="gridster-item">
+
+        <form class="fill-all-space gridster-item-form" (click)="select($event, field)" (contextmenu)="openMenu($event, field)">
+            <nab-gridster-datafield class="fill-all-space" [dataField]="field"></nab-gridster-datafield>
+            <div class="hover-button">
+                <button mat-mini-fab class="drag-handler">
+                    <mat-icon>open_with</mat-icon>
+                </button>
+                <button mat-mini-fab (mousedown)="removeItem($event, field)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </form>
+    </gridster-item>
+</gridster>

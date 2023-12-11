@@ -1,0 +1,89 @@
+\documentclass{article}
+
+% Packages
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{tocloft}
+\usepackage{background}
+\usepackage{graphicx}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{titlesec}
+\usepackage[ddmmyyyy]{datetime}
+
+% Settings
+\definecolor{dark_primary_text}{cmyk}{0, 0, 0, 0.87}
+\hypersetup{
+  linktoc=all
+}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\newcommand\DeactivateBG{\backgroundsetup{contents={}}}
+\newcommand\ActivateBG{\backgroundsetup{
+  scale = 1, angle = 0, opacity = 0.2,
+  contents = {
+    \includegraphics[width = \paperwidth,height = \paperheight, keepaspectratio]{background.pdf}
+  }
+}}
+\renewcommand{\dateseparator}{.}
+\renewcommand{\contentsname}{Table of Contents}
+\newcommand{\sectionbreak}{\clearpage}
+\newcommand{\netgrif}{NETGRIF, s.r.o.}
+\newcommand{\builder}{Netgrif Application Builder}
+\newcommand{\version}{v0.3.0}
+\newcommand{\engine}{Netgrif Application Engine}
+\newcommand{\icon}[1]{ %! Suppress = FileNotFound
+  \begingroup\normalfont
+  \includegraphics[height=\fontcharht\font`\B]{#1}
+  \endgroup
+
+}
+
+% Body
+\color{dark_primary_text}
+\begin{document}
+  \begin{titlepage}
+    \newgeometry{top=1in,bottom=0.5in,right=0.5in,left=0.5in}
+    \ActivateBG
+    \begin{center}
+      \vspace*{9cm}
+      \Huge
+      \textbf{Netgrif Application Builder}\\
+      \vspace{0.5cm}
+      \LARGE
+      \version \\
+      \vspace*{\fill}
+      \makebox[\linewidth]{\small \today}
+    \end{center}
+  \end{titlepage}
+  \ActivateBG
+  \newpage
+
+  \section*{Changelog}\label{sec:changelog}
+  \input{changelod}
+
+  \DeactivateBG
+  \restoregeometry
+  \tableofcontents
+  \newpage
+
+  \section{Introduction}\label{sec:introduction}
+  \input{intro}
+
+  \section{Views}\label{sec:views}
+  \input{views}
+
+  \section{Projects Overview}\label{sec:projects-overview}
+  \input{projects_overview}
+
+  \section{Project Detail}\label{sec:project-detail}
+  \input{project_detail}
+
+  \section{Modeler}\label{sec:modeler}
+  \input{modeler}
+
+  \section{Form Builder}\label{sec:form-builder}
+  \input{form_builder}
+
+  \section{Dashboard}\label{sec:dashboard}
+  \input{dashboard}
+
+\end{document}

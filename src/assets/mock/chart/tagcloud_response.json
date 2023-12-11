@@ -1,0 +1,36 @@
+{
+    "took": 4,
+    "timed_out": false,
+    "_shards": {
+        "total": 5,
+        "successful": 5,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": 332,
+        "max_score": 0,
+        "hits": []
+    },
+    "aggregations": {
+        "2": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "8xx",
+                    "doc_count": 20
+                },
+                {
+                    "key": "7xx",
+                    "doc_count": 11
+                },
+                {
+                    "key": "4xx",
+                    "doc_count": 1
+                }
+            ]
+        }
+    },
+    "status": 200
+}

@@ -1,0 +1,12 @@
+<div fxLayout="column" *ngFor="let role of model.getRoles(); let i = index">
+    <h3>{{role.title.value}} [{{role.id}}]</h3>
+    <nab-i18n-field [field]="role.title" [name]="'Title'" [translation]="translation"></nab-i18n-field>
+    <div *ngIf="role.getEvents?.length > 0">
+        <h4>Events:</h4>
+        <div *ngFor="let event of role.getEvents()">
+            <nab-i18n-field [field]="event.title" [name]="'Title'" class="events" [translation]="translation"></nab-i18n-field>
+            <nab-i18n-field [field]="event.message" [name]="'Message'" class="events" [translation]="translation"></nab-i18n-field>
+        </div>
+    </div>
+    <mat-divider *ngIf="notLast(i)"></mat-divider>
+</div>

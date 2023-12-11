@@ -1,0 +1,413 @@
+<div fxLayout="col wrap" class="height-100">
+    <div fxFlex="35" class="border-right height-56">
+        <mat-action-list matSort (matSortChange)="sortData($event)">
+            <div mat-subheader class="header-bottom-border">
+                <p fxFlex="35" mat-sort-header="id"><strong>ID</strong></p>
+                <p fxFlex="45" mat-sort-header="name" fxHide.lt-xl>Name</p>
+                <div fxFlex="45" fxHide fxShow.lt-xl></div>
+                <button mat-icon-button class="button-line" matTooltip="Add data variable" (click)="addDataVariable()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+            <mat-list-item class="item-bottom-border" [ngClass]="{'data-selected': selected && selected.id === item.id}"
+                           *ngFor="let item of dataSource; let i = index" (click)="setData(item)"
+                           (mouseenter)="showIcons($event)" (mouseleave)="hideIcons($event)">
+                <p fxFlex="35" fxHide.lt-xl class="text-ellipsis" matTooltip="{{item.id}}"><strong>{{item.id}}</strong>
+                </p>
+                <p fxFlex="35" class="text-ellipsis" fxHide fxShow.lt-xl matTooltip="{{getItemTitle(item)}}">
+                    <strong>{{item.id}}</strong></p>
+                <p fxFlex="45" class="text-ellipsis" fxHide.lt-xl
+                   matTooltip="{{getItemTitle(item)}}">{{getItemTitle(item)}}</p>
+                <div fxFlex="45" fxHide fxShow.lt-xl></div>
+                <button mat-icon-button matTooltip="Delete data field" (click)="openDialog($event, item)"
+                        class="data-edit-list-icon-hidden data-edit-list-icon">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <button matTooltip="Duplicate data field" mat-icon-button (click)="duplicateDataVariable($event, item)"
+                        class="data-edit-list-icon-hidden data-edit-list-icon">
+                    <mat-icon>add_to_photos</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-action-list>
+        <mat-paginator class="margin-top10px footer" [length]="length" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                       [pageSizeOptions]="pageSizeOptions" (page)="onPageChanged($event)">
+        </mat-paginator>
+    </div>
+
+    <div fxFlex="65" class="no-overflow">
+        <div *ngIf="clicked === 1" class="scroll-vertical">
+            <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top32px">
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Id</div>
+
+                <div fxFlex="25" fxLayoutAlign="start center">
+                    <mat-form-field fxFlex>
+                        <input matInput disabled [(ngModel)]="itemData.id">
+                    </mat-form-field>
+
+                    <div>
+                        <button mat-icon-button matTooltip="Refactor field ID"
+                                (click)="openRefactorDialog($event, itemData)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Title</div>
+
+                <mat-form-field fxFlex="25">
+                    <input matInput [ngModel]="getItemTitle(itemData)" (change)="setValue($event, itemData, 'name')">
+                </mat-form-field>
+
+                <div fxFlex="2.5"></div>
+            </div>
+            <div fxLayout="row wrap" fxLayoutAlign="start center">
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Type</div>
+
+                <mat-form-field fxFlex="25">
+                    <mat-select [(value)]="itemData.type" (selectionChange)="setValue($event, itemData, 'type')">
+                        <mat-option *ngFor="let opt of typeArray" [value]="opt.value">{{opt.viewValue}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Is Immediate?</div>
+
+                <div fxFlex="25">
+                    <mat-checkbox [(ngModel)]="itemData.immediate"
+                                  (change)="setValue($event, itemData, 'immediate')"></mat-checkbox>
+                </div>
+
+                <div fxFlex="2.5"></div>
+            </div>
+            <div fxLayout="row wrap" fxLayoutAlign="start center">
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Placeholder</div>
+
+                <mat-form-field fxFlex="25">
+                    <input matInput [ngModel]="getItemPlaceholder(itemData)"
+                           (change)="setValue($event, itemData, 'placeholder')">
+                </mat-form-field>
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Description</div>
+
+                <mat-form-field fxFlex="25">
+                    <input matInput [ngModel]="getItemDesc(itemData)" (change)="setValue($event, itemData, 'desc')">
+                </mat-form-field>
+
+                <div fxFlex="2.5"></div>
+            </div>
+
+            <div fxLayout="row wrap" fxLayoutAlign="start center">
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Component</div>
+
+                <div fxFlex="25">
+                    <button mat-stroked-button color="primary" (click)="createOrDelete()">
+                        {{itemData.component === undefined ? 'Add component' : 'Delete component'}}</button>
+                </div>
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Encryption</div>
+
+                <mat-form-field fxFlex="25">
+                    <input matInput [(ngModel)]="itemData.encryption"
+                           (change)="setValue($event, itemData, 'encryption')">
+                </mat-form-field>
+
+                <div fxFlex="2.5"></div>
+            </div>
+
+            <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="itemData.component !== undefined">
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Component Name</div>
+
+                <mat-form-field fxFlex="25">
+                    <input matInput [(ngModel)]="itemData.component.name"
+                           (change)="setValue($event, itemData, 'component-name')">
+                </mat-form-field>
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="45" fxLayout="column">
+                    <div class="margin-html">
+                        <div *ngIf="itemData.component.properties.length > 0">
+                            <div *ngFor="let property of itemData.component.properties; let i = index">
+                                <mat-form-field fxFlex="45" class="margin-right8px">
+                                    <input matInput (change)="setValue($event, itemData, 'property_key', i)" type="text"
+                                           placeholder="Key" [value]="property.key">
+                                </mat-form-field>
+                                <mat-form-field fxFlex="45" class="margin-right8px">
+                                    <input matInput (change)="setValue($event, itemData, 'property_value', i)"
+                                           type="text"
+                                           placeholder="Value" [value]="property.value">
+                                </mat-form-field>
+                                <button fxFlex="10" mat-icon-button (click)="deleteProperty(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div fxLayoutAlign="center center" *ngIf="itemData.component.properties.length === 0"
+                             class="no-options">
+                            <span>Empty</span>
+                        </div>
+                    </div>
+                    <button mat-stroked-button class="button-text" (click)="addProperty()">
+                        <mat-icon>add</mat-icon>
+                        Add property
+                    </button>
+                </div>
+
+                <div fxFlex="2.5"></div>
+            </div>
+
+<!--            <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="!isOptionField(itemData.type)">-->
+            <div fxLayout="row wrap" fxLayoutAlign="start center">
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Init Value</div>
+
+                <mat-form-field fxFlex="25" *ngIf="!isOptionField(itemData.type) && itemData.type !== 'taskRef'">
+                    <input matInput [ngModel]="getItemInitExpression(itemData)"
+                           (change)="setValue($event, itemData, 'init')">
+                </mat-form-field>
+
+                <mat-form-field fxFlex="25" *ngIf="isOptionField(itemData.type)" class="full-width">
+                    <mat-label>Initial value</mat-label>
+                    <mat-select *ngIf="!hasInits(itemData.type); else hasInitsItems" [(ngModel)]="itemData.init.value">
+                        <mat-option>None</mat-option>
+                        <mat-option *ngFor="let opt of itemData.options" [value]="opt.key">
+                            {{opt.value?.value}}
+                        </mat-option>
+                    </mat-select>
+                    <ng-template #hasInitsItems>
+                        <mat-select (valueChange)="changeInitsValue($event)"
+                                    [value]="getInitsValue()" multiple>
+                            <mat-option *ngFor="let opt of itemData.options" [value]="opt.key">
+                                {{opt.value?.value}}
+                            </mat-option>
+                        </mat-select>
+                    </ng-template>
+                </mat-form-field>
+
+                <mat-form-field fxFlex="25" *ngIf="itemData.type === 'taskRef'">
+                    <input type="text"
+                           aria-label="Autocomplete"
+                           matInput
+                           [formControl]="formControlRef"
+                           [matAutocomplete]="auto">
+                    <mat-autocomplete [displayWith]="renderSelection" autoActiveFirstOption #auto="matAutocomplete">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.key"
+                                    (click)="clickOption(itemData, option.key)" [disabled]="isDisabled(option.key)">
+                            {{option.key}} - {{option.value}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+
+
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">
+                    Is Init Dynamic?
+                </div>
+
+                <div fxFlex="25">
+                    <mat-checkbox [ngModel]="getItemInitDynamic(itemData)"
+                                  (change)="setValue($event, itemData, 'dynamic-init')"></mat-checkbox>
+                </div>
+
+                <div fxFlex="2.5"></div>
+            </div>
+            <!--            <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="isOptionField(itemData.type)">-->
+            <!--                <div fxFlex="2.5"></div>-->
+            <!--                <div fxFlex="20">-->
+            <!--                    Is Init Dynamic?-->
+            <!--                </div>-->
+            <!--                <div fxFlex="25">-->
+            <!--                    <mat-checkbox [ngModel]="getItemInitDynamic(itemData)"-->
+            <!--                                  (change)="setValue($event, itemData, 'dynamic-init')"></mat-checkbox>-->
+            <!--                </div>-->
+            <!--                <div fxFlex="2.5"></div>-->
+            <!--                <div *ngIf="itemData.init?.dynamic" fxFlex="50" fxLayout="column">-->
+            <!--                    <div class="margin-html">-->
+            <!--                        <div *ngIf="itemData.inits?.length > 0">-->
+            <!--                            <div *ngFor="let init of itemData.inits; let i = index">-->
+            <!--                                <mat-form-field class=" margin-right8px" fxFlex="90">-->
+            <!--                                    &lt;!&ndash; TODO: fix expression result type &ndash;&gt;-->
+            <!--                                    <input matInput (change)="setValue($event, itemData, 'inits', i)" type="text" [value]="init.expression">-->
+            <!--                                </mat-form-field>-->
+            <!--                                <button mat-icon-button (click)="deleteInit(i)" fxFlex="10">-->
+            <!--                                    <mat-icon>delete</mat-icon>-->
+            <!--                                </button>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                        <div fxLayoutAlign="center center" *ngIf="itemData.inits.length === 0"-->
+            <!--                             class="no-options">-->
+            <!--                            <span>Empty</span>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                    <button mat-stroked-button class="button-text" (click)="addInit()">-->
+            <!--                        <mat-icon>add</mat-icon>-->
+            <!--                        Add init-->
+            <!--                    </button>-->
+            <!--                </div>-->
+            <!--                <div *ngIf="!itemData.init?.dynamic" fxFlex="50">-->
+            <!--                    <div fxFlex="5"></div>-->
+            <!--                    <div fxFlex="40">Init Value</div>-->
+            <!--                    <mat-form-field fxFlex="50" *ngIf="itemData.type !== 'taskRef'">-->
+            <!--                        <input matInput [ngModel]="getItemInitExpression(itemData)"-->
+            <!--                               (change)="setValue($event, itemData, 'init')">-->
+            <!--                    </mat-form-field>-->
+            <!--                    <div fxFlex="5"></div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <div fxLayout="row wrap" fxLayoutAlign="start center"
+                 *ngIf="itemData.type === 'caseRef' || itemData.type === 'filter'">
+                <div fxFlex="2.5"></div>
+                <div fxFlexAlign="start" fxFlex="20">Allowed Nets</div>
+                <div fxFlex="2.5"></div>
+                <div fxFlex="72.5" fxLayout="column">
+                    <div class="margin-html">
+                        <div *ngIf="itemData.allowedNets?.length > 0">
+                            <div *ngFor="let net of itemData.allowedNets; let i = index">
+                                <mat-form-field class=" margin-right8px" fxFlex="90">
+                                    <input matInput (change)="setValue($event, itemData, 'allowedNets', i)" type="text"
+                                           placeholder="Process identifier" [value]="net">
+                                </mat-form-field>
+                                <button mat-icon-button (click)="deleteAllowedNet(i)" fxFlex="10">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div fxLayoutAlign="center center" *ngIf="itemData.allowedNets.length === 0"
+                             class="no-options">
+                            <span>Empty</span>
+                        </div>
+                    </div>
+                    <button mat-stroked-button class="button-text" (click)="addAllowedNet()">
+                        <mat-icon>add</mat-icon>
+                        Add net
+                    </button>
+                </div>
+                <div fxFlex="2.5"></div>
+            </div>
+
+            <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="itemData.type !== 'enumeration' && itemData.type !== 'multichoice'
+                        && itemData.type !== 'enumeration_map' && itemData.type !== 'multichoice_map'">
+                <div fxFlex="2.5"></div>
+
+                <div fxFlex="20">Validations</div>
+
+                <div fxFlex="75" fxLayout="column">
+                    <div class="margin-html">
+                        <div *ngIf="itemData.validations?.length > 0">
+                            <div *ngFor="let validation of itemData.validations; let i = index">
+                                <mat-form-field fxFlex="45" class="margin-right8px">
+                                    <input matInput type="text" placeholder="Expression"
+                                           [(ngModel)]="validation.expression.expression">
+                                </mat-form-field>
+                                <mat-form-field fxFlex="45" class="margin-right8px">
+                                    <input matInput type="text" placeholder="Message"
+                                           [(ngModel)]="validation.message.value">
+                                </mat-form-field>
+                                <button fxFlex="10" mat-icon-button (click)="deleteValidation(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div fxLayoutAlign="center center" *ngIf="itemData.validations?.length === 0"
+                             class="no-options">
+                            <span>Empty</span>
+                        </div>
+                    </div>
+                    <button mat-stroked-button class="button-text" (click)="addValidation()">
+                        <mat-icon>add</mat-icon>
+                        Add validation
+                    </button>
+                </div>
+
+                <div fxFlex="2.5"></div>
+            </div>
+
+            <div class="options" *ngIf="isOptionField(itemData.type)"
+                 fxLayout="row wrap" fxLayoutAlign="start center">
+                <div fxFlex="2.5"></div>
+                <div fxFlexAlign="start" fxFlex="20">Options</div>
+                <div fxFlex="2.5"></div>
+                <div fxFlex="72.5" fxLayout="column">
+                    <div cdkDropList class="drag-list margin-html" (cdkDropListDropped)="dropOption($event)">
+                        <div *ngIf="itemData.options.length > 0">
+                            <div class="drag-box" *ngFor="let item of itemData.options; let i = index" cdkDrag>
+                                <mat-icon class="icon-color" cdkDragHandle>drag_indicator</mat-icon>
+                                <mat-form-field class=" margin-right8px option-input"
+                                                *ngIf="!hasSimpleOptions(itemData.type)">
+                                    <input matInput (change)="setValue($event, itemData, 'options-key', i)" type="text"
+                                           placeholder="Option key" [value]="item.key">
+                                </mat-form-field>
+                                <mat-form-field class=" margin-right8px option-input">
+                                    <input matInput (change)="setValue($event, itemData, 'options-value', i)"
+                                           type="text" placeholder="Option value" [value]="item.value?.value">
+                                </mat-form-field>
+                                <button mat-icon-button (click)="deleteOption(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div fxLayoutAlign="center center" *ngIf="itemData.options.length === 0"
+                             class="no-options">
+                            <span>No options</span>
+                        </div>
+                    </div>
+                    <button mat-stroked-button class="button-text" (click)="addOption()">
+                        <mat-icon>add</mat-icon>
+                        Add option
+                    </button>
+                </div>
+                <div fxFlex="2.5"></div>
+            </div>
+
+            <!--            <div *ngIf="itemData.type === 'enumeration_map' || itemData.type === 'multichoice_map'" fxLayout="row wrap"-->
+            <!--                 fxLayoutAlign="start center">-->
+
+            <!--                <div fxFlex="2.5"></div>-->
+
+            <!--                <div fxFlex="20">Options Init</div>-->
+
+            <!--                <mat-form-field fxFlex="25">-->
+            <!--                    <input matInput [ngModel]="getItemOptionsInitExpression(itemData)"-->
+            <!--                           (change)="setValue($event, itemData, 'options-init')">-->
+            <!--                </mat-form-field>-->
+
+            <!--                <div fxFlex="2.5"></div>-->
+
+            <!--                <div fxFlex="20">Is Options Init dynamic?</div>-->
+
+            <!--                <mat-form-field fxFlex="25">-->
+            <!--                    <input matInput [ngModel]="getItemOptionsInitDynamic(itemData)"-->
+            <!--                           (change)="setValue($event, itemData, 'options-init-dynamic')">-->
+            <!--                </mat-form-field>-->
+
+            <!--                <div fxFlex="2.5"></div>-->
+            <!--            </div>-->
+        </div>
+    </div>
+</div>
