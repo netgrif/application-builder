@@ -14,11 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -76,7 +71,7 @@ jobs:
 
       - name: Build project
         run: |
-          zip -r netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip target/application-builder
+          zip -r netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip dist/application-builder
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
