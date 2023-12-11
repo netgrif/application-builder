@@ -1,0 +1,12 @@
+<button
+    mat-icon-button
+    id="tool_{{tool.id}}"
+    class="button-line"
+    matTooltip="{{tool.tooltip}}"
+    [ngClass]="{'button-highlight': isActive()}"
+    (click)="activate(); tool.onClick()"
+    [disabled]="tool.disabled.value">
+
+    <mat-icon *ngIf="tool.icon.isSvg" svgIcon="{{tool.icon.name}}" [ngClass]="{'fill-svg': isActive()}"></mat-icon>
+    <mat-icon *ngIf="!tool.icon.isSvg" [ngClass]="{'fill-svg': isActive(), 'material-icons-outlined': isOutlined()}">{{tool.icon.name}}</mat-icon>
+</button>

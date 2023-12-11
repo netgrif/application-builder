@@ -4,9 +4,9 @@ import {ActionItemProviderService} from '../action-item-provider.service';
 import {
     ActionEditorMenuDescriptionComponent
 } from './action-editor-menu-description/action-editor-menu-description.component';
-import {ModelService} from '../../../services/model.service';
 import {editor} from 'monaco-editor';
 import ICodeEditor = editor.ICodeEditor;
+import {ModelService} from '../../../services/model/model.service';
 
 @Component({
     selector: 'nab-action-editor-menu',

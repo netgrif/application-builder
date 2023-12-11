@@ -1,0 +1,16 @@
+<button mat-icon-button class="button-line"
+        id="mode_{{mode.id}}"
+        title="{{mode.tutorialStep.title}}"
+        text="{{mode.tutorialStep.text}}"
+        [ngClass]="{'button-highlight': isActive()}"
+        matTooltip="{{mode.tooltip}}"
+        [routerLink]="mode.routerLink"
+        joyrideStep="{{mode.tutorialStep.step}}"
+        (next)="mode.tutorialStep.onNext()"
+        (prev)="mode.tutorialStep.onPrev()"
+        (done)="tutorialService.onClose()"
+        stepPosition="{{mode.tutorialStep.position}}"
+        (click)="mode.onClick(); setActive();">
+    <mat-icon *ngIf="mode.icon.isSvg" [ngClass]="{'fill-svg': isActive()}" svgIcon="{{mode.icon.name}}"></mat-icon>
+    <mat-icon *ngIf="!mode.icon.isSvg" [ngClass]="{'fill-svg': isActive(), 'material-icons-outlined': isOutlined()}">{{mode.icon.name}}</mat-icon>
+</button>

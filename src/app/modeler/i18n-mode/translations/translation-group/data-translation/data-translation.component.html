@@ -1,3 +1,4 @@
+<!--TODO: NAB-327 async load: https://medium.com/@vyakymenko/increasing-rendering-performance-in-angular-with-lazy-render-ngfor-ae8c5d16e194-->
 <div fxLayout="column" *ngFor="let dataVariable of model.getDataSet(); let i = index">
     <h3>{{dataVariable.title.value}} [{{dataVariable.id}}]</h3>
     <nab-i18n-field [field]="dataVariable.title" [name]="'Title'" [translation]="translation"></nab-i18n-field>

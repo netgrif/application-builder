@@ -1,5 +1,4 @@
 import {Component, ViewChild} from '@angular/core';
-import {ModelService} from '../services/model.service';
 import {DataModeService} from './data-mode.service';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {DialogDeleteComponent} from '../../dialogs/dialog-delete/dialog-delete.component';
@@ -15,14 +14,15 @@ import {
     DataType,
     DataVariable,
     Expression,
-    I18nString, I18nWithDynamic,
+    I18nString,
+    I18nWithDynamic,
     Option,
     PetriNet as PetriflowPetriNet,
     Property,
     Validation
 } from '@netgrif/petriflow';
-import {PetriNet} from '../classes/petri-net';
 import {DataFieldUtils} from '../../form-builder/data-field-utils';
+import {ModelService} from '../services/model/model.service';
 
 export interface TypeArray {
     viewValue: string;
@@ -40,7 +40,6 @@ export class DataModeComponent {
     pageSize: number;
     pageIndex: number;
     pageSizeOptions: Array<number> = [10, 20, 50, 100];
-    counter: number;
     counterEnum: number;
     counterEnumMap: number;
     optionCounter: number;
@@ -76,11 +75,14 @@ export class DataModeComponent {
 
     @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-    constructor(private modelService: ModelService, private dataService: DataModeService, private dialog: MatDialog) {
+    constructor(
+        private modelService: ModelService,
+        private dataService: DataModeService,
+        private dialog: MatDialog
+    ) {
         setTimeout(() => {
             if (this.modelService.model === undefined) {
                 this.modelService.model = new PetriflowPetriNet();
-                this.modelService.graphicModel = new PetriNet(this.modelService.model);
             }
             this.dataService.event.next();
         });
@@ -91,7 +93,6 @@ export class DataModeComponent {
             this.processData = this.modelService.model.getDataSet();
             this.length = this.processData.length;
             this.dataSource = [...this.processData.slice(0, this.pageSize)];
-            this.counter = 0;
             this.counterEnum = 0;
             this.counterEnumMap = 0;
             if (this.sort) {
@@ -101,7 +102,6 @@ export class DataModeComponent {
         this.dataService.itemData.subscribe(obj => {
             this.itemData = obj;
             if (!this.itemData.init) {
-                // TODO: NAB-337: check
                 this.itemData.init = new I18nWithDynamic('');
             }
             this.formControlRef.patchValue(this.itemData.init.value);
@@ -111,14 +111,12 @@ export class DataModeComponent {
             tap(value => {
                 if (value === '' || value === undefined) {
                     if (!this.modelService.model.getData(this.itemData.id).init) {
-                        // TODO: NAB-337: check
                         this.modelService.model.getData(this.itemData.id).init = new I18nWithDynamic(value);
                     } else {
                         this.modelService.model.getData(this.itemData.id).init.value = value;
                     }
                     const data = this.processData.find(obj => obj.id === this.itemData.id);
                     if (!data.init) {
-                        // TODO: NAB-337: check
                         data.init = new I18nWithDynamic(value);
                     } else {
                         data.init.value = value;
@@ -146,14 +144,14 @@ export class DataModeComponent {
     }
 
     addDataVariable() {
-        const data = new DataVariable(this.createId(), DataType.TEXT);
+        const data = new DataVariable(this.modelService.nextDataId(), DataType.TEXT);
         this.processDataVariableInsert(data);
     }
 
     duplicateDataVariable(event, item) {
         event.stopPropagation();
         const data = item.clone();
-        data.id = this.createId();
+        data.id = this.modelService.nextDataId();
         this.processDataVariableInsert(data);
         this.setData(data);
     }
@@ -168,38 +166,8 @@ export class DataModeComponent {
         this.setData(data);
     }
 
-    private createId() {
-        this.counter++;
-        if (this.modelService.model.getData('newVariable_' + this.counter)) {
-            return this.createId();
-        } else {
-            return 'newVariable_' + String(this.counter);
-        }
-    }
-
     removeDataVariable(item: DataVariable) {
-        if (item.type === DataType.USER_LIST) {
-            if (this.modelService.model.getUserRef(item.id)) {
-                this.modelService.model.removeUserRef(item.id);
-            }
-        }
-        this.modelService.model.getTransitions().forEach(t => {
-            t.dataGroups.forEach(dg => {
-                if (dg.getDataRef(item.id)) {
-                    dg.removeDataRef(item.id);
-                }
-            });
-            if (item.type === DataType.USER_LIST && t.userRefs) {
-                t.userRefs = t.userRefs.filter(ref => ref.id !== item.id);
-            }
-        });
-        this.modelService.model.getArcs().forEach(a => {
-            if (a.reference === item.id) {
-                a.reference = undefined;
-                a.multiplicity = 1;
-            }
-        });
-        this.modelService.model.removeData(item.id);
+        this.modelService.removeDataVariable(item);
         this.processData = this.modelService.model.getDataSet();
         this.length = this.modelService.model.getDataSet().length;
         this.clicked = 0;
@@ -266,7 +234,6 @@ export class DataModeComponent {
             case 'init': {
                 const value = $event.target.value;
                 if (dataVariable.init === undefined) {
-                    // TODO: NAB-337: check
                     dataVariable.init = new I18nWithDynamic(value);
                 } else {
                     dataVariable.init.value = value;
@@ -277,11 +244,9 @@ export class DataModeComponent {
             case 'dynamic-init': {
                 const value = $event.source.checked;
                 if (dataVariable.init === undefined) {
-                    // TODO: NAB-337: check
-                    dataVariable.init = new I18nWithDynamic('', value);
-                } else {
-                    dataVariable.init.dynamic = value;
+                    dataVariable.init = new I18nWithDynamic(value);
                 }
+                dataVariable.init.dynamic = value;
                 this.processData.find(obj => obj.id === item.id).init.dynamic = $event.source.checked;
                 break;
             }
@@ -534,7 +499,6 @@ export class DataModeComponent {
         this.itemData.inits.splice(i, 1);
     }
 
-    // TODO: NAB-337: check
     changeInitsValue(inits: Array<string>) {
         this.itemData.inits = inits.map(initKey => new I18nWithDynamic(initKey));
     }

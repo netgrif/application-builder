@@ -2,16 +2,16 @@
 <div mat-dialog-content>
     <mat-action-list>
         <div mat-subheader class="header-bottom-border">
-            <p fxFlex="30"><strong>Title</strong></p>
+            <p fxFlex="30"><strong>{{isData() ? 'Title' : 'Label'}}</strong></p>
             <p fxFlex="20">Id</p>
             <p fxFlex="20">Value</p>
             <p fxFlex="20">Reference</p>
             <p fxFlex>Actions</p>
         </div>
         <mat-list-item class="item-bottom-border" *ngFor="let item of dataSource">
-            <p fxFlex="30"><strong>{{item.title?.value}}</strong></p>
+            <p fxFlex="30"><strong>{{isData() ? item.title?.value : item.label.value}}</strong></p>
             <p fxFlex="20">{{item.id}}</p>
-            <p fxFlex="20">{{item.init?.expression}}</p>
+            <p fxFlex="20">{{isData() ? item.init?.expression : item.marking}}</p>
             <p fxFlex="20">{{isSelected(item) ? 'Referenced' : ''}}</p>
             <button mat-icon-button class="button-line" matTooltip="Add data variable"
                     (click)="setArcVariability(item)">

@@ -1,11 +1,11 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {Place} from '../../modeler/classes/place/place';
 import {Arc} from '@netgrif/petriflow';
+import {CanvasPlace} from '../../modeler/edit-mode/domain/canvas-place';
 
 export interface PlaceRefDeleteData {
-    place: Place;
-    arcs: Array<Arc>;
+    place: CanvasPlace;
+    arcs: Array<Arc<any, any>>;
 }
 
 @Component({
@@ -15,14 +15,14 @@ export interface PlaceRefDeleteData {
 })
 export class DialogPlaceRefDeleteComponent {
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: PlaceRefDeleteData) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: Array<PlaceRefDeleteData>) {
     }
 
-    public placeLabel(): string {
-        return this.data.place.getLabelOrId();
+    public placeLabel(data: PlaceRefDeleteData): string {
+        return data.place.modelPlace.label.value;
     }
 
-    public arcs(): string {
-        return this.data.arcs.map(arc => arc.id).join(', ');
+    public arcs(data: PlaceRefDeleteData): string {
+        return data.arcs.map(arc => arc.id).join(', ');
     }
 }

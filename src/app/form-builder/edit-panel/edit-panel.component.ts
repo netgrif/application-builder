@@ -8,8 +8,8 @@ import {
     DataRefBehavior,
     DataType,
     DataVariable,
-    Expression,
-    I18nString, I18nWithDynamic,
+    I18nString,
+    I18nWithDynamic,
     Icon,
     IconType,
     Option,
@@ -19,7 +19,6 @@ import {
     TransitionEvent,
     TransitionEventType
 } from '@netgrif/petriflow';
-import {ModelService} from '../../modeler/services/model.service';
 import {NGX_MAT_DATE_FORMATS} from '@angular-material-components/datetime-picker';
 import {DialogRefactorComponent} from '../../dialogs/dialog-refactor/dialog-refactor.component';
 import {MatDialog} from '@angular/material/dialog';
@@ -32,6 +31,7 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {DataFieldUtils} from '../data-field-utils';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
+import {ModelService} from '../../modeler/services/model/model.service';
 
 @Component({
     selector: 'nab-edit-panel',
@@ -151,10 +151,10 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     }
 
     private getOrCreateEvent(type: TransitionEventType): TransitionEvent {
-        let event = this.transition.getEvent(type);
+        let event = this.transition.eventSource.getEvent(type);
         if (!event) {
             event = new TransitionEvent(type, `${this.transition.id}_${type}`);
-            this.transition.addEvent(event);
+            this.transition.eventSource.addEvent(event);
         }
         return event;
     }
@@ -369,7 +369,6 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     }
 
     selectAuto(key: string) {
-        // TODO: NAB-337: check
         this.gridsterService.selectedDataField.dataVariable.init = new I18nWithDynamic(key, '', false);
     }
 
@@ -472,11 +471,17 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     }
 
     changeInitsValue(inits: Array<string>) {
-        // TODO: NAB-337: check
         this.dataVariable.inits = inits.map(initKey => new I18nWithDynamic(initKey));
     }
 
     getInitsValue(): Array<string> {
         return this.dataVariable.inits.map(initKey => initKey.value);
+    }
+
+    formatDate() {
+        // TODO: NAB-326 better solution? date picker setting to store only date?
+        if (this.dataVariable.init.value) {
+            this.dataVariable.init.value = this.dataVariable.init.value.substring(0,10);
+        }
     }
 }

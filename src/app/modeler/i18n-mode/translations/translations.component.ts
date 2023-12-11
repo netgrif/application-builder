@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Locale} from '../classes/locale';
 import {I18nModeService} from '../i18n-mode.service';
-import {ModelService} from '../../services/model.service';
 import {TranslationGroupConfiguration, Type} from './translation-group/translation-group-configuration';
 import {I18nTranslations} from '@netgrif/petriflow';
+import {ModelService} from '../../services/model/model.service';
 
 @Component({
     selector: 'nab-translations',

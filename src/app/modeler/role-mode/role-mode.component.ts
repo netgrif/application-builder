@@ -1,10 +1,9 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {ProcessRoleRef, Role, RoleRef} from '@netgrif/petriflow';
-import {ModelService} from '../services/model.service';
-import {RoleModeService} from './role-mode.service';
+import {Role} from '@netgrif/petriflow';
 import {DialogDeleteComponent} from '../../dialogs/dialog-delete/dialog-delete.component';
 import {MatDialog} from '@angular/material/dialog';
 import {Sort} from '@angular/material/sort';
+import {ModelService} from '../services/model/model.service';
 
 @Component({
     selector: 'nab-role-mode',
@@ -20,7 +19,10 @@ export class RoleModeComponent implements AfterViewInit, OnInit {
     show: boolean;
     counter = 0;
 
-    constructor(private modelService: ModelService, private roleService: RoleModeService, private deleteDialog: MatDialog) {
+    constructor(
+        private modelService: ModelService,
+        private deleteDialog: MatDialog
+    ) {
     }
 
     ngOnInit() {

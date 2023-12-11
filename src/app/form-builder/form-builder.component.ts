@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ResizeEvent} from 'angular-resizable-element';
 import {Router} from '@angular/router';
-import {ModelService} from '../modeler/services/model.service';
+import {ModelService} from '../modeler/services/model/model.service';
 
 @Component({
     selector: 'nab-form-builder',

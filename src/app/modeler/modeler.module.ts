@@ -6,7 +6,6 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {ControlPanelComponent} from './control-panel/control-panel.component';
 import {DomSanitizer} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {EditPanelModelerComponent} from './edit-panel/edit-panel-modeler.component';
 import {TriggerTreeComponent} from './control-panel/trees/trigger-tree/trigger-tree.component';
 import {DialogManageRolesComponent} from '../dialogs/dialog-manage-roles/dialog-manage-roles.component';
 import {CdkImportModule} from '../cdk-import/cdk-import.module';
@@ -22,9 +21,6 @@ import {environment} from '../../environments/environment';
 import {I18nModeComponent} from './i18n-mode/i18n-mode.component';
 import {ResizableModule} from 'angular-resizable-element';
 import {DialogDeleteComponent} from '../dialogs/dialog-delete/dialog-delete.component';
-import {
-    DialogTransitionSettingsComponent
-} from '../dialogs/dialog-transition-settings/dialog-transition-settings.component';
 import {DialogAddLanguageComponent} from '../dialogs/dialog-add-language/dialog-add-language.component';
 import {MatIconRegistry} from '@angular/material/icon';
 import {JoyrideModule} from 'ngx-joyride';
@@ -33,7 +29,6 @@ import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/co
 import {ImportSuccessfulComponent} from './control-panel/import-successful/import-successful.component';
 import {GridsterModule} from 'angular-gridster2';
 import {ActionEditorModule} from './actions-mode/action-editor/action-editor.module';
-import {FastModeContextComponent} from './edit-mode/fast-mode-context/fast-mode-context.component';
 import {LanguagesComponent} from './i18n-mode/languages/languages.component';
 import {TranslationsComponent} from './i18n-mode/translations/translations.component';
 import {ProgressComponent} from './i18n-mode/languages/progress/progress.component';
@@ -54,13 +49,19 @@ import {
     TaskTranslationComponent
 } from './i18n-mode/translations/translation-group/task-translation/task-translation.component';
 import {NgxDropzoneModule} from 'ngx-dropzone';
+import {MaterialModule} from '@netgrif/components-core';
+import {PetriflowCanvasModule} from '@netgrif/petriflow.svg';
+import {PetriflowInfoDialogComponent} from './edit-mode/petriflow-info-dialog/petriflow-info-dialog.component';
+import {ModeComponent} from './control-panel/modes/mode-component/mode.component';
+import {ToolComponent} from './control-panel/tools/tool-component/tool.component';
+import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
+import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.component';
 
 @NgModule({
     declarations: [
         ModelerComponent,
         ControlPanelComponent,
         DialogManageRolesComponent,
-        EditPanelModelerComponent,
         TriggerTreeComponent,
         SimulationModeComponent,
         EditModeComponent,
@@ -70,10 +71,8 @@ import {NgxDropzoneModule} from 'ngx-dropzone';
         DialogArcAttachComponent,
         I18nModeComponent,
         DialogDeleteComponent,
-        DialogTransitionSettingsComponent,
         DialogAddLanguageComponent,
         ImportSuccessfulComponent,
-        FastModeContextComponent,
         LanguagesComponent,
         TranslationsComponent,
         ProgressComponent,
@@ -84,10 +83,17 @@ import {NgxDropzoneModule} from 'ngx-dropzone';
         I18nFieldComponent,
         DataTranslationComponent,
         RoleTranslationComponent,
-        TaskTranslationComponent
+        TaskTranslationComponent,
+        EditModeComponent,
+        PetriflowInfoDialogComponent,
+        ModeComponent,
+        ToolComponent,
+        ImportToolButtonComponent,
+        ContextMenuComponent
     ],
     exports: [
-        ActionEditorModule
+        ActionEditorModule,
+        TriggerTreeComponent
     ],
     imports: [
         CommonModule,
@@ -105,8 +111,11 @@ import {NgxDropzoneModule} from 'ngx-dropzone';
         GridsterModule,
         DataFieldsComponentModule,
         ActionEditorModule,
-        NgxDropzoneModule
-    ]
+        NgxDropzoneModule,
+        MaterialModule,
+        PetriflowCanvasModule
+    ],
+    entryComponents: [PetriflowInfoDialogComponent]
 })
 export class ModelerModule {
     constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {

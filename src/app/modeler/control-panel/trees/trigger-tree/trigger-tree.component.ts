@@ -1,9 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {Trigger, TriggerType} from '@netgrif/petriflow';
 import {NGX_MAT_DATE_FORMATS} from '@angular-material-components/datetime-picker';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
-import {MatSidenav} from '@angular/material/sidenav';
 import {DATE_TIME_FORMAT} from '@netgrif/components-core';
 
 interface TriggerNode {
@@ -24,19 +23,13 @@ interface TriggerNode {
     ]
 })
 export class TriggerTreeComponent implements OnInit {
-    @Input() nav: MatSidenav;
     @Input() triggers: Array<Trigger>;
-    @Output() changeTriggers = new EventEmitter<Array<Trigger>>();
 
     typeOptions = [{key: 'auto', value: 'Auto'}, {key: 'user', value: 'User'}, {key: 'time', value: 'Time'}];
     optionOptions = [{key: 'exact', value: 'Exact'}, {key: 'delay', value: 'Delay'}];
-
     treeData: Array<TriggerNode>;
-
     counter: number;
-
     treeControl = new NestedTreeControl<TriggerNode>(node => node.trigger);
-
     dataSource = new MatTreeNestedDataSource<TriggerNode>();
 
     constructor() {
@@ -49,9 +42,6 @@ export class TriggerTreeComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.nav.openedStart.subscribe(() => {
-            this.import();
-        });
     }
 
     import(): void {
@@ -106,7 +96,6 @@ export class TriggerTreeComponent implements OnInit {
             trigger.delay = item.trigger[0].delay;
             triggers.push(trigger);
         });
-        this.changeTriggers.emit(triggers);
     }
 
     addNewItem(node: TriggerNode) {

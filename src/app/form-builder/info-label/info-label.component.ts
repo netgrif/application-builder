@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {PetriNet, Transition} from '@netgrif/petriflow';
-import {ModelService} from '../../modeler/services/model.service';
+import {ModelService} from '../../modeler/services/model/model.service';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 

@@ -97,3 +97,24 @@ body {
         background-color: #008800 !important;
     }
 }
+
+.lasso-selection {
+    stroke: map-get(netgif-theme.$netgrif-accent, A200);
+    fill: map-get(netgif-theme.$netgrif-accent, A200);
+    fill-opacity: 10%;
+    stroke-width: 1;
+}
+
+.expansion-panel-compact {
+    .mat-expansion-panel-body {
+        padding: 0 8px 8px !important;
+    }
+}
+
+.mat-list-item-compact {
+    height: 40px;
+
+    .mat-list-item-content {
+        padding-left: 0 !important;
+    }
+}

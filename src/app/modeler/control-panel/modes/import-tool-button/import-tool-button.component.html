@@ -1,0 +1,12 @@
+<button
+    mat-icon-button
+    id="tool_{{tool.id}}"
+    class="button-line"
+    matTooltip="{{tool.tooltip}}"
+    (click)="xmlFileInput.click()">
+
+    <input #xmlFileInput type="file" accept=".xml" class="hidden-button" (change)="onClick($event)"/>
+
+    <mat-icon *ngIf="tool.icon.isSvg" svgIcon="{{tool.icon.name}}"></mat-icon>
+    <mat-icon *ngIf="!tool.icon.isSvg" [ngClass]="{'material-icons-outlined': tool.icon.isOutlined}">{{tool.icon.name}}</mat-icon>
+</button>

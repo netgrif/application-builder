@@ -1,0 +1,12 @@
+.hidden-button {
+    display: none;
+}
+
+.button-line {
+    line-height: 0;
+    border-radius: 5px !important;
+
+    mat-icon {
+        cursor: pointer;
+    }
+}

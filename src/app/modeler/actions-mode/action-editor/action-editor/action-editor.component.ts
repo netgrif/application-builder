@@ -8,12 +8,12 @@ import {ActionChangedEvent} from '../action-editor-list/action-editor-list.compo
 import {LeafNode} from '../classes/leaf-node';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatButton} from '@angular/material/button';
-import {ModelService} from '../../../services/model.service';
 import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-delete.component';
 import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
 import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {editor} from 'monaco-editor';
+import {ModelService} from '../../../services/model/model.service';
 import ICodeEditor = editor.ICodeEditor;
 
 @Component({
@@ -59,8 +59,11 @@ export class ActionEditorComponent implements OnInit {
     public DATA_EVENT_TYPES = ['set', 'get'];
     public PHASE_TYPES = ['pre', 'post'];
 
-    constructor(private actionEditorService: ActionEditorService, private modelService: ModelService,
-                private deleteDialog: MatDialog) {
+    constructor(
+        private actionEditorService: ActionEditorService,
+        private modelService: ModelService,
+        private deleteDialog: MatDialog
+    ) {
         this.formControl = new FormControl(undefined, {updateOn: 'blur'});
         this.actionChanged = new EventEmitter<ActionChangedEvent>();
         this.drawerOpened = new EventEmitter<boolean>();
@@ -144,8 +147,9 @@ export class ActionEditorComponent implements OnInit {
             this.modelService.model.getTransitions().map(t => new MenuItem(t.id, `<b>${t.id}</b> ${t.label?.value}`))
         );
         this.dataFieldItemsConfiguration = new MenuItemConfiguration(
-            'Datafields',
+            'Data fields',
             'datafield',
+            // TODO: NAB-326 choicefield, optionfield = different menu items
             ['<datafield>', '<datafieldId>'],
             this.editor,
             this,

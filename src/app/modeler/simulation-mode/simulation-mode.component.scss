@@ -1,4 +1,7 @@
-.canvas-wrapper {
+.outer {
+    display: flex;
     height: 100%;
-    overflow: auto;
+    width: 100%;
+    border: 0;
+    background: white;
 }

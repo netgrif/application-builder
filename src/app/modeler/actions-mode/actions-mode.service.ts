@@ -1,13 +1,45 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
+import {Injectable, Injector} from '@angular/core';
+import {TutorialService} from '../../tutorial/tutorial-service';
+import {Mode} from '../control-panel/modes/mode';
+import {ControlPanelButton} from '../control-panel/control-panel-button';
+import {ControlPanelIcon} from '../control-panel/control-panel-icon';
+import {ToolGroup} from '../control-panel/tools/tool-group';
+import {ModeService} from '../control-panel/modes/mode-component/mode.service';
+import {DataActionsTool} from './data-actions-tool';
+import {TransitionActionsTool} from './transition-actions-tool';
+import {RoleActionsTool} from './role-actions-tool';
+import {ProcessActionsTool} from './process-actions-tool';
+import {FunctionsTool} from './functions-tool';
+import {Tool} from '../control-panel/tools/tool';
 
 @Injectable({
     providedIn: 'root'
 })
-export class ActionsModeService {
-    eventData: BehaviorSubject<string>;
+export class ActionsModeService extends ModeService<Tool> {
 
-    constructor() {
-        this.eventData = new BehaviorSubject('dataVariable');
+    constructor(
+        private _tutorialService: TutorialService,
+        private _parentInjector: Injector,
+        private _dataActionsTool: DataActionsTool,
+        private _transitionActionsTool: TransitionActionsTool,
+        private _roleActionsTool: RoleActionsTool,
+        private _processActionsTool: ProcessActionsTool,
+        private _functionsTool: FunctionsTool
+    ) {
+        super();
+        this.mode = new Mode(
+            'actions',
+            new ControlPanelButton(
+                new ControlPanelIcon('code'),
+                'Actions Edit view'
+            ),
+            './actions',
+            '/modeler/actions',
+            this._tutorialService.actions,
+            this._parentInjector
+        );
+        this.tools = [
+            new ToolGroup<Tool>(_dataActionsTool, _transitionActionsTool, _roleActionsTool, _processActionsTool, _functionsTool)
+        ];
     }
 }

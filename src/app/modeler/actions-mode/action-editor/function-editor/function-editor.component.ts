@@ -5,11 +5,11 @@ import {MatMenuTrigger} from '@angular/material/menu';
 import {FormControl} from '@angular/forms';
 import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
 import {ActionEditorService} from '../action-editor.service';
-import {ModelService} from '../../../services/model.service';
 import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
 import {PetriflowFunction} from '@netgrif/petriflow';
 import {actions} from '../classes/command-action';
 import {editor} from 'monaco-editor';
+import {ModelService} from '../../../services/model/model.service';
 import ICodeEditor = editor.ICodeEditor;
 
 @Component({
@@ -38,7 +38,10 @@ export class FunctionEditorComponent implements OnInit {
 
     public editorConfigurations: Array<MenuItemConfiguration>;
 
-    constructor(private actionEditorService: ActionEditorService, private modelService: ModelService) {
+    constructor(
+        private actionEditorService: ActionEditorService,
+        private modelService: ModelService
+    ) {
         this.formControl = new FormControl(undefined, {updateOn: 'blur'});
         this.actionChanged = new EventEmitter<string>();
         this.drawerOpened = new EventEmitter<boolean>();

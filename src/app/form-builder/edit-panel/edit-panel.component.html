@@ -2,7 +2,8 @@
     <div *ngIf="!isSomeGridsterFieldSelected()">
         <mat-form-field class="full-width margin-html">
             <!-- TODO: fix expression result type -->
-            <input matInput type="number" [min]="minOfCols" placeholder="Number of Columns" [(ngModel)]="numOfCols" (change)="changeCols($event)">
+            <input matInput type="number" [min]="minOfCols" placeholder="Number of Columns" [(ngModel)]="numOfCols"
+                   (change)="changeCols($event)">
         </mat-form-field>
 
         <h5 class="full-width margin-html">Assign event</h5>
@@ -61,6 +62,10 @@
                               (change)="notifyGridster()">
                 Required
             </mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="dataRef.logic.immediate" class="full-width margin-html"
+                              (change)="notifyGridster()">
+                Immediate
+            </mat-slide-toggle>
             <mat-form-field class="full-width margin-html">
                 <mat-label>Behavior</mat-label>
                 <mat-select [(value)]="dataRef.logic.behavior" (selectionChange)="notifyGridster()">
@@ -83,8 +88,8 @@
             </mat-form-field>
             <mat-form-field *ngIf="!isBoolean() && !isButton() && !isListOptionsDisplay() && !isFile() && !isFileList()"
                             class="full-width">
-                <input matInput type="text" placeholder="Description"
-                       [(ngModel)]="dataVariable.desc.value" (change)="notifyGridster()">
+                <textarea matInput placeholder="Description" [(ngModel)]="dataVariable.desc.value"
+                          (change)="notifyGridster()"></textarea>
             </mat-form-field>
             <!--  VALUES  -->
             <mat-form-field *ngIf="hasTextValue()" class="full-width">
@@ -93,7 +98,8 @@
             </mat-form-field>
             <mat-form-field *ngIf="hasOptions()" class="full-width">
                 <mat-label>Initial value</mat-label>
-                <mat-select *ngIf="!hasInits(); else hasInitsItems" [(ngModel)]="dataVariable.init.value" (selectionChange)="notifyGridster()">
+                <mat-select *ngIf="!hasInits(); else hasInitsItems" [(ngModel)]="dataVariable.init.value"
+                            (selectionChange)="notifyGridster()">
                     <mat-option>None</mat-option>
                     <mat-option *ngFor="let opt of dataVariable.options" [value]="opt.key">
                         {{opt.value?.value}}
@@ -119,7 +125,7 @@
             <mat-form-field *ngIf="isDate()" class="full-width">
                 <div fxLayout="row">
                     <mat-datepicker-toggle [for]="datepicker"></mat-datepicker-toggle>
-                    <input matInput (dateChange)="notifyGridster()"
+                    <input matInput (dateChange)="notifyGridster(); formatDate();"
                            [matDatepicker]="datepicker"
                            [(ngModel)]="dataVariable.init.value"
                            (click)="datepicker.open()"

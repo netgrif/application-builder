@@ -1,10 +1,11 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {MatSort} from '@angular/material/sort';
+import {MatSort, MatSortable, Sort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {DataVariable, ProcessRoleRef, ProcessUserRef, Role, RoleRef, UserRef} from '@netgrif/petriflow';
-import {ModelService} from '../../modeler/services/model.service';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {ModelerConfig} from '../../modeler/modeler-config';
 
 export enum RoleRefType {
     TRANSITION = 'transition',
@@ -27,7 +28,7 @@ export interface ManagePermissionData {
     styleUrls: ['./dialog-manage-roles.component.scss']
 })
 export class DialogManageRolesComponent implements OnInit {
-    pageSizes = [5,10,20];
+    pageSizes = [5, 10, 20];
     defaultPageSize = 10;
     displayedColumns: Array<string>;
     usersDisplayedColumns: Array<string>;
@@ -38,7 +39,10 @@ export class DialogManageRolesComponent implements OnInit {
     @ViewChild('firstTableSort', {static: true}) sort: MatSort;
     @ViewChild('secondTableSort', {static: true}) userSort: MatSort;
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: ManagePermissionData, private modelService: ModelService) {
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public data: ManagePermissionData,
+        private modelService: ModelService
+    ) {
         let arrayRoleRefs: Array<RoleRef> | Array<ProcessRoleRef>;
         let arrayUserRefs: Array<UserRef> | Array<ProcessUserRef>;
         if (this.data.type === RoleRefType.TRANSITION) {
@@ -107,6 +111,14 @@ export class DialogManageRolesComponent implements OnInit {
         this.usersDataSource.paginator = this.userPaginator;
         this.dataSource.sort = this.sort;
         this.usersDataSource.sort = this.userSort;
+        this.sort.sort(({
+            id: localStorage.getItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.ROLE_SORT),
+            start: localStorage.getItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.ROLE_DIRECTION)
+        }) as MatSortable);
+        this.userSort.sort(({
+            id: localStorage.getItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_SORT),
+            start: localStorage.getItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_DIRECTION)
+        }) as MatSortable);
     }
 
     setValue($event, id: string, change: string) {
@@ -236,5 +248,15 @@ export class DialogManageRolesComponent implements OnInit {
         if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.ANONYMOUS)) {
             arrayRoleRefs.push(new ProcessRoleRef(Role.ANONYMOUS));
         }
+    }
+
+    sortRoleRefs(sort: Sort): void {
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.ROLE_SORT, sort.active);
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.ROLE_DIRECTION, sort.direction);
+    }
+
+    sortUserRefs(sort: Sort): void {
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_SORT, sort.active);
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_DIRECTION, sort.direction);
     }
 }

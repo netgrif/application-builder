@@ -102,7 +102,7 @@ export const actions: Array<CommandActions> = [
         ]
     },
     {
-        label: 'Datafields',
+        label: 'Data fields',
         badge: 'edit',
         actions: [
             {
@@ -154,6 +154,19 @@ export const actions: Array<CommandActions> = [
                     '}\n'
             },
             {
+                label: 'Change allowed nets',
+                header: 'change <Field f> allowedNets <Closure nets>',
+                action: 'change <datafield> allowedNets { <netIds>; }',
+                description: 'Sets a new map of options to data field f.',
+                example: 'other: f.410001,\n' +
+                    'field: f.field;\n' +
+                    'change field options {\n' +
+                    '    if (other.value == "Real estate")\n' +
+                    '        return field.options + ["cs":"construction site"];\n' +
+                    '    return field.choices;\n' +
+                    '}\n'
+            },
+            {
                 label: 'Change behaviour',
                 header: 'make <Field f>,<Closure behaviour> on <Transition t> when <Closure<Boolean> condition>',
                 action: 'make <datafield>, <behaviour> on <transition> when { <condition> }',
@@ -168,8 +181,27 @@ export const actions: Array<CommandActions> = [
                     '            '
             },
             {
+                label: 'Change multiple behaviour',
+                header: 'make <List<Field> f>,<Closure behaviour> on <List<Transition> t> when <Closure<Boolean> condition>',
+                action: 'make [<datafields>], <behaviour> on ([<transitions>]) when { <condition> }',
+                description: 'Changes behaviour of given data fields f on tasks t, if condition returns true\n' +
+                    'Tasks can be referenced by list of transition references, list of task ids or list of task references',
+                example:
+                    'condition: f.conditionId,\n' +
+                    'text: f.textId,\n' +
+                    'anotherText: f.anotherTextId,\n' +
+                    'transition: t.transitionId,\n' +
+                    'anotherTransition: t.anotherTransitionId;\n' +
+                    'make [text, anotherText], visible on ([transition, anotherTransition]) when { condition.value == true }' +
+                    '---' +
+                    'taskRef: f.taskRef_0;\n' +
+                    'def tasks = [taskService.findOne(taskRef_0.value[0])] as List\n' +
+                    'def field = getFieldOfTask(tasks[0].stringId, "referenced_text")\n' +
+                    'make [field], editable on tasks when { true }'
+            },
+            {
                 label: 'Set datafields by transition',
-                header: 'setData(Transition transition, Map dataSet)',
+                header: 'SetDataEventOutcome setData(Transition transition, Map dataSet)',
                 action: 'setData(<transition>, <dataSet>);',
                 description: 'Sets values of data fields on task of transition in current case. Values are mapped to data fields in dataSet using data fields import Id as key.\n' +
                     '\n',
@@ -182,10 +214,40 @@ export const actions: Array<CommandActions> = [
                     '])'
             },
             {
+                label: 'Set datafields by task',
+                header: 'SetDataEventOutcome setData(Task task, Map dataSet)',
+                action: 'setData(<task>, <dataSet>);',
+                description: 'Sets values of data fields on task. Values are mapped to data fields in dataSet using data fields import Id as key.\n' +
+                    '\n',
+                example:
+                    'taskRef: f.taskRef;' +
+                    'def task = findTask(taskRef.value.first())' +
+                    'setData(task, [\n' +
+                    '    "new_limit": [\n' +
+                    '        "value": "10000",\n' +
+                    '        "type" : "number"\n' +
+                    '    ],\n' +
+                    '])'
+            },
+            {
                 label: 'Set datafields by transitionId',
                 header: 'setData(String transitionId, Case useCase, Map dataSet)',
                 action: 'setData(<transitionId>, <processInstanceId>, <dataSet>);',
                 description: 'Sets values of data fields on task identified by transitionId of given case. Values are mapped to data fields in dataSet using data fields import Id as key.\n' +
+                    '\n',
+                example: 'def usecase = findCase({ it.title.eq("Limits") }).first()\n' +
+                    'setData("edit_limit", usecase, [\n' +
+                    '    "new_limit": [\n' +
+                    '        "value": "10000",\n' +
+                    '        "type" : "number"\n' +
+                    '    ],\n' +
+                    '])'
+            },
+            {
+                label: 'Set datafields by task',
+                header: 'setData(String taskId, Map dataSet)',
+                action: 'setData(<taskId>, <dataSet>);',
+                description: 'Sets values of data fields on task identified by its Id. Values are mapped to data fields in dataSet using data fields import Id as key.\n' +
                     '\n',
                 example: 'def usecase = findCase({ it.title.eq("Limits") }).first()\n' +
                     'setData("edit_limit", usecase, [\n' +
@@ -219,7 +281,26 @@ export const actions: Array<CommandActions> = [
                     'change actual_limit value {\n' +
                     '    data["remote_limit"].value\n' +
                     '}'
-            }
+            },
+            {
+                label: 'Get datafields by transition',
+                header: 'Map<String, Field> getData(Task task)',
+                action: 'getData(<task>);',
+                description: 'Gets all data fields on the task, mapped by its import Id.',
+                example:
+                    'taskRef: f.taskRef;' +
+                    'def task = findTask(taskRef.value.first());' +
+                    'def data = getData(task)',
+            },
+            {
+                label: 'Get datafields by transition',
+                header: 'Map<String, Field> getData(String taskId)',
+                action: 'getData(<taskId>);',
+                description: 'Gets all data fields on the task of transition in the current case, mapped by its import Id.',
+                example:
+                    'taskRef: f.taskRef;' +
+                    'def data = getData(taskRef.value.first())',
+            },
         ]
     },
     {
@@ -228,16 +309,24 @@ export const actions: Array<CommandActions> = [
         actions: [
             {
                 label: 'Create a new instance of process using process identifier',
-                header: 'Case createCase(String identifier, String title = null, String color = "", User author = userService.loggedOrSystem)',
-                action: 'createCase(<processInstanceId>, <title>, <color>, <author>);',
+                header: 'Case createCase(String identifier, String title = null, String color = "", User author = userService.loggedOrSystem, Locale locale = LocaleContextHolder.getLocale())',
+                action: 'createCase(<identifier>, <title>, <color>, <author>, <locale>);',
                 description: 'Create a new instance of the newest version of process identified by the identifier. ' +
-                    'If the title is not specified, nets default case name is used. If the colour is null, the default ' +
-                    'colour is used.\n' +
-                    '\n',
+                    'If the title, color, author, or locale is not specified then the default value will be used',
                 example: 'createCase("create_case_net","Create Case Case","color-fg-amber-500", otherUser);\n' +
                     'createCase("create_case_net","Create Case Case","color-fg-amber-500");\n' +
                     'createCase("create_case_net","Create Case Case");\n' +
                     'createCase("create_case_net");'
+            },
+            {
+                label: 'Create a new instance of process using process reference',
+                header: 'Case createCase(PetriNet net, String title = net.defaultCaseName.getTranslation(locale), String color = "", IUser author = userService.loggedOrSystem, Locale locale = LocaleContextHolder.getLocale())',
+                action: 'createCase(<process>, <title>, <color>, <author>, <locale>);',
+                description: 'Create a new instance of given process. ' +
+                    'If the title, color, author, or locale is not specified then the default value will be used',
+                example:
+                    'def net = useCase.petriNet;' +
+                    'createCase(net);'
             },
             {
                 label: 'Change the property of the case',
@@ -256,21 +345,28 @@ export const actions: Array<CommandActions> = [
         badge: 'task',
         actions: [
             {
+                label: 'Get task Id by transitionId',
+                header: 'String getTaskId(String transitionId, Case aCase = useCase)',
+                action: 'getTaskId(<transitionId>);',
+                description: 'Returns the task Id if task with given tranisitionId exists in case',
+                example: 'def taskId = getTaskId("t1")'
+            },
+            {
                 label: 'Assign Task by transitionId',
-                header: 'Task assignTask(String transitionId, User user = userService.loggedOrSystem)',
+                header: 'Task assignTask(String transitionId, Case aCase = useCase, IUser user = userService.loggedOrSystem)',
                 action: 'assignTask(<transitionId>);',
-                description: 'Assign the task in current case with given transitionId. Optional parameter user identifies actor who will perform assign.',
+                description: 'Assign the task with given transitionId of given case given user. If case or user is not specified the default value will be used.',
                 example: 'selectedUser: f.select_controler;\n' +
                     'if (selectedUser.value) {\n' +
                     '    def user = userService.findById(selectedUser.value.id, false)\n' +
-                    '    assignTask("control", user);\n' +
+                    '    assignTask("control", useCase, user);\n' +
                     '}\n' +
                     '                            '
             },
             {
                 label: 'Assign Task by Task',
-                header: 'Task assignTask(Task task, User user = userService.loggedOrSystem)\n',
-                action: 'assignTask(<transition>);',
+                header: 'Task assignTask(Task task, IUser user = userService.loggedOrSystem)',
+                action: 'assignTask(<task>);',
                 description: 'Assign the task to user. Optional parameter user identifies actor who will perform assign.\n' +
                     '\n',
                 example: 'selectedUser: f.select_controler;\n' +
@@ -284,9 +380,9 @@ export const actions: Array<CommandActions> = [
             },
             {
                 label: 'Assign Task by tasks',
-                header: 'assignTasks(List<Task> tasks, User assignee = userService.loggedOrSystem)\n',
+                header: 'void assignTasks(List<Task> tasks, IUser assignee = userService.loggedOrSystem)',
                 action: 'assignTasks(<tasks>);',
-                description: 'Assign the tasks to user. Optional parameter user identifies actor who will perform assign.\n' +
+                description: 'Assign the tasks to user.' +
                     '\n',
                 example: '// find all my cases and assign all their control tasks to me\n' +
                     'def cases = findCases( { it.author.id.eq(loggedUser().id)) } )\n' +
@@ -296,9 +392,9 @@ export const actions: Array<CommandActions> = [
             },
             {
                 label: 'Cancel Task by transitionId',
-                header: 'cancelTask(String transitionId, User user = userService.loggedOrSystem)\n',
+                header: 'Task cancelTask(String transitionId, Case aCase = useCase, IUser user = userService.loggedOrSystem)',
                 action: 'cancelTask(<transitionId>);',
-                description: 'Cancels the task in current case with given transitionId. Optional parameter user identifies actor who will perform cancel.\n' +
+                description: 'Cancels the task with given transitionId in a case.' +
                     '\n',
                 example: 'def taskId = "work_task";\n' +
                     'def aCase = findCase({ it.author.id.eq(loggedUser().id) })\n' +
@@ -306,7 +402,7 @@ export const actions: Array<CommandActions> = [
             },
             {
                 label: 'Cancel Task by task',
-                header: 'cancelTask(Task task, User user = userService.loggedOrSystem)\n',
+                header: 'Task cancelTask(Task task, IUser user = userService.loggedOrSystem)',
                 action: 'cancelTask(<task>);',
                 description: 'Cancels the provided task. Optional parameter user identifies actor who will perform cancel.\n' +
                     '\n',
@@ -316,7 +412,7 @@ export const actions: Array<CommandActions> = [
             },
             {
                 label: 'Cancel Tasks',
-                header: 'cancelTasks(List<Task> tasks, User user = userService.loggedOrSystem)\n',
+                header: 'void cancelTasks(List<Task> tasks, IUser user = userService.loggedOrSystem)',
                 action: 'cancelTasks(<tasks>);',
                 description: 'Cancels all the provided tasks. Optional parameter user identifies actor who will perform cancel.\n' +
                     '\n',
@@ -326,7 +422,7 @@ export const actions: Array<CommandActions> = [
             },
             {
                 label: 'Finish Task by transitionId',
-                header: 'finishTask(String transitionId, Case aCase = useCase, User user = userService.loggedOrSystem)\n',
+                header: 'void finishTask(String transitionId, Case aCase = useCase, IUser user = userService.loggedOrSystem)',
                 action: 'finishTask(<transitionId>);',
                 description: 'Finish the task in current case with given transitionId. Optional parameter aCase identifies case which the task belongs to. Optional parameter user identifies actor who will perform cancel.\n' +
                     '\n',
@@ -337,7 +433,7 @@ export const actions: Array<CommandActions> = [
             },
             {
                 label: 'Finish Task by task',
-                header: 'finishTask(Task task, User user = userService.loggedOrSystem)\n',
+                header: 'void finishTask(Task task, IUser user = userService.loggedOrSystem)',
                 action: 'finishTask(<task>);',
                 description: 'Finish the provided task. Optional parameter user identifies actor who will perform cancel.\n' +
                     '\n',
@@ -347,7 +443,7 @@ export const actions: Array<CommandActions> = [
             },
             {
                 label: 'Finish Tasks by list of tasks',
-                header: 'finishTasks(List<Task> tasks, User user = userService.loggedOrSystem)\n',
+                header: 'void finishTasks(List<Task> tasks, IUser finisher = userService.loggedOrSystem)',
                 action: 'finishTasks(<tasks>);',
                 description: 'Finish all the provided tasks. Optional parameter user identifies actor who will perform cancel.\n' +
                     '\n',
@@ -410,7 +506,7 @@ export const actions: Array<CommandActions> = [
             },
             {
                 label: 'Find Cases pageable',
-                header: 'List<Case> findCases(Closure<Predicate> predicate, Pageable page) \n',
+                header: 'List<Case> findCases(Closure<Predicate> predicate, Pageable page)',
                 action: 'findCases(<casePredicate>, <page>);',
                 description: 'Finds all the cases that match the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate. Pageable determines the requested page number, page size, sort fields, and sort direction.',
                 example: '// returns the first page of 5 cases sorted by the title\n' +
@@ -435,18 +531,56 @@ export const actions: Array<CommandActions> = [
                 description: 'Finds all tasks that match the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate.\n' +
                     '\n',
                 example: 'def useCase = findCase(...)\n' +
-                    'Task task = findTask( { it.caseId.eq(useCase.stringId) & it.transitionId.eq("<transition>") } );\n' +
-                    '                            '
+                    'Task task = findTask( { it.caseId.eq(useCase.stringId) & it.transitionId.eq("<transition>") } );'
+            },
+            {
+                label: 'Find Tasks with pagination',
+                header: 'List<Task> findTasks(Closure<Predicate> predicate, Pageable pageable)',
+                action: 'findTasks(<taskPredicate>);',
+                description: 'Finds all tasks that match the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate.\n' +
+                    '\n',
+                example: 'def useCase = findCase(...)\n' +
+                    'Task task = findTask( { it.caseId.eq(useCase.stringId) & it.transitionId.eq("<transition>") }, Pageable.ofSize(100));'
             },
             {
                 label: 'Find Task',
-                header: 'Task findTask(Closure<Predicate> predicate)\n',
+                header: 'Task findTask(Closure<Predicate> predicate)',
                 action: 'findTask(<taskPredicate>);',
                 description: 'Finds the first task that matches the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate.',
                 example: 'List<Task> tasks = findTasks( { it.transitionId.eq("edit_limit") } )\n' +
                     '...\n' +
                     'def useCase = findCase(...)\n' +
                     'List<Task> tasks = findTasks( { it.caseId.eq(useCase.stringId) } );'
+            },
+            {
+                label: 'Find Task by Id',
+                header: 'Task findTask(String mongoId)',
+                action: 'findTask(<taskId>);',
+                description: 'Finds task with given id',
+                example:
+                    'taskRef: f.taskRef;' +
+                    'def task = findTask(taskRef.value.first())'
+            },
+            {
+                label: 'Find case in Elasticsearch',
+                header: 'Case findCaseElastic(String query)',
+                action: 'findCaseElastic(<value>);',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Find cases in Elasticsearch',
+                header: 'List<Case> findCasesElastic(String query, Pageable pageable)',
+                action: 'findCasesElastic(<value>, <pageable>);',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Count cases in Elasticsearch',
+                header: 'long countCasesElastic(String query)',
+                action: 'countCasesElastic(<value>);',
+                description: '',
+                example: ''
             }
         ]
     },
@@ -463,20 +597,75 @@ export const actions: Array<CommandActions> = [
     },
     {
         label: 'Roles',
-        badge: 'man',
+        badge: 'people',
         actions: [
             {
                 label: 'Assign Role',
-                header: 'User assignRole(String roleId, User user = userService.loggedUser)\n',
+                header: 'IUser assignRole(String roleMongoId, IUser user = userService.loggedUser)',
                 action: 'assignRole(<roleId>);',
-                description: 'Assigns role identified by roleId to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n' +
-                    '\n',
+                description: 'Assigns role identified by roleId to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n',
                 example: 'transition: t.task;\n' +
                     'assignRole(transition.defaultRoleId);'
             },
             {
+                label: 'Assign Role by import Id and process identifier',
+                header: 'IUser assignRole(String roleId, String netId, IUser user = userService.loggedUser)',
+                action: 'assignRole(<roleId>, <identifier>);',
+                description: 'Assigns role identified by its import Id and netId to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n',
+                example: 'assignRole("role_1", "process_1");'
+            },
+            {
+                label: 'Assign Role by import Id and process',
+                header: 'IUser assignRole(String roleId, PetriNet net, IUser user = userService.loggedUser)',
+                action: 'assignRole(<roleId>, <process>);',
+                description: 'Assigns role identified by its import Id and process reference to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n',
+                example: 'assignRole("role_1", useCase.petriNet);'
+            },
+            {
+                label: 'Assign Role by import Id, process identifier and version',
+                header: 'IUser assignRole(String roleId, String netId, Version version, IUser user = userService.loggedUser)',
+                action: 'assignRole(<roleId>, <process>);',
+                description: 'Assigns role identified by its import Id, process identifier, and version to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n',
+                example: 'assignRole("role_1", useCase.petriNet);'
+            },
+            {
+                label: 'Remove Role',
+                header: 'IUser removeRole(String roleMongoId, IUser user = userService.loggedUser)',
+                action: 'removeRole(<roleId>);',
+                description: 'Removes role identified by roleId to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n',
+                example: 'transition: t.task;\n' +
+                    'removeRole(transition.defaultRoleId);'
+            },
+            {
+                label: 'Remove Role by import Id and process identifier',
+                header: 'IUser removeRole(String roleId, String netId, IUser user = userService.loggedUser)',
+                action: 'removeRole(<roleId>, <identifier>);',
+                description: 'Removes role identified by its import Id and netId to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n',
+                example: 'removeRole("role_1", "process_1");'
+            },
+            {
+                label: 'Remove Role by import Id and process',
+                header: 'IUser removeRole(String roleId, PetriNet net, IUser user = userService.loggedUser)',
+                action: 'removeRole(<roleId>, <process>);',
+                description: 'Removes role identified by its import Id and process reference to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n',
+                example: 'removeRole("role_1", useCase.petriNet);'
+            },
+            {
+                label: 'Remove Role by import Id, process identifier and version',
+                header: 'IUser removeRole(String roleId, String netId, Version version, IUser user = userService.loggedUser)',
+                action: 'removeRole(<roleId>, <identifier>, <version>);',
+                description: 'Removes role identified by its import Id, process identifier, and version to user. User is optional parameter, default value is currently logged user. Returns updated object of user.\n',
+                example: 'removeRole("role_1", useCase.petriNet, new Version(1,2,3));'
+            }
+        ]
+    },
+    {
+        label: 'Users',
+        badge: 'person',
+        actions: [
+            {
                 label: 'Logged User',
-                header: 'User loggedUser()\n',
+                header: 'IUser loggedUser()\n',
                 action: 'loggedUser();\n',
                 description: 'Returns currently logged user.\n' +
                     '\n',
@@ -484,24 +673,174 @@ export const actions: Array<CommandActions> = [
                     'change userField value {\n' +
                     '    return loggedUser()\n' +
                     '}'
+            },
+            // find
+            {
+                label: 'Find by email',
+                header: 'IUser findUserByEmail(String email)',
+                action: 'findUserByEmail(<email>)',
+                description: ' ',
+                example: ' '
+            },
+            {
+                label: 'Find by Id',
+                header: 'IUser findUserById(String id)',
+                action: 'findUserById(<userId>)',
+                description: '',
+                example: ''
+            },
+            // by email
+            {
+                label: 'Change email',
+                header: 'changeUserByEmail (String email) email (Closure<String> cl)',
+                action: 'changeUserByEmail <email> email { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change name',
+                header: 'changeUserByEmail (String email) name (Closure<String> cl)',
+                action: 'changeUserByEmail <email> name { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change surname',
+                header: 'changeUserByEmail (String email) surname (Closure<String> cl)',
+                action: 'changeUserByEmail <email> surname { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change tel',
+                header: 'changeUserByEmail (String email) tel (Closure<String> cl)',
+                action: 'changeUserByEmail <email> tel { <value> }',
+                description: '',
+                example: ''
+            },
+            // by id
+            {
+                label: 'Change email',
+                header: 'changeUser (String id) email (Closure<String> cl)',
+                action: 'changeUser <id> email { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change name',
+                header: 'changeUser (String id) name (Closure<String> cl)',
+                action: 'changeUser <id> name { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change surname',
+                header: 'changeUser (String id) surname (Closure<String> cl)',
+                action: 'changeUser <id> surname { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change tel',
+                header: 'changeUser (String id) tel (Closure<String> cl)',
+                action: 'changeUser <id> tel { <value> }',
+                description: '',
+                example: ''
+            },
+            // by reference
+            {
+                label: 'Change email',
+                header: 'changeUser (IUser user) email (Closure<String> cl)',
+                action: 'changeUser <user> email { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change name',
+                header: 'changeUser (IUser user) name (Closure<String> cl)',
+                action: 'changeUser <user> name { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change surname',
+                header: 'changeUser (IUser user) surname (Closure<String> cl)',
+                action: 'changeUser <user> surname { <value> }',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change tel',
+                header: 'changeUser (IUser user) tel (Closure<String> cl)',
+                action: 'changeUser <user> tel { <value> }',
+                description: '',
+                example: ''
+            },
+            // invite
+            {
+                label: 'Invite by email',
+                header: 'MessageResource inviteUser(String email)',
+                action: 'inviteUser(<email>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Invity by request',
+                header: 'MessageResource inviteUser(NewUserRequest newUserRequest)',
+                action: 'inviteUser(<request>)',
+                description: '',
+                example: ''
+            },
+            // delete
+            {
+                label: 'Delte user by email',
+                header: 'void deleteUser(String email)',
+                action: 'deleteUser(<email>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Delete user by reference',
+                header: 'void deleteUser(IUser user)',
+                action: 'deleteUser(<user>)',
+                description: '',
+                example: ''
+            },
+        ]
+    },
+    {
+        label: 'Frontend functions',
+        badge: 'laptop',
+        actions: [
+            {
+                label: 'Reload task data',
+                header: 'Frontend.reloadTask();',
+                action: 'Frontend.reloadTask();',
+                description: 'Forces web application to reload current task data',
+                example: 'Frontend.reloadTask();'
+            },
+            {
+                label: 'Validate task data',
+                header: 'Frontend.validate(String taskId);',
+                action: 'Frontend.validate(<taskId>);',
+                description: 'Forces web application to validate given task data',
+                example:
+                    'def taskId = useCase.tasks.find { it.transition == "t1" }.task\n' +
+                    'Frontend.validate(taskId);'
+            },
+            {
+                label: 'Redirect to route',
+                header: 'Frontend.redirect(String route);',
+                action: 'Frontend.redirect(<route>);',
+                description: 'Redirects user to the given route. Route must be known path of the web application, external URLs will be ignored.',
+                example: 'Frontend.redirect(\'login\');'
             }
         ]
     },
     {
-        label: 'Integrations & others',
-        badge: 'workspaces',
+        label: 'PDF',
+        badge: 'picture_as_pdf',
         actions: [
-            {
-                label: 'Slovak postal code',
-                action: 'psc(byCode,<value>);',
-                description: 'Calls a web service that will get names of places with code inserted into <value>',
-                example:
-                    'field: f.postal,\n' +
-                    'city: f.city;\n' +
-                    'change city choices {\n' +
-                    '    def postals = psc byCode,field.value;\n' +
-                    '    return postals.collect({it.city}).unique();'
-            },
             {
                 label: 'Generate PDF',
                 header: 'generatePDF(String transitionId, String fileFieldId)',
@@ -510,11 +849,587 @@ export const actions: Array<CommandActions> = [
                 example: 'file_0: f.file_0;\n' +
                     'generatePDF("t1", file_0.importId)'
             },
+            // TODO: NAB-326 add description and examples
+            {
+                label: 'Generate PDF',
+                header: 'void generatePdf(String sourceTransitionId, String targetFileFieldId,\n' +
+                    '                     Case sourceCase = useCase, Case targetCase = useCase, String targetTransitionId = null,\n' +
+                    '                     String template = null, List<String> excludedFields = [], Locale locale = null,\n' +
+                    '                     ZoneId dateZoneId = ZoneId.systemDefault(), Integer sideMargin = 75, Integer titleMargin = 0)',
+                action: '',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Generate PDF',
+                header: 'void generatePdf(Transition sourceTransition, FileField targetFileField, Case sourceCase = useCase, Case targetCase = useCase,\n' +
+                    '                     Transition targetTransition = null, String template = null, List<String> excludedFields = [], Locale locale = null,\n' +
+                    '                     ZoneId dateZoneId = ZoneId.systemDefault(), Integer sideMargin = 75, Integer titleMargin = 0)',
+                action: '',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Generate PDF',
+                header: 'void generatePDF(String sourceTransitionId, String targetFileFieldId,\n' +
+                    '                     Case sourceCase = useCase, Case targetCase = useCase, String targetTransitionId = null,\n' +
+                    '                     String template = null, List<String> excludedFields = [], Locale locale = null,\n' +
+                    '                     ZoneId dateZoneId = ZoneId.systemDefault(), Integer sideMargin = 75, Integer titleMargin = 20)',
+                action: 'generatePDF(<transitionId>, <fieldId>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Generate PDF',
+                header: 'void generatePDF(Transition sourceTransition, FileField targetFileField, Case sourceCase = useCase, Case targetCase = useCase,\n' +
+                    '                     Transition targetTransition = null, String template = null, List<String> excludedFields = [], Locale locale = null,\n' +
+                    '                     ZoneId dateZoneId = ZoneId.systemDefault(), Integer sideMargin = 75, Integer titleMargin = 0)',
+                action: 'generatePDF(<transition>, <field>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Generate PDF',
+                header: 'void generatePdf(String transitionId, FileField fileField, List<String> excludedFields = [])',
+                action: 'generatePDF(<transitionId>, <field>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Generate PDF',
+                header: 'void generatePdf(String transitionId, String fileFieldId, List<String> excludedFields, Case fromCase = useCase, Case saveToCase = useCase)',
+                action: 'generatePDF(<transitionId>, <fieldId>, [<fieldId>]',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Generate PDF',
+                header: 'void generatePdfWithTemplate(String transitionId, String fileFieldId, String template, Case fromCase = useCase, Case saveToCase = useCase)',
+                action: 'generatePdfWithTemplate(<transitionId>, <fieldId>, <filePath>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Generate PDF',
+                header: 'void generatePdfWithLocale(String transitionId, String fileFieldId, Locale locale, Case fromCase = useCase, Case saveToCase = useCase)',
+                action: 'generatePdfWithLocale(<transitionId>, <fieldId>, <locale>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Generate PDF',
+                header: 'void generatePdfWithZoneId(String transitionId, String fileFieldId, ZoneId dateZoneId = ZoneId.systemDefault(), Case fromCase = useCase, Case saveToCase = useCase)',
+                action: 'generatePdfWithZoneId(<transitionId>, <fieldId>)',
+                description: '',
+                example: ''
+            },
+        ]
+    },
+    {
+        label: 'Email',
+        badge: 'email',
+        actions: [
+            {
+                label: 'Send email',
+                header: 'void sendEmail(List<String> to, String subject, String body)',
+                action: 'sendEmail([<email>], <subject>, <body>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Send email',
+                header: 'void sendEmail(List<String> to, String subject, String body, Map<String, File> attachments)',
+                action: 'sendEmail([<email>], <subject>, <body>, [<attachmentName>: <file>])',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Send email',
+                header: 'void sendMail(MailDraft mailDraft)',
+                action: 'sendMail(<mailDraft>)',
+                description: '',
+                example: ''
+            },
+        ]
+    },
+    {
+        label: 'Filters',
+        badge: 'filter_alt',
+        actions: [
+            {
+                label: 'Find filters',
+                header: 'List<Case> findFilters(String userInput)',
+                action: 'findFilters(<value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Find all filters',
+                header: 'List<Case> findAllFilters()',
+                action: 'findAllFilters()',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Export filters',
+                header: 'FileFieldValue exportFilters(Collection<String> filtersToExport)',
+                action: 'exportFilters(<filterIds>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Import filters',
+                header: 'List<String> importFilters()',
+                action: 'importFilters()',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Find default filters',
+                header: 'List<Case> findDefaultFilters()',
+                action: 'findDefaultFilters()',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create case filter',
+                header: 'Case createCaseFilter(def title, String query, List<String> allowedNets, String icon = "", String visibility = DefaultFiltersRunner.FILTER_VISIBILITY_PRIVATE, def filterMetadata = null)',
+                action: 'createCaseFilter(<value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create task filter',
+                header: 'Case createTaskFilter(def title, String query, List<String> allowedNets, String icon = "", String visibility = DefaultFiltersRunner.FILTER_VISIBILITY_PRIVATE, def filterMetadata = null)',
+                action: 'createTaskFilter(<value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create filter',
+                header: 'Case createFilter(def title, String query, String type, List<String> allowedNets, String icon, String visibility, def filterMetadata)',
+                action: 'createFilter(<value>, <value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change filter query',
+                header: 'changeFilter (Case filter) query (Closure cl)',
+                action: 'changeFilter <case> query <closure>',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change filter visibility',
+                header: 'changeFilter (Case filter) visibility (Closure cl)',
+                action: 'changeFilter <case> visibility <closure>',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change filter allowedNets',
+                header: 'changeFilter (Case filter) allowedNets (Closure cl)',
+                action: 'changeFilter <case> allowedNets <closure>',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change filter filterMetadata',
+                header: 'changeFilter (Case filter) filterMetadata (Closure cl)',
+                action: 'changeFilter <case> filterMetadata <closure>',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change filter title',
+                header: 'changeFilter (Case filter) title (Closure cl)',
+                action: 'changeFilter <case> title <closure>',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change filter icon',
+                header: 'changeFilter (Case filter) icon (Closure cl)',
+                action: 'changeFilter <case> icon <closure>',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change filter uri',
+                header: 'changeFilter (Case filter) uri (Closure cl)',
+                action: 'changeFilter <case> uri <closure>',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Delete filter',
+                header: 'def deleteFilter(Case filter)',
+                action: 'deleteFilter(<case>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create filter in menu',
+                header: 'Case createFilterInMenu(String uri, String itemIdentifier, def itemAndFilterName, String filterQuery,\n' +
+                    '                            String filterType, String filterVisibility, List<String> filterAllowedNets = [],\n' +
+                    '                            String itemAndFilterIcon = "filter_none", Map<String, String> itemAllowedRoles = [:],\n' +
+                    '                            Map<String, String> itemBannedRoles = [:], List<String> itemCaseDefaultHeaders = [],\n' +
+                    '                            List<String> itemTaskDefaultHeaders = [], def filterMetadata = null)',
+                action: 'createFilterInMenu(<value>, <value>, <value>, <value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create filter in menu',
+                header: 'Case createFilterInMenu(MenuItemBody body, String filterQuery, String filterType, String filterVisibility,\n' +
+                    '                            List<String> filterAllowedNets = [], def filterMetadata = null)',
+                action: 'createFilterInMenu(<value>, <value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Find filter',
+                header: 'Case findFilter(String name)',
+                action: 'findFilter(<value>)',
+                description: '',
+                example: ''
+            },
+        ]
+    },
+    {
+        label: 'Menu items',
+        badge: 'menu',
+        actions: [
+            {
+                label: 'Create menu item',
+                header: 'Case createMenuItem(String uri, String identifier, def name, String icon = "filter_none", Case filter = null,\n' +
+                    '                        Map<String, String> allowedRoles = [:], Map<String, String> bannedRoles = [:],\n' +
+                    '                        List<String> caseDefaultHeaders = [], List<String> taskDefaultHeaders = [])',
+                action: 'createMenuItem(<value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item allowedRoles',
+                header: 'changeMenuItem (Case item) allowedRoles (Closure cl)',
+                action: 'changeMenuItem <case> allowedRoles <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item bannedRoles',
+                header: 'changeMenuItem (Case item) bannedRoles (Closure cl)',
+                action: 'changeMenuItem <case> bannedRoles <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item caseDefaultHeaders',
+                header: 'changeMenuItem (Case item) caseDefaultHeaders (Closure cl)',
+                action: 'changeMenuItem <case> caseDefaultHeaders <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item taskDefaultHeaders',
+                header: 'changeMenuItem (Case item) taskDefaultHeaders (Closure cl)',
+                action: 'changeMenuItem <case> taskDefaultHeaders <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item filter',
+                header: 'changeMenuItem (Case item) filter (Closure cl)',
+                action: 'changeMenuItem <case> filter <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item uri',
+                header: 'changeMenuItem (Case item) uri (Closure cl)',
+                action: 'changeMenuItem <case> uri <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item title menuIcon',
+                header: 'changeMenuItem (Case item) menuIcon (Closure cl)',
+                action: 'changeMenuItem <case> menuIcon <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item tabIcon',
+                header: 'changeMenuItem (Case item) tabIcon (Closure cl)',
+                action: 'changeMenuItem <case> tabIcon <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item requireTitleInCreation',
+                header: 'changeMenuItem (Case item) requireTitleInCreation (Closure cl)',
+                action: 'changeMenuItem <case> requireTitleInCreation <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item useCustomView',
+                header: 'changeMenuItem (Case item) useCustomView (Closure cl)',
+                action: 'changeMenuItem <case> useCustomView <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Change menu item customViewSelector',
+                header: 'changeMenuItem (Case item) customViewSelector (Closure cl)',
+                action: 'changeMenuItem <case> customViewSelector <closure>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Delete menu item',
+                header: 'deleteMenuItem(Case item)',
+                action: 'deleteMenuItem()',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create menu item',
+                header: 'Case createMenuItem(MenuItemBody body)',
+                action: 'createMenuItem(<value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Move menu item',
+                header: 'void moveMenuItem(Case item, String destUri)',
+                action: 'moveMenuItem(<case>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Duplicate menu item',
+                header: 'Case duplicateMenuItem(Case originItem, I18nString newTitle, String newIdentifier)',
+                action: 'duplicateMenuItem(<case>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Find menu item',
+                header: 'Case findMenuItem(String menuItemIdentifier)',
+                action: 'findMenuItem(<value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Find menu item by uri and name',
+                header: 'Case findMenuItem(String uri, String name)',
+                action: 'findMenuItem(<value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Find menu item by uri and identifier',
+                header: 'Case findMenuItemByUriAndIdentifier(String uri, String identifier)',
+                action: 'findMenuItemByUriAndIdentifier(<value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Exists menu item',
+                header: 'boolean existsMenuItem(String menuItemIdentifier)',
+                action: 'existsMenuItem(<value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Get filter from menu item',
+                header: 'Case getFilterFromMenuItem(Case item)',
+                action: 'getFilterFromMenuItem(<case>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create or update menu item',
+                header: 'Case createOrUpdateMenuItem(String uri, String identifier, def name, String icon = "filter_none", Case filter = null,\n' +
+                    '                                Map<String, String> allowedRoles = [:], Map<String, String> bannedRoles = [:],\n' +
+                    '                                List<String> caseDefaultHeaders = [], List<String> taskDefaultHeaders = [])',
+                action: 'createOrUpdateMenuItem(<value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create or update menu item and filter',
+                header: 'Case createOrUpdateMenuItemAndFilter(String uri, String itemIdentifier, def itemAndFilterName, String filterQuery,\n' +
+                    '                                         String filterType, String filterVisibility, List<String> filterAllowedNets = [],\n' +
+                    '                                         String itemAndFilterIcon = "filter_none", Map<String, String> itemAllowedRoles = [:],\n' +
+                    '                                         Map<String, String> itemBannedRoles = [:], List<String> itemCaseDefaultHeaders = [],\n' +
+                    '                                         List<String> itemTaskDefaultHeaders = [], def filterMetadata = null)',
+                action: 'createOrUpdateMenuItemAndFilter(<value>, <value>, <value>, <value>, <value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create or update menu item',
+                header: 'Case createOrUpdateMenuItem(MenuItemBody body)',
+                action: 'createOrUpdateMenuItemAndFilter(<value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create or update menu item and filter',
+                header: 'Case createOrUpdateMenuItemAndFilter(MenuItemBody body, String filterQuery, String filterType, String filterVisibility,\n' +
+                    '                                         List<String> filterAllowedNets = [], def filterMetadata = null)',
+                action: 'createOrUpdateMenuItemAndFilter(<value>, <value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create or ignore menu item',
+                header: 'Case createOrIgnoreMenuItem(MenuItemBody body)',
+                action: 'createOrUpdateMenuItemAndFilter(<value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create or ignore menu item and filter',
+                header: 'Case createOrIgnoreMenuItemAndFilter(MenuItemBody body, String filterQuery, String filterType, String filterVisibility,\n' +
+                    '                                         List<String> filterAllowedNets = [], def filterMetadata = null)',
+                action: 'createOrUpdateMenuItemAndFilter(<value>, <value>, <value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create or ignore menu item and filter',
+                header: 'Case updateMenuItem(Case item, MenuItemBody body)',
+                action: 'updateMenuItem(<value>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Default fitler metadata',
+                header: 'static Map defaultFilterMetadata(String type) ',
+                action: 'defaultFilterMetadata(<value>)',
+                description: '',
+                example: ''
+            }
+        ]
+    },
+    {
+        label: 'Import & export',
+        badge: 'import_export',
+        actions: [
+            {
+                label: 'Export cases to file',
+                header: 'File exportCasesToFile(Closure<Predicate> predicate, String pathName, ExportDataConfig config = null, int pageSize = exportConfiguration.getMongoPageSize())',
+                action: 'exportCasesToFile(<predicate>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Export cases to stream',
+                header: 'OutputStream exportCases(Closure<Predicate> predicate, File outFile, ExportDataConfig config = null, int pageSize = exportConfiguration.getMongoPageSize())',
+                action: 'exportCases(<predicate>, <file>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Export cases to file as user',
+                header: 'File exportCasesToFile(List<CaseSearchRequest> requests, String pathName, ExportDataConfig config = null,\n' +
+                    '                           LoggedUser user = userService.loggedOrSystem.transformToLoggedUser(),\n' +
+                    '                           int pageSize = exportConfiguration.getMongoPageSize(),\n' +
+                    '                           Locale locale = LocaleContextHolder.getLocale(),\n' +
+                    '                           Boolean isIntersection = false)',
+                action: 'exportCasesToFile(<requests>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Export cases to stream as user',
+                header: 'OutputStream exportCases(List<CaseSearchRequest> requests, File outFile, ExportDataConfig config = null,\n' +
+                    '                             LoggedUser user = userService.loggedOrSystem.transformToLoggedUser(),\n' +
+                    '                             int pageSize = exportConfiguration.getMongoPageSize(),\n' +
+                    '                             Locale locale = LocaleContextHolder.getLocale(),\n' +
+                    '                             Boolean isIntersection = false)',
+                action: 'exportCasesToFile(<requests>, <file>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Export tasks to file',
+                header: 'File exportTasksToFile(Closure<Predicate> predicate, String pathName, ExportDataConfig config = null)',
+                action: 'exportTasksToFile(<predicate>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Export tasks to stream',
+                header: 'OutputStream exportTasks(Closure<Predicate> predicate, File outFile, ExportDataConfig config = null, int pageSize = exportConfiguration.getMongoPageSize())',
+                action: 'exportTasks(<predicate>, <file>)',
+                description: '',
+                example: ''
+            }, {
+                label: 'Export tasks to file as user',
+                header: 'File exportTasksToFile(List<ElasticTaskSearchRequest> requests, String pathName, ExportDataConfig config = null,\n' +
+                    '                           LoggedUser user = userService.loggedOrSystem.transformToLoggedUser(),\n' +
+                    '                           int pageSize = exportConfiguration.getMongoPageSize(),\n' +
+                    '                           Locale locale = LocaleContextHolder.getLocale(),\n' +
+                    '                           Boolean isIntersection = false)',
+                action: 'exportTasksToFile(<requests>, <value>)',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Export tasks to stream as user',
+                header: 'OutputStream exportTasks(List<ElasticTaskSearchRequest> requests, File outFile, ExportDataConfig config = null,\n' +
+                    '                             LoggedUser user = userService.loggedOrSystem.transformToLoggedUser(),\n' +
+                    '                             int pageSize = exportConfiguration.getMongoPageSize(),\n' +
+                    '                             Locale locale = LocaleContextHolder.getLocale(),\n' +
+                    '                             Boolean isIntersection = false)',
+                action: 'exportTasks(<requests>, <file>)',
+                description: '',
+                example: ''
+            },
+        ]
+    },
+    {
+        label: 'Uri',
+        badge: 'link',
+        actions: [
+            {
+                label: 'Get Uri node',
+                header: 'getUri(String uri)',
+                action: '',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Create Uri node',
+                header: 'createUri(String uri, UriContentType type)',
+                action: '',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Move Uri node',
+                header: 'moveUri(String uri, String dest)',
+                action: '',
+                description: '',
+                example: ''
+            },
+            {
+                label: 'Make url',
+                header: 'String makeUrl(String publicViewUrl = publicViewProperties.url, String identifier)',
+                action: 'makeUrl(<value>)',
+                description: '',
+                example: ''
+            },
+
         ]
     },
     {
         label: 'Custom functions',
         badge: 'functions',
         actions: []
-    }
+    },
 ];

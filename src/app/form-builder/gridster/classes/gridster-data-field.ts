@@ -24,7 +24,6 @@ export class GridsterDataField implements GridsterItem {
             this._dataRef.layout = new DataLayout();
         }
         if (!this._dataVariable.init) {
-            // TODO: NAB-337: check
             this._dataVariable.init = new I18nWithDynamic('');
         }
     }

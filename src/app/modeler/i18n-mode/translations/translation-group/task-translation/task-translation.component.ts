@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ModelService} from '../../../../services/model.service';
 import {I18nTranslations, PetriNet} from '@netgrif/petriflow';
-import {Locale} from '../../../classes/locale';
+import {ModelService} from '../../../../services/model/model.service';
 
 @Component({
     selector: 'nab-task-translation',

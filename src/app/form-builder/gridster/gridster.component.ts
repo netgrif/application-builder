@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@an
 import {GridsterConfig} from 'angular-gridster2';
 import {GridsterService} from './gridster.service';
 import {FieldListService} from '../field-list/field-list.service';
-import {ModelService} from '../../modeler/services/model.service';
+import {ModelService} from '../../modeler/services/model/model.service';
 import {Router} from '@angular/router';
 import {GridsterDataField} from './classes/gridster-data-field';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';

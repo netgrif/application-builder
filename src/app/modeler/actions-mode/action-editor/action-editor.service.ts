@@ -52,7 +52,7 @@ export class ActionEditorService {
         this._currentlyEdited = transition;
 
         // transition actions
-        this.editedActions.push(this.createActionGroup(transition.getEvents(), 'Transition', ActionType.TRANSITION));
+        this.editedActions.push(this.createActionGroup(transition.eventSource.getEvents(), 'Transition', ActionType.TRANSITION));
 
         // dataref actions
         let combinedDataRefs: Array<DataRef> = [];
@@ -143,7 +143,7 @@ export class ActionEditorService {
             });
         });
         model.getTransitions().forEach(t => {
-            t.getEvents().forEach(e => {
+            t.eventSource.getEvents().forEach(e => {
                 e.preActions.forEach(a => this.updateLastId(a.id));
                 e.postActions.forEach(a => this.updateLastId(a.id));
             });
@@ -233,7 +233,7 @@ export class ActionEditorService {
                 (this._currentlyEdited as PetriNet).addProcessEvent(event as ProcessEvent);
                 break;
             case ActionType.TRANSITION:
-                (this._currentlyEdited as Transition).addEvent(event as TransitionEvent);
+                (this._currentlyEdited as Transition).eventSource.addEvent(event as TransitionEvent);
                 break;
             case ActionType.DATA:
                 (this._currentlyEdited as DataVariable).addEvent(event as DataEvent);
@@ -256,7 +256,7 @@ export class ActionEditorService {
             case ActionType.PROCESS:
                 return (this._currentlyEdited as PetriNet).getProcessEvent(event as ProcessEventType);
             case ActionType.TRANSITION:
-                return (this._currentlyEdited as Transition).getEvent(event as TransitionEventType);
+                return (this._currentlyEdited as Transition).eventSource.getEvent(event as TransitionEventType);
             case ActionType.DATA:
                 return (this._currentlyEdited as DataVariable).getEvent(event as DataEventType);
             case ActionType.DATAREF:

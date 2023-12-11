@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Edit task</h2>
+<mat-dialog-content>
+    <mat-form-field fxFlex>
+        <mat-label>Id</mat-label>
+        <input type="text" matInput [(ngModel)]="transition.transition.id" [formControl]="form">
+        <mat-error *ngIf="form.errors && form.errors.required">Id is required</mat-error>
+        <mat-error *ngIf="form.errors && form.errors.validUnique">Transition with given id already exists</mat-error>
+    </mat-form-field>
+    <mat-form-field fxFlex>
+        <mat-label>Label</mat-label>
+        <input type="text" matInput [(ngModel)]="transition.transition.label.value">
+    </mat-form-field>
+    <nab-material-icon-picker [(icon)]="transition.transition.icon"></nab-material-icon-picker>
+    <mat-form-field fxFlex>
+        <mat-label>Assign policy</mat-label>
+        <mat-select [(value)]="transition.transition.assignPolicy">
+            <mat-option *ngFor="let opt of assignPolicies" [value]="opt">
+                {{opt}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field fxFlex>
+        <mat-label>Finish policy</mat-label>
+        <mat-select [(value)]="transition.transition.finishPolicy">
+            <mat-option *ngFor="let opt of finishPolicies" [value]="opt">
+                {{opt}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <nab-trigger-tree [triggers]="transition.transition.triggers">
+    </nab-trigger-tree>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-stroked-button color="primary" (click)="openFormBuilder()" mat-dialog-close>
+        <mat-icon>view_list</mat-icon>
+        <span>Form</span>
+    </button>
+    <button mat-stroked-button color="primary" (click)="openActions()" mat-dialog-close>
+        <mat-icon>code</mat-icon>
+        <span>Actions ({{this.modelService.numberOfTransitionActions(transition.transition)}})</span>
+    </button>
+    <button mat-stroked-button color="primary" (click)="openPermissions()" mat-dialog-close>
+        <mat-icon>code</mat-icon>
+        <span>Permissions ({{this.modelService.numberOfTransitionPermissions(transition.transition)}})</span>
+    </button>
+    <button mat-flat-button color="primary" [mat-dialog-close]="transition" [disabled]="form.invalid">
+        <mat-icon>done</mat-icon>
+        <span>Save</span>
+    </button>
+</mat-dialog-actions>

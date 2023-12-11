@@ -1,7 +1,7 @@
 <mat-list class="noselect">
     <h2 class="field-list-heading">Data fields</h2>
 
-    <mat-expansion-panel #existingFieldPanel class="field-list-expansion-panel">
+    <mat-expansion-panel #existingFieldPanel class="field-list-expansion-panel expansion-panel-compact">
         <mat-expansion-panel-header class="field-list-expansion-header">
             <mat-panel-title class="field-list-expansion-title">
                 Existing fields
@@ -17,11 +17,12 @@
             </mat-icon>
         </div>
         <ng-container *ngFor="let item of existingDataFields">
-            <mat-list-item class="field-list-mat-list-item" *ngIf="!isPlaced(item) && containsSearchExpression(item)"
+            <mat-list-item class="field-list-mat-list-item mat-list-item-compact" *ngIf="!isPlaced(item) && containsSearchExpression(item)"
                            draggable="true"
                            (dragstart)="dragStartHandlerExisting($event, item)"
                            (click)="addExistingField(item)">
                 <div class="field-list-mat-list-item-title" matTooltip="{{item.title?.value}} [{{item.id}}]">
+                    <mat-icon class="icon-color" (click)="deleteField(item, $event)">delete</mat-icon>
                     <mat-icon class="icon-color">drag_indicator</mat-icon>
                     <span>
                         {{item.title?.value}} [{{item.id}}]
@@ -32,7 +33,6 @@
         <ng-container *ngFor="let item of existingDataFields">
             <mat-list-item *ngIf="isPlaced(item) && containsSearchExpression(item)">
                 <div class="field-list-mat-list-item-disabled-title" matTooltip="{{item.title?.value}} [{{item.id}}]">
-                    <mat-icon class="icon-color">drag_indicator</mat-icon>
                     <span>{{item.title?.value}} [{{item.id}}]</span>
                 </div>
             </mat-list-item>

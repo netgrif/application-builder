@@ -3,10 +3,10 @@ import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {DialogRefactorComponent} from './dialog-refactor.component';
 import {MaterialImportModule} from '../../material-import/material-import.module';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ModelService} from '../../modeler/services/model.service';
-import {Model} from '@netgrif/petriflow';
+import {ModelService} from '../../modeler/services/model/model.service';
 import {Subject} from 'rxjs';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {PetriNet} from '@netgrif/petriflow';
 
 describe('DialogRefactorComponent', () => {
     let component: DialogRefactorComponent;
@@ -42,5 +42,5 @@ describe('DialogRefactorComponent', () => {
 });
 
 class MockModelService {
-    model = new Model();
+    model = new PetriNet();
 }

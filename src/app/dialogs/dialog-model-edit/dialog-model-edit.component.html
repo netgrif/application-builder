@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Edit model</h2>
+<mat-dialog-content>
+    <mat-form-field fxFlex>
+        <mat-label>Id</mat-label>
+        <input type="text" matInput [(ngModel)]="model.model.id" [formControl]="idCtrl">
+        <mat-error *ngIf="idCtrl.errors && idCtrl.errors.required">Id is required</mat-error>
+    </mat-form-field>
+    <mat-form-field fxFlex>
+        <mat-label>Title</mat-label>
+        <input type="text" matInput [(ngModel)]="model.model.title.value" [formControl]="titleCtrl">
+        <mat-error *ngIf="titleCtrl.errors && titleCtrl.errors.required">Id is required</mat-error>
+    </mat-form-field>
+    <mat-form-field fxFlex>
+        <mat-label>Initials</mat-label>
+        <input type="text" matInput [(ngModel)]="model.model.initials" [formControl]="initialsCtrl">
+        <mat-error *ngIf="initialsCtrl.errors && initialsCtrl.errors.required">Id is required</mat-error>
+    </mat-form-field>
+    <nab-material-icon-picker [(icon)]="model.model.icon"></nab-material-icon-picker>
+    <mat-slide-toggle class="full-width" [(ngModel)]="model.model.defaultRole">
+        Default role
+    </mat-slide-toggle>
+    <mat-slide-toggle class="full-width" [(ngModel)]="model.model.anonymousRole">
+        Anonymous role
+    </mat-slide-toggle>
+    <mat-form-field fxFlex>
+        <mat-label>Default case name</mat-label>
+        <input type="text" matInput [(ngModel)]="model.model.caseName.value">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-stroked-button color="primary" (click)="openActions()" mat-dialog-close>
+        <mat-icon>code</mat-icon>
+        <span>Actions ({{this.modelService.numberOfActions()}})</span>
+    </button>
+    <button mat-stroked-button color="primary" (click)="openPermissions()" mat-dialog-close>
+        <mat-icon>code</mat-icon>
+        <span>Permissions ({{this.modelService.numberOfPermissions()}})</span>
+    </button>
+    <button mat-flat-button color="primary" [mat-dialog-close]="model"
+            [disabled]="idCtrl.invalid || initialsCtrl.invalid || titleCtrl.invalid">
+        <mat-icon>done</mat-icon>
+        <span>Save</span>
+    </button>
+</mat-dialog-actions>

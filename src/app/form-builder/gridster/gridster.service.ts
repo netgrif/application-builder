@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from 'angular-gridster2';
-import {ModelService} from '../../modeler/services/model.service';
+import {ModelService} from '../../modeler/services/model/model.service';
 import {GridsterDataField} from './classes/gridster-data-field';
 import {
     Appearance,
@@ -180,7 +180,6 @@ export class GridsterService {
                 dataVariable.inits = [];
             }
         } else {
-            // TODO: NAB-337: check
             dataVariable.init = new I18nWithDynamic('', '', false);
         }
         this.modelService.model.addData(dataVariable);

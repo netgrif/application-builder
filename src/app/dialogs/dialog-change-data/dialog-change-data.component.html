@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Change data values</h2>
+<mat-dialog-content>
+    <mat-form-field fxFlex *ngFor="let data of dataSet">
+        <mat-label>{{data.id}}</mat-label>
+        <input type="number" step="1" matInput [(ngModel)]="data.value">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-flat-button color="primary" [mat-dialog-close]="dataSet">
+        <mat-icon>done</mat-icon>
+        <span>Save</span>
+    </button>
+</mat-dialog-actions>

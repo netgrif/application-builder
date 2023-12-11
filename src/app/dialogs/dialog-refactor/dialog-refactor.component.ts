@@ -1,9 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
-import {ModelService} from '../../modeler/services/model.service';
+import {ModelService} from '../../modeler/services/model/model.service';
 import escapeStringRegexp from 'escape-string-regexp';
-import {Action, Event, PetriNet} from '@netgrif/petriflow';
+import {Action, Event} from '@netgrif/petriflow';
 
 export interface DialogRefactorData {
     originalId: string;
@@ -19,8 +19,11 @@ export class DialogRefactorComponent implements OnInit {
     formControl: FormControl;
     result: string;
 
-    constructor(public dialogRef: MatDialogRef<DialogRefactorComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogRefactorData,
-                protected modelService: ModelService) {
+    constructor(
+        public dialogRef: MatDialogRef<DialogRefactorComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: DialogRefactorData,
+        protected modelService: ModelService
+    ) {
         this.formControl = new FormControl('', [
             Validators.required,
             Validators.pattern('^[a-zA-Z0-9-_]+$'),
@@ -90,7 +93,7 @@ export class DialogRefactorComponent implements OnInit {
                     this.refactorEventActions(event);
                 }));
             });
-            trans.getEvents().forEach(event => {
+            trans.eventSource.getEvents().forEach(event => {
                 this.refactorEventActions(event);
             });
             trans.userRefs.forEach(ref => {
@@ -98,14 +101,8 @@ export class DialogRefactorComponent implements OnInit {
                     ref.id = this.formControl.value;
                 }
             });
-            // TODO: check
-            this.changedIfExist(this.modelService.graphicModel.transitions
-                .find(t => t.transition.id === trans.id)?.data
-                .find(data => data.dataVariable.id === this.data.originalId)?.dataVariable);
         });
         this.changedIfExist(refactoredModel.getUserRef(this.data.originalId));
-        // TODO: check
-        // this._fieldListService.existingFieldEvents.next(new GridsterExistingFieldEvent(EventType.REFACTORED, this.data.originalId, this.formControl.value));
         this.dialogRef.close();
     }
 

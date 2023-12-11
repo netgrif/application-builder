@@ -1,12 +1,11 @@
 import {Component, Input, OnDestroy, OnInit, QueryList, TemplateRef, ViewChildren} from '@angular/core';
 import {GridsterDataField} from '../classes/gridster-data-field';
-import {DataType, Expression, I18nWithDynamic} from '@netgrif/petriflow';
-import {DataField, EnumerationField, I18nField, MultichoiceField} from '@netgrif/components-core';
+import {DataRefBehavior, DataType, I18nWithDynamic} from '@netgrif/petriflow';
+import {DataField, EnumerationField, MultichoiceField} from '@netgrif/components-core';
 import {GridsterService} from '../gridster.service';
 import {GridsterFieldToEngineFieldService} from '../../../modeler/gridster-field-to-engine-field.service';
 import {Subscription} from 'rxjs';
 import moment from 'moment';
-import {I18nFieldValue} from '@netgrif/components-core/lib/data-fields/i18n-field/models/i18n-field-value';
 
 @Component({
     selector: 'nab-gridster-datafield',
@@ -33,15 +32,12 @@ export class GridsterDataFieldComponent implements OnInit, OnDestroy {
         this._gridsterSubscription = this._gridsterService.selectedDataFieldChangeStream.subscribe(this.updateEngineField.bind(this));
         this.engineField.valueChanges().subscribe(value => {
             if (value && value instanceof Array) {
-                // TODO: NAB-337: check
                 this.dataField.dataVariable.inits = value.map(init => new I18nWithDynamic(init as string));
             } else if (this.dataField.dataVariable.type === DataType.DATETIME || this.dataField.dataVariable.type === DataType.DATE) {
-                // TODO: NAB-337: check
                 if (value) {
                     this.dataField.dataVariable.init = new I18nWithDynamic(moment(value).toISOString());
                 }
             } else if (!(value instanceof Object) && value || this.dataField.dataVariable.type === DataType.BOOLEAN) {
-                // TODO: NAB-337: check
                 this.dataField.dataVariable.init = new I18nWithDynamic(value.toString());
             }
         });
@@ -71,5 +67,13 @@ export class GridsterDataFieldComponent implements OnInit, OnDestroy {
         }
         this.engineField.update();
         // TODO this.engineField.validations
+    }
+
+    public isHidden(): boolean {
+        return this.dataField.dataRef.logic.behavior === DataRefBehavior.HIDDEN;
+    }
+
+    public name(): string {
+        return `${this.dataField?.dataVariable?.title?.value} [${this.dataField?.dataVariable?.id}]`;
     }
 }

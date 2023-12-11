@@ -1,8 +1,9 @@
-import {Component} from '@angular/core';
-import {ModelService} from '../../modeler/services/model.service';
-import {DataVariable} from '@netgrif/petriflow';
-import {MatDialogRef} from '@angular/material/dialog';
+import {Component, Inject} from '@angular/core';
+import {DataVariable, Place} from '@netgrif/petriflow';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ModelerConfig} from '../../modeler/modeler-config';
+import {ReferenceDialogData} from '../../modeler/edit-mode/domain/reference-dialog-data';
+import {ModelService} from '../../modeler/services/model/model.service';
 
 @Component({
     selector: 'nab-dialog-arc-attach',
@@ -10,20 +11,29 @@ import {ModelerConfig} from '../../modeler/modeler-config';
     styleUrls: ['./dialog-arc-attach.component.scss']
 })
 export class DialogArcAttachComponent {
-    dataSource: Array<DataVariable>;
+    dataSource: Array<DataVariable> | Array<Place>;
     length: number;
     pageSize: number;
     pageIndex: number;
     pageSizeOptions: Array<number> = [10, 20, 50, 100];
-    selectedItem: DataVariable;
+    selectedItem: DataVariable | Place;
 
-    constructor(private modelService: ModelService, public dialogRef: MatDialogRef<DialogArcAttachComponent>) {
+    constructor(
+        private modelService: ModelService,
+        public dialogRef: MatDialogRef<DialogArcAttachComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: ReferenceDialogData
+    ) {
         this.pageSize = 20;
         this.pageIndex = 0;
-        this.dataSource = this.modelService.model.getDataSet().filter(data => ModelerConfig.VARIABLE_ARC_DATA_TYPES.includes(data.type));
+        if (data.dialogType === 'data') {
+            this.dataSource = this.modelService.model.getDataSet().filter(dataField => ModelerConfig.VARIABLE_ARC_DATA_TYPES.includes(dataField.type));
+        } else {
+            this.dataSource = this.modelService.model.getPlaces();
+        }
         this.length = this.dataSource.length;
-        if (this.modelService.graphicModel.arcForData.arc.reference) {
-            this.selectedItem = this.modelService.model.getData(this.modelService.graphicModel.arcForData.arc.reference);
+        if (!!this.data.arcReference.reference) {
+            this.selectedItem = this.data.dialogType === 'data' ? this.modelService.model.getData(this.data.arcReference.reference)
+                : this.modelService.model.getPlace(this.data.arcReference.reference);
         }
         this.dialogRef.beforeClosed().subscribe(() => {
             this.dialogRef.close(this.selectedItem);
@@ -38,13 +48,13 @@ export class DialogArcAttachComponent {
         this.dataSource = this.modelService.model.getDataSet().slice(firstCut, secondCut);
     }
 
-    setArcVariability(item: DataVariable) {
-        if (!item.init) {
+    setArcVariability(item: DataVariable | Place) {
+        if (item instanceof DataVariable && !item.init) {
             alert('Empty init.');
             return;
         }
-        const vaha = parseInt(item.init.value, 10);
-        if (vaha < 0) {
+        const weight = item instanceof DataVariable ? parseInt(item.init.value, 10) : item.marking;
+        if (weight < 0) {
             alert('A negative number. Cannot change the value of arc weight.');
             return;
         }
@@ -61,5 +71,9 @@ export class DialogArcAttachComponent {
         } else {
             return false;
         }
+    }
+
+    isData(): boolean {
+        return this.data.dialogType === 'data';
     }
 }

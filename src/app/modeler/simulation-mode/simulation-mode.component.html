@@ -1,7 +1,3 @@
-<div id="canvas-wrapper" class="canvas-wrapper">
-  <svg id="canvas" class="canvas"
-       #canvas
-       (mousedown)="doMouseDown($event)"
-       (mousemove)="doMouseMove($event)"
-  ></svg>
-</div>
+<div class="outer">
+  <petriflow-svg-canvas [gridConfiguration]="canvasService.gridConfiguration"></petriflow-svg-canvas>
+</div>>

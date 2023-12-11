@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {I18nModeService} from './i18n-mode.service';
+import {ComponentPortal} from '@angular/cdk/portal';
+import {I18nTool} from './classes/i18n-tool';
 
 @Component({
     selector: 'nab-i18n-mode',
@@ -8,17 +10,16 @@ import {I18nModeService} from './i18n-mode.service';
 })
 export class I18nModeComponent implements OnInit {
 
-    constructor(private i18nService: I18nModeService) {
-    }
+    selectedToolPortal: ComponentPortal<any>;
 
-    languagesSelected(): boolean {
-        return this.i18nService.whichButton.getValue() === 'languages';
-    }
-
-    translationsSelected(): boolean {
-        return this.i18nService.whichButton.getValue() === 'translations';
+    constructor(
+        private i18nService: I18nModeService
+    ) {
     }
 
     ngOnInit(): void {
+        this.i18nService.activeToolSubject.subscribe((selected: I18nTool) => {
+            this.selectedToolPortal = selected.portal;
+        });
     }
 }

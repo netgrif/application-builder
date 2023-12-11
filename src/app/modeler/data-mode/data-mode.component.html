@@ -2,9 +2,8 @@
     <div fxFlex="35" class="border-right height-56">
         <mat-action-list matSort (matSortChange)="sortData($event)">
             <div mat-subheader class="header-bottom-border">
-                <p fxFlex="35" mat-sort-header="id"><strong>ID</strong></p>
-                <p fxFlex="45" mat-sort-header="name" fxHide.lt-xl>Name</p>
-                <div fxFlex="45" fxHide fxShow.lt-xl></div>
+                <p fxFlex="40" mat-sort-header="id"><strong>ID</strong></p>
+                <p fxFlex mat-sort-header="name">Name</p>
                 <button mat-icon-button class="button-line" matTooltip="Add data variable" (click)="addDataVariable()">
                     <mat-icon>add</mat-icon>
                 </button>
@@ -12,13 +11,10 @@
             <mat-list-item class="item-bottom-border" [ngClass]="{'data-selected': selected && selected.id === item.id}"
                            *ngFor="let item of dataSource; let i = index" (click)="setData(item)"
                            (mouseenter)="showIcons($event)" (mouseleave)="hideIcons($event)">
-                <p fxFlex="35" fxHide.lt-xl class="text-ellipsis" matTooltip="{{item.id}}"><strong>{{item.id}}</strong>
+                <p fxFlex="40" class="text-ellipsis" matTooltip="{{item.id}}">
+                    <strong>{{item.id}}</strong>
                 </p>
-                <p fxFlex="35" class="text-ellipsis" fxHide fxShow.lt-xl matTooltip="{{getItemTitle(item)}}">
-                    <strong>{{item.id}}</strong></p>
-                <p fxFlex="45" class="text-ellipsis" fxHide.lt-xl
-                   matTooltip="{{getItemTitle(item)}}">{{getItemTitle(item)}}</p>
-                <div fxFlex="45" fxHide fxShow.lt-xl></div>
+                <p class="text-ellipsis" matTooltip="{{getItemTitle(item)}}">{{getItemTitle(item)}}</p>
                 <button mat-icon-button matTooltip="Delete data field" (click)="openDialog($event, item)"
                         class="data-edit-list-icon-hidden data-edit-list-icon">
                     <mat-icon>delete</mat-icon>
@@ -104,7 +100,7 @@
                 <div fxFlex="20">Description</div>
 
                 <mat-form-field fxFlex="25">
-                    <input matInput [ngModel]="getItemDesc(itemData)" (change)="setValue($event, itemData, 'desc')">
+                    <textarea matInput [ngModel]="getItemDesc(itemData)" (change)="setValue($event, itemData, 'desc')"></textarea>
                 </mat-form-field>
 
                 <div fxFlex="2.5"></div>
@@ -236,49 +232,6 @@
 
                 <div fxFlex="2.5"></div>
             </div>
-            <!--            <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="isOptionField(itemData.type)">-->
-            <!--                <div fxFlex="2.5"></div>-->
-            <!--                <div fxFlex="20">-->
-            <!--                    Is Init Dynamic?-->
-            <!--                </div>-->
-            <!--                <div fxFlex="25">-->
-            <!--                    <mat-checkbox [ngModel]="getItemInitDynamic(itemData)"-->
-            <!--                                  (change)="setValue($event, itemData, 'dynamic-init')"></mat-checkbox>-->
-            <!--                </div>-->
-            <!--                <div fxFlex="2.5"></div>-->
-            <!--                <div *ngIf="itemData.init?.dynamic" fxFlex="50" fxLayout="column">-->
-            <!--                    <div class="margin-html">-->
-            <!--                        <div *ngIf="itemData.inits?.length > 0">-->
-            <!--                            <div *ngFor="let init of itemData.inits; let i = index">-->
-            <!--                                <mat-form-field class=" margin-right8px" fxFlex="90">-->
-            <!--                                    &lt;!&ndash; TODO: fix expression result type &ndash;&gt;-->
-            <!--                                    <input matInput (change)="setValue($event, itemData, 'inits', i)" type="text" [value]="init.expression">-->
-            <!--                                </mat-form-field>-->
-            <!--                                <button mat-icon-button (click)="deleteInit(i)" fxFlex="10">-->
-            <!--                                    <mat-icon>delete</mat-icon>-->
-            <!--                                </button>-->
-            <!--                            </div>-->
-            <!--                        </div>-->
-            <!--                        <div fxLayoutAlign="center center" *ngIf="itemData.inits.length === 0"-->
-            <!--                             class="no-options">-->
-            <!--                            <span>Empty</span>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                    <button mat-stroked-button class="button-text" (click)="addInit()">-->
-            <!--                        <mat-icon>add</mat-icon>-->
-            <!--                        Add init-->
-            <!--                    </button>-->
-            <!--                </div>-->
-            <!--                <div *ngIf="!itemData.init?.dynamic" fxFlex="50">-->
-            <!--                    <div fxFlex="5"></div>-->
-            <!--                    <div fxFlex="40">Init Value</div>-->
-            <!--                    <mat-form-field fxFlex="50" *ngIf="itemData.type !== 'taskRef'">-->
-            <!--                        <input matInput [ngModel]="getItemInitExpression(itemData)"-->
-            <!--                               (change)="setValue($event, itemData, 'init')">-->
-            <!--                    </mat-form-field>-->
-            <!--                    <div fxFlex="5"></div>-->
-            <!--                </div>-->
-            <!--            </div>-->
 
             <div fxLayout="row wrap" fxLayoutAlign="start center"
                  *ngIf="itemData.type === 'caseRef' || itemData.type === 'filter'">

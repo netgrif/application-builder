@@ -3,7 +3,6 @@ import {NestedTreeControl} from '@angular/cdk/tree';
 import {LeafNode, TreeNode} from './action-editor/classes/leaf-node';
 import {ActionChangedEvent} from './action-editor/action-editor-list/action-editor-list.component';
 import {ActionEditorTreeService} from './action-editor/action-editor-tree.service';
-import {ModelService} from '../services/model.service';
 import {ActionsModeService} from './actions-mode.service';
 import {
     DataVariable,
@@ -19,13 +18,17 @@ import {timer} from 'rxjs';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {MatSelectionListChange} from '@angular/material/list';
-import {PetriNet} from '../classes/petri-net';
 import {MasterItem} from './action-editor/classes/master-item';
-import {ActionMode} from './action-mode.enum';
 import {SelectedTransitionService} from '../selected-transition.service';
 import {actions} from './action-editor/classes/command-action';
 import {DialogDeleteComponent} from '../../dialogs/dialog-delete/dialog-delete.component';
 import {MatDialog} from '@angular/material/dialog';
+import {DataActionsTool} from './data-actions-tool';
+import {TransitionActionsTool} from './transition-actions-tool';
+import {ProcessActionsTool} from './process-actions-tool';
+import {RoleActionsTool} from './role-actions-tool';
+import {FunctionsTool} from './functions-tool';
+import {ModelService} from '../services/model/model.service';
 
 export interface Scope {
     viewValue: string;
@@ -47,7 +50,6 @@ export class ActionsModeComponent {
     dataArray: Array<DataVariable> | Array<Transition> | Array<MasterItem> | Array<Role> | Array<PetriflowFunction>;
     selected: Transition | DataVariable | MasterItem | Role | PetriflowFunction;
     drawerOpened: boolean;
-    mode: ActionMode;
     functionScopes: Array<Scope> = [
         {viewValue: 'Process', value: FunctionScope.PROCESS},
         {viewValue: 'Namespace', value: FunctionScope.NAMESPACE},
@@ -59,39 +61,43 @@ export class ActionsModeComponent {
     public treeControl = new NestedTreeControl<TreeNode>(node => node.children);
     public dataSource = new MatTreeNestedDataSource<TreeNode>();
 
-    constructor(private modelService: ModelService, private actionsModeService: ActionsModeService,
-                private actionEditorService: ActionEditorService, private actionEditorTreeService: ActionEditorTreeService,
-                private transitionService: SelectedTransitionService, private dialog: MatDialog) {
+    constructor(
+        private modelService: ModelService,
+        private actionsModeService: ActionsModeService,
+        private actionEditorService: ActionEditorService,
+        private actionEditorTreeService: ActionEditorTreeService,
+        private transitionService: SelectedTransitionService,
+        private transitionActionsTool: TransitionActionsTool,
+        private dialog: MatDialog
+    ) {
         // MODEL
         setTimeout(() => {
             if (this.modelService.model === undefined) {
                 this.modelService.model = new PetriflowPetriNet();
-                this.modelService.graphicModel = new PetriNet(this.modelService.model);
             }
             // DATA VARIABLES
-            this.actionsModeService.eventData.subscribe(item => {
+            this.actionsModeService.activeToolSubject.subscribe(tool => {
                 this.pageSizeList = 20;
                 this.pageIndexList = 0;
-                this.mode = item as ActionMode;
-                if (item === ActionMode.DATA) {
+                if (tool.id === DataActionsTool.ID) {
                     this.dataArray = this.modelService.model.getDataSet();
                     this.lengthList = this.dataArray.length;
                     this.dataSourceList = this.modelService.model.getDataSet().slice(0, this.pageSizeList);
-                } else if (item === ActionMode.TRANSITION) {
+                } else if (tool.id === TransitionActionsTool.ID) {
                     this.dataArray = this.modelService.model.getTransitions();
                     this.lengthList = this.dataArray.length;
                     const transitionIndex = this.dataArray.findIndex(t => t.id === transitionService.id);
                     this.pageIndexList = transitionIndex > 0 ? Math.floor(transitionIndex / this.pageSizeList) : 0;
                     this.dataSourceList = this.modelService.model.getTransitions().slice(this.pageIndexList * this.pageSizeList, (this.pageIndexList + 1) * this.pageSizeList);
-                } else if (item === ActionMode.PROCESS_AND_CASE) {
+                } else if (tool.id === ProcessActionsTool.ID) {
                     this.dataArray = this.createProcessAndCaseMasterItems();
                     this.lengthList = 2;
                     this.dataSourceList = this.dataArray;
-                } else if (item === ActionMode.ROLES) {
+                } else if (tool.id === RoleActionsTool.ID) {
                     this.dataArray = this.modelService.model.getRoles();
                     this.lengthList = this.dataArray.length;
                     this.dataSourceList = this.modelService.model.getRoles().slice(0, this.pageSizeList);
-                } else if (item === ActionMode.FUNCTIONS) {
+                } else if (tool.id === FunctionsTool.ID) {
                     this.dataArray = this.modelService.model.functions;
                     this.lengthList = this.dataArray.length;
                     this.dataSourceList = this.modelService.model.functions.slice(0, this.pageSizeList);
@@ -102,7 +108,7 @@ export class ActionsModeComponent {
             timer().subscribe(_ => {
                 const transitionId = this.transitionService.id;
                 if (transitionId) {
-                    this.actionsModeService.eventData.next(ActionMode.TRANSITION);
+                    this.actionsModeService.activate(transitionActionsTool);
                     timer(100).subscribe(__ => {
                         let foundTransition;
                         this.dataSourceList.forEach(item => {
@@ -114,7 +120,6 @@ export class ActionsModeComponent {
                             this.setData(foundTransition);
                         }
                     });
-                    // TODO: check
                     this.transitionService.id = undefined;
                 }
             });
@@ -135,7 +140,7 @@ export class ActionsModeComponent {
         this.pageSizeList = e.pageSize;
         const firstCut = e.pageIndex * e.pageSize;
         const secondCut = firstCut + e.pageSize;
-        if (this.actionsModeService.eventData.getValue() !== ActionMode.PROCESS_AND_CASE) {
+        if (this.actionsModeService.activeTool.id !== ProcessActionsTool.ID) {
             this.dataSourceList = this.dataArray.slice(firstCut, secondCut);
         }
     }
@@ -243,13 +248,13 @@ export class ActionsModeComponent {
         const secondCut = firstCut + this.pageSizeList;
 
         if (!sort.active || sort.direction === '') {
-            if (this.actionsModeService.eventData.getValue() === ActionMode.DATA) {
+            if (this.actionsModeService.activeTool.id === DataActionsTool.ID) {
                 this.dataArray = this.modelService.model.getDataSet();
                 this.dataSourceList = this.dataArray.slice(firstCut, secondCut);
-            } else if (this.actionsModeService.eventData.getValue() === ActionMode.TRANSITION) {
+            } else if (this.actionsModeService.activeTool.id === TransitionActionsTool.ID) {
                 this.dataArray = this.modelService.model.getTransitions();
                 this.dataSourceList = this.dataArray.slice(firstCut, secondCut);
-            } else if (this.actionsModeService.eventData.getValue() === ActionMode.ROLES) {
+            } else if (this.actionsModeService.activeTool.id === RoleActionsTool.ID) {
                 this.dataArray = this.modelService.model.getRoles();
                 this.dataSourceList = this.dataArray.slice(firstCut, secondCut);
             }
@@ -308,7 +313,7 @@ export class ActionsModeComponent {
     }
 
     isFunctionsModeSelected(): boolean {
-        return this.mode === ActionMode.FUNCTIONS;
+        return this.actionsModeService.activeTool.id === 'functions';
     }
 
     isFunctionSelected(): boolean {

@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {ModelService} from '../../modeler/services/model.service';
+import {ModelService} from '../../modeler/services/model/model.service';
 import {GridsterService} from '../gridster/gridster.service';
 import {Router} from '@angular/router';
 import {FieldListService} from './field-list.service';
@@ -10,6 +10,7 @@ import {MatExpansionPanel} from '@angular/material/expansion';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 import {GridsterItem} from 'angular-gridster2';
+import {DialogDeleteComponent} from '../../dialogs/dialog-delete/dialog-delete.component';
 
 export interface Data {
     title: string;
@@ -38,7 +39,6 @@ export class FieldListComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
-        document.getElementById('ctxMenu').style.visibility = 'hidden';
         this.gridsterService.selectedDataField = undefined;
         this.gridsterService.onNewFieldPlaced.subscribe(value => {
             this.updateExistingFields();
@@ -155,5 +155,16 @@ export class FieldListComponent implements OnInit, AfterViewInit {
             cols: meta.cols
         } as GridsterItem);
         this.gridsterService.options.api.optionsChanged();
+    }
+
+    deleteField(item: DataVariable, event: MouseEvent): void {
+        event.stopPropagation();
+        const dialogRef = this.dialog.open(DialogDeleteComponent);
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.modelService.removeDataVariable(item);
+                this.existingDataFields.splice(this.existingDataFields.indexOf(item),1);
+            }
+        });
     }
 }

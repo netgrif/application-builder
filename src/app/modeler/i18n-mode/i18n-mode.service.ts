@@ -1,22 +1,46 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {Locale} from './classes/locale';
-import {BehaviorSubject} from 'rxjs';
-import {ModelService} from '../services/model.service';
 import {DataType, DataVariable, I18nString, I18nTranslations, I18nWithDynamic} from '@netgrif/petriflow';
 import {I18nStringKeyTemplate} from './translations/i18n-string-key-template';
 import {Locales} from './classes/locales';
+import {ModeService} from '../control-panel/modes/mode-component/mode.service';
+import {Mode} from '../control-panel/modes/mode';
+import {ControlPanelButton} from '../control-panel/control-panel-button';
+import {ControlPanelIcon} from '../control-panel/control-panel-icon';
+import {TutorialService} from '../../tutorial/tutorial-service';
+import {ToolGroup} from '../control-panel/tools/tool-group';
+import {TranslationsTool} from './translations/translations-tool';
+import {LanguagesTool} from './languages/languages-tool';
+import {Tool} from '../control-panel/tools/tool';
+import {ModelService} from '../services/model/model.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class I18nModeService {
-
-    whichButton: BehaviorSubject<string>;
+export class I18nModeService extends ModeService<Tool> {
 
     constructor(
-        private modelService: ModelService
+        private modelService: ModelService,
+        private tutorialService: TutorialService,
+        private parentInjector: Injector,
+        private translationsTool: TranslationsTool,
+        private languagesTool: LanguagesTool
     ) {
-        this.whichButton = new BehaviorSubject('languages');
+        super();
+        this.mode = new Mode(
+            'i18n',
+            new ControlPanelButton(
+                new ControlPanelIcon('translate'),
+                'Internationalization view'
+            ),
+            './i18n',
+            '/modeler/i18n',
+            this.tutorialService.i18n,
+            this.parentInjector
+        );
+        this.tools = [
+            new ToolGroup<Tool>(languagesTool, translationsTool)
+        ];
     }
 
     get locales(): Array<Locale> {
@@ -53,7 +77,7 @@ export class I18nModeService {
         // Task
         model.getTransitions().forEach(task => {
             this.checkI18n(task.label, I18nStringKeyTemplate.task.title(task.id), translations);
-            task.getEvents().forEach(event => {
+            task.eventSource.getEvents().forEach(event => {
                 this.checkI18n(event.message, I18nStringKeyTemplate.task.event.message(task.id, event.id), translations);
                 this.checkI18n(event.title, I18nStringKeyTemplate.task.event.title(task.id, event.id), translations);
             });

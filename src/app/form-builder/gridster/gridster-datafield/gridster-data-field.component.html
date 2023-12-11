@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="start center" class="gridster-item-content min-row-height" [ngSwitch]="dataField.dataVariable.type">
+<div fxLayout="row" fxLayoutAlign="start center" class="gridster-item-content min-row-height" [ngSwitch]="dataField.dataVariable.type" *ngIf="!isHidden()">
     <nc-boolean-field *ngSwitchCase="DataType.BOOLEAN" [dataField]="engineField" [taskOffset]="0" fxFlex>
     </nc-boolean-field>
 
@@ -38,8 +38,12 @@
     <nc-button-field *ngSwitchCase="DataType.BUTTON" [dataField]="engineField" [taskOffset]="0" fxFlex>
     </nc-button-field>
 
-    <nc-i18n-field *ngSwitchCase="'i18n'" [dataField]="engineField" [taskOffset]="0" fxFlex>
+    <nc-i18n-field *ngSwitchCase="DataType.I18N" [dataField]="engineField" [taskOffset]="0" fxFlex>
     </nc-i18n-field>
 
     <span *ngSwitchDefault class="placeholder-text">Placeholder for {{dataField.dataVariable.type}} with id '{{dataField.dataVariable?.id}}'</span>
+</div>
+<div *ngIf="isHidden()" fxLayout="row" fxLayoutAlign="center center" class="gridster-item-content min-row-height hidden-field">
+    <mat-icon>visibility_off</mat-icon>
+    <span>{{name()}}</span>
 </div>

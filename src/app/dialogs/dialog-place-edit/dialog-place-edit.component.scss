@@ -1,0 +1,18 @@
+mat-dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+mat-dialog-actions {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+button {
+    padding-right: 8px;
+    padding-left: 4px;
+
+    mat-icon {
+        padding-right: 2px;
+    }
+}

@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{data.type === 'transition' ? 'Transition' : 'Process'}} Permissions</h1>
 <div mat-dialog-content>
     <div> Role Permissions
-        <table mat-table #firstTableSort="matSort" matSort [dataSource]="dataSource" class="table-right-padding">
+        <table mat-table #firstTableSort="matSort" matSort [dataSource]="dataSource" (matSortChange)="sortRoleRefs($event)" class="table-right-padding">
             <caption></caption>
 
             <!-- Id Column -->
@@ -147,7 +147,7 @@
                        showFirstLastButtons></mat-paginator>
     </div>
     <div> User List Permissions
-        <table mat-table #secondTableSort="matSort" matSort [dataSource]="usersDataSource" class="table-right-padding">
+        <table mat-table #secondTableSort="matSort" matSort [dataSource]="usersDataSource" (matSortChange)="sortUserRefs($event)" class="table-right-padding">
             <caption></caption>
 
             <!-- Id Column -->

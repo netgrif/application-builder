@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ImportService} from '@netgrif/petriflow';
 import {ModelerTabsService} from './services/modeler-tabs.service';
+import {ModelImportService} from './model-import-service';
 
 @Injectable({
     providedIn: 'root'
@@ -10,16 +10,14 @@ export class MortgageService {
 
     constructor(
         private _http: HttpClient,
-        private _importService: ImportService,
-        private _modelerTabsService: ModelerTabsService
+        private _importService: ModelImportService,
     ) {
     }
 
     loadModel() {
         this._http.get('assets/mortgage_simple.xml', {responseType: 'text'})
             .subscribe(data => {
-                const modelResult = this._importService.parseFromXml(data);
-                this._modelerTabsService.openTab.next(modelResult.model);
+                this._importService.importFromXml(data);
             });
     }
 }

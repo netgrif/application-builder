@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {MortgageService} from '../modeler/mortgage.service';
 import {Router} from '@angular/router';
-import {CanvasService} from '../modeler/services/canvas.service';
-import {ModelService} from '../modeler/services/model.service';
 import {TutorialStep} from './tutorial-step';
+import {ModelService} from '../modeler/services/model/model.service';
 
 @Injectable({
     providedIn: 'root'
@@ -21,11 +20,16 @@ export class TutorialService {
     dataEditor: TutorialStep;
     actions: TutorialStep;
     i18n: TutorialStep;
+    bug: TutorialStep;
     steps: Array<string>;
     onClose: () => void;
     mortgageLoaded: boolean;
 
-    constructor(private mortgageService: MortgageService, private router: Router, private canvasService: CanvasService, private modelService: ModelService) {
+    constructor(
+        private mortgageService: MortgageService,
+        private router: Router,
+        private modelService: ModelService
+    ) {
         this.welcome = TutorialStep.of(
             'welcome',
             'Welcome to the Netgrif Application Builder',
@@ -58,7 +62,7 @@ export class TutorialService {
         this.simulator = TutorialStep.of(
             'simulator',
             'Process Simulation',
-            'In Process Simulation you can simulate modeled processes by executing sequences of tasks.', // TODO: task events
+            'In Process Simulation you can simulate modeled processes by executing sequences of tasks or task events.',
             () => {
                 this.router.navigate(['/modeler/data']);
             },
@@ -153,6 +157,16 @@ export class TutorialService {
             },
             'right'
         );
+        this.bug = TutorialStep.of(
+            'bug',
+            'Bug report',
+            'You can use our service desk to report any bug you encounter.',
+            () => {
+            },
+            () => {
+            },
+            'right'
+        );
         this.steps = [
             this.welcome.step,
             this.modeler.step,
@@ -165,11 +179,12 @@ export class TutorialService {
             this.youtube.step,
             this.github.step,
             this.mortgage.step,
+            this.bug.step
         ];
         this.onClose = () => {
             this.router.navigate(['/modeler']);
             if (this.mortgageLoaded) {
-                this.canvasService.deleteModel();
+                this.modelService.model = this.modelService.newModel();
             }
         };
     }

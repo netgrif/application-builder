@@ -9,12 +9,16 @@ import {ResizableModule} from 'angular-resizable-element';
 import {tokenProvider} from './definitions/tokens';
 import {actionCompletionProvider} from './definitions/completion-provider';
 import {ActionEditorMenuComponent} from './action-editor-menu/action-editor-menu.component';
-import {ActionEditorMenuDescriptionComponent} from './action-editor-menu/action-editor-menu-description/action-editor-menu-description.component';
+import {
+    ActionEditorMenuDescriptionComponent
+} from './action-editor-menu/action-editor-menu-description/action-editor-menu-description.component';
 import {MaterialImportModule} from '../../../material-import/material-import.module';
 import {ActionEditorComponent} from './action-editor/action-editor.component';
-import {ActionEditorMenuItemComponent} from './action-editor-menu/action-editor-menu-item/action-editor-menu-item.component';
-import { SafeHtmlPipe } from './action-editor-menu/action-editor-menu-item/safe-html.pipe';
-import { FunctionEditorComponent } from './function-editor/function-editor.component';
+import {
+    ActionEditorMenuItemComponent
+} from './action-editor-menu/action-editor-menu-item/action-editor-menu-item.component';
+import {SafeHtmlPipe} from './action-editor-menu/action-editor-menu-item/safe-html.pipe';
+import {FunctionEditorComponent} from './function-editor/function-editor.component';
 import {editor, languages} from 'monaco-editor';
 
 export function onMonacoLoad() {
