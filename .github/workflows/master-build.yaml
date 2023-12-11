@@ -1,32 +1,32 @@
 name: Master Build
 on:
-    push:
-        branches: [ master ]
+  push:
+    branches: [ master ]
 jobs:
-    build:
-        name: Build and update doc
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v4
-                with:
-                    fetch-depth: 0
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            -   name: Setup Node.js
-                uses: actions/setup-node@v3
-                with:
-                    node-version: 18
-            -   run: npm i --legacy-peer-deps
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm i --legacy-peer-deps
 
-            -   name: Test
-#                run: npm run full-test
-                run: npm run lint && npm run build
+      - name: Test
+        #                run: npm run full-test
+        run: npm run lint && npm run build
 
-#            -   name: Edit Path
-#                run: |
-#                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info
-#                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info
-            -   name: SonarCloud scan
-                uses: SonarSource/sonarcloud-github-action@master
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #            -   name: Edit Path
+      #                run: |
+      #                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info
+      #                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info
+      - name: SonarCloud scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

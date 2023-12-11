@@ -1,6 +1,6 @@
 {
   "name": "@netgrif/application-builder",
-  "version": "3.3.4",
+  "version": "1.0.0",
   "description": "Netgrif Application Builder for building, configuring and modeling applications for Application Engine.",
   "homepage": "https://builder.netgrif.com",
   "license": "SEE LICENSE IN LICENSE FILE",

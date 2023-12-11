@@ -1,81 +1,88 @@
 name: Publish a release
 on:
-    release:
-        types: [ published ]
+  release:
+    types: [ published ]
 jobs:
-    publish-docker:
-        name: Docker build image and publish
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
+  publish-docker:
+    name: Docker build image and publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
-        steps:
-            -   name: Checkout repository
-                uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            -   name: Setup Node.js
-                uses: actions/setup-node@v3
-                with:
-                    node-version: 18
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-            -   name: Log in to Docker Hub
-                uses: docker/login-action@v1
-                with:
-                    username: ${{ secrets.DOCKER_USERNAME }}
-                    password: ${{ secrets.DOCKER_AUTH_TOKEN }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_TOKEN }}
 
-            -   name: Read package.json
-                uses: zvonimirsun/read-package-version-actions@v2
-                id: getVersion
+      - name: Read package.json
+        uses: zvonimirsun/read-package-version-actions@v2
+        id: getVersion
 
-            -   name: Push Version ${{ steps.getVersion.outputs.version }}
-                uses: docker/build-push-action@v5
-                with:
-                    push: true
-                    tags: netgrif/application-builder:${{ steps.getVersion.outputs.version }}
+      - name: Push Version ${{ steps.getVersion.outputs.version }}
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: netgrif/application-builder:${{ steps.getVersion.outputs.version }}
 
-            -   name: Push Latest
-                if: ${{ !contains(steps.getVersion.outputs.version, '-') }}
-                uses: docker/build-push-action@v5
-                with:
-                    push: true
-                    tags: netgrif/application-builder:latest
+      - name: Push Latest
+        if: ${{ !contains(steps.getVersion.outputs.version, '-') }}
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: netgrif/application-builder:latest
 
-    publish-assets:
-        name: Upload Release Assets
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-            packages: write
-            id-token: write
-            security-events: write
-        steps:
-            -   uses: actions/checkout@v4
+      - name: Push Next
+        if: ${{ contains(steps.getVersion.outputs.version, '-') }}
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: netgrif/application-builder:next
 
-            -   name: Setup Node.js
-                uses: actions/setup-node@v3
-                with:
-                    node-version: 18
+  publish-assets:
+    name: Upload Release Assets
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
 
-            -   name: Read package.json
-                uses: zvonimirsun/read-package-version-actions@v2
-                id: getVersion
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-            -   name: Build
-                run: |
-                    npm i --legacy-peer-deps
-                    npm run build
+      - name: Read package.json
+        uses: zvonimirsun/read-package-version-actions@v2
+        id: getVersion
 
-            -   name: Build project
-                run: |
-                    zip -r netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip target/application-builder
+      - name: Build
+        run: |
+          npm i --legacy-peer-deps
+          npm run build
 
-            -   name: Upload binaries to release
-                uses: svenstaro/upload-release-action@v2
-                with:
-                    repo_token: ${{ secrets.GITHUB_TOKEN }}
-                    file: netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip
-                    asset_name: netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip
-                    tag: ${{ github.ref }}
-                    overwrite: true
+      - name: Build project
+        run: |
+          zip -r netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip target/application-builder
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip
+          asset_name: netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip
+          tag: ${{ github.ref }}
+          overwrite: true
