@@ -9,7 +9,7 @@ import {
     DataType,
     DataVariable,
     Expression,
-    I18nString, I18nWithDynamic,
+    I18nString,
     Icon,
     IconType,
     Option,
@@ -107,8 +107,8 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         }
 
         this.gridsterService.selectedDataFieldStream.subscribe(value => {
-            if (this.gridsterService.selectedDataField?.dataVariable?.init?.value) {
-                this.formControlRef.patchValue(this.gridsterService.selectedDataField.dataVariable.init.value);
+            if (this.gridsterService.selectedDataField?.dataVariable?.init?.expression) {
+                this.formControlRef.patchValue(this.gridsterService.selectedDataField.dataVariable.init.expression);
             } else {
                 this.formControlRef.reset();
             }
@@ -121,7 +121,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
             tap(value => {
                 if (value === '' || value === undefined) {
                     if (this.gridsterService.selectedDataField?.dataVariable?.init) {
-                        this.gridsterService.selectedDataField.dataVariable.init.value = '';
+                        this.gridsterService.selectedDataField.dataVariable.init.expression = '';
                     }
                 }
             }),
@@ -369,8 +369,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     }
 
     selectAuto(key: string) {
-        // TODO: NAB-337: check
-        this.gridsterService.selectedDataField.dataVariable.init = new I18nWithDynamic(key, '', false);
+        this.gridsterService.selectedDataField.dataVariable.init = new Expression(key, false);
     }
 
     public renderSelection = (key) => {
@@ -468,15 +467,14 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     }
 
     setBooleanValue(event) {
-        this.dataVariable.init.value = event.checked.toString();
+        this.dataVariable.init.expression = event.checked.toString();
     }
 
     changeInitsValue(inits: Array<string>) {
-        // TODO: NAB-337: check
-        this.dataVariable.inits = inits.map(initKey => new I18nWithDynamic(initKey));
+        this.dataVariable.inits = inits.map(initKey => new Expression(initKey));
     }
 
     getInitsValue(): Array<string> {
-        return this.dataVariable.inits.map(initKey => initKey.value);
+        return this.dataVariable.inits.map(initKey => initKey.expression);
     }
 }

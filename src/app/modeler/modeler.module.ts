@@ -54,6 +54,7 @@ import {
     TaskTranslationComponent
 } from './i18n-mode/translations/translation-group/task-translation/task-translation.component';
 import {NgxDropzoneModule} from 'ngx-dropzone';
+import { BpmnModeEditorComponent } from './edit-mode/bpmn-mode/bpmn-mode-editor/bpmn-mode-editor.component';
 
 @NgModule({
     declarations: [
@@ -84,7 +85,8 @@ import {NgxDropzoneModule} from 'ngx-dropzone';
         I18nFieldComponent,
         DataTranslationComponent,
         RoleTranslationComponent,
-        TaskTranslationComponent
+        TaskTranslationComponent,
+        BpmnModeEditorComponent
     ],
     exports: [
         ActionEditorModule

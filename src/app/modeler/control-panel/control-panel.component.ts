@@ -19,6 +19,7 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Transition} from '../classes/transition/transition';
 import {Place} from '../classes/place/place';
 import {ActionEditorService} from '../actions-mode/action-editor/action-editor.service';
+import {BpmnEditService} from '../edit-mode/bpmn-mode/bpmn-edit.service';
 
 @Component({
     selector: 'nab-control-panel',
@@ -38,7 +39,7 @@ export class ControlPanelComponent implements AfterViewInit {
                 private importService: ImportService, public dialog: MatDialog, private router: Router, private http: HttpClient,
                 private actionsModeService: ActionsModeService, public i18nModeService: I18nModeService,
                 private tutorialService: TutorialService, private simulService: SimulationModeService, private _snackBar: MatSnackBar,
-                public fastPnService: FastPnService, private actionEditorService: ActionEditorService) {
+                public fastPnService: FastPnService, private actionEditorService: ActionEditorService, private bpmnEditService: BpmnEditService) {
         this.importModel = new EventEmitter<void>();
         this.modelService.whichButton.subscribe(obj => this.whichButton = obj);
         this.router.events.subscribe(() => {
@@ -174,6 +175,7 @@ export class ControlPanelComponent implements AfterViewInit {
         this.modelService.pocetmousedown = 0;
         this.modelService.pocetmousedownright = 0;
         this.canvasService.alignElements();
+        console.log('shutdownFastPN was called')
     }
 
     removeLastElement() {
@@ -212,23 +214,28 @@ export class ControlPanelComponent implements AfterViewInit {
     importBpmn(event) {
         const file = event.target.files[0];
         const reader = new FileReader();
-        reader.onload = () => {
-            this.http.post('https://bpmn2pn.netgrif.cloud/bpmn2pn/', reader.result, {
-                headers: {
-                    'Content-Type': 'text/xml;charset=US-ASCII',
-                },
-                responseType: 'text'
-            }).pipe().subscribe(value => {
-                const fileInput = document.getElementById('otvorSuborBpmn') as HTMLInputElement;
-                fileInput.value = '';
-                const petriNetResult = this.importService.parseFromXml(value);
-                this.saveModel(petriNetResult.model);
-                this.router.navigate(['/modeler']);
-            }, (error: HttpErrorResponse) => {
-                this._snackBar.open(error.message, 'X');
-            });
-        };
-        reader.readAsText(file);
+        reader.readAsText(file)
+        reader.onloadend = () => {
+            this.bpmnEditService.importXml(reader.result as string)
+        }
+
+        // reader.onload = () => {
+        //     this.http.post('https://bpmn2pn.netgrif.cloud/bpmn2pn/', reader.result, {
+        //         headers: {
+        //             'Content-Type': 'text/xml;charset=US-ASCII',
+        //         },
+        //         responseType: 'text'
+        //     }).pipe().subscribe(value => {
+        //         const fileInput = document.getElementById('otvorSuborBpmn') as HTMLInputElement;
+        //         fileInput.value = '';
+        //         const petriNetResult = this.importService.parseFromXml(value);
+        //         this.saveModel(petriNetResult.model);
+        //         this.router.navigate(['/modeler']);
+        //     }, (error: HttpErrorResponse) => {
+        //         this._snackBar.open(error.message, 'X');
+        //     });
+        // };
+        // reader.readAsText(file);
     }
 
     sideNav() {
@@ -290,5 +297,9 @@ export class ControlPanelComponent implements AfterViewInit {
         this.modelService.model = this.simulService.originalModel.getValue().clone();
         this.canvasService.renderModel(this.modelService.model);
         this.canvasService.reset();
+    }
+
+    get bpmnService() {
+        return this.bpmnEditService;
     }
 }

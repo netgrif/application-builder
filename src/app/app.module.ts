@@ -29,11 +29,23 @@ import {I18nModeComponent} from './modeler/i18n-mode/i18n-mode.component';
 import {DialogDeadNetComponent} from './dialogs/dialog-dead-net/dialog-dead-net.component';
 import { AppRoutingModule } from './app-routing.module';
 import { DialogPlaceRefDeleteComponent } from './dialogs/dialog-place-ref-delete/dialog-place-ref-delete.component';
+import {BpmnModeEditorComponent} from './modeler/edit-mode/bpmn-mode/bpmn-mode-editor/bpmn-mode-editor.component';
+import {BpmnEditService} from './modeler/edit-mode/bpmn-mode/bpmn-edit.service';
 
 const appRoutes: Routes = [
     {
         path: 'modeler', component: ModelerComponent, children: [
-            {path: '', component: EditModeComponent},
+            {path: '', component: EditModeComponent, canDeactivate: [BpmnEditService]},
+            {path: 'simulation', component: SimulationModeComponent},
+            {path: 'data', component: DataModeComponent},
+            {path: 'roles', component: RoleModeComponent},
+            {path: 'actions', component: ActionsModeComponent},
+            {path: 'i18n', component: I18nModeComponent},
+        ]
+    },
+    {
+        path: 'bpmn', component: ModelerComponent, children: [
+            {path: '', component: BpmnModeEditorComponent},
             {path: 'simulation', component: SimulationModeComponent},
             {path: 'data', component: DataModeComponent},
             {path: 'roles', component: RoleModeComponent},

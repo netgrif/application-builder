@@ -93,7 +93,7 @@ export class GridsterFieldToEngineFieldService {
         return new TextField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            dataField.dataVariable.init?.value,
+            dataField.dataVariable.init?.expression,
             this.buildBehavior(dataField),
             dataField.dataVariable.placeholder?.value,
             dataField.dataVariable.desc?.value,
@@ -108,7 +108,7 @@ export class GridsterFieldToEngineFieldService {
         return new BooleanField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            dataField.dataVariable.init?.value === 'true',
+            dataField.dataVariable.init?.expression === 'true',
             this.buildBehavior(dataField),
             dataField.dataVariable.placeholder?.value,
             dataField.dataVariable.desc?.value,
@@ -122,7 +122,7 @@ export class GridsterFieldToEngineFieldService {
         return new NumberField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            +dataField.dataVariable.init?.value as number,
+            +dataField.dataVariable.init?.expression as number,
             this.buildBehavior(dataField),
             [],
             dataField.dataVariable.placeholder?.value,
@@ -140,7 +140,7 @@ export class GridsterFieldToEngineFieldService {
         return new EnumerationField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            dataField.dataVariable.init?.value,
+            dataField.dataVariable.init?.expression,
             this.buildOptions(dataField),
             this.buildBehavior(dataField),
             dataField.dataVariable.placeholder?.value,
@@ -157,7 +157,7 @@ export class GridsterFieldToEngineFieldService {
         return new DynamicEnumerationField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            dataField.dataVariable.init?.value,
+            dataField.dataVariable.init?.expression,
             this.buildOptions(dataField),
             this.buildBehavior(dataField),
             dataField.dataVariable.placeholder?.value,
@@ -174,7 +174,7 @@ export class GridsterFieldToEngineFieldService {
         return new MultichoiceField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            dataField.dataVariable.inits?.map(i => i.value),
+            dataField.dataVariable.inits?.map(i => i.expression),
             this.buildOptions(dataField),
             this.buildBehavior(dataField),
             dataField.dataVariable.placeholder?.value,
@@ -191,7 +191,7 @@ export class GridsterFieldToEngineFieldService {
         return new DateField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            dataField.dataVariable.init.value === '' ? undefined : moment(dataField.dataVariable.init.value),
+            dataField.dataVariable.init.expression === '' ? moment() : moment(dataField.dataVariable.init.expression),
             this.buildBehavior(dataField),
             dataField.dataVariable.placeholder?.value,
             dataField.dataVariable.desc?.value,
@@ -205,7 +205,7 @@ export class GridsterFieldToEngineFieldService {
         return new DateTimeField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            dataField.dataVariable.init.value === '' ? undefined : moment(dataField.dataVariable.init.value),
+            dataField.dataVariable.init.expression === '' ? moment() : moment(dataField.dataVariable.init.expression),
             this.buildBehavior(dataField),
             dataField.dataVariable.placeholder?.value,
             dataField.dataVariable.desc?.value,
@@ -295,7 +295,7 @@ export class GridsterFieldToEngineFieldService {
         return new FilterField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
-            dataField.dataVariable.init?.value,
+            dataField.dataVariable.init?.expression,
             undefined,
             undefined,
             this.buildBehavior(dataField),
@@ -312,7 +312,7 @@ export class GridsterFieldToEngineFieldService {
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
             {
-                defaultValue: dataField.dataVariable.init.value,
+                defaultValue: dataField.dataVariable.init.expression,
                 translations: {}
             } as I18nFieldValue,
             {

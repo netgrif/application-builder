@@ -5,6 +5,8 @@ import format from 'xml-formatter';
 import {CanvasService} from './canvas.service';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogDeadNetComponent} from '../../dialogs/dialog-dead-net/dialog-dead-net.component';
+import {BpmnEditService} from '../edit-mode/bpmn-mode/bpmn-edit.service';
+import {EditModeComponent} from "../edit-mode/edit-mode.component";
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +20,7 @@ export class ModelExportService {
         private _exportService: ExportService,
         private _canvasService: CanvasService,
         private matDialog: MatDialog,
+        private _bpmnService: BpmnEditService
     ) {
     }
 
@@ -43,12 +46,28 @@ export class ModelExportService {
 
     private exportToXml(): void {
         const serialisedModel = this._exportService.exportXml(this.model);
+
         const prettyModel = format(serialisedModel, {
             indentation: '\t',
             collapseContent: true
         });
         const fileName = this.resolveFileName();
         this.startDownload(prettyModel, fileName);
+
+        const fileNameBpmn = fileName.split('.')[0] + '.bpmn'
+        // this._bpmnService.getBpmnModel().then(xml => this.startDownload(xml, fileNameBpmn))
+        this.exportBpmnModel(fileNameBpmn)
+    }
+
+    private async exportBpmnModel(fileNameBpmn): Promise<boolean> {
+        try {
+            const result = await this._bpmnService.convertCurrentBpmn();
+            this._bpmnService.getBpmnModel().then(xml => this.startDownload(xml, fileNameBpmn))
+            return result;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
     }
 
     /**

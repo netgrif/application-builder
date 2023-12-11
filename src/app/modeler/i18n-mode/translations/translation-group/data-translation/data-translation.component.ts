@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {DataType, DataVariable, I18nTranslations, PetriNet} from '@netgrif/petriflow';
+import {I18nTranslations, PetriNet} from '@netgrif/petriflow';
 import {ModelService} from '../../../../services/model.service';
-import {I18nModeService} from '../../../i18n-mode.service';
+import {Locale} from '../../../classes/locale';
 
 @Component({
     selector: 'nab-data-translation',
@@ -11,8 +11,7 @@ import {I18nModeService} from '../../../i18n-mode.service';
 export class DataTranslationComponent implements OnInit {
 
     constructor(
-        private modelService: ModelService,
-        private i18nModeService: I18nModeService
+        private modelService: ModelService
     ) {
     }
 
@@ -36,9 +35,5 @@ export class DataTranslationComponent implements OnInit {
 
     notLast(i: any) {
         return i !== this.model.getDataSet().length - 1;
-    }
-
-    isI18nField(dataVariable: DataVariable): boolean {
-        return this.i18nModeService.isI18nField(dataVariable);
     }
 }

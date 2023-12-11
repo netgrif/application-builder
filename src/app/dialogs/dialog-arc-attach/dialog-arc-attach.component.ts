@@ -43,7 +43,7 @@ export class DialogArcAttachComponent {
             alert('Empty init.');
             return;
         }
-        const vaha = parseInt(item.init.value, 10);
+        const vaha = parseInt(item.init.expression, 10);
         if (vaha < 0) {
             alert('A negative number. Cannot change the value of arc weight.');
             return;

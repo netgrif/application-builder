@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit, QueryList, TemplateRef, ViewChildren} from '@angular/core';
 import {GridsterDataField} from '../classes/gridster-data-field';
-import {DataType, Expression, I18nWithDynamic} from '@netgrif/petriflow';
+import {DataType, Expression} from '@netgrif/petriflow';
 import {DataField, EnumerationField, I18nField, MultichoiceField} from '@netgrif/components-core';
 import {GridsterService} from '../gridster.service';
 import {GridsterFieldToEngineFieldService} from '../../../modeler/gridster-field-to-engine-field.service';
@@ -33,16 +33,11 @@ export class GridsterDataFieldComponent implements OnInit, OnDestroy {
         this._gridsterSubscription = this._gridsterService.selectedDataFieldChangeStream.subscribe(this.updateEngineField.bind(this));
         this.engineField.valueChanges().subscribe(value => {
             if (value && value instanceof Array) {
-                // TODO: NAB-337: check
-                this.dataField.dataVariable.inits = value.map(init => new I18nWithDynamic(init as string));
+                this.dataField.dataVariable.inits = value.map(init => new Expression(init as string));
             } else if (this.dataField.dataVariable.type === DataType.DATETIME || this.dataField.dataVariable.type === DataType.DATE) {
-                // TODO: NAB-337: check
-                if (value) {
-                    this.dataField.dataVariable.init = new I18nWithDynamic(moment(value).toISOString());
-                }
+                this.dataField.dataVariable.init = new Expression(moment(value).toISOString());
             } else if (!(value instanceof Object) && value || this.dataField.dataVariable.type === DataType.BOOLEAN) {
-                // TODO: NAB-337: check
-                this.dataField.dataVariable.init = new I18nWithDynamic(value.toString());
+                this.dataField.dataVariable.init = new Expression(value.toString());
             }
         });
     }

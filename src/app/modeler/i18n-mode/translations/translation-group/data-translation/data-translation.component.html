@@ -3,7 +3,6 @@
     <nab-i18n-field [field]="dataVariable.title" [name]="'Title'" [translation]="translation"></nab-i18n-field>
     <nab-i18n-field [field]="dataVariable.placeholder" [name]="'Placeholder'" [translation]="translation"></nab-i18n-field>
     <nab-i18n-field [field]="dataVariable.desc" [name]="'Description'" [translation]="translation"></nab-i18n-field>
-    <nab-i18n-field *ngIf="isI18nField(dataVariable)" [field]="dataVariable.init" [name]="'Init'" [translation]="translation"></nab-i18n-field>
     <div *ngIf="dataVariable.options?.length > 0">
         <h4>Options:</h4>
         <nab-i18n-field *ngFor="let option of dataVariable.options" [field]="option.value"

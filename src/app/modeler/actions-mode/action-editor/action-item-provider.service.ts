@@ -147,7 +147,6 @@ export class ActionItemProviderService {
         if (keywords.includes(wordOnPosition)) {
             actionEditor.openReference();
             trigger.openMenu();
-            trigger.updatePosition();
         }
     }
 }

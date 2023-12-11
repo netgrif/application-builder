@@ -119,7 +119,7 @@ export class CanvasService {
                 arc.objektyhrany.vaha.nodeValue = `${placeRef.label.value === '' ? '""' : placeRef.label.value} ${'(' + arc.arc.multiplicity + ')'}`;
             } else {
                 const dataRef = this._modelService.model.getData(arc.arc.reference);
-                const datarefVal = parseInt(dataRef.init.value, 10);
+                const datarefVal = parseInt(dataRef.init.expression, 10);
                 if (datarefVal !== arc.arc.multiplicity) {
                     this.updateDataRefVahuHrany();
                 }
@@ -1822,7 +1822,7 @@ export class CanvasService {
 
     attachDataToArc(data: DataVariable): void {
 
-        const vaha = parseInt(this._modelService.model.getData(data.id).init.value, 10);
+        const vaha = parseInt(this._modelService.model.getData(data.id).init.expression, 10);
 
         if (isNaN(vaha)) {
             alert('Not a number. Cannot change the value of arc weight.');
@@ -2111,7 +2111,7 @@ export class CanvasService {
                 if (ref === undefined) {
                     continue;
                 }
-                const vaha = parseInt(ref.init.value, 10);
+                const vaha = parseInt(ref.init.expression, 10);
                 if (isNaN(vaha)) {
                     alert('Not a number. Cannot change the value of arc weight. Dataref - ' + ref.id);
                 }

@@ -24,7 +24,7 @@ export class RoleModeComponent implements AfterViewInit, OnInit {
     }
 
     ngOnInit() {
-        this.pageSize = 10;
+        this.pageSize = 5;
         this.pageIndex = 0;
         this.length = this.roles.length;
         this.dataSource = [...this.roles.slice(0, this.pageSize)];

@@ -45,8 +45,8 @@ export class ModelService {
     placeId: number;
     transitionId: number;
     arcId: number;
-    private _model: PetriflowPetriNet; // petriflow.js
-    graphicModel: PetriNet; // petriflow.svg
+    private _model: PetriflowPetriNet;
+    graphicModel: PetriNet;
     transition: Transition;
     whichButton: BehaviorSubject<string>;
     dropZoneEvent: ReplaySubject<string>;

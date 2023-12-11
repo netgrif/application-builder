@@ -391,7 +391,6 @@ export class ActionEditorComponent implements OnInit {
 
     openReference() {
         this.trigger.openMenu();
-        this.trigger.updatePosition();
     }
 
     closeReference() {

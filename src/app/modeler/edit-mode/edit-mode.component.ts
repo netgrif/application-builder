@@ -2,8 +2,7 @@ import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/c
 import {ModelService} from '../services/model.service';
 import {CanvasService} from '../services/canvas.service';
 import {DataGroup, PetriNet as PetriflowPetriNet} from '@netgrif/petriflow';
-import {Router} from '@angular/router';
-import {Canvas} from '../classes/canvas';
+import {CanDeactivate, Router} from '@angular/router';
 import {DialogManageRolesComponent, RoleRefType} from '../../dialogs/dialog-manage-roles/dialog-manage-roles.component';
 import {Hotkey, HotkeysService} from 'angular2-hotkeys';
 import {
@@ -19,13 +18,14 @@ import {FastPnService} from './fast-pn.service';
 import {FastPnMode} from './fast-pn-mode.enum';
 import {SelectedTransitionService} from '../selected-transition.service';
 import {NgxDropzoneChangeEvent} from 'ngx-dropzone';
+import {BpmnEditService} from './bpmn-mode/bpmn-edit.service';
 
 @Component({
     selector: 'nab-edit-mode',
     templateUrl: './edit-mode.component.html',
     styleUrls: ['./edit-mode.component.scss']
 })
-export class EditModeComponent implements AfterViewInit {
+export class EditModeComponent implements AfterViewInit, CanDeactivate<BpmnEditService> {
 
     @ViewChild('canvas') canvas: ElementRef;
     @ViewChild('ctxMenu') contextMenu: ElementRef;
@@ -41,7 +41,8 @@ export class EditModeComponent implements AfterViewInit {
         private _hotkeysService: HotkeysService,
         private exportService: ModelExportService,
         private _fastPnService: FastPnService,
-        private transitionService: SelectedTransitionService
+        private transitionService: SelectedTransitionService,
+        private _bpmnService: BpmnEditService
     ) {
         this._hotkeysService.add(new Hotkey('ctrl+s', (event: KeyboardEvent): boolean => {
             this.exportService.exportXML();
@@ -55,21 +56,25 @@ export class EditModeComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.canvasService.canvas = new Canvas(this.canvas.nativeElement);
-        this.canvasService.canvas.resize(this.modelService.appwidth, this.modelService.appheight);
+        // this.canvasService.canvas = new Canvas(this.canvas.nativeElement);
+        // this.canvasService.canvas.resize(this.modelService.appwidth, this.modelService.appheight);
+        //
+        // // LEGACY PART
+        // ModelerConfig.VERTICAL_OFFSET = this.canvas.nativeElement.offsetTop;
+        // ModelerConfig.HORIZONTAL_OFFSET = this.canvas.nativeElement.offsetLeft;
+        //
+        // setTimeout(() => {
+        //     if (this.modelService.model === undefined) {
+        //         this.modelService.model = new PetriflowPetriNet();
+        //         this.modelService.graphicModel = new PetriNet(this.modelService.model);
+        //     }
+        //     this.canvasService.renderModel(this.modelService.model);
+        //     this.reset('select');
+        // });
+    }
 
-        // LEGACY PART
-        ModelerConfig.VERTICAL_OFFSET = this.canvas.nativeElement.offsetTop;
-        ModelerConfig.HORIZONTAL_OFFSET = this.canvas.nativeElement.offsetLeft;
-
-        setTimeout(() => {
-            if (this.modelService.model === undefined) {
-                this.modelService.model = new PetriflowPetriNet();
-                this.modelService.graphicModel = new PetriNet(this.modelService.model);
-            }
-            this.canvasService.renderModel(this.modelService.model);
-            this.reset('select');
-        });
+    canDeactivate() {
+        return this._bpmnService.canDeactivate(this)
     }
 
     doMouseDown($event: MouseEvent) {
@@ -216,19 +221,19 @@ export class EditModeComponent implements AfterViewInit {
         }
     }
 
-    dragOverHandler(event: any) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-
-    dropHandler(event: any) {
-        event.preventDefault();
-        const files = event.dataTransfer.files;
-        if (files.length > 0) {
-            const file = files[0];
-            // TODO: drag&drop model import
-        }
-    }
+    // dragOverHandler(event: any) {
+    //     event.stopPropagation();
+    //     event.preventDefault();
+    // }
+    //
+    // dropHandler(event: any) {
+    //     event.preventDefault();
+    //     const files = event.dataTransfer.files;
+    //     if (files.length > 0) {
+    //         const file = files[0];
+    //         // TODO: drag&drop model import
+    //     }
+    // }
 
     size(): number {
         return ModelerConfig.GRID_STEP;
@@ -249,5 +254,22 @@ export class EditModeComponent implements AfterViewInit {
         $event.addedFiles[0].text().then(originFile => {
             this.modelService.dropZoneEvent.next(originFile);
         });
+    }
+
+    handleImportedBpmn(event) {
+
+        const {
+            type,
+            error,
+            warnings
+        } = event;
+
+        if (type === 'success') {
+            console.log(`Rendered diagram (%s warnings)`, warnings.length);
+        }
+
+        if (type === 'error') {
+            console.error('Failed to render diagram', error);
+        }
     }
 }

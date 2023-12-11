@@ -27,8 +27,6 @@ export interface ManagePermissionData {
     styleUrls: ['./dialog-manage-roles.component.scss']
 })
 export class DialogManageRolesComponent implements OnInit {
-    pageSizes = [5,10,20];
-    defaultPageSize = 10;
     displayedColumns: Array<string>;
     usersDisplayedColumns: Array<string>;
     dataSource: MatTableDataSource<RoleRef | ProcessRoleRef>;

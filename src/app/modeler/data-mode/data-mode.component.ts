@@ -15,7 +15,7 @@ import {
     DataType,
     DataVariable,
     Expression,
-    I18nString, I18nWithDynamic,
+    I18nString,
     Option,
     PetriNet as PetriflowPetriNet,
     Property,
@@ -69,7 +69,6 @@ export class DataModeComponent {
         {viewValue: 'User', value: 'user'},
         {viewValue: 'User List', value: 'userList'},
         {viewValue: 'Filter', value: 'filter'},
-        {viewValue: 'I18n', value: 'i18n'},
         {viewValue: 'Task Ref', value: 'taskRef'},
         {viewValue: 'Case Ref', value: 'caseRef'}
     ];
@@ -101,27 +100,24 @@ export class DataModeComponent {
         this.dataService.itemData.subscribe(obj => {
             this.itemData = obj;
             if (!this.itemData.init) {
-                // TODO: NAB-337: check
-                this.itemData.init = new I18nWithDynamic('');
+                this.itemData.init = new Expression('');
             }
-            this.formControlRef.patchValue(this.itemData.init.value);
+            this.formControlRef.patchValue(this.itemData.init.expression);
         });
         this.transitionOptions = this.createTransOptions();
         this.filteredOptions = this.formControlRef.valueChanges.pipe(
             tap(value => {
                 if (value === '' || value === undefined) {
                     if (!this.modelService.model.getData(this.itemData.id).init) {
-                        // TODO: NAB-337: check
-                        this.modelService.model.getData(this.itemData.id).init = new I18nWithDynamic(value);
+                        this.modelService.model.getData(this.itemData.id).init = new Expression(value);
                     } else {
-                        this.modelService.model.getData(this.itemData.id).init.value = value;
+                        this.modelService.model.getData(this.itemData.id).init.expression = value;
                     }
                     const data = this.processData.find(obj => obj.id === this.itemData.id);
                     if (!data.init) {
-                        // TODO: NAB-337: check
-                        data.init = new I18nWithDynamic(value);
+                        data.init = new Expression(value);
                     } else {
-                        data.init.value = value;
+                        data.init.expression = value;
                     }
                 }
             }),
@@ -266,19 +262,17 @@ export class DataModeComponent {
             case 'init': {
                 const value = $event.target.value;
                 if (dataVariable.init === undefined) {
-                    // TODO: NAB-337: check
-                    dataVariable.init = new I18nWithDynamic(value);
+                    dataVariable.init = new Expression(value);
                 } else {
-                    dataVariable.init.value = value;
+                    dataVariable.init.expression = value;
                 }
-                this.processData.find(obj => obj.id === item.id).init.value = $event.target.value;
+                this.processData.find(obj => obj.id === item.id).init.expression = $event.target.value;
                 break;
             }
             case 'dynamic-init': {
                 const value = $event.source.checked;
                 if (dataVariable.init === undefined) {
-                    // TODO: NAB-337: check
-                    dataVariable.init = new I18nWithDynamic('', value);
+                    dataVariable.init = new Expression('', value);
                 } else {
                     dataVariable.init.dynamic = value;
                 }
@@ -462,8 +456,8 @@ export class DataModeComponent {
     }
 
     clickOption(item: DataVariable, init: string) {
-        this.modelService.model.getData(item.id).init.value = init;
-        this.processData.find(obj => obj.id === item.id).init.value = init;
+        this.modelService.model.getData(item.id).init.expression = init;
+        this.processData.find(obj => obj.id === item.id).init.expression = init;
     }
 
     isDisabled(id: string): boolean {
@@ -499,7 +493,7 @@ export class DataModeComponent {
     }
 
     getItemInitExpression(item: DataVariable): string {
-        return item.init?.value ?? '';
+        return item.init?.expression ?? '';
     }
 
     getItemInitDynamic(item: DataVariable): boolean {
@@ -534,19 +528,17 @@ export class DataModeComponent {
         this.itemData.inits.splice(i, 1);
     }
 
-    // TODO: NAB-337: check
     changeInitsValue(inits: Array<string>) {
-        this.itemData.inits = inits.map(initKey => new I18nWithDynamic(initKey));
+        this.itemData.inits = inits.map(initKey => new Expression(initKey));
     }
 
     getInitsValue(): Array<string> {
-        return this.itemData.inits.map(initKey => initKey.value);
+        return this.itemData.inits.map(initKey => initKey.expression);
     }
 
     private removeSpecificAttributeOnChange() {
         this.itemData.inits = [];
-        this.itemData.init.value = '';
-        this.itemData.init.name = '';
+        this.itemData.init.expression = '';
         this.itemData.options = [];
     }
 }

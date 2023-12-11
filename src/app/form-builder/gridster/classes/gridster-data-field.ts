@@ -1,5 +1,5 @@
 import {GridsterItem, GridsterItemComponentInterface} from 'angular-gridster2';
-import {DataLayout, DataRef, DataVariable, Expression, I18nWithDynamic} from '@netgrif/petriflow';
+import {DataLayout, DataRef, DataVariable, Expression} from '@netgrif/petriflow';
 
 export class GridsterDataField implements GridsterItem {
     // properties needed because of GridsterUtils.merge implementation
@@ -24,8 +24,7 @@ export class GridsterDataField implements GridsterItem {
             this._dataRef.layout = new DataLayout();
         }
         if (!this._dataVariable.init) {
-            // TODO: NAB-337: check
-            this._dataVariable.init = new I18nWithDynamic('');
+            this._dataVariable.init = new Expression('');
         }
     }
 

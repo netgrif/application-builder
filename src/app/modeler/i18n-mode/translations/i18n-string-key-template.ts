@@ -14,7 +14,6 @@ export class I18nStringKeyTemplate {
         title: (id) => `data_${id}_title`,
         placeholder: (id) => `data_${id}_placeholder`,
         description: (id) => `data_${id}_description`,
-        init: (id) => `data_${id}_init`,
         option: (dataId, optionId) => `data_${dataId}_option_${optionId}`,
         validation: (dataId, validationId) => `data_${dataId}_validation_${validationId}`,
     };

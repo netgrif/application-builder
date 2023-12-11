@@ -88,12 +88,12 @@
             </mat-form-field>
             <!--  VALUES  -->
             <mat-form-field *ngIf="hasTextValue()" class="full-width">
-                <input matInput type="text" placeholder="Initial value" [(ngModel)]="dataVariable.init.value"
+                <input matInput type="text" placeholder="Initial value" [(ngModel)]="dataVariable.init.expression"
                        (change)="notifyGridster()">
             </mat-form-field>
             <mat-form-field *ngIf="hasOptions()" class="full-width">
                 <mat-label>Initial value</mat-label>
-                <mat-select *ngIf="!hasInits(); else hasInitsItems" [(ngModel)]="dataVariable.init.value" (selectionChange)="notifyGridster()">
+                <mat-select *ngIf="!hasInits(); else hasInitsItems" [(ngModel)]="dataVariable.init.expression" (selectionChange)="notifyGridster()">
                     <mat-option>None</mat-option>
                     <mat-option *ngFor="let opt of dataVariable.options" [value]="opt.key">
                         {{opt.value?.value}}
@@ -108,20 +108,20 @@
                     </mat-select>
                 </ng-template>
             </mat-form-field>
-            <mat-slide-toggle *ngIf="isBoolean()" [checked]="dataVariable.init.value === 'true'"
+            <mat-slide-toggle *ngIf="isBoolean()" [checked]="dataVariable.init.expression === 'true'"
                               (change)="setBooleanValue($event); notifyGridster()">
                 Initial value
             </mat-slide-toggle>
             <mat-form-field *ngIf="isNumber()" class="full-width">
                 <input matInput type="number" placeholder="Set initial value"
-                       [(ngModel)]="dataVariable.init.value" (change)="notifyGridster()">
+                       [(ngModel)]="dataVariable.init.expression" (change)="notifyGridster()">
             </mat-form-field>
             <mat-form-field *ngIf="isDate()" class="full-width">
                 <div fxLayout="row">
                     <mat-datepicker-toggle [for]="datepicker"></mat-datepicker-toggle>
                     <input matInput (dateChange)="notifyGridster()"
                            [matDatepicker]="datepicker"
-                           [(ngModel)]="dataVariable.init.value"
+                           [(ngModel)]="dataVariable.init.expression"
                            (click)="datepicker.open()"
                            (keydown.enter)="datepicker.close()"
                            placeholder="Initial value">
@@ -133,7 +133,7 @@
                 <input matInput
                        [ngxMatDatetimePicker]="picker"
                        placeholder="Initial value"
-                       [(ngModel)]="dataVariable.init.value"
+                       [(ngModel)]="dataVariable.init.expression"
                        (ngModelChange)="notifyGridster()"
                 >
                 <mat-datepicker-toggle matPrefix [for]="picker"></mat-datepicker-toggle>

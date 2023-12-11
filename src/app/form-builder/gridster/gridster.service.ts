@@ -10,7 +10,7 @@ import {
     DataRefBehavior,
     DataType,
     DataVariable,
-    Expression, I18nWithDynamic,
+    Expression,
     LayoutType,
     Template,
     Transition,
@@ -180,8 +180,7 @@ export class GridsterService {
                 dataVariable.inits = [];
             }
         } else {
-            // TODO: NAB-337: check
-            dataVariable.init = new I18nWithDynamic('', '', false);
+            dataVariable.init = new Expression('', false);
         }
         this.modelService.model.addData(dataVariable);
         return dataVariable;
@@ -219,8 +218,8 @@ export class GridsterService {
             transition.dataGroups.push(dataGroup);
         }
         transition.dataGroups[0].addDataRef(dataRef);
-        if (dataVariable.type === DataType.TASK_REF && dataVariable.init?.value === this.transitionId) {
-            dataVariable.init.value = undefined;
+        if (dataVariable.type === DataType.TASK_REF && dataVariable.init?.expression === this.transitionId) {
+            dataVariable.init.expression = undefined;
         }
         this.selectedDataField = new GridsterDataField(dataRef, dataVariable);
         this.selectedDataFieldStream.next(this.selectedDataField);

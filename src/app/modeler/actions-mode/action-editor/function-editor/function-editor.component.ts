@@ -189,7 +189,6 @@ export class FunctionEditorComponent implements OnInit {
 
     openReference() {
         this.trigger.openMenu();
-        this.trigger.updatePosition();
     }
 
     closeReference() {

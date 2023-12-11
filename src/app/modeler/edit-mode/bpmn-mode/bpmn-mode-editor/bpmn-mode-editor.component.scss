@@ -1,0 +1,13 @@
+.diagram-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.bpmnDiagram {
+    flex: 0 0 80%; /* Set the left div to be 70% of the container width */
+}
+
+.bpmnProperties {
+    flex: 1; /* Set the right div to take up the remaining space */
+}

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Locale} from './classes/locale';
 import {BehaviorSubject} from 'rxjs';
 import {ModelService} from '../services/model.service';
-import {DataType, DataVariable, I18nString, I18nTranslations, I18nWithDynamic} from '@netgrif/petriflow';
+import {I18nString, I18nTranslations} from '@netgrif/petriflow';
 import {I18nStringKeyTemplate} from './translations/i18n-string-key-template';
 import {Locales} from './classes/locales';
 
@@ -63,12 +63,6 @@ export class I18nModeService {
             this.checkI18n(data.title, I18nStringKeyTemplate.data.title(data.id), translations);
             this.checkI18n(data.placeholder, I18nStringKeyTemplate.data.placeholder(data.id), translations);
             this.checkI18n(data.desc, I18nStringKeyTemplate.data.description(data.id), translations);
-            if (this.isI18nField(data)) {
-                if (data.init === undefined) {
-                    data.init = new I18nWithDynamic('');
-                }
-                this.checkI18n(data.init, I18nStringKeyTemplate.data.init(data.id), translations);
-            }
             data.options?.forEach(option => {
                 this.checkI18n(option.value, I18nStringKeyTemplate.data.option(data.id, option.key), translations);
             });
@@ -95,9 +89,5 @@ export class I18nModeService {
                 t.addI18n(new I18nString('', i18n.name));
             }
         });
-    }
-
-    isI18nField(dataVariable: DataVariable): boolean {
-        return dataVariable.type === DataType.I18N;
     }
 }

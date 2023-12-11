@@ -192,7 +192,7 @@
 
                 <mat-form-field fxFlex="25" *ngIf="isOptionField(itemData.type)" class="full-width">
                     <mat-label>Initial value</mat-label>
-                    <mat-select *ngIf="!hasInits(itemData.type); else hasInitsItems" [(ngModel)]="itemData.init.value">
+                    <mat-select *ngIf="!hasInits(itemData.type); else hasInitsItems" [(ngModel)]="itemData.init.expression">
                         <mat-option>None</mat-option>
                         <mat-option *ngFor="let opt of itemData.options" [value]="opt.key">
                             {{opt.value?.value}}
