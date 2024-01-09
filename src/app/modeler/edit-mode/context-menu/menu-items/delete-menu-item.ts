@@ -1,14 +1,15 @@
 import {MenuItem} from './menu-item';
-import {SelectTool} from '../../services/modes/select-tool';
+import {CanvasTool} from '../../services/modes/canvas-tool';
+import {CanvasObject} from '../../domain/canvas-object';
 
 export class DeleteMenuItem extends MenuItem {
 
-    constructor(selectTool: SelectTool) {
+    constructor(canvasObject: CanvasObject<any, any>, tool: CanvasTool) {
         super(
-            `Delete${selectTool.selectedElements.totalSize() > 1 ? ' all' : ''}`,
+            'Delete',
             'delete',
             () => {
-                selectTool.deleteSelected();
+                tool.delete(canvasObject);
             }
         );
     }

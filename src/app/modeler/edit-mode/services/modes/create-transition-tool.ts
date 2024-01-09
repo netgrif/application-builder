@@ -35,11 +35,13 @@ export class CreateTransitionTool extends CanvasTool {
     }
 
     onMouseClick(event: MouseEvent) {
+        super.onMouseClick(event);
         const canvasTransition = this.editModeService.createTransition(this.mousePosition(event));
         this.bindTransition(canvasTransition);
     }
 
     onTransitionClick(event: MouseEvent, transition: CanvasTransition) {
+        super.onTransitionClick(event, transition);
         event.stopPropagation();
     }
 }

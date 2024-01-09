@@ -9,6 +9,19 @@ import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
 import {Hotkey} from './domain/hotkey';
 import {ComponentType} from '@angular/cdk/overlay';
+import {CanvasTransition} from '../../domain/canvas-transition';
+import {CanvasObject} from '../../domain/canvas-object';
+import {CanvasPlace} from '../../domain/canvas-place';
+import {ContextMenu} from '../../context-menu/context-menu';
+import {EditPlaceMenuItem} from '../../context-menu/menu-items/edit-place-menu-item';
+import {EditTransitionMenuItem} from '../../context-menu/menu-items/edit-transition-menu-item';
+import {EditFormMenuItem} from '../../context-menu/menu-items/edit-form-menu-item';
+import {EditTaskPermissionsMenuItem} from '../../context-menu/menu-items/edit-task-permissions-menu-item';
+import {EditTaskActionsMenuItem} from '../../context-menu/menu-items/edit-task-actions-menu-item';
+import {CanvasArc} from '../../domain/canvas-arc';
+import {EditArcMenuItem} from '../../context-menu/menu-items/edit-arc-menu-item';
+import {DeleteBreakpointMenuItem} from '../../context-menu/menu-items/delete-breakpoint-menu-item';
+import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
 
 export abstract class CanvasTool extends CanvasListenerTool {
 
@@ -38,6 +51,7 @@ export abstract class CanvasTool extends CanvasListenerTool {
     unbind() {
         super.unbind();
         this.unbindKeys();
+        this.closeContextMenu();
     }
 
     reset(): void {
@@ -73,6 +87,55 @@ export abstract class CanvasTool extends CanvasListenerTool {
         this.reset();
     }
 
+    onTransitionClick(event: MouseEvent, transition: CanvasTransition) {
+        super.onTransitionClick(event, transition);
+        this.closeContextMenu();
+    }
+
+    onTransitionContextMenu(event: MouseEvent, transition: CanvasTransition): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.editModeService.contextMenuItems.next(
+            this.transitionContextMenu(transition, event)
+        );
+    }
+
+    onPlaceClick(event: MouseEvent, place: CanvasPlace) {
+        super.onPlaceClick(event, place);
+        this.closeContextMenu();
+    }
+
+    onPlaceContextMenu(event: MouseEvent, place: CanvasPlace) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.editModeService.contextMenuItems.next(
+            this.placeContextMenu(place, event)
+        );
+    }
+
+    onArcClick(event: MouseEvent, arc: CanvasArc) {
+        super.onArcClick(event, arc);
+        this.closeContextMenu();
+    }
+
+    onArcContextMenu(event: MouseEvent, arc: CanvasArc) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.editModeService.contextMenuItems.next(
+            this.arcContextMenu(arc, event)
+        );
+    }
+
+    onMouseClick(event: MouseEvent) {
+        super.onMouseClick(event);
+        this.closeContextMenu();
+    }
+
+    onClick() {
+        super.onClick();
+        this.closeContextMenu();
+    }
+
     openDialog(dialog: ComponentType<any>, config: any, afterClose?: (value: any) => void): void {
         this.unbindKeys();
         this.dialog.open(dialog, config).afterClosed().subscribe(value => {
@@ -81,6 +144,55 @@ export abstract class CanvasTool extends CanvasListenerTool {
             }
             this.bindKeys();
         });
+    }
+
+    delete(object: CanvasObject<any, any>): void {
+
+    }
+
+    closeContextMenu(): void {
+        this.editModeService.contextMenuItems?.next(undefined);
+    }
+
+    placeContextMenu(place: CanvasPlace, event: MouseEvent): ContextMenu {
+        return new ContextMenu(
+            [
+                new EditPlaceMenuItem(place, this),
+                new DeleteMenuItem(place, this)
+            ],
+            this.windowMousePosition(event)
+        );
+    }
+
+    transitionContextMenu(transition: CanvasTransition, event: MouseEvent): ContextMenu {
+        return new ContextMenu(
+            [
+                new EditTransitionMenuItem(transition, this),
+                new EditFormMenuItem(transition, this),
+                new EditTaskPermissionsMenuItem(transition, this),
+                new EditTaskActionsMenuItem(transition, this),
+                new DeleteMenuItem(transition, this)
+            ],
+            this.windowMousePosition(event)
+        )
+    }
+
+    arcContextMenu(arc: CanvasArc, event: MouseEvent): ContextMenu {
+        const canvasPosition = this.mousePosition(event);
+        const windowPosition = this.windowMousePosition(event);
+        const breakPointIndex = arc.findNearbyBreakpoint(canvasPosition);
+
+        const items = [];
+        items.push(new EditArcMenuItem(arc, this));
+        if (breakPointIndex !== undefined) {
+            items.push(new DeleteBreakpointMenuItem(arc, breakPointIndex, this));
+        }
+        items.push(new DeleteMenuItem(arc, this));
+
+        return new ContextMenu(
+            items,
+            windowPosition
+        );
     }
 
     get canvasService(): PetriflowCanvasService {

@@ -6,6 +6,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {DialogDeadNetComponent} from '../../../dialogs/dialog-dead-net/dialog-dead-net.component';
 import {CanvasConfiguration} from '@netgrif/petri.svg';
 import {ModelerConfig} from '../../modeler-config';
+import {ModelSourceService} from './model-source.service';
 
 @Injectable({
     providedIn: 'root'
@@ -16,13 +17,14 @@ export class ModelExportService {
 
     constructor(
         private _modelService: ModelService,
+        private _modelSource: ModelSourceService,
         private _exportService: ExportService,
         private matDialog: MatDialog,
     ) {
     }
 
     private get model(): PetriNet {
-        return this._modelService.model;
+        return this._modelSource.getModel();
     }
 
     /**

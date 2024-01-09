@@ -65,6 +65,7 @@ export class QuickDrawTool extends CanvasTool {
     }
 
     onArcClick(event: MouseEvent, arc: CanvasArc) {
+        super.onArcClick(event, arc);
         if (this.source) {
             event.stopPropagation();
             return;
@@ -87,9 +88,6 @@ export class QuickDrawTool extends CanvasTool {
         }
     }
 
-    onPlaceDoubleClick(event: MouseEvent, place: CanvasPlace) {
-    }
-
     onTransitionClick(event: MouseEvent, canvasTransition: CanvasTransition) {
         super.onTransitionClick(event, canvasTransition);
         event.stopPropagation();
@@ -104,9 +102,6 @@ export class QuickDrawTool extends CanvasTool {
         this.source = canvasTransition;
         this.arcLine = this.editModeService.createTemporaryArc(canvasTransition.svgTransition.getPosition(), this.getMarkerId());
         this.step = Step.PLACE;
-    }
-
-    onTransitionDoubleClick(event: MouseEvent, transition: CanvasTransition) {
     }
 
     onMouseClick(event: MouseEvent) {

@@ -38,6 +38,9 @@ export class CanvasElementCollection {
     }
 
     addPlaces(places: Array<CanvasPlace>): void {
+        if (!places) {
+            return;
+        }
         places.forEach(this.addPlace.bind(this));
     }
 
@@ -58,6 +61,9 @@ export class CanvasElementCollection {
     }
 
     addTransitions(transitions: Array<CanvasTransition>): void {
+        if (!transitions) {
+            return;
+        }
         transitions.forEach(this.addTransition.bind(this));
     }
 
@@ -78,6 +84,9 @@ export class CanvasElementCollection {
     }
 
     addArcs(arcs: Array<CanvasArc>): void {
+        if (!arcs) {
+            return;
+        }
         arcs.forEach(this.addArc.bind(this));
     }
 

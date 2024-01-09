@@ -34,12 +34,10 @@ export class AddTokenTool extends CanvasTool {
         );
     }
 
-    onPlaceClick(_: MouseEvent, place: CanvasPlace) {
+    onPlaceClick(event: MouseEvent, place: CanvasPlace) {
+        super.onPlaceClick(event, place);
         const changed = new ChangedPlace(undefined, place.modelPlace);
         changed.place.marking += 1;
         this.modelService.updatePlace(changed);
-    }
-
-    onPlaceDoubleClick(event: MouseEvent, place: CanvasPlace) {
     }
 }

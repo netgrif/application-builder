@@ -12,9 +12,6 @@ import {CanvasArc} from '../../domain/canvas-arc';
 import {CanvasObject} from '../../domain/canvas-object';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
-import {PlaceContextMenu} from '../../context-menu/menus/place-context-menu';
-import {TransitionContextMenu} from '../../context-menu/menus/transition-context-menu';
-import {ArcContextMenu} from '../../context-menu/menus/arc-context-menu';
 import {ModelContextMenu} from '../../context-menu/menus/model-context-menu';
 import {ContextMenu} from '../../context-menu/context-menu';
 import {HistoryService} from '../../../services/history/history.service';
@@ -22,6 +19,9 @@ import {
     DialogPlaceRefDeleteComponent,
     PlaceRefDeleteData
 } from '../../../../dialogs/dialog-place-ref-delete/dialog-place-ref-delete.component';
+import {ModelerConfig} from '../../../modeler-config';
+import {DeleteSelectedMenuItem} from '../../context-menu/menu-items/delete-selected-menu-item';
+import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
 
 export class SelectTool extends CanvasTool {
 
@@ -65,6 +65,13 @@ export class SelectTool extends CanvasTool {
         this.hotkeys.push(new Hotkey('z', true, false, true, this.redo.bind(this)));
         this.hotkeys.push(new Hotkey('z', true, false, false, this.undo.bind(this)));
         this.hotkeys.push(new Hotkey('Delete', false, false, false, this.deleteSelected.bind(this)));
+        this.hotkeys.push(new Hotkey('+', false, false, false, this.zoom.bind(this, 1)));
+        this.hotkeys.push(new Hotkey('-', false, false, false, this.zoom.bind(this, -1)));
+        this.hotkeys.push(new Hotkey('ArrowUp', false, false, false, this.move.bind(this, 0, ModelerConfig.SIZE)));
+        this.hotkeys.push(new Hotkey('ArrowRight', false, false, false, this.move.bind(this, -ModelerConfig.SIZE, 0)));
+        this.hotkeys.push(new Hotkey('ArrowDown', false, false, false, this.move.bind(this, 0, -ModelerConfig.SIZE)));
+        this.hotkeys.push(new Hotkey('ArrowLeft', false, false, false, this.move.bind(this, ModelerConfig.SIZE, 0)));
+        this.hotkeys.push(new Hotkey('Home', false, false, false, this.move.bind(this, 0, 0, false)));
     }
 
     bind(): void {
@@ -89,6 +96,7 @@ export class SelectTool extends CanvasTool {
     }
 
     restart(): void {
+        // TODO: release/4.0.0 https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
         if (this.lasso) {
             this.canvasService.canvas.container.removeChild(this.lasso);
         }
@@ -156,8 +164,12 @@ export class SelectTool extends CanvasTool {
     }
 
     deselectAll(): void {
-        this.selectedElements.getAll().forEach(e => this.deactivate(e));
+        this.deactivateAll();
         this.clearSelection();
+    }
+
+    deactivateAll(): void {
+        this.elements.getAll().forEach(e => this.deactivate(e));
     }
 
     deleteSelected(): void {
@@ -177,6 +189,21 @@ export class SelectTool extends CanvasTool {
                 this.deleteElements();
             }
         });
+    }
+
+    move(horizontal: number, vertical: number, relative = true): void {
+        this.editModeService.canvasService.enablePanning();
+        this.editModeService.canvasService.panzoom?.pan(horizontal, vertical, {relative});
+    }
+
+    zoom(direction: number): void {
+        this.canvasService.panzoom?.zoomToPoint(
+            this.canvasService.panzoom?.getScale() + ModelerConfig.ZOOM_SPEED * direction,
+            {
+                clientX: 0,
+                clientY: 0
+            }
+        );
     }
 
     private deleteElements(): void {
@@ -207,17 +234,24 @@ export class SelectTool extends CanvasTool {
 
     onPlaceUp(event: MouseEvent, place: CanvasPlace) {
         super.onPlaceUp(event, place);
-        this.onElementUp(event, place, new PlaceContextMenu(place, this.windowMousePosition(event), this));
+        this.onElementUp(event, place, this.placeContextMenu(place, event));
     }
 
-    onTransitionDown(event: MouseEvent, transition: CanvasTransition) {
+    onTransitionDown(event: MouseEvent, transition: CanvasTransition): void {
         super.onTransitionDown(event, transition);
         this.onElementDown(event, transition);
     }
 
-    onTransitionUp(event: MouseEvent, transition: CanvasTransition) {
+    onTransitionUp(event: MouseEvent, transition: CanvasTransition): void {
         super.onTransitionUp(event, transition);
-        this.onElementUp(event, transition, new TransitionContextMenu(transition, this.windowMousePosition(event), this));
+        this.onElementUp(event, transition, this.transitionContextMenu(transition, event));
+    }
+
+    onTransitionDoubleClick(event: MouseEvent, transition: CanvasTransition): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.transitionService.id = transition.id;
+        this.router.navigate(['/form']);
     }
 
     onArcDown(event: MouseEvent, arc: CanvasArc) {
@@ -227,7 +261,7 @@ export class SelectTool extends CanvasTool {
 
     onArcUp(event: MouseEvent, arc: CanvasArc) {
         super.onArcUp(event, arc);
-        this.onElementUp(event, arc, new ArcContextMenu(arc, this.windowMousePosition(event), this.mousePosition(event), this));
+        this.onElementUp(event, arc, this.arcContextMenu(arc, event));
     }
 
     onMouseDown(event: MouseEvent) {
@@ -246,7 +280,7 @@ export class SelectTool extends CanvasTool {
         super.onMouseUp(event);
         if (this.isLeftButton(event)) {
             if (this.lasso) {
-                const lassoBox = this.lasso.getBBox();
+                const lassoBox = this.getLassoBox();
                 this.elements.getAll().filter(a => a.isWithin(lassoBox)).forEach(a => this.addToSelection(a));
             } else if (!this.selectedElements.isEmpty()) {
                 this.moveSelected();
@@ -267,7 +301,7 @@ export class SelectTool extends CanvasTool {
             return;
         }
         if (!!this.lasso) {
-            const lassoBox = this.lasso.getBBox();
+            const lassoBox = this.getLassoBox();
             this.editModeService.moveRectangle(this.lasso, this.lastDragPoint, this.mousePosition(event));
             this.elements.getAll().forEach(a => {
                 if (a.isWithin(lassoBox)) {
@@ -425,14 +459,10 @@ export class SelectTool extends CanvasTool {
         super.onArcLeave(event, arc);
     }
 
-    closeContextMenu(): void {
-        this.editModeService.contextMenuItems.next(undefined);
-    }
-
     onMouseLeave(event: MouseEvent): void {
-        if (!this.selectedElements.isEmpty() && this.mouseDown) {
+        if (this.mouseDown) {
             this.resetPosition();
-            this.deselectAll();
+            this.deactivateAll();
         }
         this.restart();
     }
@@ -500,5 +530,36 @@ export class SelectTool extends CanvasTool {
         const nx = first.x + dx * ratio;
         const ny = first.y + dy * ratio;
         return Math.abs(nx - mouse.x) <= 2 && Math.abs(ny - mouse.y) <= 2;
+    }
+
+    placeContextMenu(place: CanvasPlace, event: MouseEvent): ContextMenu {
+        return this.replaceDeleteMenuItem(super.placeContextMenu(place, event));
+    }
+
+    transitionContextMenu(transition: CanvasTransition, event: MouseEvent): ContextMenu {
+        return this.replaceDeleteMenuItem(super.transitionContextMenu(transition, event));
+    }
+
+    arcContextMenu(arc: CanvasArc, event: MouseEvent): ContextMenu {
+        return this.replaceDeleteMenuItem(super.arcContextMenu(arc, event));
+    }
+
+    private replaceDeleteMenuItem(menuItem: ContextMenu): ContextMenu {
+        const index = menuItem.items.findIndex(value => value instanceof DeleteMenuItem);
+        if (index >= 0) {
+            menuItem.items[index] = new DeleteSelectedMenuItem(this);
+        }
+        return menuItem;
+    }
+
+    private getLassoBox(): DOMRect {
+        const overflow = ModelerConfig.SIZE / 4;
+        const lassoBox = this.lasso.getBBox();
+        return DOMRect.fromRect({
+            x: lassoBox.x - overflow,
+            y: lassoBox.y - overflow,
+            width: lassoBox.width + 2 * overflow,
+            height: lassoBox.height + 2 * overflow
+        });
     }
 }

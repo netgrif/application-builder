@@ -40,6 +40,7 @@ export class SwitchLabelTool extends CanvasTool {
     }
 
     onClick(): void {
+        super.onClick();
         // TODO: NAB-326 abstract class for switches, make sure they turn to default state on canvas render
         if (this.turnedOn) {
             this.icon.name = SwitchLabelTool.ICON_OFF;

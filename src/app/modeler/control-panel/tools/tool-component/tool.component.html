@@ -7,6 +7,6 @@
     (click)="activate(); tool.onClick()"
     [disabled]="tool.disabled.value">
 
-    <mat-icon *ngIf="tool.icon.isSvg" svgIcon="{{tool.icon.name}}" [ngClass]="{'fill-svg': isActive()}"></mat-icon>
+    <mat-icon *ngIf="tool.icon.isSvg" svgIcon="{{tool.icon.name}}" [ngClass]="{'active-custom-svg': isActive(), 'inactive-custom-svg': !isActive()}"></mat-icon>
     <mat-icon *ngIf="!tool.icon.isSvg" [ngClass]="{'fill-svg': isActive(), 'material-icons-outlined': isOutlined()}">{{tool.icon.name}}</mat-icon>
 </button>

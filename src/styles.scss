@@ -78,6 +78,19 @@ body {
     opacity: 1;
 }
 
+.active-custom-svg {
+    stroke: map-get(netgif-theme.$netgrif-blue, A200) !important;
+    color: map-get(netgif-theme.$netgrif-blue, A200) !important;
+    fill: map-get(netgif-theme.$netgrif-blue, A200) !important;
+    opacity: 1;
+}
+
+.inactive-custom-svg {
+    stroke: black;
+    color: black;
+    fill: black;
+}
+
 .button-line:hover {
     background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .50) !important;
 }

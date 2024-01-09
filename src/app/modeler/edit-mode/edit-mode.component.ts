@@ -15,7 +15,6 @@ import {ContextMenu} from './context-menu/context-menu';
 })
 export class EditModeComponent implements AfterViewInit, OnDestroy {
 
-    private _mouseEvent: MouseEvent | undefined;
     @ViewChild('contextMenu', {read: ElementRef}) contextMenu: ElementRef;
     @ViewChild('contextMenu') contextMenuComponent: ContextMenuComponent;
 
@@ -67,40 +66,6 @@ export class EditModeComponent implements AfterViewInit, OnDestroy {
         $event.addedFiles[0].text().then(originFile => {
             this.importService.importFromXml(originFile);
         });
-    }
-
-    @HostListener('window:keydown.+', ['$event'])
-    onPlusButton() {
-        this._editModeService.zoomIn(this.getMousePosition());
-    }
-
-    @HostListener('window:keydown.-', ['$event'])
-    onMinusButton() {
-        this._editModeService.zoomOut(this.getMousePosition());
-    }
-
-    @HostListener('window:keydown.ArrowUp', ['$event'])
-    onUpButton() {
-        this._editModeService.canvasService.panzoom?.pan(0, PetriflowCanvasConfiguration.PANZOOM_MOVE, {relative: true});
-    }
-
-    @HostListener('window:keydown.ArrowRight', ['$event'])
-    onRightButton() {
-        this._editModeService.canvasService.panzoom?.pan(-PetriflowCanvasConfiguration.PANZOOM_MOVE, 0, {relative: true});
-    }
-
-    @HostListener('window:keydown.ArrowDown', ['$event'])
-    onDownButton() {
-        this._editModeService.canvasService.panzoom?.pan(0, -PetriflowCanvasConfiguration.PANZOOM_MOVE, {relative: true});
-    }
-
-    @HostListener('window:keydown.ArrowLeft', ['$event'])
-    onLeftButton() {
-        this._editModeService.canvasService.panzoom?.pan(PetriflowCanvasConfiguration.PANZOOM_MOVE, 0, {relative: true});
-    }
-
-    private getMousePosition(): DOMPoint {
-        return new DOMPoint(this._mouseEvent?.x ?? 0, this._mouseEvent?.y ?? 0)
     }
 
     get editModeService(): EditModeService {

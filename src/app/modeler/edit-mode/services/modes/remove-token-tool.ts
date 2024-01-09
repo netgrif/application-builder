@@ -35,14 +35,12 @@ export class RemoveTokenTool extends CanvasTool {
     }
 
     onPlaceClick(_: MouseEvent, place: CanvasPlace) {
+        super.onPlaceClick(_, place);
         if (place.modelPlace.marking < 1) {
             return;
         }
         const changed = new ChangedPlace(undefined, place.modelPlace);
         changed.place.marking -= 1;
         this.modelService.updatePlace(changed);
-    }
-
-    onPlaceDoubleClick(event: MouseEvent, place: CanvasPlace) {
     }
 }
