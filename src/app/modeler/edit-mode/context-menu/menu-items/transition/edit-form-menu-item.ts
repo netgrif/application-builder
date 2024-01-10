@@ -1,6 +1,6 @@
-import {MenuItem} from './menu-item';
-import {CanvasTransition} from '../../domain/canvas-transition';
-import {CanvasTool} from '../../services/modes/canvas-tool';
+import {MenuItem} from '../menu-item';
+import {CanvasTransition} from '../../../domain/canvas-transition';
+import {CanvasTool} from '../../../services/modes/canvas-tool';
 
 export class EditFormMenuItem extends MenuItem {
 

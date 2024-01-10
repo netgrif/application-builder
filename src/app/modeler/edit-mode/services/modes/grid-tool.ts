@@ -1,4 +1,3 @@
-import {Injectable} from '@angular/core';
 import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../../../control-panel/control-panel-icon';
 import {CanvasTool} from './canvas-tool';

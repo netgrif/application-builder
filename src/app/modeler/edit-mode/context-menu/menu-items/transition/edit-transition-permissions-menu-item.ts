@@ -1,13 +1,13 @@
-import {MenuItem} from './menu-item';
+import {MenuItem} from '../menu-item';
 import {
     DialogManageRolesComponent,
     RoleRefType
-} from '../../../../dialogs/dialog-manage-roles/dialog-manage-roles.component';
+} from '../../../../../dialogs/dialog-manage-roles/dialog-manage-roles.component';
 import {DataType} from '@netgrif/petriflow';
-import {CanvasTransition} from '../../domain/canvas-transition';
-import {CanvasTool} from '../../services/modes/canvas-tool';
+import {CanvasTransition} from '../../../domain/canvas-transition';
+import {CanvasTool} from '../../../services/modes/canvas-tool';
 
-export class EditTaskPermissionsMenuItem extends MenuItem {
+export class EditTransitionPermissionsMenuItem extends MenuItem {
 
     constructor(transition: CanvasTransition, tool: CanvasTool) {
         super(

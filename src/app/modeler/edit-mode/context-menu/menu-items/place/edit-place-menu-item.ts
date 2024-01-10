@@ -1,11 +1,11 @@
-import {MenuItem} from './menu-item';
+import {MenuItem} from '../menu-item';
 import {
     DialogPlaceEditComponent,
     PlaceEditData
-} from '../../../../dialogs/dialog-place-edit/dialog-place-edit.component';
-import {ChangedPlace} from '../../../../dialogs/dialog-place-edit/changed-place';
-import {CanvasPlace} from '../../domain/canvas-place';
-import {CanvasTool} from '../../services/modes/canvas-tool';
+} from '../../../../../dialogs/dialog-place-edit/dialog-place-edit.component';
+import {ChangedPlace} from '../../../../../dialogs/dialog-place-edit/changed-place';
+import {CanvasPlace} from '../../../domain/canvas-place';
+import {CanvasTool} from '../../../services/modes/canvas-tool';
 
 export class EditPlaceMenuItem extends MenuItem {
 

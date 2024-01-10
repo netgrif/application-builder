@@ -20,6 +20,10 @@ export abstract class CreateArcTool<T extends CanvasNodeElement<NodeElement, Pet
         super(_id, button, modelService, dialog, editModeService, router, transitionService);
     }
 
+    isWorkInProgress(): boolean {
+        return this.arcLine !== undefined;
+    }
+
     onMouseMove(event: MouseEvent) {
         if (!this.arcLine) {
             return;

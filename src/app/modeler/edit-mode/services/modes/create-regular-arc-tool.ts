@@ -38,6 +38,10 @@ export class CreateRegularArcTool extends CreateArcTool<CanvasPlace | CanvasTran
     }
 
     onPlaceClick(event: MouseEvent, place: CanvasPlace): void {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            return;
+        }
         event.stopPropagation();
         this.onNodeClick(
             place,
@@ -47,6 +51,10 @@ export class CreateRegularArcTool extends CreateArcTool<CanvasPlace | CanvasTran
     }
 
     onTransitionClick(event: MouseEvent, transition: CanvasTransition): void {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            return;
+        }
         event.stopPropagation();
         this.onNodeClick(
             transition,

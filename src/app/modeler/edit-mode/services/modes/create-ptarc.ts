@@ -10,6 +10,10 @@ export abstract class CreatePTArc extends CreateArcTool<CanvasPlace> {
     public abstract getMarkerId(): string;
 
     onPlaceClick(event: MouseEvent, place: CanvasPlace): void {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            return;
+        }
         if (!!this.source) {
             return;
         }
@@ -19,6 +23,10 @@ export abstract class CreatePTArc extends CreateArcTool<CanvasPlace> {
     }
 
     onTransitionClick(event: MouseEvent, transition: CanvasTransition): void {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            return;
+        }
         if (!this.source) {
             return;
         }
@@ -29,25 +37,11 @@ export abstract class CreatePTArc extends CreateArcTool<CanvasPlace> {
     }
 
     onMouseClick(event: MouseEvent) {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            return;
+        }
         super.onMouseClick(event);
         this.reset();
-    }
-
-    onContextMenu(event: MouseEvent) {
-        event.stopPropagation();
-        event.preventDefault();
-        super.reset();
-    }
-
-    onTransitionContextMenu(event: MouseEvent, transition: CanvasTransition) {
-        event.stopPropagation();
-        event.preventDefault();
-        super.reset();
-    }
-
-    onPlaceContextMenu(event: MouseEvent, place: CanvasPlace) {
-        event.stopPropagation();
-        event.preventDefault();
-        super.reset();
     }
 }

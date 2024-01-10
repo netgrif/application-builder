@@ -12,7 +12,6 @@ import {CanvasArc} from '../../domain/canvas-arc';
 import {CanvasObject} from '../../domain/canvas-object';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
-import {ModelContextMenu} from '../../context-menu/menus/model-context-menu';
 import {ContextMenu} from '../../context-menu/context-menu';
 import {HistoryService} from '../../../services/history/history.service';
 import {
@@ -208,13 +207,13 @@ export class SelectTool extends CanvasTool {
 
     private deleteElements(): void {
         this.selectedElements.places.forEach(p => {
-            this.editModeService.removePlace(p);
+            this.deletePlace(p);
         });
         this.selectedElements.transitions.forEach(t => {
-            this.editModeService.removeTransition(t);
+            this.deleteTransition(t);
         });
         this.selectedElements.arcs.forEach(a => {
-            this.editModeService.removeArc(a);
+            this.deleteArc(a);
         });
         this.deselectAll();
     }
@@ -288,7 +287,7 @@ export class SelectTool extends CanvasTool {
         } else if (this.isRightButton(event)) {
             if (this.isClick(event)) {
                 this.editModeService.contextMenuItems.next(
-                    new ModelContextMenu(this.windowMousePosition(event), this)
+                    this.modelContextMenu(event)
                 );
             }
         }

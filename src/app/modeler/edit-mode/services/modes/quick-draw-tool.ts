@@ -53,6 +53,10 @@ export class QuickDrawTool extends CanvasTool {
         );
     }
 
+    isWorkInProgress(): boolean {
+        return this.arcLine !== undefined;
+    }
+
     bind() {
         super.bind();
         this.step = Step.PLACE;

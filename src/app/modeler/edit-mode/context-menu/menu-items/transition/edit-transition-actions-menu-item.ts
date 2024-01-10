@@ -1,8 +1,8 @@
-import {MenuItem} from './menu-item';
-import {CanvasTransition} from '../../domain/canvas-transition';
-import {CanvasTool} from '../../services/modes/canvas-tool';
+import {MenuItem} from '../menu-item';
+import {CanvasTransition} from '../../../domain/canvas-transition';
+import {CanvasTool} from '../../../services/modes/canvas-tool';
 
-export class EditTaskActionsMenuItem extends MenuItem {
+export class EditTransitionActionsMenuItem extends MenuItem {
 
     constructor(transition: CanvasTransition, tool: CanvasTool) {
         super(

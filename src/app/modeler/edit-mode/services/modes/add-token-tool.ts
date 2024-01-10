@@ -35,6 +35,10 @@ export class AddTokenTool extends CanvasTool {
     }
 
     onPlaceClick(event: MouseEvent, place: CanvasPlace) {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            return;
+        }
         super.onPlaceClick(event, place);
         const changed = new ChangedPlace(undefined, place.modelPlace);
         changed.place.marking += 1;
