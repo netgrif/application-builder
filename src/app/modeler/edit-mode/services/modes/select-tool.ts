@@ -91,7 +91,7 @@ export class SelectTool extends CanvasTool {
         super.reset();
         this.restart();
         this.clipboardElements.clear();
-        this.selectedElements.clear()
+        this.deselectAll();
     }
 
     restart(): void {
@@ -425,6 +425,7 @@ export class SelectTool extends CanvasTool {
     }
 
     private clearSelection(): void {
+        // release/4.0.0 both lines do the same?
         this.selectedElements.getAll().forEach(p => this.removeFromSelection(p));
         this.selectedElements.clear();
     }
