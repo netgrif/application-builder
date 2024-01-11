@@ -78,11 +78,13 @@ export class ControlPanelService {
     }
 
     activate(mode?: Mode) {
+        this.activeMode?.deactivate();
         if (mode === undefined) {
             this._activeMode = this._defaultMode;
         } else {
             this._activeMode = mode;
         }
+        this.activeMode.activate();
     }
 
     get modeRegistry(): ModeRegistry {

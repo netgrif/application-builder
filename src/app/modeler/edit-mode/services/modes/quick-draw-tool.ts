@@ -53,6 +53,10 @@ export class QuickDrawTool extends CanvasTool {
         );
     }
 
+    isWorkInProgress(): boolean {
+        return this.arcLine !== undefined;
+    }
+
     bind() {
         super.bind();
         this.step = Step.PLACE;
@@ -65,14 +69,38 @@ export class QuickDrawTool extends CanvasTool {
     }
 
     onArcClick(event: MouseEvent, arc: CanvasArc) {
+        event.stopPropagation();
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            return;
+        }
+        super.onArcClick(event, arc);
         if (this.source) {
             event.stopPropagation();
             return;
         }
-        this.onArcContextMenu(event, arc);
+    }
+
+    onArcContextMenu(event: MouseEvent, arc: CanvasArc) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            return;
+        }
+        if (this.isWorkInProgress()) {
+            this.reset();
+            return;
+        }
+        super.onArcContextMenu(event, arc);
     }
 
     onPlaceClick(event: MouseEvent, canvasPlace: CanvasPlace) {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            event.stopPropagation();
+            return;
+        }
         super.onPlaceClick(event, canvasPlace);
         event.stopPropagation();
         if (this.step === Step.PLACE) {
@@ -87,10 +115,22 @@ export class QuickDrawTool extends CanvasTool {
         }
     }
 
-    onPlaceDoubleClick(event: MouseEvent, place: CanvasPlace) {
+    onPlaceContextMenu(event: MouseEvent, place: CanvasPlace) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isWorkInProgress()) {
+            this.reset();
+            return;
+        }
+        super.onPlaceContextMenu(event, place);
     }
 
     onTransitionClick(event: MouseEvent, canvasTransition: CanvasTransition) {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            event.stopPropagation();
+            return;
+        }
         super.onTransitionClick(event, canvasTransition);
         event.stopPropagation();
         if (this.step === Step.PLACE && this.source) {
@@ -106,10 +146,22 @@ export class QuickDrawTool extends CanvasTool {
         this.step = Step.PLACE;
     }
 
-    onTransitionDoubleClick(event: MouseEvent, transition: CanvasTransition) {
+    onTransitionContextMenu(event: MouseEvent, transition: CanvasTransition) {
+        event.stopPropagation();
+        event.preventDefault();
+        if (this.isWorkInProgress()) {
+            this.reset();
+            return;
+        }
+        super.onTransitionContextMenu(event, transition);
     }
 
     onMouseClick(event: MouseEvent) {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            event.stopPropagation();
+            return;
+        }
         super.onMouseClick(event);
         if (this.step === Step.PLACE) {
             const canvasPlace = this.editModeService.createPlace(this.mousePosition(event));

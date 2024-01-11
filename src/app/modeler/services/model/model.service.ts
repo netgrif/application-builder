@@ -21,11 +21,12 @@ import {SequenceGenerator} from './sequence-generator';
 import {ArcFactory} from '../../edit-mode/domain/arc-builders/arc-factory.service';
 import {ModelerConfig} from '../../modeler-config';
 import {ChangedPetriNet} from '../../../dialogs/dialog-model-edit/changed-petri-net';
+import {ModelSource} from './model-source';
 
 @Injectable({
     providedIn: 'root'
 })
-export class ModelService {
+export class ModelService implements ModelSource {
     private readonly _model: BehaviorSubject<PetriNet>;
     private readonly _placeChange: Subject<ChangedPlace>;
     private readonly _transitionChange: Subject<ChangedTransition>;

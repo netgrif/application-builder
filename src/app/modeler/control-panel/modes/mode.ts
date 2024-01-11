@@ -22,6 +22,12 @@ export class Mode extends Identifiable {
         this._tools = new ToolRegistry(injector);
     }
 
+    public activate(): void {
+    }
+
+    public deactivate(): void {
+    }
+
     get tools(): ToolRegistry {
         return this._tools;
     }

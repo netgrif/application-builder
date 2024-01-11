@@ -9,10 +9,6 @@ import {CanvasPlace} from '../../edit-mode/domain/canvas-place';
 import {CanvasTransition} from '../../edit-mode/domain/canvas-transition';
 import {CanvasArc} from '../../edit-mode/domain/canvas-arc';
 import {PetriflowCanvas, PetriflowCanvasService} from '@netgrif/petriflow.svg';
-import {ArcEditData, DialogArcEditComponent} from '../../../dialogs/dialog-arc-edit/dialog-arc-edit.component';
-import {ChangedArc} from '../../../dialogs/dialog-arc-edit/changed-arc';
-import {DialogPlaceEditComponent, PlaceEditData} from '../../../dialogs/dialog-place-edit/dialog-place-edit.component';
-import {ChangedPlace} from '../../../dialogs/dialog-place-edit/changed-place';
 import {PetriNet} from '@netgrif/petriflow';
 import {CanvasElementCollection} from '../../edit-mode/domain/canvas-element-collection';
 import {ControlPanelButton} from '../../control-panel/control-panel-button';
@@ -221,16 +217,6 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     }
 
     onArcDoubleClick(event: MouseEvent, arc: CanvasArc): void {
-        event.preventDefault();
-        event.stopPropagation();
-        this.openDialog(DialogArcEditComponent, {
-            width: '50%',
-            data: {
-                arcId: arc.modelArc.id
-            } as ArcEditData
-        }, (editedArc: ChangedArc) => {
-            this.modelService.updateArc(editedArc);
-        });
     }
 
     onArcDown(event: MouseEvent, arc: CanvasArc): void {
@@ -253,22 +239,13 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     onArcContextMenu(event: MouseEvent, arc: CanvasArc): void {
         event.preventDefault();
         event.stopPropagation();
+        // TODO: release/4.0.0 open context menu
     }
 
     onPlaceClick(event: MouseEvent, place: CanvasPlace): void {
     }
 
     onPlaceDoubleClick(event: MouseEvent, place: CanvasPlace): void {
-        event.preventDefault();
-        event.stopPropagation();
-        this.openDialog(DialogPlaceEditComponent, {
-            width: '50%',
-            data: {
-                placeId: place.modelPlace.id
-            } as PlaceEditData
-        }, (editedPlace: ChangedPlace) => {
-            this.modelService.updatePlace(editedPlace);
-        });
     }
 
     onPlaceDown(event: MouseEvent, place: CanvasPlace): void {
@@ -291,16 +268,13 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     onPlaceContextMenu(event: MouseEvent, place: CanvasPlace): void {
         event.preventDefault();
         event.stopPropagation();
+        // TODO: release/4.0.0 context menu
     }
 
     onTransitionClick(event: MouseEvent, transition: CanvasTransition): void {
     }
 
     onTransitionDoubleClick(event: MouseEvent, transition: CanvasTransition): void {
-        event.preventDefault();
-        event.stopPropagation();
-        this.transitionService.id = transition.id;
-        this.router.navigate(['/form']);
     }
 
     onTransitionDown(event: MouseEvent, transition: CanvasTransition): void {

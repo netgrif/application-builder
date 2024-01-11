@@ -34,6 +34,7 @@ export class ResetPositionAndZoomTool extends CanvasTool {
     }
 
     onClick(): void {
+        super.onClick();
         this.editModeService.panzoom?.reset();
     }
 }

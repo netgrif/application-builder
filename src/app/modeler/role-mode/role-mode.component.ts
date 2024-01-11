@@ -101,7 +101,9 @@ export class RoleModeComponent implements AfterViewInit, OnInit {
     }
 
     removeRole(item: Role) {
+        // TODO: release/4.0.0 modelService.removeRole()
         this.modelService.model.removeRole(item.id);
+        this.modelService.model.removeRoleRef(item.id);
         this.modelService.model.getTransitions().forEach(trans => {
             const index = trans.roleRefs.findIndex(roleRef => roleRef.id === item.id);
             if (index !== -1) {

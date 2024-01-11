@@ -1,15 +1,12 @@
 import {MenuItem} from './menu-item';
-import {SelectTool} from '../../services/modes/select-tool';
 
-export class DeleteMenuItem extends MenuItem {
+export abstract class DeleteMenuItem extends MenuItem {
 
-    constructor(selectTool: SelectTool) {
+    protected constructor(onClick: () => void) {
         super(
-            `Delete${selectTool.selectedElements.totalSize() > 1 ? ' all' : ''}`,
+            'Delete',
             'delete',
-            () => {
-                selectTool.deleteSelected();
-            }
+            onClick
         );
     }
 }

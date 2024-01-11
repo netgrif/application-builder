@@ -2,9 +2,6 @@ import {Injectable, Injector} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {BasicSimulation, PetriNet, Transition} from '@netgrif/petriflow';
 import {TutorialService} from '../../tutorial/tutorial-service';
-import {Mode} from '../control-panel/modes/mode';
-import {ControlPanelButton} from '../control-panel/control-panel-button';
-import {ControlPanelIcon} from '../control-panel/control-panel-icon';
 import {ModelService} from '../services/model/model.service';
 import {EventSimulationTool} from './tool/event-simulation.tool';
 import {TaskSimulationTool} from './tool/task-simulation.tool';
@@ -23,11 +20,14 @@ import {GridTool} from './tool/grid-tool';
 import {SwitchLabelTool} from './tool/switch-label-tool';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../selected-transition.service';
+import {ModelSource} from '../services/model/model-source';
+import {SimulationMode} from './simulation-mode';
+import {ModelSourceService} from '../services/model/model-source.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class SimulationModeService extends CanvasModeService<SimulationTool> {
+export class SimulationModeService extends CanvasModeService<SimulationTool> implements ModelSource {
 
     private _simulation: BasicSimulation;
     private _data: Map<string, number>;
@@ -39,6 +39,7 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
     constructor(
         _arcFactory: ArcFactory,
         modelService: ModelService,
+        modelSource: ModelSourceService,
         _canvasService: PetriflowCanvasService,
         dialog: MatDialog,
         router: Router,
@@ -48,16 +49,11 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
     ) {
         super(_arcFactory, modelService, _canvasService);
         this._data = new Map<string, number>();
-        this.mode = new Mode(
-            'simulation',
-            new ControlPanelButton(
-                new ControlPanelIcon('play_circle'),
-                'Simulation view'
-            ),
-            './simulation',
-            '/modeler/simulation',
+        this.mode = new SimulationMode(
             this.tutorialService.simulator,
-            this.parentInjector
+            this.parentInjector,
+            this,
+            modelSource
         );
         this.onTransitionDraw = (_: CanvasTransition) => {
         };
@@ -142,5 +138,9 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
 
     set data(value: Map<string, number>) {
         this._data = value;
+    }
+
+    get model(): PetriNet {
+        return this.simulation.simulationModel;
     }
 }

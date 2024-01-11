@@ -338,24 +338,4 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
         lasso.setAttributeNS(null, 'x', `${newX}`);
         lasso.setAttributeNS(null, 'y', `${newY}`);
     }
-
-    // PANZOOM
-
-    public zoomIn(position: DOMPoint): void {
-        this.zoom(position, 1);
-    }
-
-    public zoomOut(position: DOMPoint): void {
-        this.zoom(position, -1);
-    }
-
-    private zoom(position: DOMPoint, coef: number) {
-        this.canvasService.panzoom?.zoomToPoint(
-            this.canvasService.panzoom?.getScale() + coef * ModelerConfig.ZOOM_SPEED,
-            {
-                clientX: position.x,
-                clientY: position.y
-            }
-        );
-    }
 }

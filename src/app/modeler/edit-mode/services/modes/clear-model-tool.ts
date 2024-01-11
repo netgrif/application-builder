@@ -1,4 +1,3 @@
-import {Injectable} from '@angular/core';
 import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../../../control-panel/control-panel-icon';
 import {DialogDeleteModelComponent} from '../../../../dialogs/dialog-delete-model/dialog-delete-model.component';
@@ -35,6 +34,7 @@ export class ClearModelTool extends CanvasTool {
     }
 
     onClick(): void {
+        super.onClick();
         const dialogRef = this.dialog.open(DialogDeleteModelComponent);
         dialogRef.afterClosed().subscribe(result => {
             if (result === true) {
