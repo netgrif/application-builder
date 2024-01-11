@@ -210,7 +210,7 @@ export class DataModeComponent {
                 break;
             }
             case 'type': {
-                // TODO: remove any type-specific attributes from data field (eg. options)
+                // TODO: remove any type-specific attributes from data field (eg. options) and references (arc, i18n, ...)
                 this.removeSpecificAttributeOnChange();
                 dataVariable.type = $event.value;
                 this.processData.find(obj => obj.id === item.id).type = $event.value;
@@ -510,7 +510,7 @@ export class DataModeComponent {
     private removeSpecificAttributeOnChange() {
         this.itemData.inits = [];
         this.itemData.init.value = '';
-        this.itemData.init.name = '';
+        // this.itemData.init.name = '';
         this.itemData.options = [];
     }
 }
