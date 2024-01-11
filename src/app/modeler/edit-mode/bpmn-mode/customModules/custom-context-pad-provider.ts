@@ -56,43 +56,6 @@ export default class CustomContextPadProvider {
                 }
             };
         }
-        // if (is(element, 'bpmn:UserTask')) {
-        //     actions['openActins.action'] = {
-        //         group: 'netgrif',
-        //         className: 'bpmn-icon-script',
-        //         title: this.translate('Edit actions'),
-        //         action: {
-        //             click: (event) => {
-        //                 // Fire an event when the bpmn:userTask element is clicked
-        //                 this.eventBus.fire('open.actionBuilder', { event, element });
-        //             }
-        //         }
-        //     };
-        //     actions['openForms.action'] = {
-        //         group: 'netgrif',
-        //         className: 'bpmn-icon-business-rule',
-        //         title: this.translate('Edit form'),
-        //         action: {
-        //             click: (event) => {
-        //                 // Fire an event when the bpmn:userTask element is clicked
-        //                 this.eventBus.fire('open.formBuilder', { event, element });
-        //             }
-        //         }
-        //     };
-        // }
-        // if (is(element, 'bpmn:ServiceTask')) {
-        //     actions['openForms.action'] = {
-        //         group: 'netgrif',
-        //         className: 'bpmn-icon-script',
-        //         title: this.translate('Edit actions'),
-        //         action: {
-        //             click: (event) => {
-        //                 // Fire an event when the bpmn:userTask element is clicked
-        //                 this.eventBus.fire('open.actionBuilder', { event, element });
-        //             }
-        //         }
-        //     };
-        // }
 
         return actions;
     }
