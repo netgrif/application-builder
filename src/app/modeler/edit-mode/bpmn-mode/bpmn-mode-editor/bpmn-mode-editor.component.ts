@@ -1,19 +1,6 @@
-import {
-    AfterContentInit,
-    Component,
-    ElementRef,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    Output,
-    ViewChild,
-    SimpleChanges,
-    EventEmitter
-} from '@angular/core';
+import {AfterContentInit, Component, ElementRef, Input, OnDestroy, ViewChild} from '@angular/core';
 
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { map, switchMap } from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
 
 /**
  * You may include a different variant of BpmnJS:
@@ -23,19 +10,13 @@ import { map, switchMap } from 'rxjs/operators';
  * bpmn-modeler - bootstraps a full-fledged BPMN editor
  */
 import * as BpmnJS from 'bpmn-js/dist/bpmn-modeler.production.min.js';
-import BpmnModeler from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
-// import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css';
-import BpmnPalletteModule from 'bpmn-js/lib/features/palette';
 import {BpmnEditService} from '../bpmn-edit.service';
 
-// import feature from 'bpmn-js/lib/features/; TODO doplnit css files
-
-import { from, Observable, Subscription } from 'rxjs';
-import {DataGroup, ImportService, PetriNet as PetriflowPetriNet} from '@netgrif/petriflow';
+import {DataGroup, ImportService} from '@netgrif/petriflow';
 import {ModelerConfig} from '../../../modeler-config';
 import {ModelService} from '../../../services/model.service';
 import {SelectedTransitionService} from '../../../selected-transition.service';
@@ -55,8 +36,6 @@ export class BpmnModeEditorComponent implements AfterContentInit, OnDestroy {
     // retrieve DOM element reference
     @ViewChild('bpmnDiagram', { static: true }) private el: ElementRef;
 
-    // @Output() private importDone: EventEmitter<any> = new EventEmitter();
-
     @Input() private url: string;
 
     constructor(private http: HttpClient,
@@ -75,7 +54,6 @@ export class BpmnModeEditorComponent implements AfterContentInit, OnDestroy {
             this.bpmnJS = this.BpmnService.modeler
         }
         // attach BpmnJS instance to DOM element
-        // this.bpmnJS.attachTo(this.el.nativeElement);
         this.bpmnJS.attachTo(document.getElementById('bpmnDiagram'));
         const propertiesContainer = document.getElementById('properties');
         const propertiesPanel = this.bpmnJS.get('propertiesPanel');
@@ -100,6 +78,7 @@ export class BpmnModeEditorComponent implements AfterContentInit, OnDestroy {
         }
     }
 
+    // Updates Petriflow net before redirection to other views from edit view
     updateModelAndRedirect(redirectFunction: (transId:string) => void, taskId:string) {
         if(this.bpmnJS === null || this.bpmnJS === undefined) {
             this.bpmnJS = this.BpmnService.modeler
@@ -112,6 +91,7 @@ export class BpmnModeEditorComponent implements AfterContentInit, OnDestroy {
         },400)
     }
 
+    // Method is called when redirecting from bpmn edit mode to form editor, using contextPad action on bpmn elem.
     openFormBuilder(id) {
         if(!this.modelService.model.getTransition(id)) {
             this.router.navigate(['/modeler']);
@@ -129,6 +109,7 @@ export class BpmnModeEditorComponent implements AfterContentInit, OnDestroy {
         this.modelService.transition = this.modelService.graphicModel.transitions.find((item) => item.transition.id === id);
     }
 
+    // Method is called when redirecting from bpmn edit mode to actions editor, using contextPad action on bpmn elem.
     openActions(id) {
         if(!this.modelService.model.getTransition(id)) {
             console.log('no transition wit this Id found', id)
@@ -153,6 +134,7 @@ export class BpmnModeEditorComponent implements AfterContentInit, OnDestroy {
 
     }
 
+    // Drag import BPMN file
     dropHandler(ev) {
         ev.stopPropagation();
         console.log('File(s) dropped');

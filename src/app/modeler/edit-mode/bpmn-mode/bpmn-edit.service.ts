@@ -4,7 +4,6 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {CanDeactivate, Router} from '@angular/router';
 import {DataGroup, ImportService, PetriNet as PetriflowPetriNet} from '@netgrif/petriflow';
 import {BpmnPropertiesPanelModule, BpmnPropertiesProviderModule} from 'bpmn-js-properties-panel';
-// import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda.json';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import {from, Observable, Subscription} from 'rxjs';
@@ -190,19 +189,6 @@ export class BpmnEditService implements CanDeactivate<EditModeComponent> {
       this._snackBar.open(error.message, 'X');
       return false;
     }
-    //// this.http.post('https://bpmn2pn.netgrif.cloud/bpmn2pn/', bpmnXmlString, {
-    //   this.http.post('http://localhost:8064/bpmn2pn/', bpmnXmlString, {
-    //       headers: {
-    //           'Content-Type': 'text/xml;charset=US-ASCII',
-    //       },
-    //       responseType: 'text'
-    //   }).pipe().subscribe( value => {
-    //       console.log('new PN model string: ', value)
-    //       const petriNetResult = this.importService.parseFromXml(value);
-    //       this.updateNewModelData(petriNetResult.model)
-    //   }, (error: HttpErrorResponse) => {
-    //       this._snackBar.open(error.message, 'X');
-    //   });
   }
 
   updateNewModelData(newPnModel: PetriflowPetriNet) {
