@@ -93,4 +93,4 @@ jobs:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
           KUBE_CONTEXT: default-github-builder
         with:
-          args: rollout restart deployment/netgrif-application-builder-${{ contains(steps.getVersion.outputs.version, '-') && 'prod' || 'uat' }}-dpl --namespace builder
+          args: rollout restart deployment/netgrif-application-builder-${{ contains(steps.getVersion.outputs.version, '-') && 'uat' || 'prod' }}-dpl --namespace builder
