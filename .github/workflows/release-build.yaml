@@ -91,5 +91,6 @@ jobs:
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONTEXT: default-github-builder
         with:
           args: rollout restart deployment/netgrif-application-builder-${{ contains(steps.getVersion.outputs.version, '-') && 'prod' || 'uat' }}-dpl --namespace builder
