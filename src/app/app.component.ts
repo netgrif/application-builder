@@ -1,11 +1,13 @@
 import {Component, HostListener} from '@angular/core';
-import {LanguageService} from '@netgrif/components-core';
 import {MatDialog} from '@angular/material/dialog';
-import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
-import {JoyrideService} from 'ngx-joyride';
-import {TutorialService} from './tutorial/tutorial-service';
-import {MortgageService} from './modeler/mortgage.service';
 import {Router} from '@angular/router';
+import {LanguageService} from '@netgrif/components-core';
+import {NetgrifApplicationEngine} from '@netgrif/components-core/';
+import {JoyrideService} from 'ngx-joyride';
+import {AppBuilderConfigurationService} from './app-builder-configuration.service';
+import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
+import {MortgageService} from './modeler/mortgage.service';
+import {TutorialService} from './tutorial/tutorial-service';
 
 @Component({
   selector: 'nab-root',
@@ -14,6 +16,7 @@ import {Router} from '@angular/router';
 })
 export class AppComponent {
   title = 'Netgrif Application Builder';
+  config: NetgrifApplicationEngine;
 
   @HostListener('window:beforeunload', ['$event'])
   WindowBeforeUnload($event: any) {
@@ -21,6 +24,7 @@ export class AppComponent {
   }
 
   constructor(
+    config: AppBuilderConfigurationService,
     private router: Router,
     private _languageService: LanguageService,
     private matDialog: MatDialog,
@@ -28,6 +32,7 @@ export class AppComponent {
     private _mortgageService: MortgageService,
     private tutorialService: TutorialService,
   ) {
+    this.config = config.get();
   }
 
   addMortgage() {

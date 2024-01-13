@@ -5,6 +5,7 @@ import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {ImportService, PetriNet} from '@netgrif/petriflow';
+import {AppBuilderConfigurationService} from '../../app-builder-configuration.service';
 import {DialogErrorsComponent} from '../../dialogs/dialog-errors/dialog-errors.component';
 import {DialogManageRolesComponent, RoleRefType} from '../../dialogs/dialog-manage-roles/dialog-manage-roles.component';
 import {TutorialService} from '../../tutorial/tutorial-service';
@@ -38,7 +39,8 @@ export class ControlPanelComponent implements AfterViewInit {
               private importService: ImportService, public dialog: MatDialog, private router: Router, private http: HttpClient,
               private actionsModeService: ActionsModeService, public i18nModeService: I18nModeService,
               private tutorialService: TutorialService, private simulService: SimulationModeService, private _snackBar: MatSnackBar,
-              public fastPnService: FastPnService, private actionEditorService: ActionEditorService) {
+              public fastPnService: FastPnService, private actionEditorService: ActionEditorService,
+              private _config: AppBuilderConfigurationService) {
     this.importModel = new EventEmitter<void>();
     this.modelService.whichButton.subscribe(obj => this.whichButton = obj);
     this.router.events.subscribe(() => {
@@ -217,7 +219,8 @@ export class ControlPanelComponent implements AfterViewInit {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = () => {
-      this.http.post('https://bpmn2pn.netgrif.cloud/bpmn2pn/', reader.result, {
+      const bpmn2pnUrl = this._config.get().services.urls.bpmn2pn;
+      this.http.post(bpmn2pnUrl + '/bpmn2pn/', reader.result, {
         headers: {
           'Content-Type': 'text/xml;charset=US-ASCII',
         },
@@ -259,7 +262,7 @@ export class ControlPanelComponent implements AfterViewInit {
     this.nav.open();
   }
 
-  manageProcessPermisions() {
+  manageProcessPermissions() {
     this.dialog.open(DialogManageRolesComponent, {
       width: '60%',
       data: {

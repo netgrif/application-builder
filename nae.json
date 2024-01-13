@@ -101,6 +101,14 @@
     "dataFields": {
       "template": "material",
       "appearance": "outline"
+    },
+    "urls": {
+      "netgrif": "https://netgrif.com",
+      "bpmn2pn": "https://bpmn2pn.netgrif.cloud",
+      "engine": "https://demo.netgrif.com/",
+      "youtube": "https://www.youtube.com/channel/UCNfqgnjskMMpy7QvOOKhKgw",
+      "github": "https://github.com/netgrif",
+      "issues": "https://github.com/netgrif/application-builder/issues"
     }
   }
 }

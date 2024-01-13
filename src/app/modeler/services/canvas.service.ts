@@ -13,6 +13,7 @@ import {
   Transition as PetriflowTransition,
 } from '@netgrif/petriflow';
 import {BehaviorSubject, Subject} from 'rxjs';
+import {environment} from '../../../environments/environment';
 import {DialogArcAttachComponent} from '../../dialogs/dialog-arc-attach/dialog-arc-attach.component';
 import {
   DialogPlaceRefDeleteComponent,
@@ -1748,7 +1749,7 @@ export class CanvasService {
   }
 
   about(): void {
-    alert('Copyright © 2021 NETGRIF, s.r.o.');
+    alert('Builder v' + environment.version + '\nCopyright © 2021 NETGRIF, s.r.o.');
   }
 
   getMousePositionY(event: MouseEvent): number {

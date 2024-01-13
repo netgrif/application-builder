@@ -2,7 +2,7 @@
   <mat-sidenav-container class="app-mat-sidenav-container">
     <mat-sidenav class="app-mat-viewnav" color="primary" disableClose="true" mode="side" opened>
 
-      <a class="main-toolbar-logo" fxLayoutAlign="center center" href="https://www.netgrif.com">
+      <a class="main-toolbar-logo" fxLayoutAlign="center center" [href]="config.services.urls.netgrif">
         <img alt="Netgrif logo" src="../assets/netgrif_logo.svg">
       </a>
 
@@ -10,14 +10,14 @@
         <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.demo.step}}"
                        stepPosition="{{tutorial.demo.position}}" text="{{tutorial.demo.text}}"
                        title="{{tutorial.demo.title}}">
-          <a href="https://demo.netgrif.com/" matTooltip="Netgrif Demo" target="_blank">
+          <a [href]="config.services.urls.engine" matTooltip="Netgrif Demo" target="_blank">
             <mat-icon>play_arrow</mat-icon>
           </a>
         </mat-list-item>
         <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.youtube.step}}"
                        stepPosition="{{tutorial.youtube.position}}" text="{{tutorial.youtube.text}}"
                        title="{{tutorial.youtube.title}}">
-          <a href="https://www.youtube.com/channel/UCNfqgnjskMMpy7QvOOKhKgw" matTooltip="Youtube Channel"
+          <a [href]="config.services.urls.youtube" matTooltip="Youtube Channel"
              target="_blank">
             <mat-icon svgIcon="youtube"></mat-icon>
           </a>
@@ -25,7 +25,7 @@
         <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.github.step}}"
                        stepPosition="{{tutorial.github.position}}" text="{{tutorial.github.text}}"
                        title="{{tutorial.github.title}}">
-          <a href="https://github.com/netgrif" matTooltip="Github"
+          <a [href]="config.services.urls.github" matTooltip="Github"
              target="_blank">
             <mat-icon svgIcon="github">device_hub</mat-icon>
           </a>
