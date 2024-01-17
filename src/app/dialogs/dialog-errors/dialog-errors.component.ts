@@ -12,12 +12,8 @@ export interface DialogErrorsData {
     templateUrl: './dialog-errors.component.html',
     styleUrls: ['./dialog-errors.component.scss']
 })
-export class DialogErrorsComponent implements OnInit {
+export class DialogErrorsComponent {
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: DialogErrorsData) {
     }
-
-    ngOnInit(): void {
-    }
-
 }

@@ -7,14 +7,11 @@ import {GlobalToolRegistry} from './tools/global-tool-registry';
     templateUrl: './control-panel.component.html',
     styleUrls: ['./control-panel.component.scss']
 })
-export class ControlPanelComponent implements AfterViewInit {
+export class ControlPanelComponent {
 
     constructor(
         public globalToolRegistry: GlobalToolRegistry,
         public controlPanelService: ControlPanelService,
     ) {
-    }
-
-    ngAfterViewInit(): void {
     }
 }

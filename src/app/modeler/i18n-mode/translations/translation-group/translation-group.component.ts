@@ -8,16 +8,13 @@ import {I18nTranslations} from '@netgrif/petriflow';
     templateUrl: './translation-group.component.html',
     styleUrls: ['./translation-group.component.scss']
 })
-export class TranslationGroupComponent implements OnInit {
+export class TranslationGroupComponent {
 
     @Input()
     config: TranslationGroupConfiguration;
     private _translation: I18nTranslations;
 
     constructor() {
-    }
-
-    ngOnInit(): void {
     }
 
     get translation(): I18nTranslations {

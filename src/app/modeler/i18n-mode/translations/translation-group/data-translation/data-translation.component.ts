@@ -8,7 +8,7 @@ import {ModelService} from '../../../../services/model/model.service';
     templateUrl: './data-translation.component.html',
     styleUrls: ['./data-translation.component.scss']
 })
-export class DataTranslationComponent implements OnInit {
+export class DataTranslationComponent {
 
     constructor(
         private modelService: ModelService,
@@ -30,9 +30,6 @@ export class DataTranslationComponent implements OnInit {
     }
 
     private _translation: I18nTranslations;
-
-    ngOnInit(): void {
-    }
 
     notLast(i: any) {
         return i !== this.model.getDataSet().length - 1;

@@ -12,7 +12,7 @@ import {FormControl, Validators} from '@angular/forms';
     templateUrl: './dialog-model-edit.component.html',
     styleUrls: ['./dialog-model-edit.component.scss']
 })
-export class DialogModelEditComponent implements OnInit {
+export class DialogModelEditComponent {
 
     public model: ChangedPetriNet;
     public idCtrl: FormControl;
@@ -29,9 +29,6 @@ export class DialogModelEditComponent implements OnInit {
         this.idCtrl = new FormControl('', [Validators.required]);
         this.titleCtrl = new FormControl('', [Validators.required]);
         this.initialsCtrl = new FormControl('', [Validators.required]);
-    }
-
-    ngOnInit(): void {
     }
 
     openPermissions() {

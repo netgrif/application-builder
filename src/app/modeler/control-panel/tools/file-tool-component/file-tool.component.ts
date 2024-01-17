@@ -8,11 +8,8 @@ import {Tool} from '../tool';
     templateUrl: './file-tool.component.html',
     styleUrls: ['./file-tool.component.scss']
 })
-export class FileToolComponent implements OnInit {
+export class FileToolComponent {
 
     constructor(@Inject(NAB_CONTROL_PANEL_TOOL) public fileTool: FileTool) {
-    }
-
-    ngOnInit(): void {
     }
 }

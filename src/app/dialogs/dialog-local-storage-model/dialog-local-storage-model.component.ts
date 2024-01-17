@@ -12,14 +12,11 @@ export interface DialogData {
     templateUrl: './dialog-local-storage-model.component.html',
     styleUrls: ['./dialog-local-storage-model.component.scss']
 })
-export class DialogLocalStorageModelComponent implements OnInit {
+export class DialogLocalStorageModelComponent {
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
-    }
-
-    ngOnInit(): void {
     }
 
 }

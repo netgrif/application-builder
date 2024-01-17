@@ -7,7 +7,7 @@ import {ModelService} from '../../../../services/model/model.service';
     templateUrl: './model-translation.component.html',
     styleUrls: ['./model-translation.component.scss']
 })
-export class ModelTranslationComponent implements OnInit {
+export class ModelTranslationComponent {
 
     constructor(
         private modelService: ModelService,
@@ -28,7 +28,4 @@ export class ModelTranslationComponent implements OnInit {
     }
 
     private _translation: I18nTranslations;
-
-    ngOnInit(): void {
-    }
 }

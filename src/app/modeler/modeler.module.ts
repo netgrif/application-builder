@@ -51,7 +51,6 @@ import {
 import {NgxDropzoneModule} from 'ngx-dropzone';
 import {MaterialModule} from '@netgrif/components-core';
 import {PetriflowCanvasModule} from '@netgrif/petriflow.svg';
-import {PetriflowInfoDialogComponent} from './edit-mode/petriflow-info-dialog/petriflow-info-dialog.component';
 import {ModeComponent} from './control-panel/modes/mode-component/mode.component';
 import {ToolComponent} from './control-panel/tools/tool-component/tool.component';
 import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
@@ -85,7 +84,6 @@ import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.compon
         RoleTranslationComponent,
         TaskTranslationComponent,
         EditModeComponent,
-        PetriflowInfoDialogComponent,
         ModeComponent,
         ToolComponent,
         ImportToolButtonComponent,
@@ -114,8 +112,7 @@ import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.compon
         NgxDropzoneModule,
         MaterialModule,
         PetriflowCanvasModule
-    ],
-    entryComponents: [PetriflowInfoDialogComponent]
+    ]
 })
 export class ModelerModule {
     constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {

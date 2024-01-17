@@ -7,15 +7,12 @@ import {I18nModeService} from '../../i18n-mode.service';
     templateUrl: './progress.component.html',
     styleUrls: ['./progress.component.scss']
 })
-export class ProgressComponent implements OnInit {
+export class ProgressComponent {
 
     @Input()
     locale: Locale;
 
     constructor(private i18nService: I18nModeService) {
-    }
-
-    ngOnInit(): void {
     }
 
     removeLocale() {

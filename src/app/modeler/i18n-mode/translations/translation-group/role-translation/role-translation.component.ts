@@ -7,7 +7,7 @@ import {ModelService} from '../../../../services/model/model.service';
     templateUrl: './role-translation.component.html',
     styleUrls: ['./role-translation.component.scss']
 })
-export class RoleTranslationComponent implements OnInit {
+export class RoleTranslationComponent {
 
     constructor(
         private modelService: ModelService
@@ -28,9 +28,6 @@ export class RoleTranslationComponent implements OnInit {
     }
 
     private _translation: I18nTranslations;
-
-    ngOnInit(): void {
-    }
 
     notLast(i: any) {
         return i !== this.model.getRoles().length - 1;

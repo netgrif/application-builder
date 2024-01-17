@@ -7,7 +7,7 @@ import {NAB_CONTROL_PANEL_TOOL} from '../../control-panel-tool-injection-token';
     templateUrl: './import-tool-button.component.html',
     styleUrls: ['./import-tool-button.component.scss']
 })
-export class ImportToolButtonComponent implements OnInit {
+export class ImportToolButtonComponent {
 
     @ViewChild('xmlFileInput') fileInput: ElementRef;
 
@@ -20,8 +20,5 @@ export class ImportToolButtonComponent implements OnInit {
         $event.stopPropagation();
         this.tool.onEvent($event);
         this.fileInput.nativeElement.value = '';
-    }
-
-    ngOnInit(): void {
     }
 }
