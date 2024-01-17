@@ -33,11 +33,9 @@ import {DeletePlaceMenuItem} from '../../context-menu/menu-items/place/delete-pl
 export abstract class CanvasTool extends CanvasListenerTool {
 
     private readonly _editModeService: EditModeService;
-    private readonly _hotkeys: Array<Hotkey>;
 
     protected constructor(
-        id: string,
-        button: ControlPanelButton,
+        id: string,        button: ControlPanelButton,
         modelService: ModelService,
         dialog: MatDialog,
         editModeService: EditModeService,
@@ -46,7 +44,6 @@ export abstract class CanvasTool extends CanvasListenerTool {
     ) {
         super(id, button, modelService, dialog, router, transitionService);
         this._editModeService = editModeService;
-        this._hotkeys = new Array<Hotkey>();
         this.hotkeys.push(new Hotkey('Escape', false, false, false, () => {
             this.closeContextMenu();
             this.reset();
@@ -59,42 +56,14 @@ export abstract class CanvasTool extends CanvasListenerTool {
 
     bind() {
         super.bind();
-        this.bindKeys();
     }
 
     unbind() {
         super.unbind();
-        this.unbindKeys();
         this.closeContextMenu();
     }
 
     reset(): void {
-    }
-
-    bindKeys(): void {
-        document.onkeydown = this.onKeyDown.bind(this);
-        document.onkeyup = this.onKeyUp.bind(this);
-    }
-
-    unbindKeys(): void {
-        document.onkeydown = undefined;
-        document.onkeyup = undefined;
-    }
-
-    onKeyDown(event: KeyboardEvent): void {
-        if (event.repeat) {
-            return;
-        }
-        const hotkey = this._hotkeys.find(a => a.matches(event));
-        if (!hotkey) {
-            return;
-        }
-        event.preventDefault();
-        event.stopPropagation();
-        hotkey.listener();
-    }
-
-    onKeyUp(event: KeyboardEvent): void {
     }
 
     onMouseLeave(event: MouseEvent): void {
@@ -252,9 +221,5 @@ export abstract class CanvasTool extends CanvasListenerTool {
 
     get editModeService(): EditModeService {
         return this._editModeService;
-    }
-
-    get hotkeys(): Array<Hotkey> {
-        return this._hotkeys;
     }
 }

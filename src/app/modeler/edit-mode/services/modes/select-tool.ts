@@ -66,13 +66,6 @@ export class SelectTool extends CanvasTool {
         this.hotkeys.push(new Hotkey('z', true, false, true, this.redo.bind(this)));
         this.hotkeys.push(new Hotkey('z', true, false, false, this.undo.bind(this)));
         this.hotkeys.push(new Hotkey('Delete', false, false, false, this.deleteSelected.bind(this)));
-        this.hotkeys.push(new Hotkey('+', false, false, false, this.zoom.bind(this, 1)));
-        this.hotkeys.push(new Hotkey('-', false, false, false, this.zoom.bind(this, -1)));
-        this.hotkeys.push(new Hotkey('ArrowUp', false, false, false, this.move.bind(this, 0, ModelerConfig.SIZE)));
-        this.hotkeys.push(new Hotkey('ArrowRight', false, false, false, this.move.bind(this, -ModelerConfig.SIZE, 0)));
-        this.hotkeys.push(new Hotkey('ArrowDown', false, false, false, this.move.bind(this, 0, -ModelerConfig.SIZE)));
-        this.hotkeys.push(new Hotkey('ArrowLeft', false, false, false, this.move.bind(this, ModelerConfig.SIZE, 0)));
-        this.hotkeys.push(new Hotkey('Home', false, false, false, this.move.bind(this, 0, 0, false)));
     }
 
     bind(): void {
@@ -190,21 +183,6 @@ export class SelectTool extends CanvasTool {
                 this.deleteElements();
             }
         });
-    }
-
-    move(horizontal: number, vertical: number, relative = true): void {
-        this.editModeService.canvasService.enablePanning();
-        this.editModeService.canvasService.panzoom?.pan(horizontal, vertical, {relative});
-    }
-
-    zoom(direction: number): void {
-        this.canvasService.panzoom?.zoomToPoint(
-            this.canvasService.panzoom?.getScale() + ModelerConfig.ZOOM_SPEED * direction,
-            {
-                clientX: 0,
-                clientY: 0
-            }
-        );
     }
 
     private deleteElements(): void {

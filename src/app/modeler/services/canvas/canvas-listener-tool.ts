@@ -15,6 +15,8 @@ import {ControlPanelButton} from '../../control-panel/control-panel-button';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../selected-transition.service';
 import {ComponentType} from '@angular/cdk/overlay';
+import {Hotkey} from '../../edit-mode/services/modes/domain/hotkey';
+import {ModelerConfig} from '../../modeler-config';
 
 export abstract class CanvasListenerTool extends Tool implements MouseListener, PlaceListener, TransitionListener, ArcListener {
 
@@ -22,6 +24,7 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     private readonly _dialog: MatDialog;
     private readonly _router: Router;
     private readonly _transitionService: SelectedTransitionService;
+    private readonly _hotkeys: Array<Hotkey>;
 
     protected constructor(
         id: string,
@@ -36,6 +39,14 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         this._dialog = dialog;
         this._router = router;
         this._transitionService = transitionService;
+        this._hotkeys = new Array<Hotkey>();
+        this.hotkeys.push(new Hotkey('+', false, false, false, this.zoom.bind(this, 1)));
+        this.hotkeys.push(new Hotkey('-', false, false, false, this.zoom.bind(this, -1)));
+        this.hotkeys.push(new Hotkey('ArrowUp', false, false, false, this.move.bind(this, 0, ModelerConfig.SIZE)));
+        this.hotkeys.push(new Hotkey('ArrowRight', false, false, false, this.move.bind(this, -ModelerConfig.SIZE, 0)));
+        this.hotkeys.push(new Hotkey('ArrowDown', false, false, false, this.move.bind(this, 0, -ModelerConfig.SIZE)));
+        this.hotkeys.push(new Hotkey('ArrowLeft', false, false, false, this.move.bind(this, ModelerConfig.SIZE, 0)));
+        this.hotkeys.push(new Hotkey('Home', false, false, false, this.move.bind(this, 0, 0, false)));
     }
 
     abstract get canvasService(): PetriflowCanvasService;
@@ -49,6 +60,7 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         this.bindTransitions(this.elements?.transitions);
         this.bindArcs(this.elements?.arcs);
         this.bindCanvas(this.canvas);
+        this.bindKeys();
     }
 
     public unbind(): void {
@@ -59,6 +71,33 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         this.unbindTransitions(this.elements.transitions);
         this.unbindArcs(this.elements.arcs);
         this.unbindCanvas(this.canvas);
+        this.unbindKeys();
+    }
+
+    bindKeys(): void {
+        document.onkeydown = this.onKeyDown.bind(this);
+        document.onkeyup = this.onKeyUp.bind(this);
+    }
+
+    unbindKeys(): void {
+        document.onkeydown = undefined;
+        document.onkeyup = undefined;
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.repeat) {
+            return;
+        }
+        const hotkey = this._hotkeys.find(a => a.matches(event));
+        if (!hotkey) {
+            return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        hotkey.listener();
+    }
+
+    onKeyUp(event: KeyboardEvent): void {
     }
 
     bindPlaces(places: Array<CanvasPlace>): void {
@@ -239,7 +278,6 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     onArcContextMenu(event: MouseEvent, arc: CanvasArc): void {
         event.preventDefault();
         event.stopPropagation();
-        // TODO: release/4.0.0 open context menu
     }
 
     onPlaceClick(event: MouseEvent, place: CanvasPlace): void {
@@ -268,7 +306,6 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     onPlaceContextMenu(event: MouseEvent, place: CanvasPlace): void {
         event.preventDefault();
         event.stopPropagation();
-        // TODO: release/4.0.0 context menu
     }
 
     onTransitionClick(event: MouseEvent, transition: CanvasTransition): void {
@@ -334,6 +371,21 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         return new DOMPoint(event.clientX, event.clientY);
     }
 
+    move(horizontal: number, vertical: number, relative = true): void {
+        this.canvasService.enablePanning();
+        this.canvasService.panzoom?.pan(horizontal, vertical, {relative});
+    }
+
+    zoom(direction: number): void {
+        this.canvasService.panzoom?.zoomToPoint(
+            this.canvasService.panzoom?.getScale() + ModelerConfig.ZOOM_SPEED * direction,
+            {
+                clientX: 0,
+                clientY: 0
+            }
+        );
+    }
+
     public get modelService(): ModelService {
         return this._modelService;
     }
@@ -356,5 +408,9 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
 
     get transitionService(): SelectedTransitionService {
         return this._transitionService;
+    }
+
+    get hotkeys(): Array<Hotkey> {
+        return this._hotkeys;
     }
 }
