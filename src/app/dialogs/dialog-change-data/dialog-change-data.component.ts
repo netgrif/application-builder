@@ -15,7 +15,7 @@ export interface Data {
     templateUrl: './dialog-change-data.component.html',
     styleUrls: ['./dialog-change-data.component.scss']
 })
-export class DialogChangeDataComponent implements OnInit {
+export class DialogChangeDataComponent {
 
     public dataSet: Array<Data>;
 
@@ -25,8 +25,4 @@ export class DialogChangeDataComponent implements OnInit {
         this.dataSet = new Array<Data>();
         data.dataSet.forEach((value, id) => this.dataSet.push({id, value}));
     }
-
-    ngOnInit(): void {
-    }
-
 }

@@ -7,7 +7,7 @@ import {ModelService} from '../../../../services/model/model.service';
     templateUrl: './task-translation.component.html',
     styleUrls: ['./task-translation.component.scss']
 })
-export class TaskTranslationComponent implements OnInit {
+export class TaskTranslationComponent {
 
     constructor(
         private modelService: ModelService
@@ -28,9 +28,6 @@ export class TaskTranslationComponent implements OnInit {
     }
 
     private _translation: I18nTranslations;
-
-    ngOnInit(): void {
-    }
 
     notLast(i: number) {
         return i !== this.model.getTransitions().length - 1;

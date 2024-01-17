@@ -6,7 +6,7 @@ import {CommandAction} from '../../classes/command-action';
     templateUrl: './action-editor-menu-description.component.html',
     styleUrls: ['./action-editor-menu-description.component.scss']
 })
-export class ActionEditorMenuDescriptionComponent implements OnInit {
+export class ActionEditorMenuDescriptionComponent {
 
     descriptionVisible: boolean;
 
@@ -14,9 +14,6 @@ export class ActionEditorMenuDescriptionComponent implements OnInit {
     @ViewChild('descriptionCard') description: ElementRef;
 
     constructor() {
-    }
-
-    ngOnInit(): void {
     }
 
     setAction(action: CommandAction): void {

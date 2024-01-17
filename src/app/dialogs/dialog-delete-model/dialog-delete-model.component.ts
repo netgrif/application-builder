@@ -5,11 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './dialog-delete-model.component.html',
   styleUrls: ['./dialog-delete-model.component.scss']
 })
-export class DialogDeleteModelComponent implements OnInit {
+export class DialogDeleteModelComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

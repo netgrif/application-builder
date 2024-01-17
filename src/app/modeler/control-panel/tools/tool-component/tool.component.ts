@@ -8,15 +8,12 @@ import {NAB_CONTROL_PANEL_MODE, NAB_CONTROL_PANEL_TOOL} from '../../control-pane
     templateUrl: './tool.component.html',
     styleUrls: ['./tool.component.scss']
 })
-export class ToolComponent implements OnInit {
+export class ToolComponent {
 
     constructor(
         @Inject(NAB_CONTROL_PANEL_TOOL) public tool: Tool,
         @Inject(NAB_CONTROL_PANEL_MODE) public modeService: ModeService<Tool>
     ) {
-    }
-
-    ngOnInit(): void {
     }
 
     isActive() {

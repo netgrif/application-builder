@@ -13,7 +13,7 @@ export interface PlaceEditData {
     templateUrl: './dialog-place-edit.component.html',
     styleUrls: ['./dialog-place-edit.component.scss']
 })
-export class DialogPlaceEditComponent implements OnInit {
+export class DialogPlaceEditComponent {
 
     public place: ChangedPlace;
     public idCtrl: FormControl;
@@ -32,9 +32,6 @@ export class DialogPlaceEditComponent implements OnInit {
             Validators.required,
             this.validMarking()
         ]);
-    }
-
-    ngOnInit(): void {
     }
 
     private validUnique(): ValidatorFn {

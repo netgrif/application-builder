@@ -22,7 +22,7 @@ import {ModelService} from './services/model/model.service';
     templateUrl: './modeler.component.html',
     styleUrls: ['./modeler.component.scss']
 })
-export class ModelerComponent implements AfterViewInit {
+export class ModelerComponent {
     selectedIndex = 0;
     width: number;
     projectModels: Array<PetriflowPetriNet>;
@@ -60,9 +60,6 @@ export class ModelerComponent implements AfterViewInit {
         if (!this.modelService.model) {
             this.modelService.model = new PetriflowPetriNet();
         }
-    }
-
-    ngAfterViewInit() {
     }
 
     reset(field: string) {

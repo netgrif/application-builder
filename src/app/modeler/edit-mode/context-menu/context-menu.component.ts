@@ -7,16 +7,13 @@ import {EditModeService} from '../edit-mode.service';
     templateUrl: './context-menu.component.html',
     styleUrls: ['./context-menu.component.scss']
 })
-export class ContextMenuComponent implements OnInit {
+export class ContextMenuComponent {
 
     public menuItems: Array<MenuItem>;
 
     constructor(
         private editModeService: EditModeService
     ) {
-    }
-
-    ngOnInit(): void {
     }
 
     itemClick(item: MenuItem) {
