@@ -21,6 +21,8 @@ import {
 import {ModelerConfig} from '../../../modeler-config';
 import {DeleteSelectedMenuItem} from '../../context-menu/menu-items/delete-selected-menu-item';
 import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
+import {SelectArcsMenuItem} from '../../context-menu/menu-items/select-arcs-menu-item';
+import {CanvasNodeElement} from '../../domain/canvas-node-element';
 
 export class SelectTool extends CanvasTool {
 
@@ -533,15 +535,25 @@ export class SelectTool extends CanvasTool {
     }
 
     placeContextMenu(place: CanvasPlace, event: MouseEvent): ContextMenu {
-        return this.replaceDeleteMenuItem(super.placeContextMenu(place, event));
+        const menu = this.replaceDeleteMenuItem(super.placeContextMenu(place, event));
+        menu.items.push(new SelectArcsMenuItem(this, place));
+        return menu;
     }
 
     transitionContextMenu(transition: CanvasTransition, event: MouseEvent): ContextMenu {
-        return this.replaceDeleteMenuItem(super.transitionContextMenu(transition, event));
+        const menu = this.replaceDeleteMenuItem(super.transitionContextMenu(transition, event));
+        menu.items.push(new SelectArcsMenuItem(this, transition));
+        return menu;
     }
 
     arcContextMenu(arc: CanvasArc, event: MouseEvent): ContextMenu {
         return this.replaceDeleteMenuItem(super.arcContextMenu(arc, event));
+    }
+
+    selectConnectedArcs(element: CanvasNodeElement<any, any>) {
+        const elementId = element.modelElement.id;
+        const connected = this.elements.arcs.filter(a => a.modelArc.source.id === elementId || a.modelArc.destination.id === elementId);
+        connected.forEach(a => this.addToSelection(a));
     }
 
     private replaceDeleteMenuItem(menuItem: ContextMenu): ContextMenu {

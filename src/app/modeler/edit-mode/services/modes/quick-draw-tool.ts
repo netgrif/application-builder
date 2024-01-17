@@ -95,6 +95,20 @@ export class QuickDrawTool extends CanvasTool {
         super.onArcContextMenu(event, arc);
     }
 
+    onArcEnter(event: MouseEvent, arc: CanvasArc) {
+        if (this.isWorkInProgress()) {
+            return;
+        }
+        super.onArcEnter(event, arc);
+    }
+
+    onArcLeave(event: MouseEvent, arc: CanvasArc) {
+        if (this.isWorkInProgress()) {
+            return;
+        }
+        super.onArcLeave(event, arc);
+    }
+
     onPlaceClick(event: MouseEvent, canvasPlace: CanvasPlace) {
         if (this.isContextMenuOpen()) {
             this.closeContextMenu();
