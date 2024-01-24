@@ -23,6 +23,7 @@ import {DeleteSelectedMenuItem} from '../../context-menu/menu-items/delete-selec
 import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
 import {SelectArcsMenuItem} from '../../context-menu/menu-items/select-arcs-menu-item';
 import {CanvasNodeElement} from '../../domain/canvas-node-element';
+import {transition} from '@angular/animations';
 
 export class SelectTool extends CanvasTool {
 
@@ -34,8 +35,8 @@ export class SelectTool extends CanvasTool {
     private clickElement: CanvasObject<any, any>;
     private lasso: SVGRectElement;
     private lastDragPoint: DOMPoint;
-    private mouseDown: MouseEvent;
     private arcPointIndex: number;
+    private lastClickTimestamp: number = 0;
 
     constructor(
         modelService: ModelService,
@@ -90,7 +91,6 @@ export class SelectTool extends CanvasTool {
     }
 
     restart(): void {
-        // TODO: release/4.0.0 https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
         if (this.lasso) {
             this.canvasService.canvas.container.removeChild(this.lasso);
         }
@@ -206,48 +206,60 @@ export class SelectTool extends CanvasTool {
         this._historyService.redo();
     }
 
-    onPlaceDown(event: MouseEvent, place: CanvasPlace) {
+    onPlaceDown(event: PointerEvent, place: CanvasPlace) {
         super.onPlaceDown(event, place);
         this.onElementDown(event, place);
     }
 
-    onPlaceUp(event: MouseEvent, place: CanvasPlace) {
+    onPlaceUp(event: PointerEvent, place: CanvasPlace) {
         super.onPlaceUp(event, place);
         this.onElementUp(event, place, this.placeContextMenu(place, event));
     }
 
-    onTransitionDown(event: MouseEvent, transition: CanvasTransition): void {
+    onPlaceMove(event: PointerEvent, place: CanvasPlace) {
+        super.onPlaceMove(event, place);
+        this.onMove(event);
+    }
+
+    onTransitionDown(event: PointerEvent, transition: CanvasTransition): void {
         super.onTransitionDown(event, transition);
         this.onElementDown(event, transition);
     }
 
-    onTransitionUp(event: MouseEvent, transition: CanvasTransition): void {
+    onTransitionUp(event: PointerEvent, transition: CanvasTransition): void {
         super.onTransitionUp(event, transition);
+        if (this.isDoubleClick(event) && this.isLeftButtonClick(event)) {
+            this.transitionService.id = transition.id;
+            this.router.navigate(['/form']);
+            return;
+        }
+        this.lastClickTimestamp = event.timeStamp;
         this.onElementUp(event, transition, this.transitionContextMenu(transition, event));
     }
 
-    onTransitionDoubleClick(event: MouseEvent, transition: CanvasTransition): void {
-        event.preventDefault();
-        event.stopPropagation();
-        this.transitionService.id = transition.id;
-        this.router.navigate(['/form']);
+    onTransitionMove(event: PointerEvent, transition: CanvasTransition) {
+        super.onTransitionMove(event, transition);
+        this.onMove(event);
     }
 
-    onArcDown(event: MouseEvent, arc: CanvasArc) {
+    onArcDown(event: PointerEvent, arc: CanvasArc) {
         super.onArcDown(event, arc);
         this.onElementDown(event, arc);
     }
 
-    onArcUp(event: MouseEvent, arc: CanvasArc) {
+    onArcUp(event: PointerEvent, arc: CanvasArc) {
         super.onArcUp(event, arc);
         this.onElementUp(event, arc, this.arcContextMenu(arc, event));
     }
 
-    onMouseDown(event: MouseEvent) {
+    onArcMove(event: PointerEvent, arc: CanvasArc) {
+        super.onArcMove(event, arc);
+        this.onMove(event);
+    }
+
+    onMouseDown(event: PointerEvent) {
         super.onMouseDown(event);
-        this.closeContextMenu();
-        this.mouseDown = event
-        if (this.isLeftButton(event)) {
+        if (this.isLeftButton(event) && !this.isContextMenuOpen()) {
             this.deselectAll();
             this.lastDragPoint = this.mousePosition(event);
             this.lasso = this.editModeService.createRectangle(this.lastDragPoint);
@@ -255,7 +267,7 @@ export class SelectTool extends CanvasTool {
         }
     }
 
-    onMouseUp(event: MouseEvent) {
+    onMouseUp(event: PointerEvent) {
         super.onMouseUp(event);
         if (this.isLeftButton(event)) {
             if (this.lasso) {
@@ -274,8 +286,12 @@ export class SelectTool extends CanvasTool {
         this.restart();
     }
 
-    onMouseMove(event: MouseEvent) {
+    onMouseMove(event: PointerEvent) {
         super.onMouseMove(event);
+        this.onMove(event);
+    }
+
+    private onMove(event: PointerEvent): void {
         if (!this.isLeftButton(event) || this.ctrlDown) {
             return;
         }
@@ -315,8 +331,8 @@ export class SelectTool extends CanvasTool {
         }
     }
 
-    private onElementDown(event: MouseEvent, element: CanvasObject<any, any>): void {
-        event.stopPropagation();
+    private onElementDown(event: PointerEvent, element: CanvasObject<any, any>): void {
+        // event.stopPropagation();
         this.closeContextMenu();
         this.mouseDown = event;
         if (!this.isLeftButton(event)) {
@@ -340,8 +356,8 @@ export class SelectTool extends CanvasTool {
         }
     }
 
-    private onElementUp(event: MouseEvent, element: CanvasPlace | CanvasTransition | CanvasArc, contextMenu: ContextMenu): void {
-        event.stopPropagation();
+    private onElementUp(event: PointerEvent, element: CanvasPlace | CanvasTransition | CanvasArc, contextMenu: ContextMenu): void {
+        // event.stopPropagation();
         this.closeContextMenu();
         if (this.isLeftButton(event)) {
             if (!this.isClick(event)) {
@@ -405,9 +421,7 @@ export class SelectTool extends CanvasTool {
     }
 
     private clearSelection(): void {
-        // release/4.0.0 both lines do the same?
         this.selectedElements.getAll().forEach(p => this.removeFromSelection(p));
-        this.selectedElements.clear();
     }
 
     get selectedElements(): CanvasElementCollection {
@@ -418,28 +432,28 @@ export class SelectTool extends CanvasTool {
         return this._clipboardElements;
     }
 
-    onPlaceLeave(event: MouseEvent, place: CanvasPlace) {
+    onPlaceLeave(event: PointerEvent, place: CanvasPlace) {
         if (this.selectedElements.contains(place)) {
             return;
         }
         super.onPlaceLeave(event, place);
     }
 
-    onTransitionLeave(event: MouseEvent, transition: CanvasTransition) {
+    onTransitionLeave(event: PointerEvent, transition: CanvasTransition) {
         if (this.selectedElements.contains(transition)) {
             return;
         }
         super.onTransitionLeave(event, transition);
     }
 
-    onArcLeave(event: MouseEvent, arc: CanvasArc) {
+    onArcLeave(event: PointerEvent, arc: CanvasArc) {
         if (this.selectedElements.contains(arc)) {
             return;
         }
         super.onArcLeave(event, arc);
     }
 
-    onMouseLeave(event: MouseEvent): void {
+    onMouseLeave(event: PointerEvent): void {
         if (this.mouseDown) {
             this.resetPosition();
             this.deactivateAll();
@@ -467,10 +481,6 @@ export class SelectTool extends CanvasTool {
                 this.editModeService.moveArcBreakpoint(a, index);
             });
         });
-    }
-
-    isClick(event: MouseEvent): boolean {
-        return event.x === this.mouseDown.x && event.y === this.mouseDown.y;
     }
 
     isDraggingOnlyArc(): boolean {
@@ -512,19 +522,19 @@ export class SelectTool extends CanvasTool {
         return Math.abs(nx - mouse.x) <= 2 && Math.abs(ny - mouse.y) <= 2;
     }
 
-    placeContextMenu(place: CanvasPlace, event: MouseEvent): ContextMenu {
+    placeContextMenu(place: CanvasPlace, event: PointerEvent): ContextMenu {
         const menu = this.replaceDeleteMenuItem(super.placeContextMenu(place, event));
         menu.items.push(new SelectArcsMenuItem(this, place));
         return menu;
     }
 
-    transitionContextMenu(transition: CanvasTransition, event: MouseEvent): ContextMenu {
+    transitionContextMenu(transition: CanvasTransition, event: PointerEvent): ContextMenu {
         const menu = this.replaceDeleteMenuItem(super.transitionContextMenu(transition, event));
         menu.items.push(new SelectArcsMenuItem(this, transition));
         return menu;
     }
 
-    arcContextMenu(arc: CanvasArc, event: MouseEvent): ContextMenu {
+    arcContextMenu(arc: CanvasArc, event: PointerEvent): ContextMenu {
         return this.replaceDeleteMenuItem(super.arcContextMenu(arc, event));
     }
 
@@ -532,6 +542,10 @@ export class SelectTool extends CanvasTool {
         const elementId = element.modelElement.id;
         const connected = this.elements.arcs.filter(a => a.modelArc.source.id === elementId || a.modelArc.destination.id === elementId);
         connected.forEach(a => this.addToSelection(a));
+    }
+
+    isDoubleClick(event: PointerEvent): boolean {
+        return event.timeStamp - this.lastClickTimestamp < 300;
     }
 
     private replaceDeleteMenuItem(menuItem: ContextMenu): ContextMenu {

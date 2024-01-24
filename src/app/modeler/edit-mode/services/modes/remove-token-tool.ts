@@ -34,8 +34,14 @@ export class RemoveTokenTool extends CanvasTool {
         );
     }
 
-    onPlaceClick(_: MouseEvent, place: CanvasPlace) {
-        super.onPlaceClick(_, place);
+    onPlaceUp(event: PointerEvent, place: CanvasPlace) {
+        super.onPlaceUp(event, place);
+        if (this.isLeftButtonClick(event)) {
+            this.removeTokenFrom(place);
+        }
+    }
+
+    removeTokenFrom(place: CanvasPlace): void {
         if (place.modelPlace.marking < 1) {
             return;
         }

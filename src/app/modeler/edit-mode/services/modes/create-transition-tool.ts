@@ -1,5 +1,4 @@
 import {CanvasTool} from './canvas-tool';
-import {CanvasTransition} from '../../domain/canvas-transition';
 import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../../../control-panel/control-panel-icon';
 import {ModelService} from '../../../services/model/model.service';
@@ -7,7 +6,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {EditModeService} from '../../edit-mode.service';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
-import {CanvasPlace} from '../../domain/canvas-place';
 
 export class CreateTransitionTool extends CanvasTool {
 
@@ -34,23 +32,11 @@ export class CreateTransitionTool extends CanvasTool {
         );
     }
 
-    onMouseClick(event: MouseEvent) {
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            return;
+    onMouseUp(event: PointerEvent) {
+        super.onMouseUp(event);
+        if (this.isLeftButtonClick(event)) {
+            const canvasTransition = this.editModeService.createTransition(this.mousePosition(event));
+            this.bindTransition(canvasTransition);
         }
-        super.onMouseClick(event);
-        const canvasTransition = this.editModeService.createTransition(this.mousePosition(event));
-        this.bindTransition(canvasTransition);
-    }
-
-    onPlaceClick(event: MouseEvent, place: CanvasPlace) {
-        super.onPlaceClick(event, place);
-        event.stopPropagation();
-    }
-
-    onTransitionClick(event: MouseEvent, transition: CanvasTransition) {
-        super.onTransitionClick(event, transition);
-        event.stopPropagation();
     }
 }

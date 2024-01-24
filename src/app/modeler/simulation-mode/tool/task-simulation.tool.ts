@@ -43,11 +43,13 @@ export class TaskSimulationTool extends SimulationTool {
         this.simulationModeService.renderModel(this.simulation.simulationModel);
     }
 
-    onTransitionClick(event: MouseEvent, transition: CanvasTransition) {
-        super.onTransitionClick(event, transition);
-        if (this.simulation.isEnabled(transition.id)) {
-            this.simulation.fire(transition.id);
+    onTransitionUp(event: PointerEvent, transition: CanvasTransition) {
+        super.onTransitionUp(event, transition);
+        if (this.isLeftButton(event)) {
+            if (this.simulation.isEnabled(transition.id)) {
+                this.simulation.fire(transition.id);
+            }
+            this.simulationModeService.renderModel(this.simulation.simulationModel);
         }
-        this.simulationModeService.renderModel(this.simulation.simulationModel);
     }
 }

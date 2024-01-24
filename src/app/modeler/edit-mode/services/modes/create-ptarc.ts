@@ -2,6 +2,7 @@ import {CanvasPlace} from '../../domain/canvas-place';
 import {CanvasTransition} from '../../domain/canvas-transition';
 import {CreateArcTool} from './create-arc-tool';
 import {ArcType} from '@netgrif/petriflow';
+import {CanvasArc} from '../../domain/canvas-arc';
 
 export abstract class CreatePTArc extends CreateArcTool<CanvasPlace> {
 
@@ -9,39 +10,34 @@ export abstract class CreatePTArc extends CreateArcTool<CanvasPlace> {
 
     public abstract getMarkerId(): string;
 
-    onPlaceClick(event: MouseEvent, place: CanvasPlace): void {
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            return;
-        }
-        if (!!this.source) {
-            return;
-        }
-        event.stopPropagation();
+    startDrawingArc(place: CanvasPlace): void {
         this.source = place;
         this.arcLine = this.editModeService.createTemporaryArc(place.svgPlace.getPosition(), this.getMarkerId());
     }
 
-    onTransitionClick(event: MouseEvent, transition: CanvasTransition): void {
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            return;
-        }
-        if (!this.source) {
-            return;
-        }
-        event.stopPropagation();
-        const canvasArc = this.createArc(this.arcType(), this.source, transition);
+    finishDrawingArc(createArcFunction: () => CanvasArc) {
+        const canvasArc = createArcFunction();
         this.bindArc(canvasArc);
         this.reset();
     }
 
-    onMouseClick(event: MouseEvent) {
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
+    onPlaceUp(event: PointerEvent, place: CanvasPlace): void {
+        super.onPlaceUp(event, place);
+        if (this.isWorkInProgress()) {
             return;
         }
-        super.onMouseClick(event);
-        this.reset();
+        if (this.isLeftButtonClick(event)) {
+            this.startDrawingArc(place);
+        }
+    }
+
+    onTransitionUp(event: PointerEvent, transition: CanvasTransition): void {
+        super.onTransitionUp(event, transition);
+        if (!this.isWorkInProgress()) {
+            return;
+        }
+        if (this.isLeftButtonClick(event)) {
+            this.finishDrawingArc(() => this.createArc(this.arcType(), this.source, transition));
+        }
     }
 }

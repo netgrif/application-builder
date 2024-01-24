@@ -6,15 +6,9 @@ export interface ArcListener {
 
     onArcUp(event: MouseEvent, arc: CanvasArc): void;
 
-    onArcClick(event: MouseEvent, arc: CanvasArc): void;
-
-    onArcDoubleClick(event: MouseEvent, arc: CanvasArc): void;
-
     onArcEnter(event: MouseEvent, arc: CanvasArc): void;
 
     onArcLeave(event: MouseEvent, arc: CanvasArc): void;
 
     onArcMove(event: MouseEvent, arc: CanvasArc): void;
-
-    onArcContextMenu(event: MouseEvent, arc: CanvasArc): void;
 }

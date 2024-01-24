@@ -29,42 +29,16 @@ export abstract class SimulationTool extends CanvasListenerTool {
         this._simulationModeService = simulationModeService;
     }
 
-    onContextMenu(event: MouseEvent) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-
-    onTransitionContextMenu(event: MouseEvent, transition: CanvasTransition) {
-        event.preventDefault();
-    }
-
-    onTransitionDoubleClick(event: MouseEvent, transition: CanvasTransition) {
-    }
-
     onTransitionEnter(event: MouseEvent, transition: CanvasTransition): void {
     }
 
     onTransitionLeave(event: MouseEvent, transition: CanvasTransition) {
     }
 
-    onPlaceContextMenu(event: MouseEvent, place: CanvasPlace) {
-        event.preventDefault();
-    }
-
-    onPlaceDoubleClick(event: MouseEvent, place: CanvasPlace) {
-    }
-
     onPlaceEnter(event: MouseEvent, place: CanvasPlace) {
     }
 
     onPlaceLeave(event: MouseEvent, place: CanvasPlace) {
-    }
-
-    onArcContextMenu(event: MouseEvent, arc: CanvasArc) {
-        event.preventDefault();
-    }
-
-    onArcDoubleClick(event: MouseEvent, arc: CanvasArc) {
     }
 
     onArcEnter(event: MouseEvent, arc: CanvasArc) {
