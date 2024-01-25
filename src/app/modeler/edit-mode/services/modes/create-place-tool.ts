@@ -6,8 +6,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {EditModeService} from '../../edit-mode.service';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
-import {CanvasPlace} from '../../domain/canvas-place';
-import {CanvasTransition} from '../../domain/canvas-transition';
 
 export class CreatePlaceTool extends CanvasTool {
 
@@ -34,22 +32,10 @@ export class CreatePlaceTool extends CanvasTool {
         );
     }
 
-    onMouseClick(event: MouseEvent) {
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            return;
+    onMouseUp(event: PointerEvent) {
+        super.onMouseUp(event);
+        if (this.isLeftButtonClick(event)) {
+            this.bindPlace(this.editModeService.createPlace(this.mousePosition(event)));
         }
-        super.onMouseClick(event);
-        this.bindPlace(this.editModeService.createPlace(this.mousePosition(event)));
-    }
-
-    onPlaceClick(event: MouseEvent, place: CanvasPlace) {
-        super.onPlaceClick(event, place);
-        event.stopPropagation();
-    }
-
-    onTransitionClick(event: MouseEvent, transition: CanvasTransition) {
-        super.onTransitionClick(event, transition);
-        event.stopPropagation();
     }
 }

@@ -46,34 +46,36 @@ export class EventSimulationTool extends SimulationTool {
 
     bindTransition(transition: CanvasTransition) {
         super.bindTransition(transition);
-        transition.svgTransition.cancelArrow.onpointerdown = (e) => this.onCancelClick(e, transition);
-        transition.svgTransition.finishArrow.onpointerdown = (e) => this.onFinishClick(e, transition);
+        transition.svgTransition.cancelArrow.onpointerup = (e) => this.onCancelClick(e, transition);
+        transition.svgTransition.finishArrow.onpointerup = (e) => this.onFinishClick(e, transition);
     }
 
     unbindTransition(transition: CanvasTransition) {
         super.unbindTransition(transition);
-        transition.svgTransition.cancelArrow.onpointerdown = undefined;
-        transition.svgTransition.finishArrow.onpointerdown = undefined;
+        transition.svgTransition.cancelArrow.onpointerup = undefined;
+        transition.svgTransition.finishArrow.onpointerup = undefined;
         if (this.isAssigned(transition)) {
             this.simulation.cancel(transition.id);
         }
     }
 
-    onTransitionClick(event: MouseEvent, transition: CanvasTransition): void {
-        super.onTransitionClick(event, transition);
-        if (this.canBeAssigned(transition)) {
+    onTransitionUp(event: PointerEvent, transition: CanvasTransition): void {
+        super.onTransitionUp(event, transition);
+        if (this.isLeftButton(event) && this.canBeAssigned(transition)) {
             this.assign(transition, event);
         }
     }
 
-    onCancelClick(event: MouseEvent, transition: CanvasTransition): void {
-        if (this.isAssigned(transition)) {
+    onCancelClick(event: PointerEvent, transition: CanvasTransition): void {
+        event.stopPropagation();
+        if (this.isLeftButton(event) && this.isAssigned(transition)) {
             this.cancel(transition, event);
         }
     }
 
-    onFinishClick(event: MouseEvent, transition: CanvasTransition): void {
-        if (this.isAssigned(transition)) {
+    onFinishClick(event: PointerEvent, transition: CanvasTransition): void {
+        event.stopPropagation();
+        if (this.isLeftButton(event) && this.isAssigned(transition)) {
             this.finish(transition, event);
         }
     }

@@ -15,13 +15,22 @@ import {ControlPanelButton} from '../../control-panel/control-panel-button';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../selected-transition.service';
 import {ComponentType} from '@angular/cdk/overlay';
+import {Hotkey} from '../../edit-mode/services/modes/domain/hotkey';
+import {ModelerConfig} from '../../modeler-config';
+import {KeyListener} from './listeners/key-listener';
+import {ContextMenuInterruptionError} from './listeners/context-menu-interruption-error';
+import {CanvasObject} from '../../edit-mode/domain/canvas-object';
 
-export abstract class CanvasListenerTool extends Tool implements MouseListener, PlaceListener, TransitionListener, ArcListener {
+export abstract class CanvasListenerTool extends Tool implements MouseListener, PlaceListener, TransitionListener, ArcListener, KeyListener {
+
+    private static readonly clickMargin = 2;
 
     private readonly _modelService: ModelService;
     private readonly _dialog: MatDialog;
     private readonly _router: Router;
     private readonly _transitionService: SelectedTransitionService;
+    private readonly _hotkeys: Array<Hotkey>;
+    private _mouseDown: PointerEvent;
 
     protected constructor(
         id: string,
@@ -36,6 +45,14 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         this._dialog = dialog;
         this._router = router;
         this._transitionService = transitionService;
+        this._hotkeys = new Array<Hotkey>();
+        this.hotkeys.push(new Hotkey('+', false, false, false, this.zoom.bind(this, 1)));
+        this.hotkeys.push(new Hotkey('-', false, false, false, this.zoom.bind(this, -1)));
+        this.hotkeys.push(new Hotkey('ArrowUp', false, false, false, this.move.bind(this, 0, ModelerConfig.SIZE)));
+        this.hotkeys.push(new Hotkey('ArrowRight', false, false, false, this.move.bind(this, -ModelerConfig.SIZE, 0)));
+        this.hotkeys.push(new Hotkey('ArrowDown', false, false, false, this.move.bind(this, 0, -ModelerConfig.SIZE)));
+        this.hotkeys.push(new Hotkey('ArrowLeft', false, false, false, this.move.bind(this, ModelerConfig.SIZE, 0)));
+        this.hotkeys.push(new Hotkey('Home', false, false, false, this.move.bind(this, 0, 0, false)));
     }
 
     abstract get canvasService(): PetriflowCanvasService;
@@ -49,6 +66,7 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         this.bindTransitions(this.elements?.transitions);
         this.bindArcs(this.elements?.arcs);
         this.bindCanvas(this.canvas);
+        this.bindKeys();
     }
 
     public unbind(): void {
@@ -59,6 +77,33 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         this.unbindTransitions(this.elements.transitions);
         this.unbindArcs(this.elements.arcs);
         this.unbindCanvas(this.canvas);
+        this.unbindKeys();
+    }
+
+    bindKeys(): void {
+        document.onkeydown = this.onKeyDown.bind(this);
+        document.onkeyup = this.onKeyUp.bind(this);
+    }
+
+    unbindKeys(): void {
+        document.onkeydown = undefined;
+        document.onkeyup = undefined;
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.repeat) {
+            return;
+        }
+        const hotkey = this._hotkeys.find(a => a.matches(event));
+        if (!hotkey) {
+            return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        hotkey.listener();
+    }
+
+    onKeyUp(event: KeyboardEvent): void {
     }
 
     bindPlaces(places: Array<CanvasPlace>): void {
@@ -66,14 +111,11 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     }
 
     bindPlace(place: CanvasPlace): void {
-        place.svgPlace.canvasElement.container.onpointerdown = (e) => this.onPlaceDown(e, place);
-        place.svgPlace.canvasElement.container.onpointerup = (e) => this.onPlaceUp(e, place);
-        place.svgPlace.canvasElement.container.onclick = (e) => this.onPlaceClick(e, place);
-        place.svgPlace.canvasElement.container.ondblclick = (e) => this.onPlaceDoubleClick(e, place);
-        place.svgPlace.canvasElement.container.onpointerenter = (e) => this.onPlaceEnter(e, place);
-        place.svgPlace.canvasElement.container.onpointerleave = (e) => this.onPlaceLeave(e, place);
-        place.svgPlace.canvasElement.container.onpointermove = (e) => this.onPlaceMove(e, place);
-        place.svgPlace.canvasElement.container.oncontextmenu = (e) => this.onPlaceContextMenu(e, place);
+        place.svgPlace.canvasElement.container.onpointerdown = (e: PointerEvent) => this.handleEvent(this.onPlaceDown, e, place);
+        place.svgPlace.canvasElement.container.onpointerup = (e: PointerEvent) => this.handleEvent(this.onPlaceUp, e, place);
+        place.svgPlace.canvasElement.container.onpointerenter = (e: PointerEvent) => this.handleEvent(this.onPlaceEnter, e, place);
+        place.svgPlace.canvasElement.container.onpointerleave = (e: PointerEvent) => this.handleEvent(this.onPlaceLeave, e, place);
+        place.svgPlace.canvasElement.container.onpointermove = (e: PointerEvent) => this.handleEvent(this.onPlaceMove, e, place);
     }
 
     unbindPlaces(places: Array<CanvasPlace>): void {
@@ -83,12 +125,9 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     unbindPlace(place: CanvasPlace): void {
         place.svgPlace.canvasElement.container.onpointerdown = undefined;
         place.svgPlace.canvasElement.container.onpointerup = undefined;
-        place.svgPlace.canvasElement.container.onclick = undefined;
-        place.svgPlace.canvasElement.container.ondblclick = undefined;
         place.svgPlace.canvasElement.container.onpointerenter = undefined;
         place.svgPlace.canvasElement.container.onpointerleave = undefined;
         place.svgPlace.canvasElement.container.onpointermove = undefined;
-        place.svgPlace.canvasElement.container.oncontextmenu = undefined;
     }
 
     bindTransitions(transitions: Array<CanvasTransition>): void {
@@ -96,14 +135,11 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     }
 
     bindTransition(transition: CanvasTransition): void {
-        transition.svgTransition.canvasElement.container.onpointerdown = (e) => this.onTransitionDown(e, transition);
-        transition.svgTransition.canvasElement.container.onpointerup = (e) => this.onTransitionUp(e, transition);
-        transition.svgTransition.canvasElement.container.onclick = (e) => this.onTransitionClick(e, transition);
-        transition.svgTransition.canvasElement.container.ondblclick = (e) => this.onTransitionDoubleClick(e, transition);
-        transition.svgTransition.canvasElement.container.onpointerenter = (e) => this.onTransitionEnter(e, transition);
-        transition.svgTransition.canvasElement.container.onpointerleave = (e) => this.onTransitionLeave(e, transition);
-        transition.svgTransition.canvasElement.container.onpointermove = (e) => this.onTransitionMove(e, transition);
-        transition.svgTransition.canvasElement.container.oncontextmenu = (e) => this.onTransitionContextMenu(e, transition);
+        transition.svgTransition.canvasElement.container.onpointerdown = (e: PointerEvent) => this.handleEvent(this.onTransitionDown, e, transition);
+        transition.svgTransition.canvasElement.container.onpointerup = (e: PointerEvent) => this.handleEvent(this.onTransitionUp, e, transition);
+        transition.svgTransition.canvasElement.container.onpointerenter = (e: PointerEvent) => this.handleEvent(this.onTransitionEnter, e, transition);
+        transition.svgTransition.canvasElement.container.onpointerleave = (e: PointerEvent) => this.handleEvent(this.onTransitionLeave, e, transition);
+        transition.svgTransition.canvasElement.container.onpointermove = (e: PointerEvent) => this.handleEvent(this.onTransitionMove, e, transition);
     }
 
     unbindTransitions(transitions: Array<CanvasTransition>): void {
@@ -113,12 +149,9 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     unbindTransition(transition: CanvasTransition): void {
         transition.svgTransition.canvasElement.container.onpointerdown = undefined;
         transition.svgTransition.canvasElement.container.onpointerup = undefined;
-        transition.svgTransition.canvasElement.container.onclick = undefined;
-        transition.svgTransition.canvasElement.container.ondblclick = undefined;
         transition.svgTransition.canvasElement.container.onpointerenter = undefined;
         transition.svgTransition.canvasElement.container.onpointerleave = undefined;
         transition.svgTransition.canvasElement.container.onpointermove = undefined;
-        transition.svgTransition.canvasElement.container.oncontextmenu = undefined;
     }
 
     bindArcs(arcs: Array<CanvasArc>): void {
@@ -126,14 +159,11 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     }
 
     bindArc(arc: CanvasArc): void {
-        arc.svgArc.element.container.onpointerdown = (e) => this.onArcDown(e, arc);
-        arc.svgArc.element.container.onpointerup = (e) => this.onArcUp(e, arc);
-        arc.svgArc.element.container.onclick = (e) => this.onArcClick(e, arc);
-        arc.svgArc.element.container.ondblclick = (e) => this.onArcDoubleClick(e, arc);
-        arc.svgArc.element.container.onpointerenter = (e) => this.onArcEnter(e, arc);
-        arc.svgArc.element.container.onpointerleave = (e) => this.onArcLeave(e, arc);
-        arc.svgArc.element.container.onpointermove = (e) => this.onArcMove(e, arc);
-        arc.svgArc.element.container.oncontextmenu = (e) => this.onArcContextMenu(e, arc);
+        arc.svgArc.element.container.onpointerdown = (e: PointerEvent) => this.handleEvent(this.onArcDown, e, arc);
+        arc.svgArc.element.container.onpointerup = (e: PointerEvent) => this.handleEvent(this.onArcUp, e, arc);
+        arc.svgArc.element.container.onpointerenter = (e: PointerEvent) => this.handleEvent(this.onArcEnter, e, arc);
+        arc.svgArc.element.container.onpointerleave = (e: PointerEvent) => this.handleEvent(this.onArcLeave, e, arc);
+        arc.svgArc.element.container.onpointermove = (e: PointerEvent) => this.handleEvent(this.onArcMove, e, arc);
     }
 
     unbindArcs(arcs: Array<CanvasArc>): void {
@@ -143,26 +173,27 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     unbindArc(arc: CanvasArc): void {
         arc.svgArc.element.container.onpointerdown = undefined;
         arc.svgArc.element.container.onpointerup = undefined;
-        arc.svgArc.element.container.onclick = undefined;
-        arc.svgArc.element.container.ondblclick = undefined;
         arc.svgArc.element.container.onpointerenter = undefined;
         arc.svgArc.element.container.onpointerleave = undefined;
         arc.svgArc.element.container.onpointermove = undefined;
-        arc.svgArc.element.container.oncontextmenu = undefined;
     }
 
     private bindCanvas(canvas: PetriflowCanvas): void {
         if (!canvas?.svg) {
             return;
         }
-        canvas.svg.onpointerdown = (e) => this.onMouseDown(e);
-        canvas.svg.onpointerup = (e) => this.onMouseUp(e);
-        canvas.svg.onclick = (e) => this.onMouseClick(e);
-        canvas.svg.ondblclick = (e) => this.onMouseDoubleClick(e);
-        canvas.svg.onpointerenter = (e) => this.onMouseEnter(e);
-        canvas.svg.onpointerleave = (e) => this.onMouseLeave(e);
-        canvas.svg.onpointermove = (e) => this.onMouseMove(e);
-        canvas.svg.oncontextmenu = (e) => this.onContextMenu(e);
+        canvas.svg.onpointerdown = (e: PointerEvent) => this.handleEvent(this.onMouseDown, e);
+        canvas.svg.onpointerup = (e: PointerEvent) => this.handleEvent(this.onMouseUp, e);
+        canvas.svg.onpointerenter = (e: PointerEvent) => this.handleEvent(this.onMouseEnter, e);
+        canvas.svg.onpointerleave = (e: PointerEvent) => this.handleEvent(this.onMouseLeave, e);
+        canvas.svg.onpointermove = (e: PointerEvent) => this.handleEvent(this.onMouseMove, e);
+        canvas.svg.oncontextmenu = (e: PointerEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
+        document.onvisibilitychange = (ev: Event) => {
+            this.reset();
+        };
     }
 
     private unbindCanvas(canvas: PetriflowCanvas): void {
@@ -171,132 +202,134 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         }
         canvas.svg.onpointerdown = undefined;
         canvas.svg.onpointerup = undefined;
-        canvas.svg.onclick = undefined;
-        canvas.svg.ondblclick = undefined;
         canvas.svg.onpointerenter = undefined;
         canvas.svg.onpointerleave = undefined;
         canvas.svg.onpointermove = undefined;
         canvas.svg.oncontextmenu = undefined;
+        document.onvisibilitychange = undefined;
     }
 
-    onMouseClick(event: MouseEvent): void {
+    onMouseDown(event: PointerEvent): void {
+        this.mouseDown = event;
+        this.panzoomDown(event);
     }
 
-    onMouseDoubleClick(event: MouseEvent): void {
+    onMouseUp(event: PointerEvent): void {
+        this.panzoomUp(event);
     }
 
-    onMouseDown(event: MouseEvent): void {
-        this.checkPanning(event);
+    onMouseMove(event: PointerEvent): void {
+        this.panzoomMove(event);
     }
 
-    onMouseEnter(event: MouseEvent): void {
+    onMouseEnter(event: PointerEvent): void {
     }
 
-    onMouseLeave(event: MouseEvent): void {
+    onMouseLeave(event: PointerEvent): void {
     }
 
-    onMouseMove(event: MouseEvent): void {
+    onMouseOut(event: PointerEvent): void {
     }
 
-    onMouseOut(event: MouseEvent): void {
+    onMouseOver(event: PointerEvent): void {
     }
 
-    onMouseOver(event: MouseEvent): void {
+    onArcDown(event: PointerEvent, arc: CanvasArc): void {
+        this.mouseDown = event;
+        this.panzoomDown(event);
     }
 
-    onMouseUp(event: MouseEvent): void {
-        this.checkPanning(event);
+    onArcUp(event: PointerEvent, arc: CanvasArc): void {
+        this.panzoomUp(event);
     }
 
-    onContextMenu(event: MouseEvent): void {
-        event.preventDefault();
-        event.stopPropagation();
+    onArcMove(event: PointerEvent, arc: CanvasArc): void {
+        this.panzoomMove(event);
     }
 
-    onArcClick(event: MouseEvent, arc: CanvasArc): void {
-    }
-
-    onArcDoubleClick(event: MouseEvent, arc: CanvasArc): void {
-    }
-
-    onArcDown(event: MouseEvent, arc: CanvasArc): void {
-    }
-
-    onArcEnter(event: MouseEvent, arc: CanvasArc): void {
+    onArcEnter(event: PointerEvent, arc: CanvasArc): void {
         arc.svgArc.activate();
     }
 
-    onArcLeave(event: MouseEvent, arc: CanvasArc): void {
+    onArcLeave(event: PointerEvent, arc: CanvasArc): void {
         arc.svgArc.deselect();
     }
 
-    onArcMove(event: MouseEvent, arc: CanvasArc): void {
+    onPlaceDown(event: PointerEvent, place: CanvasPlace): void {
+        this.mouseDown = event;
+        this.panzoomDown(event);
     }
 
-    onArcUp(event: MouseEvent, arc: CanvasArc): void {
+    onPlaceUp(event: PointerEvent, place: CanvasPlace): void {
+        this.panzoomUp(event);
     }
 
-    onArcContextMenu(event: MouseEvent, arc: CanvasArc): void {
-        event.preventDefault();
-        event.stopPropagation();
-        // TODO: release/4.0.0 open context menu
+    onPlaceMove(event: PointerEvent, place: CanvasPlace): void {
+        this.panzoomMove(event);
     }
 
-    onPlaceClick(event: MouseEvent, place: CanvasPlace): void {
-    }
-
-    onPlaceDoubleClick(event: MouseEvent, place: CanvasPlace): void {
-    }
-
-    onPlaceDown(event: MouseEvent, place: CanvasPlace): void {
-    }
-
-    onPlaceEnter(event: MouseEvent, place: CanvasPlace): void {
+    onPlaceEnter(event: PointerEvent, place: CanvasPlace): void {
         place.svgPlace.activate();
     }
 
-    onPlaceLeave(event: MouseEvent, place: CanvasPlace): void {
+    onPlaceLeave(event: PointerEvent, place: CanvasPlace): void {
         place.svgPlace.deactivate();
     }
 
-    onPlaceMove(event: MouseEvent, place: CanvasPlace): void {
+    onTransitionDown(event: PointerEvent, transition: CanvasTransition): void {
+        this.mouseDown = event;
+        this.panzoomDown(event);
     }
 
-    onPlaceUp(event: MouseEvent, place: CanvasPlace): void {
+    onTransitionUp(event: PointerEvent, transition: CanvasTransition): void {
+        this.panzoomUp(event);
     }
 
-    onPlaceContextMenu(event: MouseEvent, place: CanvasPlace): void {
-        event.preventDefault();
-        event.stopPropagation();
-        // TODO: release/4.0.0 context menu
+    onTransitionMove(event: PointerEvent, transition: CanvasTransition): void {
+        this.panzoomDown(event);
     }
 
-    onTransitionClick(event: MouseEvent, transition: CanvasTransition): void {
-    }
-
-    onTransitionDoubleClick(event: MouseEvent, transition: CanvasTransition): void {
-    }
-
-    onTransitionDown(event: MouseEvent, transition: CanvasTransition): void {
-    }
-
-    onTransitionEnter(event: MouseEvent, transition: CanvasTransition): void {
+    onTransitionEnter(event: PointerEvent, transition: CanvasTransition): void {
         transition.svgTransition.activate();
     }
 
-    onTransitionLeave(event: MouseEvent, transition: CanvasTransition): void {
+    onTransitionLeave(event: PointerEvent, transition: CanvasTransition): void {
         transition.svgTransition.deactivate();
     }
 
-    onTransitionMove(event: MouseEvent, transition: CanvasTransition): void {
+    handleEvent(eventFunction: (...args: any[]) => void, e: PointerEvent, element?: CanvasObject<any, any>): void {
+        try {
+            eventFunction.call(this, e, element);
+        } catch (e) {
+            if (!(e instanceof ContextMenuInterruptionError)) {
+                throw e;
+            }
+        }
     }
 
-    onTransitionUp(event: MouseEvent, transition: CanvasTransition): void {
+    panzoomDown(event: PointerEvent): void {
+        this.panzoomHandle(event, () => {
+            this.canvasService.panzoom.handleDown(event);
+        });
     }
 
-    onTransitionContextMenu(event: MouseEvent, transition: CanvasTransition): void {
-        event.preventDefault();
+    panzoomUp(event: PointerEvent): void {
+        this.panzoomHandle(event, () => {
+            this.canvasService.panzoom.handleUp(event);
+        });
+    }
+
+    panzoomMove(event: PointerEvent): void {
+        this.panzoomHandle(event, () => {
+            this.canvasService.panzoom.handleMove(event);
+        });
+    }
+
+    panzoomHandle(event: PointerEvent, handle: () => void): void {
         event.stopPropagation();
+        if (this.isMoveButton(event)) {
+            handle();
+        }
     }
 
     onClick(): void {
@@ -306,32 +339,51 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         this.dialog.open(dialog, config).afterClosed().subscribe(afterClose);
     }
 
-    checkPanning(event: MouseEvent): void {
-        if (this.isLeftButton(event)) {
-            this.canvasService.disablePanning();
-        } else {
-            this.canvasService.enablePanning();
-        }
-    }
-
-    isLeftButton(event: MouseEvent): boolean {
+    isLeftButton(event: PointerEvent): boolean {
         return event.button === 0 || (event.button === -1 && event.buttons === 1);
     }
 
     isWheelButton(event: MouseEvent): boolean {
-        return event.button === 1;
+        return event.button === 1 || (event.button === -1 && event.buttons === 4);
     }
 
-    isRightButton(event: MouseEvent): boolean {
+    isRightButton(event: PointerEvent): boolean {
         return event.button === 2 || (event.button === -1 && event.buttons === 2);
     }
 
-    mousePosition(event: MouseEvent): DOMPoint {
+    isMoveButton(event: PointerEvent): boolean {
+        return this.isRightButton(event) || this.isWheelButton(event);
+    }
+
+    mousePosition(event: PointerEvent): DOMPoint {
         return new DOMPoint(event.offsetX, event.offsetY);
     }
 
-    windowMousePosition(event: MouseEvent): DOMPoint {
+    windowMousePosition(event: PointerEvent): DOMPoint {
         return new DOMPoint(event.clientX, event.clientY);
+    }
+
+    move(horizontal: number, vertical: number, relative: boolean = true): void {
+        this.canvasService.enablePanning();
+        this.canvasService.panzoom?.pan(horizontal, vertical, {relative});
+    }
+
+    zoom(direction: number): void {
+        this.canvasService.panzoom?.zoomToPoint(
+            this.canvasService.panzoom?.getScale() + ModelerConfig.ZOOM_SPEED * direction,
+            {
+                clientX: 0,
+                clientY: 0
+            }
+        );
+    }
+
+    isClick(event: PointerEvent): boolean {
+        if (!this.mouseDown) {
+            return false;
+        }
+        return Math.abs(event.x - this.mouseDown.x) < CanvasListenerTool.clickMargin &&
+            Math.abs(event.y - this.mouseDown.y) < CanvasListenerTool.clickMargin;
     }
 
     public get modelService(): ModelService {
@@ -356,5 +408,17 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
 
     get transitionService(): SelectedTransitionService {
         return this._transitionService;
+    }
+
+    get hotkeys(): Array<Hotkey> {
+        return this._hotkeys;
+    }
+
+    get mouseDown(): PointerEvent {
+        return this._mouseDown;
+    }
+
+    set mouseDown(value: PointerEvent) {
+        this._mouseDown = value;
     }
 }

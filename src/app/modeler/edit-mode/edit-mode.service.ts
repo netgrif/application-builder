@@ -38,6 +38,7 @@ import {CreateReadArcTool} from './services/modes/create-read-arc-tool';
 import {SelectedTransitionService} from '../selected-transition.service';
 import {Router} from '@angular/router';
 import {HistoryService} from '../services/history/history.service';
+import {PanzoomOptions} from '@panzoom/panzoom';
 
 @Injectable({
     providedIn: 'root'
@@ -47,6 +48,15 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
     public contextMenuItems: BehaviorSubject<ContextMenu>;
     // TODO: NAB-326 refactor
     public switchTools: ToolGroup<CanvasTool>;
+    public panzoomConfiguration: PanzoomOptions = {
+        canvas: true,
+        contain: 'outside',
+        cursor: 'auto',
+        maxScale: 10,
+        minScale: 0.5,
+        step: 0.2,
+        noBind: true
+    };
 
     constructor(
         _arcFactory: ArcFactory,

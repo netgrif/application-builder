@@ -68,56 +68,37 @@ export class QuickDrawTool extends CanvasTool {
         this.editModeService.elements.transitions.forEach(t => t.svgTransition.deactivate());
     }
 
-    onArcClick(event: MouseEvent, arc: CanvasArc) {
-        event.stopPropagation();
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            return;
-        }
-        super.onArcClick(event, arc);
-        if (this.source) {
-            event.stopPropagation();
-            return;
-        }
-    }
-
-    onArcContextMenu(event: MouseEvent, arc: CanvasArc) {
-        event.stopPropagation();
-        event.preventDefault();
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            return;
-        }
-        if (this.isWorkInProgress()) {
+    onMouseUp(event: PointerEvent) {
+        super.onMouseUp(event);
+        if (this.isRightButtonClick(event) && this.isWorkInProgress()) {
             this.reset();
             return;
         }
-        super.onArcContextMenu(event, arc);
+        if (this.isLeftButtonClick(event)) {
+            if (this.step === Step.PLACE) {
+                const canvasPlace = this.editModeService.createPlace(this.mousePosition(event));
+                this.bindPlace(canvasPlace);
+                this.onPlaceUp(event, canvasPlace);
+            } else if (this.step === Step.TRANSITION) {
+                const canvasTransition = this.editModeService.createTransition(this.mousePosition(event));
+                this.bindTransition(canvasTransition);
+                this.onTransitionUp(event, canvasTransition);
+            }
+        }
     }
 
-    onArcEnter(event: MouseEvent, arc: CanvasArc) {
-        if (this.isWorkInProgress()) {
-            return;
-        }
-        super.onArcEnter(event, arc);
+    onMouseMove(event: PointerEvent) {
+        super.onMouseMove(event);
+        this.onMove(event);
     }
 
-    onArcLeave(event: MouseEvent, arc: CanvasArc) {
-        if (this.isWorkInProgress()) {
+    onPlaceUp(event: PointerEvent, canvasPlace: CanvasPlace) {
+        super.onPlaceUp(event, canvasPlace);
+        if (this.isRightButtonClick(event) && this.isWorkInProgress()) {
+            this.reset();
             return;
         }
-        super.onArcLeave(event, arc);
-    }
-
-    onPlaceClick(event: MouseEvent, canvasPlace: CanvasPlace) {
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            event.stopPropagation();
-            return;
-        }
-        super.onPlaceClick(event, canvasPlace);
-        event.stopPropagation();
-        if (this.step === Step.PLACE) {
+        if (this.isLeftButtonClick(event) && this.step === Step.PLACE) {
             if (this.source) {
                 const canvasArc = this.editModeService.createNewRegularTransitionPlaceArc(this.source as CanvasTransition, canvasPlace);
                 this.editModeService.removeTemporaryArc(this.arcLine);
@@ -129,75 +110,69 @@ export class QuickDrawTool extends CanvasTool {
         }
     }
 
-    onPlaceContextMenu(event: MouseEvent, place: CanvasPlace) {
-        event.stopPropagation();
-        event.preventDefault();
-        if (this.isWorkInProgress()) {
+    onPlaceMove(event: PointerEvent, place: CanvasPlace) {
+        super.onPlaceMove(event, place);
+        this.onMove(event);
+    }
+
+    onTransitionUp(event: PointerEvent, canvasTransition: CanvasTransition) {
+        super.onTransitionUp(event, canvasTransition);
+        if (this.isRightButtonClick(event) && this.isWorkInProgress()) {
             this.reset();
             return;
         }
-        super.onPlaceContextMenu(event, place);
-    }
-
-    onTransitionClick(event: MouseEvent, canvasTransition: CanvasTransition) {
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            event.stopPropagation();
-            return;
-        }
-        super.onTransitionClick(event, canvasTransition);
-        event.stopPropagation();
-        if (this.step === Step.PLACE && this.source) {
-            return;
-        }
-        if (this.step === Step.TRANSITION && this.source) {
-            const canvasArc = this.editModeService.createNewRegularPlaceTransitionArc(this.source as CanvasPlace, canvasTransition);
-            this.editModeService.removeTemporaryArc(this.arcLine);
-            this.bindArc(canvasArc);
-        }
-        this.source = canvasTransition;
-        this.arcLine = this.editModeService.createTemporaryArc(canvasTransition.svgTransition.getPosition(), this.getMarkerId());
-        this.step = Step.PLACE;
-    }
-
-    onTransitionContextMenu(event: MouseEvent, transition: CanvasTransition) {
-        event.stopPropagation();
-        event.preventDefault();
-        if (this.isWorkInProgress()) {
-            this.reset();
-            return;
-        }
-        super.onTransitionContextMenu(event, transition);
-    }
-
-    onMouseClick(event: MouseEvent) {
-        if (this.isContextMenuOpen()) {
-            this.closeContextMenu();
-            event.stopPropagation();
-            return;
-        }
-        super.onMouseClick(event);
-        if (this.step === Step.PLACE) {
-            const canvasPlace = this.editModeService.createPlace(this.mousePosition(event));
-            this.bindPlace(canvasPlace);
-            this.onPlaceClick(event, canvasPlace);
-        } else if (this.step === Step.TRANSITION) {
-            const canvasTransition = this.editModeService.createTransition(this.mousePosition(event));
-            this.bindTransition(canvasTransition);
-            this.onTransitionClick(event, canvasTransition);
+        if (this.isLeftButtonClick(event)) {
+            if (this.step === Step.PLACE && this.source) {
+                return;
+            }
+            if (this.step === Step.TRANSITION && this.source) {
+                const canvasArc = this.editModeService.createNewRegularPlaceTransitionArc(this.source as CanvasPlace, canvasTransition);
+                this.editModeService.removeTemporaryArc(this.arcLine);
+                this.bindArc(canvasArc);
+            }
+            this.source = canvasTransition;
+            this.arcLine = this.editModeService.createTemporaryArc(canvasTransition.svgTransition.getPosition(), this.getMarkerId());
+            this.step = Step.PLACE;
         }
     }
 
-    onContextMenu(event: MouseEvent) {
-        super.onContextMenu(event);
-        this.reset();
+    onTransitionMove(event: PointerEvent, transition: CanvasTransition) {
+        super.onTransitionMove(event, transition);
+        this.onMove(event);
     }
 
-    onMouseMove(event: MouseEvent) {
+    onMove(event: PointerEvent): void {
         if (!this.arcLine) {
             return;
         }
         this.editModeService.moveTemporaryArc(this.arcLine, this.mousePosition(event), this.source.svgElement);
+    }
+
+    onArcUp(event: PointerEvent, arc: CanvasArc) {
+        super.onArcUp(event, arc);
+        if (this.isRightButtonClick(event) && this.isWorkInProgress()) {
+            this.reset();
+            return;
+        }
+    }
+
+    onArcEnter(event: PointerEvent, arc: CanvasArc) {
+        if (this.isWorkInProgress()) {
+            return;
+        }
+        super.onArcEnter(event, arc);
+    }
+
+    onArcLeave(event: PointerEvent, arc: CanvasArc) {
+        if (this.isWorkInProgress()) {
+            return;
+        }
+        super.onArcLeave(event, arc);
+    }
+
+    onArcMove(event: PointerEvent, arc: CanvasArc) {
+        super.onArcMove(event, arc);
+        this.onMove(event);
     }
 
     getMarkerId(): string {

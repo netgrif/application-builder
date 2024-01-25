@@ -29,11 +29,11 @@ import {DeleteArcMenuItem} from '../../context-menu/menu-items/arc/delete-arc-me
 import {EditModelMenuItem} from '../../context-menu/menu-items/model/edit-model-menu-item';
 import {ManageModelPermissionsMenuItem} from '../../context-menu/menu-items/model/manage-model-permissions-menu-item';
 import {DeletePlaceMenuItem} from '../../context-menu/menu-items/place/delete-place-menu-item';
+import {ContextMenuInterruptionError} from '../../../services/canvas/listeners/context-menu-interruption-error';
 
 export abstract class CanvasTool extends CanvasListenerTool {
 
     private readonly _editModeService: EditModeService;
-    private readonly _hotkeys: Array<Hotkey>;
 
     protected constructor(
         id: string,
@@ -46,7 +46,6 @@ export abstract class CanvasTool extends CanvasListenerTool {
     ) {
         super(id, button, modelService, dialog, router, transitionService);
         this._editModeService = editModeService;
-        this._hotkeys = new Array<Hotkey>();
         this.hotkeys.push(new Hotkey('Escape', false, false, false, () => {
             this.closeContextMenu();
             this.reset();
@@ -59,97 +58,54 @@ export abstract class CanvasTool extends CanvasListenerTool {
 
     bind() {
         super.bind();
-        this.bindKeys();
     }
 
     unbind() {
         super.unbind();
-        this.unbindKeys();
         this.closeContextMenu();
     }
 
     reset(): void {
     }
 
-    bindKeys(): void {
-        document.onkeydown = this.onKeyDown.bind(this);
-        document.onkeyup = this.onKeyUp.bind(this);
-    }
-
-    unbindKeys(): void {
-        document.onkeydown = undefined;
-        document.onkeyup = undefined;
-    }
-
-    onKeyDown(event: KeyboardEvent): void {
-        if (event.repeat) {
-            return;
-        }
-        const hotkey = this._hotkeys.find(a => a.matches(event));
-        if (!hotkey) {
-            return;
-        }
-        event.preventDefault();
-        event.stopPropagation();
-        hotkey.listener();
-    }
-
-    onKeyUp(event: KeyboardEvent): void {
-    }
-
-    onMouseLeave(event: MouseEvent): void {
+    onMouseLeave(event: PointerEvent): void {
         this.reset();
     }
 
-    onContextMenu(event: MouseEvent) {
-        super.onContextMenu(event);
-        this.openContextMenu(
-            this.modelContextMenu(event)
-        )
+    onMouseUp(event: PointerEvent) {
+        super.onMouseUp(event);
+        if (this.isRightButtonClick(event)) {
+            this.openContextMenu(this.modelContextMenu(event));
+        } else {
+            this.closeContextMenuOnClick();
+        }
     }
 
-    onTransitionClick(event: MouseEvent, transition: CanvasTransition) {
-        super.onTransitionClick(event, transition);
-        this.closeContextMenu();
+    onPlaceUp(event: PointerEvent, place: CanvasPlace) {
+        super.onPlaceUp(event, place);
+        if (this.isRightButtonClick(event)) {
+            this.openContextMenu(this.placeContextMenu(place, event));
+        } else {
+            this.closeContextMenuOnClick();
+        }
     }
 
-    onTransitionContextMenu(event: MouseEvent, transition: CanvasTransition): void {
-        event.preventDefault();
-        event.stopPropagation();
-        this.openContextMenu(
-            this.transitionContextMenu(transition, event)
-        );
+    onTransitionUp(event: PointerEvent, transition: CanvasTransition) {
+        super.onTransitionUp(event, transition);
+        if (this.isRightButtonClick(event)) {
+            this.openContextMenu(this.transitionContextMenu(transition, event));
+        } else {
+            this.closeContextMenuOnClick();
+        }
     }
 
-    onPlaceClick(event: MouseEvent, place: CanvasPlace) {
-        super.onPlaceClick(event, place);
-        this.closeContextMenu();
-    }
-
-    onPlaceContextMenu(event: MouseEvent, place: CanvasPlace) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.openContextMenu(
-            this.placeContextMenu(place, event)
-        );
-    }
-
-    onArcClick(event: MouseEvent, arc: CanvasArc) {
-        super.onArcClick(event, arc);
-        this.closeContextMenu();
-    }
-
-    onArcContextMenu(event: MouseEvent, arc: CanvasArc) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.openContextMenu(
-            this.arcContextMenu(arc, event)
-        );
-    }
-
-    onMouseClick(event: MouseEvent) {
-        super.onMouseClick(event);
-        this.closeContextMenu();
+    onArcUp(event: PointerEvent, arc: CanvasArc) {
+        super.onArcUp(event, arc);
+        if (this.isRightButtonClick(event)) {
+            this.openContextMenu(this.arcContextMenu(arc, event));
+        } else {
+            this.closeContextMenuOnClick();
+        }
     }
 
     onClick() {
@@ -165,6 +121,13 @@ export abstract class CanvasTool extends CanvasListenerTool {
             }
             this.bindKeys();
         });
+    }
+
+    closeContextMenuOnClick(): void {
+        if (this.isContextMenuOpen()) {
+            this.closeContextMenu();
+            throw new ContextMenuInterruptionError();
+        }
     }
 
     isContextMenuOpen(): boolean {
@@ -187,7 +150,7 @@ export abstract class CanvasTool extends CanvasListenerTool {
         this.editModeService.contextMenuItems?.next(undefined);
     }
 
-    placeContextMenu(place: CanvasPlace, event: MouseEvent): ContextMenu {
+    placeContextMenu(place: CanvasPlace, event: PointerEvent): ContextMenu {
         return new ContextMenu(
             [
                 new EditPlaceMenuItem(place, this),
@@ -197,7 +160,7 @@ export abstract class CanvasTool extends CanvasListenerTool {
         );
     }
 
-    transitionContextMenu(transition: CanvasTransition, event: MouseEvent): ContextMenu {
+    transitionContextMenu(transition: CanvasTransition, event: PointerEvent): ContextMenu {
         return new ContextMenu(
             [
                 new EditTransitionMenuItem(transition, this),
@@ -210,7 +173,7 @@ export abstract class CanvasTool extends CanvasListenerTool {
         )
     }
 
-    arcContextMenu(arc: CanvasArc, event: MouseEvent): ContextMenu {
+    arcContextMenu(arc: CanvasArc, event: PointerEvent): ContextMenu {
         const canvasPosition = this.mousePosition(event);
         const windowPosition = this.windowMousePosition(event);
         const breakPointIndex = arc.findNearbyBreakpoint(canvasPosition);
@@ -228,7 +191,7 @@ export abstract class CanvasTool extends CanvasListenerTool {
         );
     }
 
-    modelContextMenu(event: MouseEvent): ContextMenu {
+    modelContextMenu(event: PointerEvent): ContextMenu {
         return new ContextMenu([
             new EditModelMenuItem(this),
             new ManageModelPermissionsMenuItem(this)
@@ -242,6 +205,14 @@ export abstract class CanvasTool extends CanvasListenerTool {
         this.editModeService.contextMenuItems?.next(menu);
     }
 
+    isLeftButtonClick(event: PointerEvent): boolean {
+        return this.isClick(event) && this.isLeftButton(event);
+    }
+
+    isRightButtonClick(event: PointerEvent): boolean {
+        return this.isClick(event) && this.isRightButton(event);
+    }
+
     get canvasService(): PetriflowCanvasService {
         return this.editModeService.canvasService;
     }
@@ -252,9 +223,5 @@ export abstract class CanvasTool extends CanvasListenerTool {
 
     get editModeService(): EditModeService {
         return this._editModeService;
-    }
-
-    get hotkeys(): Array<Hotkey> {
-        return this._hotkeys;
     }
 }

@@ -6,15 +6,9 @@ export interface TransitionListener {
 
     onTransitionUp(event: MouseEvent, transition: CanvasTransition): void;
 
-    onTransitionClick(event: MouseEvent, transition: CanvasTransition): void;
-
-    onTransitionDoubleClick(event: MouseEvent, transition: CanvasTransition): void;
-
     onTransitionEnter(event: MouseEvent, transition: CanvasTransition): void;
 
     onTransitionLeave(event: MouseEvent, transition: CanvasTransition): void;
 
     onTransitionMove(event: MouseEvent, transition: CanvasTransition): void;
-
-    onTransitionContextMenu(event: MouseEvent, arc: CanvasTransition): void;
 }
