@@ -44,7 +44,7 @@
         <span>Permissions ({{this.modelService.numberOfPermissions()}})</span>
     </button>
     <button mat-flat-button color="primary" [mat-dialog-close]="model"
-            [disabled]="idCtrl.invalid || initialsCtrl.invalid || titleCtrl.invalid">
+            [disabled]="idCtrl.invalid || versionCtrl.invalid || initialsCtrl.invalid || titleCtrl.invalid">
         <mat-icon>done</mat-icon>
         <span>Save</span>
     </button>
