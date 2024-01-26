@@ -6,6 +6,13 @@
         <mat-error *ngIf="idCtrl.errors && idCtrl.errors.required">Id is required</mat-error>
     </mat-form-field>
     <mat-form-field fxFlex>
+        <mat-label>Version</mat-label>
+        <input type="text" matInput [(ngModel)]="model.model.version" [formControl]="versionCtrl">
+<!--        TODO: should be version required? -->
+<!--        <mat-error *ngIf="versionCtrl.errors && versionCtrl.errors.required">Version is required</mat-error>-->
+        <mat-error *ngIf="versionCtrl.errors && versionCtrl.errors.format">Version must be in format Major.Minor.Patch</mat-error>
+    </mat-form-field>
+    <mat-form-field fxFlex>
         <mat-label>Title</mat-label>
         <input type="text" matInput [(ngModel)]="model.model.title.value" [formControl]="titleCtrl">
         <mat-error *ngIf="titleCtrl.errors && titleCtrl.errors.required">Id is required</mat-error>
@@ -37,7 +44,7 @@
         <span>Permissions ({{this.modelService.numberOfPermissions()}})</span>
     </button>
     <button mat-flat-button color="primary" [mat-dialog-close]="model"
-            [disabled]="idCtrl.invalid || initialsCtrl.invalid || titleCtrl.invalid">
+            [disabled]="idCtrl.invalid || versionCtrl.invalid || initialsCtrl.invalid || titleCtrl.invalid">
         <mat-icon>done</mat-icon>
         <span>Save</span>
     </button>

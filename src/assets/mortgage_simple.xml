@@ -1,6 +1,7 @@
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:noNamespaceSchemaLocation="https://netgrif.github.io/petriflow/petriflow.schema.xsd">
     <id>mortgage</id>
+    <version>1.0.0</version>
     <initials>MTG</initials>
     <title>Mortgage</title>
     <defaultRole>true</defaultRole>

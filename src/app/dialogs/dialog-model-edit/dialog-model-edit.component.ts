@@ -1,11 +1,11 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {ChangedPetriNet} from './changed-petri-net';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {ModelService} from '../../modeler/services/model/model.service';
 import {Router} from '@angular/router';
 import {DialogManageRolesComponent, RoleRefType} from '../dialog-manage-roles/dialog-manage-roles.component';
 import {DataType} from '@netgrif/petriflow';
-import {FormControl, Validators} from '@angular/forms';
+import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 
 @Component({
     selector: 'nab-dialog-model-edit',
@@ -16,6 +16,7 @@ export class DialogModelEditComponent {
 
     public model: ChangedPetriNet;
     public idCtrl: FormControl;
+    public versionCtrl: FormControl;
     public titleCtrl: FormControl;
     public initialsCtrl: FormControl;
 
@@ -27,6 +28,10 @@ export class DialogModelEditComponent {
     ) {
         this.model = data;
         this.idCtrl = new FormControl('', [Validators.required]);
+        this.versionCtrl = new FormControl('', [
+            // Validators.required,
+            this.validVersion()
+        ]);
         this.titleCtrl = new FormControl('', [Validators.required]);
         this.initialsCtrl = new FormControl('', [Validators.required]);
     }
@@ -47,5 +52,18 @@ export class DialogModelEditComponent {
     openActions() {
         // TODO: NAB-327 open process view
         this.router.navigate(['modeler/actions']);
+    }
+
+    private validVersion(): ValidatorFn {
+        return (fc: FormControl): { [key: string]: any } | null => {
+            const version = fc.value as string;
+            if (!version || version.length === 0) {
+                return null;
+            }
+            if (version.match(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/)) {
+                return null;
+            }
+            return ({format: true})
+        };
     }
 }

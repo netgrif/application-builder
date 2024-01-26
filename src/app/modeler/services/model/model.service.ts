@@ -68,6 +68,7 @@ export class ModelService implements ModelSource {
     newModel(): PetriNet {
         const model = new PetriNet();
         model.id = ModelConfig.IDENTIFIER;
+        model.version = ModelConfig.VERSION;
         model.title = new I18nString(ModelConfig.TITLE);
         model.initials = ModelConfig.INITIALS;
         model.icon = ModelConfig.ICON;

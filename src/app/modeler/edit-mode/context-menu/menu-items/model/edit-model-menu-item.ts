@@ -14,7 +14,9 @@ export class EditModelMenuItem extends MenuItem {
                     width: '50%',
                     data: new ChangedPetriNet(tool.model.id, tool.model.clone())
                 }, (changedModel: ChangedPetriNet) => {
-                    tool.modelService.updateModel(changedModel);
+                    if (changedModel != undefined) {
+                        tool.modelService.updateModel(changedModel);
+                    }
                 });
             }
         );
