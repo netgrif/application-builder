@@ -161,10 +161,10 @@
                        [formControl]="formControlRef"
                        [matAutocomplete]="auto">
                 <mat-autocomplete [displayWith]="renderSelection" autoActiveFirstOption #auto="matAutocomplete">
-                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option.key"
-                                (click)="selectAuto(option.key);notifyGridster()" [disabled]="isDisabled(option.key)">
-                        {{taskRefTitle(option)}}
-                    </mat-option>
+<!--                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option.key"-->
+<!--                                (click)="selectAuto(option.key);notifyGridster()" [disabled]="isDisabled(option.key)">-->
+<!--                        {{taskRefTitle(option)}}-->
+<!--                    </mat-option>-->
                 </mat-autocomplete>
             </mat-form-field>
             <!--  OPTIONS MANAGEMENT IF APPLICABLE  -->

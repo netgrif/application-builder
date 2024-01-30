@@ -32,7 +32,6 @@ import {MatTreeModule} from '@angular/material/tree';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSortModule} from '@angular/material/sort';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {FlexModule} from '@angular/flex-layout';
 
 @NgModule({
     declarations: [],
@@ -72,7 +71,6 @@ import {FlexModule} from '@angular/flex-layout';
         MatSortModule,
         FormsModule,
         ReactiveFormsModule,
-        FlexModule
     ]
 })
 export class MaterialImportModule {

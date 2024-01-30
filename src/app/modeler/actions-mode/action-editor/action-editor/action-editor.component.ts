@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {ChangeType, EditableAction} from '../classes/editable-action';
 import {ActionEditorService} from '../action-editor.service';
-import {ResizeEvent} from 'angular-resizable-element';
 import {FormControl} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {ActionChangedEvent} from '../action-editor-list/action-editor-list.component';
@@ -12,9 +11,9 @@ import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-de
 import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
 import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
 import {MatMenuTrigger} from '@angular/material/menu';
-import {editor} from 'monaco-editor';
+// import {editor} from 'monaco-editor';
 import {ModelService} from '../../../services/model/model.service';
-import ICodeEditor = editor.ICodeEditor;
+// import ICodeEditor = editor.ICodeEditor;
 
 @Component({
     selector: 'nab-action-editor',
@@ -38,7 +37,7 @@ export class ActionEditorComponent implements OnInit {
     public undoEnabled = false;
     public redoEnabled = false;
 
-    public editor: ICodeEditor;
+    public editor: any;
     public formControl: FormControl;
     public referencesOpened = true;
     public transitionItemsConfiguration: MenuItemConfiguration;
@@ -357,7 +356,7 @@ export class ActionEditorComponent implements OnInit {
         element.style.height = 'auto';
     }
 
-    onResizeEvent(event: ResizeEvent, name: string): void {
+    onResizeEvent(event: any, name: string): void {
         const newHeight = event.rectangle.height < 370 ? 370 : event.rectangle.height;
         const element = document.getElementById(name);
         const headerSize = (element.childNodes[0] as HTMLElement).offsetHeight;

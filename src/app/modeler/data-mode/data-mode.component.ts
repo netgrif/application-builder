@@ -5,7 +5,6 @@ import {DialogDeleteComponent} from '../../dialogs/dialog-delete/dialog-delete.c
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort, Sort} from '@angular/material/sort';
 import {DialogRefactorComponent} from '../../dialogs/dialog-refactor/dialog-refactor.component';
-import {EnumerationFieldValue} from '@netgrif/components-core';
 import {Observable} from 'rxjs';
 import {FormControl} from '@angular/forms';
 import {map, startWith, tap} from 'rxjs/operators';
@@ -45,8 +44,8 @@ export class DataModeComponent {
     optionCounter: number;
     clicked = 0;
     selected: DataVariable;
-    transitionOptions: Array<EnumerationFieldValue>;
-    filteredOptions: Observable<Array<EnumerationFieldValue>>;
+    // transitionOptions: Array<EnumerationFieldValue>;
+    // filteredOptions: Observable<Array<EnumerationFieldValue>>;
     formControlRef: FormControl;
 
     itemData: DataVariable;
@@ -106,26 +105,26 @@ export class DataModeComponent {
             }
             this.formControlRef.patchValue(this.itemData.init.value);
         });
-        this.transitionOptions = this.createTransOptions();
-        this.filteredOptions = this.formControlRef.valueChanges.pipe(
-            tap(value => {
-                if (value === '' || value === undefined) {
-                    if (!this.modelService.model.getData(this.itemData.id).init) {
-                        this.modelService.model.getData(this.itemData.id).init = new I18nWithDynamic(value);
-                    } else {
-                        this.modelService.model.getData(this.itemData.id).init.value = value;
-                    }
-                    const data = this.processData.find(obj => obj.id === this.itemData.id);
-                    if (!data.init) {
-                        data.init = new I18nWithDynamic(value);
-                    } else {
-                        data.init.value = value;
-                    }
-                }
-            }),
-            startWith(''),
-            map(value => this._filter(value))
-        );
+        // this.transitionOptions = this.createTransOptions();
+        // this.filteredOptions = this.formControlRef.valueChanges.pipe(
+        //     tap(value => {
+        //         if (value === '' || value === undefined) {
+        //             if (!this.modelService.model.getData(this.itemData.id).init) {
+        //                 this.modelService.model.getData(this.itemData.id).init = new I18nWithDynamic(value);
+        //             } else {
+        //                 this.modelService.model.getData(this.itemData.id).init.value = value;
+        //             }
+        //             const data = this.processData.find(obj => obj.id === this.itemData.id);
+        //             if (!data.init) {
+        //                 data.init = new I18nWithDynamic(value);
+        //             } else {
+        //                 data.init.value = value;
+        //             }
+        //         }
+        //     }),
+        //     startWith(''),
+        //     map(value => this._filter(value))
+        // );
     }
 
     onPageChanged(e) {
@@ -410,21 +409,21 @@ export class DataModeComponent {
         }));
     }
 
-    private _filter(value: string): Array<EnumerationFieldValue> {
-        const filterValue = value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-        return this.transitionOptions.filter(option => option.value.toLowerCase().normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '').indexOf(filterValue) === 0);
-    }
-
-    public renderSelection = (key) => {
-        if (key !== undefined && key !== '' && key !== null) {
-            if (this.transitionOptions.find(choice => choice.key === key)) {
-                return key + ' - ' + this.transitionOptions.find(choice => choice.key === key).value;
-            }
-        }
-        return key;
-    }
+    // private _filter(value: string): Array<EnumerationFieldValue> {
+    //     const filterValue = value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    //
+    //     return this.transitionOptions.filter(option => option.value.toLowerCase().normalize('NFD')
+    //         .replace(/[\u0300-\u036f]/g, '').indexOf(filterValue) === 0);
+    // }
+    //
+    // public renderSelection = (key) => {
+    //     if (key !== undefined && key !== '' && key !== null) {
+    //         if (this.transitionOptions.find(choice => choice.key === key)) {
+    //             return key + ' - ' + this.transitionOptions.find(choice => choice.key === key).value;
+    //         }
+    //     }
+    //     return key;
+    // }
 
     clickOption(item: DataVariable, init: string) {
         this.modelService.model.getData(item.id).init.value = init;

@@ -17,7 +17,7 @@
                     {{role.title.value}}
                   </mat-panel-description>
                 </mat-expansion-panel-header>
-
+                  @defer (on viewport) {
                 <div fxLayout="row wrap" fxLayoutAlign="start center">
                   <div fxFlex="22.5">Set ID</div>
 
@@ -39,6 +39,11 @@
                 <mat-action-row>
                   <button mat-button color="warn" (click)="openDialog(role)">Delete</button>
                 </mat-action-row>
+                  } @placeholder (minimum 1000ms) {
+                       <span>placeholder :D</span>
+                  } @loading (minimum 1000ms) {
+                      loading
+                  }
               </mat-expansion-panel>
             </mat-accordion>
 

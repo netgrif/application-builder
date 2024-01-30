@@ -67,7 +67,9 @@ export class LanguagesComponent implements OnInit {
     }
 
     addLocal() {
-        this.i18nService.addLocale(this.newLocaleFormControl.value.languageCode);
-        this.newLocaleFormControl.reset();
+        console.log(this.newLocaleFormControl.value);
+        // TODO:
+        // this.i18nService.addLocale(().languageCode);
+        // this.newLocaleFormControl.reset();
     }
 }

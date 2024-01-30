@@ -1,8 +1,9 @@
-import { languages } from 'monaco-editor';
+// import { languages } from 'monaco-editor';
 
 export function functionCompletionProposals(range) {
     // returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
     // here you could do a server side lookup
+    let languages;
     return [
         {
             label: 'taskService',

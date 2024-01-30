@@ -2,14 +2,12 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ModelerComponent} from './modeler.component';
 import {MaterialImportModule} from '../material-import/material-import.module';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {ControlPanelComponent} from './control-panel/control-panel.component';
 import {DomSanitizer} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TriggerTreeComponent} from './control-panel/trees/trigger-tree/trigger-tree.component';
 import {DialogManageRolesComponent} from '../dialogs/dialog-manage-roles/dialog-manage-roles.component';
 import {CdkImportModule} from '../cdk-import/cdk-import.module';
-import {HotkeyModule} from 'angular2-hotkeys';
 import {SimulationModeComponent} from './simulation-mode/simulation-mode.component';
 import {EditModeComponent} from './edit-mode/edit-mode.component';
 import {RouterModule} from '@angular/router';
@@ -19,13 +17,10 @@ import {ActionsModeComponent} from './actions-mode/actions-mode.component';
 import {DialogArcAttachComponent} from '../dialogs/dialog-arc-attach/dialog-arc-attach.component';
 import {environment} from '../../environments/environment';
 import {I18nModeComponent} from './i18n-mode/i18n-mode.component';
-import {ResizableModule} from 'angular-resizable-element';
 import {DialogDeleteComponent} from '../dialogs/dialog-delete/dialog-delete.component';
 import {DialogAddLanguageComponent} from '../dialogs/dialog-add-language/dialog-add-language.component';
 import {MatIconRegistry} from '@angular/material/icon';
-import {JoyrideModule} from 'ngx-joyride';
 import {FormBuilderModule} from '../form-builder/form-builder.module';
-import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/components';
 import {ImportSuccessfulComponent} from './control-panel/import-successful/import-successful.component';
 import {GridsterModule} from 'angular-gridster2';
 import {ActionEditorModule} from './actions-mode/action-editor/action-editor.module';
@@ -49,12 +44,12 @@ import {
     TaskTranslationComponent
 } from './i18n-mode/translations/translation-group/task-translation/task-translation.component';
 import {NgxDropzoneModule} from 'ngx-dropzone';
-import {MaterialModule} from '@netgrif/components-core';
 import {PetriflowCanvasModule} from '@netgrif/petriflow.svg';
 import {ModeComponent} from './control-panel/modes/mode-component/mode.component';
 import {ToolComponent} from './control-panel/tools/tool-component/tool.component';
 import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
 import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.component';
+import {CdkPortalOutlet} from '@angular/cdk/portal';
 
 @NgModule({
     declarations: [
@@ -97,21 +92,15 @@ import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.compon
         CommonModule,
         MaterialImportModule,
         CdkImportModule,
-        FlexLayoutModule,
         FormBuilderModule,
         FormsModule,
         RouterModule,
-        HotkeyModule.forRoot(),
-        ResizableModule,
         ReactiveFormsModule,
-        JoyrideModule,
-        TaskContentComponentModule,
         GridsterModule,
-        DataFieldsComponentModule,
         ActionEditorModule,
         NgxDropzoneModule,
-        MaterialModule,
-        PetriflowCanvasModule
+        PetriflowCanvasModule,
+        CdkPortalOutlet
     ]
 })
 export class ModelerModule {

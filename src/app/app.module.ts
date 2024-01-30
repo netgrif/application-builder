@@ -2,7 +2,6 @@ import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {MaterialImportModule} from './material-import/material-import.module';
 import {FormBuilderModule} from './form-builder/form-builder.module';
 import {RouterModule, Routes} from '@angular/router';
@@ -14,14 +13,10 @@ import {DataModeComponent} from './modeler/data-mode/data-mode.component';
 import {RoleModeComponent} from './modeler/role-mode/role-mode.component';
 import {ActionsModeComponent} from './modeler/actions-mode/actions-mode.component';
 import {MatIconRegistry} from '@angular/material/icon';
-import {AuthenticationModule, ConfigurationService, TranslateLibModule} from '@netgrif/components-core';
-import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 import {environment} from '../environments/environment';
 import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
-import {JoyrideModule} from 'ngx-joyride';
 import {DialogRefactorComponent} from './dialogs/dialog-refactor/dialog-refactor.component';
 import {DialogErrorsComponent} from './dialogs/dialog-errors/dialog-errors.component';
-import {TaskContentComponentModule} from '@netgrif/components';
 import {ExportService, ImportService} from '@netgrif/petriflow';
 import {SelectedTransitionService} from './modeler/selected-transition.service';
 import {I18nModeComponent} from './modeler/i18n-mode/i18n-mode.component';
@@ -74,20 +69,14 @@ const appRoutes: Routes = [
         BrowserModule,
         BrowserAnimationsModule,
         MaterialImportModule,
-        FlexLayoutModule,
         FormBuilderModule,
         ModelerModule,
-        TranslateLibModule,
-        AuthenticationModule,
-        RouterModule.forRoot(appRoutes, {relativeLinkResolution: 'legacy'}),
-        JoyrideModule.forRoot(),
-        TaskContentComponentModule,
+        RouterModule.forRoot(appRoutes),
         AppRoutingModule
     ],
     providers: [
         ImportService,
         ExportService,
-        {provide: ConfigurationService, useClass: AppBuilderConfigurationService},
     ],
     bootstrap: [AppComponent]
 })

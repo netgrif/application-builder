@@ -1,8 +1,6 @@
 import {AfterViewInit, Component, HostListener} from '@angular/core';
-import {LanguageService} from '@netgrif/components-core';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
-import {JoyrideService} from 'ngx-joyride';
 import {TutorialService} from './tutorial/tutorial-service';
 import {MortgageService} from './modeler/mortgage.service';
 import {Router} from '@angular/router';
@@ -28,9 +26,8 @@ export class AppComponent implements AfterViewInit {
 
     constructor(
         private router: Router,
-        private _languageService: LanguageService,
         private matDialog: MatDialog,
-        private readonly joyrideService: JoyrideService,
+        // private readonly joyrideService: JoyrideService,
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
         private modelService: ModelService,
@@ -72,10 +69,10 @@ export class AppComponent implements AfterViewInit {
     }
 
     help() {
-        this.joyrideService.startTour({
-            steps: this.tutorialService.steps,
-            themeColor: '#0f4c81dd'
-        });
+        // this.joyrideService.startTour({
+        //     steps: this.tutorialService.steps,
+        //     themeColor: '#0f4c81dd'
+        // });
     }
 
     get tutorial() {

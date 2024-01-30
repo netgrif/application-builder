@@ -105,7 +105,7 @@ export class ActionsModeComponent {
                 this.sort.direction = '';
             });
 
-            timer().subscribe(_ => {
+            timer(1).subscribe(_ => {
                 const transitionId = this.transitionService.id;
                 if (transitionId) {
                     this.actionsModeService.activate(transitionActionsTool);
