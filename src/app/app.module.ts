@@ -32,6 +32,7 @@ import { DialogChangeDataComponent } from './dialogs/dialog-change-data/dialog-c
 import { DialogModelEditComponent } from './dialogs/dialog-model-edit/dialog-model-edit.component';
 import { MaterialIconPickerComponent } from './components/material-icon-picker/material-icon-picker.component';
 import { DialogLocalStorageModelComponent } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
+import {NgOptimizedImage} from '@angular/common';
 
 const appRoutes: Routes = [
     {
@@ -72,7 +73,8 @@ const appRoutes: Routes = [
         FormBuilderModule,
         ModelerModule,
         RouterModule.forRoot(appRoutes),
-        AppRoutingModule
+        AppRoutingModule,
+        NgOptimizedImage
     ],
     providers: [
         ImportService,

@@ -10,7 +10,7 @@ body {
 }
 
 .app-mat-viewnav {
-    background-color: map-get(netgif-theme.$netgrif-blue, 600);
+    background-color: map-get(netgif-theme.$netgrif-blue, 600) !important;
 
     .selected {
         border-left: map-get(netgif-theme.$netgrif-blue, A200);

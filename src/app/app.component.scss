@@ -2,8 +2,19 @@
     height: 100%;
 }
 
+.main-toolbar-logo {
+    width: 40px;
+}
+
 .app-mat-viewnav {
-    //background-color: map-get($netgrif-blue, 600); GLOBAL STYLE
+    display: flex;
+    flex-direction: column;
+
+    .logo {
+        display: flex;
+        justify-content: center;
+        padding-top: 8px;
+    }
 
     mat-action-list {
         overflow: hidden;
