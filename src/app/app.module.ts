@@ -28,11 +28,14 @@ import {DialogDeleteModelComponent} from './dialogs/dialog-delete-model/dialog-d
 import {DialogArcEditComponent} from './dialogs/dialog-arc-edit/dialog-arc-edit.component';
 import {DialogTransitionEditComponent} from './dialogs/dialog-transition-edit/dialog-transition-edit.component';
 import {SimulationModeComponent} from './modeler/simulation-mode/simulation-mode.component';
-import { DialogChangeDataComponent } from './dialogs/dialog-change-data/dialog-change-data.component';
-import { DialogModelEditComponent } from './dialogs/dialog-model-edit/dialog-model-edit.component';
-import { MaterialIconPickerComponent } from './components/material-icon-picker/material-icon-picker.component';
-import { DialogLocalStorageModelComponent } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
+import {DialogChangeDataComponent} from './dialogs/dialog-change-data/dialog-change-data.component';
+import {DialogModelEditComponent} from './dialogs/dialog-model-edit/dialog-model-edit.component';
+import {MaterialIconPickerComponent} from './components/material-icon-picker/material-icon-picker.component';
+import {
+    DialogLocalStorageModelComponent
+} from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
 import {NgOptimizedImage} from '@angular/common';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
 const appRoutes: Routes = [
     {
@@ -79,6 +82,7 @@ const appRoutes: Routes = [
     providers: [
         ImportService,
         ExportService,
+        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}
     ],
     bootstrap: [AppComponent]
 })
