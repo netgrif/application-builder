@@ -36,6 +36,7 @@ import {
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
 import {NgOptimizedImage} from '@angular/common';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import {TaskContentComponentModule} from '@netgrif/components';
 
 const appRoutes: Routes = [
     {
@@ -77,7 +78,8 @@ const appRoutes: Routes = [
         ModelerModule,
         RouterModule.forRoot(appRoutes),
         AppRoutingModule,
-        NgOptimizedImage
+        NgOptimizedImage,
+        TaskContentComponentModule
     ],
     providers: [
         ImportService,

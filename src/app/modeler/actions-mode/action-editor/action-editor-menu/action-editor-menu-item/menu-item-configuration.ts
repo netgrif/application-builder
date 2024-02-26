@@ -1,18 +1,18 @@
 import {MenuItem} from './menu-item';
 import {ActionEditorComponent} from '../../action-editor/action-editor.component';
 import {FunctionEditorComponent} from '../../function-editor/function-editor.component';
-// import {editor} from 'monaco-editor';
-// import ICodeEditor = editor.ICodeEditor;
+import {editor} from 'monaco-editor';
+import ICodeEditor = editor.ICodeEditor;
 
 export class MenuItemConfiguration {
     private _title: string;
     private _itemType: string;
     private _keywords: Array<string>;
-    private _editor: any;
+    private _editor: ICodeEditor;
     private _actionEditor: ActionEditorComponent | FunctionEditorComponent;
     private _items: Array<MenuItem>;
 
-    constructor(title: string, itemType: string, keywords: Array<string>, editorObject: any, actionEditor: ActionEditorComponent | FunctionEditorComponent, items: Array<MenuItem>) {
+    constructor(title: string, itemType: string, keywords: Array<string>, editorObject: ICodeEditor, actionEditor: ActionEditorComponent | FunctionEditorComponent, items: Array<MenuItem>) {
         this._title = title;
         this._itemType = itemType;
         this._keywords = keywords;
@@ -45,11 +45,11 @@ export class MenuItemConfiguration {
         this._keywords = value;
     }
 
-    get editor(): any {
+    get editor(): ICodeEditor {
         return this._editor;
     }
 
-    set editor(value: any) {
+    set editor(value: ICodeEditor) {
         this._editor = value;
     }
 

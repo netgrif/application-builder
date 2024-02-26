@@ -12,6 +12,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {MaterialImportModule} from '../material-import/material-import.module';
 import {GridsterDataFieldComponent} from './gridster/gridster-datafield/gridster-data-field.component';
 import {InfoLabelComponent} from './info-label/info-label.component';
+import {DataFieldsComponentModule} from '@netgrif/components';
+import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 
 @NgModule({
     declarations: [
@@ -34,6 +36,8 @@ import {InfoLabelComponent} from './info-label/info-label.component';
         HttpClientModule,
         MaterialImportModule,
         ReactiveFormsModule,
+        FlexLayoutModule,
+        DataFieldsComponentModule
     ]
 })
 export class FormBuilderModule {

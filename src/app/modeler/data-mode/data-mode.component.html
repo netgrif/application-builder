@@ -209,13 +209,13 @@
                            aria-label="Autocomplete"
                            matInput
                            [formControl]="formControlRef">
-<!--                           [matAutocomplete]="auto">-->
-<!--                    <mat-autocomplete [displayWith]="renderSelection" autoActiveFirstOption #auto="matAutocomplete">-->
-<!--                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.key"-->
-<!--                                    (click)="clickOption(itemData, option.key)" [disabled]="isDisabled(option.key)">-->
-<!--                            {{option.key}} - {{option.value}}-->
-<!--                        </mat-option>-->
-<!--                    </mat-autocomplete>-->
+                           [matAutocomplete]="auto">
+                    <mat-autocomplete [displayWith]="renderSelection" autoActiveFirstOption #auto="matAutocomplete">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.key"
+                                    (click)="clickOption(itemData, option.key)" [disabled]="isDisabled(option.key)">
+                            {{option.key}} - {{option.value}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
 
 

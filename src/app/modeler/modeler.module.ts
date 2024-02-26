@@ -50,6 +50,9 @@ import {ToolComponent} from './control-panel/tools/tool-component/tool.component
 import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
 import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.component';
 import {CdkPortalOutlet} from '@angular/cdk/portal';
+import {FlexLayoutModule} from '@ngbracket/ngx-layout';
+import {MaterialModule} from '@netgrif/components-core';
+import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/components';
 
 @NgModule({
     declarations: [
@@ -100,7 +103,11 @@ import {CdkPortalOutlet} from '@angular/cdk/portal';
         ActionEditorModule,
         NgxDropzoneModule,
         PetriflowCanvasModule,
-        CdkPortalOutlet
+        CdkPortalOutlet,
+        FlexLayoutModule,
+        MaterialModule,
+        DataFieldsComponentModule,
+        TaskContentComponentModule
     ]
 })
 export class ModelerModule {

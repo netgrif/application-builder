@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-// import { editor, Range } from 'monaco-editor';
-// import ICodeEditor = editor.ICodeEditor;
+import { editor, Range } from 'monaco-editor';
+import ICodeEditor = editor.ICodeEditor;
 
 @Injectable({
     providedIn: 'root'
@@ -26,53 +26,53 @@ export class ActionItemProviderService {
     }
 
     insertText(editorObject, value: string, type) {
-        // const line = editorObject.getPosition().lineNumber;
-        // if (!this.actionKeywords.includes(editorObject.getModel().getWordAtPosition(editorObject.getPosition())?.word)) {
-        //     const pos = editorObject.getPosition();
-        //     const range = new Range(line, pos.column, line, pos.column);
-        //     const id = {major: 1, minor: 1};
-        //     if (this.variables.includes(value)) {
-        //         const varName = 'variable' + this.variableNumber;
-        //         const op = {identifier: id, range, text: varName, forceMoveMarkers: true};
-        //         editorObject.executeEdits('my-source', [op]);
-        //     } else {
-        //         const op = {identifier: id, range, text: value, forceMoveMarkers: true};
-        //         editorObject.executeEdits('my-source', [op]);
-        //     }
-        // } else {
-        //     const pos = editorObject.getModel().getWordAtPosition(editorObject.getPosition());
-        //     const range = new Range(line, pos.startColumn - 1, line, pos.endColumn + 1);
-        //     const id = {major: 1, minor: 1};
-        //     if (pos.word !== 'transitionId' && pos.word !== 'datafieldId') {
-        //         if (this.variables.includes(value)) {
-        //             const varName = 'variable' + this.variableNumber;
-        //             const op = {identifier: id, range, text: varName, forceMoveMarkers: true};
-        //             editorObject.executeEdits('my-source', [op]);
-        //         } else {
-        //             const op = {identifier: id, range, text: value, forceMoveMarkers: true};
-        //             editorObject.executeEdits('my-source', [op]);
-        //         }
-        //     } else {
-        //         const op = {identifier: id, range, text: '"' + value + '"', forceMoveMarkers: true};
-        //         editorObject.executeEdits('my-source', [op]);
-        //         return;
-        //     }
-        // }
-        // this.checkReference(value, editorObject, type);
-        // const position = editorObject?.getPosition();
-        // editorObject?.setPosition(position);
-        // editorObject.focus();
-        // editorObject.saveViewState();
+        const line = editorObject.getPosition().lineNumber;
+        if (!this.actionKeywords.includes(editorObject.getModel().getWordAtPosition(editorObject.getPosition())?.word)) {
+            const pos = editorObject.getPosition();
+            const range = new Range(line, pos.column, line, pos.column);
+            const id = {major: 1, minor: 1};
+            if (this.variables.includes(value)) {
+                const varName = 'variable' + this.variableNumber;
+                const op = {identifier: id, range, text: varName, forceMoveMarkers: true};
+                editorObject.executeEdits('my-source', [op]);
+            } else {
+                const op = {identifier: id, range, text: value, forceMoveMarkers: true};
+                editorObject.executeEdits('my-source', [op]);
+            }
+        } else {
+            const pos = editorObject.getModel().getWordAtPosition(editorObject.getPosition());
+            const range = new Range(line, pos.startColumn - 1, line, pos.endColumn + 1);
+            const id = {major: 1, minor: 1};
+            if (pos.word !== 'transitionId' && pos.word !== 'datafieldId') {
+                if (this.variables.includes(value)) {
+                    const varName = 'variable' + this.variableNumber;
+                    const op = {identifier: id, range, text: varName, forceMoveMarkers: true};
+                    editorObject.executeEdits('my-source', [op]);
+                } else {
+                    const op = {identifier: id, range, text: value, forceMoveMarkers: true};
+                    editorObject.executeEdits('my-source', [op]);
+                }
+            } else {
+                const op = {identifier: id, range, text: '"' + value + '"', forceMoveMarkers: true};
+                editorObject.executeEdits('my-source', [op]);
+                return;
+            }
+        }
+        this.checkReference(value, editorObject, type);
+        const position = editorObject?.getPosition();
+        editorObject?.setPosition(position);
+        editorObject.focus();
+        editorObject.saveViewState();
     }
 
     referenceField(editorObject, value, ref) {
-        // const regex = new RegExp(/(.)+:( )*([tf])\.(.)+;/);
-        // const initialised = regex.test(editorObject.getValue());
-        // const range = new Range(1, 1, 1, 1);
-        // const id = {major: 1, minor: 1};
-        // const text = value + ': ' + ref + value + (initialised ? ',' : ';') + '\n';
-        // const op = {identifier: id, range, text, forceMoveMarkers: true};
-        // editorObject.executeEdits('my-source', [op]);
+        const regex = new RegExp(/(.)+:( )*([tf])\.(.)+;/);
+        const initialised = regex.test(editorObject.getValue());
+        const range = new Range(1, 1, 1, 1);
+        const id = {major: 1, minor: 1};
+        const text = value + ': ' + ref + value + (initialised ? ',' : ';') + '\n';
+        const op = {identifier: id, range, text, forceMoveMarkers: true};
+        editorObject.executeEdits('my-source', [op]);
     }
 
     newVariable(editorObject, value) {
@@ -82,13 +82,13 @@ export class ActionItemProviderService {
         if (initialised) {
             line = editorObject.getValue().split(/\r\n|\r|\n/).indexOf(regex.exec(editorObject.getValue())[0]) + 2;
         }
-        // const range = new Range(line, 1, line, 1);
+        const range = new Range(line, 1, line, 1);
         const id = {major: 1, minor: 1};
         const varName = 'variable' + this.variableNumber;
         this.variableNumber++;
         const text = 'def ' + varName + ' = ' + value + ';' + '\n';
-        // const op = {identifier: id, range, text, forceMoveMarkers: true};
-        // editorObject.executeEdits('my-source', [op]);
+        const op = {identifier: id, range, text, forceMoveMarkers: true};
+        editorObject.executeEdits('my-source', [op]);
         return varName;
     }
 
@@ -139,7 +139,7 @@ export class ActionItemProviderService {
         }
     }
 
-    actionsKeywordsListen(editorObject: any, actionEditor, trigger, keywords: Array<string>) {
+    actionsKeywordsListen(editorObject: ICodeEditor, actionEditor, trigger, keywords: Array<string>) {
         const line = editorObject.getPosition().lineNumber;
         const wordAtPosition = editorObject.getModel().getWordAtPosition(editorObject.getPosition());
         const lineContent = editorObject.getModel().getLineContent(line);

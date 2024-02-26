@@ -5,6 +5,7 @@
 <mat-sidenav-container autosize>
     <mat-sidenav mode="side" #drawer
                  mwlResizable>
+<!--        TODO: release/4.0.0 resize -->
 <!--                 [resizeCursorPrecision]="10"-->
 <!--                 [resizeEdges]="{ left: true }">-->
         <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
@@ -13,6 +14,7 @@
     <mat-sidenav-content>
         <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()" mwlResizable
                              id="{{action.event + '_' + action.phase + '_' + index}}">
+<!--            TODO: release/4.0.0 resize -->
 <!--                             [resizeCursorPrecision]="10"-->
 <!--                             [resizeEdges]="{ bottom: true }"-->
 <!--                             (resizing)="onResizeEvent($event, action.event + '_' + action.phase + '_' + index)">-->
@@ -66,8 +68,8 @@
                 </div>
             </div>
             <div fxLayout="column" fxLayoutAlign="start stretch" id="{{name + '_div'}}">
-                <ngx-monaco-editor class="full-size-editor" id="{{name + '_editor'}}" [options]="editorOptions"
-                                   [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>
+<!--                <ngx-monaco-editor class="full-size-editor" id="{{name + '_editor'}}" [options]="editorOptions"-->
+<!--                                   [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>-->
             </div>
             <mat-action-row>
                 <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center">

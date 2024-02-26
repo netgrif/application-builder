@@ -11,9 +11,9 @@ import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-de
 import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
 import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
 import {MatMenuTrigger} from '@angular/material/menu';
-// import {editor} from 'monaco-editor';
+import {editor} from 'monaco-editor';
 import {ModelService} from '../../../services/model/model.service';
-// import ICodeEditor = editor.ICodeEditor;
+import ICodeEditor = editor.ICodeEditor;
 
 @Component({
     selector: 'nab-action-editor',
@@ -70,7 +70,7 @@ export class ActionEditorComponent implements OnInit {
 
     // options: https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
     editorOptions = {
-        theme: 'petriflowTheme',
+        theme: 'vs-dark',
         language: 'petriflow',
         scrollBeyondLastLine: false,
         automaticLayout: true,

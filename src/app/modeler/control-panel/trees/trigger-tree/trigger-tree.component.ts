@@ -3,6 +3,7 @@ import {NestedTreeControl} from '@angular/cdk/tree';
 import {Trigger, TriggerType} from '@netgrif/petriflow';
 import {NGX_MAT_DATE_FORMATS} from '@angular-material-components/datetime-picker';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
+import {DATE_TIME_FORMAT} from '@netgrif/components-core';
 
 interface TriggerNode {
     name?: string;
@@ -18,6 +19,7 @@ interface TriggerNode {
     templateUrl: './trigger-tree.component.html',
     styleUrls: ['./trigger-tree.component.scss'],
     providers: [
+        {provide: NGX_MAT_DATE_FORMATS, useValue: DATE_TIME_FORMAT}
     ]
 })
 export class TriggerTreeComponent {

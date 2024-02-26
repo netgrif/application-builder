@@ -31,6 +31,7 @@ import {DataFieldUtils} from '../data-field-utils';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
 import {ModelService} from '../../modeler/services/model/model.service';
+import {DATE_FORMAT, DATE_TIME_FORMAT, EnumerationFieldValue} from '@netgrif/components-core';
 
 @Component({
     selector: 'nab-edit-panel',
@@ -54,8 +55,8 @@ import {ModelService} from '../../modeler/services/model/model.service';
         ]),
     ],
     providers: [
-        // {provide: NGX_MAT_DATE_FORMATS, useValue: DATE_TIME_FORMAT},
-        // {provide: MAT_DATE_FORMATS, useValue: DATE_FORMAT}
+        {provide: NGX_MAT_DATE_FORMATS, useValue: DATE_TIME_FORMAT},
+        {provide: MAT_DATE_FORMATS, useValue: DATE_FORMAT}
     ]
 })
 export class EditPanelComponent implements OnInit, AfterViewInit {
@@ -65,9 +66,9 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     counter: number;
     counterMap: number;
     transId: string;
-    // filteredOptions: Observable<Array<EnumerationFieldValue>>;
+    filteredOptions: Observable<Array<EnumerationFieldValue>>;
     formControlRef: FormControl;
-    // transitionOptions: Array<EnumerationFieldValue>;
+    transitionOptions: Array<EnumerationFieldValue>;
 
     behaviorOptions;
 
@@ -115,18 +116,18 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         this.hover = false;
         this.counter = 0;
         this.counterMap = 0;
-        // this.transitionOptions = this.createTransOptions();
-        // this.filteredOptions = this.formControlRef.valueChanges.pipe(
-        //     tap(value => {
-        //         if (value === '' || value === undefined) {
-        //             if (this.gridsterService.selectedDataField?.dataVariable?.init) {
-        //                 this.gridsterService.selectedDataField.dataVariable.init.value = '';
-        //             }
-        //         }
-        //     }),
-        //     startWith(''),
-        //     map(value => this._filter(value))
-        // );
+        this.transitionOptions = this.createTransOptions();
+        this.filteredOptions = this.formControlRef.valueChanges.pipe(
+            tap(value => {
+                if (value === '' || value === undefined) {
+                    if (this.gridsterService.selectedDataField?.dataVariable?.init) {
+                        this.gridsterService.selectedDataField.dataVariable.init.value = '';
+                    }
+                }
+            }),
+            startWith(''),
+            map(value => this._filter(value))
+        );
     }
 
     get transition(): Transition {
@@ -357,27 +358,27 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         }
     }
 
-    // private _filter(value: string): Array<EnumerationFieldValue> {
-    //     if (!value) {
-    //         return this.transitionOptions;
-    //     }
-    //     const filterValue = value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    //
-    //     return this.transitionOptions.filter(option => option.value?.toLowerCase()?.normalize('NFD')
-    //         ?.replace(/[\u0300-\u036f]/g, '')?.indexOf(filterValue) === 0);
-    // }
+    private _filter(value: string): Array<EnumerationFieldValue> {
+        if (!value) {
+            return this.transitionOptions;
+        }
+        const filterValue = value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        return this.transitionOptions.filter(option => option.value?.toLowerCase()?.normalize('NFD')
+            ?.replace(/[\u0300-\u036f]/g, '')?.indexOf(filterValue) === 0);
+    }
 
     selectAuto(key: string) {
         this.gridsterService.selectedDataField.dataVariable.init = new I18nWithDynamic(key, '', false);
     }
 
     public renderSelection = (key) => {
-        // if (key !== undefined && key !== '' && key !== null) {
-        //     const value = this.transitionOptions.find(choice => choice.key === key);
-        //     if (value) {
-        //         return this.taskRefTitle(value);
-        //     }
-        // }
+        if (key !== undefined && key !== '' && key !== null) {
+            const value = this.transitionOptions.find(choice => choice.key === key);
+            if (value) {
+                return this.taskRefTitle(value);
+            }
+        }
         return key;
     }
 
@@ -438,12 +439,12 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         this.gridsterService.selectedDataField.dataRef.component.name = $event.target.value;
     }
 
-    // taskRefTitle(option: EnumerationFieldValue) {
-    //     if (option.value) {
-    //         return `${option.value} [${option.key}]`;
-    //     }
-    //     return option.key;
-    // }
+    taskRefTitle(option: EnumerationFieldValue) {
+        if (option.value) {
+            return `${option.value} [${option.key}]`;
+        }
+        return option.key;
+    }
 
     addIcon(component: PetriflowComponent) {
         component.icons.push(new Icon('', 'home'));

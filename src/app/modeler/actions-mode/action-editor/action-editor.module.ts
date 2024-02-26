@@ -17,27 +17,31 @@ import {
 import {SafeHtmlPipe} from './action-editor-menu/action-editor-menu-item/safe-html.pipe';
 import {FunctionEditorComponent} from './function-editor/function-editor.component';
 import {MonacoEditorModule, NgxMonacoEditorConfig} from 'ngx-monaco-editor-v2';
+import {FlexModule} from '@ngbracket/ngx-layout';
+import {editor, languages} from 'monaco-editor';
 
-// export function onMonacoLoad() {
-//     languages.register({id: 'petriflow'});
-//     languages.setMonarchTokensProvider('petriflow', tokenProvider() as any);
-//     languages.registerCompletionItemProvider('petriflow', {
-//         provideCompletionItems(model, position) {
-//             return actionCompletionProvider(model, position);
-//         }
-//     } as any);
-//     editor.defineTheme('petriflowTheme', {
-//         base: 'vs', // can also be vs-dark or hc-black
-//         inherit: true, // can also be false to completely replace the builtin rules
-//         rules: [
-//             {token: 'errorSyntax', foreground: 'ff0000', fontStyle: 'bold'}
-//         ]
-//     } as any);
-// }
+export function onMonacoLoad() {
+    languages.register({id: 'petriflow'});
+    languages.setMonarchTokensProvider('petriflow', tokenProvider() as any);
+    languages.registerCompletionItemProvider('petriflow', {
+        provideCompletionItems(model, position) {
+            return actionCompletionProvider(model, position);
+        }
+    } as any);
+    editor.defineTheme('petriflowTheme', {
+        base: 'vs-dark', // can also be vs-dark or hc-black
+        inherit: false, // can also be false to completely replace the builtin rules
+        // rules: [
+        //     {token: 'errorSyntax', foreground: 'ff0000', fontStyle: 'bold'}
+        // ]
+    } as any);
+}
 
 const monacoConfig: NgxMonacoEditorConfig = {
-    defaultOptions: {scrollBeyondLastLine: false}, // pass default options to be used
-    // onMonacoLoad // here monaco object will be available as window.monaco use this function to extend monaco editor functionalities.
+    defaultOptions: {
+        scrollBeyondLastLine: false,
+    }, // pass default options to be used
+    onMonacoLoad // here monaco object will be available as window.monaco use this function to extend monaco editor functionalities.
 };
 
 @NgModule({
@@ -58,6 +62,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
         CommonModule,
         BrowserModule,
         FormsModule,
+        FlexModule,
         MaterialImportModule,
         MonacoEditorModule.forRoot(monacoConfig),
     ]
