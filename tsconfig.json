@@ -16,6 +16,7 @@
         ],
         "lib": [
             "es2018",
+            "ESNext.Array",
             "dom"
         ],
         "allowSyntheticDefaultImports": true,

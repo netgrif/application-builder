@@ -50,9 +50,16 @@ import {ToolComponent} from './control-panel/tools/tool-component/tool.component
 import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
 import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.component';
 import {CdkPortalOutlet} from '@angular/cdk/portal';
+import {FlexLayoutModule} from '@ngbracket/ngx-layout';
+import {DataMasterComponent} from './data-mode/data-master/data-master.component';
+import {DataMasterItemComponent} from './data-mode/data-master-item/data-master-item.component';
+import {AppModule} from '../app.module';
+import {MasterDetailComponent} from '../components/master-detail/master-detail.component';
 
 @NgModule({
     declarations: [
+        DataMasterComponent,
+        DataMasterItemComponent,
         ModelerComponent,
         ControlPanelComponent,
         DialogManageRolesComponent,
@@ -100,7 +107,9 @@ import {CdkPortalOutlet} from '@angular/cdk/portal';
         ActionEditorModule,
         NgxDropzoneModule,
         PetriflowCanvasModule,
-        CdkPortalOutlet
+        CdkPortalOutlet,
+        FlexLayoutModule,
+        MasterDetailComponent,
     ]
 })
 export class ModelerModule {

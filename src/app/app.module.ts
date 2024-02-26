@@ -36,6 +36,8 @@ import {
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
 import {NgOptimizedImage} from '@angular/common';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import {FlexLayoutModule} from '@ngbracket/ngx-layout';
+import {CdkPortalOutlet} from '@angular/cdk/portal';
 
 const appRoutes: Routes = [
     {
@@ -77,13 +79,16 @@ const appRoutes: Routes = [
         ModelerModule,
         RouterModule.forRoot(appRoutes),
         AppRoutingModule,
-        NgOptimizedImage
+        NgOptimizedImage,
+        FlexLayoutModule,
+        CdkPortalOutlet
     ],
     providers: [
         ImportService,
         ExportService,
         {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}
     ],
+    exports: [],
     bootstrap: [AppComponent]
 })
 export class AppModule {
