@@ -53,6 +53,7 @@ import {CdkPortalOutlet} from '@angular/cdk/portal';
 import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 import {MaterialModule} from '@netgrif/components-core';
 import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/components';
+import {JoyrideModule} from 'ngx-joyride';
 
 @NgModule({
     declarations: [
@@ -92,21 +93,22 @@ import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/co
         TriggerTreeComponent
     ],
     imports: [
-        CommonModule,
-        MaterialImportModule,
+        ActionEditorModule,
         CdkImportModule,
+        CdkPortalOutlet,
+        CommonModule,
+        DataFieldsComponentModule,
+        FlexLayoutModule,
         FormBuilderModule,
         FormsModule,
-        RouterModule,
-        ReactiveFormsModule,
         GridsterModule,
-        ActionEditorModule,
+        JoyrideModule,
+        MaterialImportModule,
+        MaterialModule,
         NgxDropzoneModule,
         PetriflowCanvasModule,
-        CdkPortalOutlet,
-        FlexLayoutModule,
-        MaterialModule,
-        DataFieldsComponentModule,
+        ReactiveFormsModule,
+        RouterModule,
         TaskContentComponentModule
     ]
 })

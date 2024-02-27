@@ -37,6 +37,7 @@ import {
 import {NgOptimizedImage} from '@angular/common';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {TaskContentComponentModule} from '@netgrif/components';
+import {JoyrideModule} from 'ngx-joyride';
 
 const appRoutes: Routes = [
     {
@@ -75,11 +76,12 @@ const appRoutes: Routes = [
         BrowserAnimationsModule,
         MaterialImportModule,
         FormBuilderModule,
+        JoyrideModule.forRoot(),
         ModelerModule,
         RouterModule.forRoot(appRoutes),
         AppRoutingModule,
         NgOptimizedImage,
-        // TODO: release/4.0.0 error rxjs, MatBottomSheetContainer
+        // TODO: release/4.0.0 error rxjs
         TaskContentComponentModule
     ],
     providers: [

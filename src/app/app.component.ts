@@ -10,6 +10,7 @@ import {
     DialogLocalStorageModelComponent
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
 import {ModelImportService} from './modeler/model-import-service';
+import {JoyrideService} from 'ngx-joyride';
 
 @Component({
     selector: 'nab-root',
@@ -27,10 +28,9 @@ export class AppComponent implements AfterViewInit {
     constructor(
         private router: Router,
         private matDialog: MatDialog,
-        // private readonly joyrideService: JoyrideService,
+        private readonly joyrideService: JoyrideService,
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
-        private modelService: ModelService,
         private importService: ModelImportService
     ) {
     }
@@ -69,10 +69,10 @@ export class AppComponent implements AfterViewInit {
     }
 
     help() {
-        // this.joyrideService.startTour({
-        //     steps: this.tutorialService.steps,
-        //     themeColor: '#0f4c81dd'
-        // });
+        this.joyrideService.startTour({
+            steps: this.tutorialService.steps,
+            themeColor: '#0f4c81dd'
+        });
     }
 
     get tutorial() {
