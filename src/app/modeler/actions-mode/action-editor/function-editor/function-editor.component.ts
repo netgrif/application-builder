@@ -9,8 +9,6 @@ import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item'
 import {PetriflowFunction} from '@netgrif/petriflow';
 import {actions} from '../classes/command-action';
 import {ModelService} from '../../../services/model/model.service';
-import {editor} from 'monaco-editor';
-import ICodeEditor = editor.ICodeEditor;
 
 @Component({
     selector: 'nab-function-editor',
@@ -26,7 +24,7 @@ export class FunctionEditorComponent implements OnInit {
     @ViewChild('referencesTrigger') trigger: MatMenuTrigger;
     private _fn: PetriflowFunction;
 
-    public editor: ICodeEditor;
+    public editor: any;
     public formControl: FormControl;
     public referencesOpened = true;
     public transitionItemsConfiguration: MenuItemConfiguration;

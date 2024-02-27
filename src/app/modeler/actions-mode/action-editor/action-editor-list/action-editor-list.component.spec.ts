@@ -3,10 +3,8 @@ import {ActionEditorListComponent} from './action-editor-list.component';
 import {CommonModule} from '@angular/common';
 import {MaterialImportModule} from '../../../../material-import/material-import.module';
 import {CdkImportModule} from '../../../../cdk-import/cdk-import.module';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
-import {MonacoEditorModule} from 'ngx-monaco-editor';
 import {HotkeyModule} from 'angular2-hotkeys';
 import {ResizableModule} from 'angular-resizable-element';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -29,12 +27,12 @@ describe('ActionEditorListComponent', () => {
                 CommonModule,
                 MaterialImportModule,
                 CdkImportModule,
-                FlexLayoutModule,
+                // FlexLayoutModule,
                 FormsModule,
                 MatCheckboxModule,
                 MatTabsModule,
                 RouterModule,
-                MonacoEditorModule.forRoot(),
+                // MonacoEditorM/odule.forRoot(),
                 HotkeyModule.forRoot(),
                 MatSortModule,
                 ResizableModule,

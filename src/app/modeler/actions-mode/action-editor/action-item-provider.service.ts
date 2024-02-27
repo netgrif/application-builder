@@ -1,6 +1,4 @@
 import {Injectable} from '@angular/core';
-import { editor, Range } from 'monaco-editor';
-import ICodeEditor = editor.ICodeEditor;
 
 @Injectable({
     providedIn: 'root'
@@ -29,7 +27,9 @@ export class ActionItemProviderService {
         const line = editorObject.getPosition().lineNumber;
         if (!this.actionKeywords.includes(editorObject.getModel().getWordAtPosition(editorObject.getPosition())?.word)) {
             const pos = editorObject.getPosition();
-            const range = new Range(line, pos.column, line, pos.column);
+            const range = {
+                startLineNumber: line, startColumn: pos.column, endLineNumber: line, endColumn: pos.column
+            };
             const id = {major: 1, minor: 1};
             if (this.variables.includes(value)) {
                 const varName = 'variable' + this.variableNumber;
@@ -41,7 +41,9 @@ export class ActionItemProviderService {
             }
         } else {
             const pos = editorObject.getModel().getWordAtPosition(editorObject.getPosition());
-            const range = new Range(line, pos.startColumn - 1, line, pos.endColumn + 1);
+            const range = {
+                startLineNumber: line, startColumn: pos.startColumn - 1, endLineNumber: line, endColumn: pos.endColumn + 1
+            };
             const id = {major: 1, minor: 1};
             if (pos.word !== 'transitionId' && pos.word !== 'datafieldId') {
                 if (this.variables.includes(value)) {
@@ -68,7 +70,9 @@ export class ActionItemProviderService {
     referenceField(editorObject, value, ref) {
         const regex = new RegExp(/(.)+:( )*([tf])\.(.)+;/);
         const initialised = regex.test(editorObject.getValue());
-        const range = new Range(1, 1, 1, 1);
+        const range = {
+            startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 1
+        };
         const id = {major: 1, minor: 1};
         const text = value + ': ' + ref + value + (initialised ? ',' : ';') + '\n';
         const op = {identifier: id, range, text, forceMoveMarkers: true};
@@ -82,7 +86,9 @@ export class ActionItemProviderService {
         if (initialised) {
             line = editorObject.getValue().split(/\r\n|\r|\n/).indexOf(regex.exec(editorObject.getValue())[0]) + 2;
         }
-        const range = new Range(line, 1, line, 1);
+        const range = {
+            startLineNumber: line, startColumn: 1, endLineNumber: line, endColumn: 1
+        };
         const id = {major: 1, minor: 1};
         const varName = 'variable' + this.variableNumber;
         this.variableNumber++;
@@ -139,7 +145,7 @@ export class ActionItemProviderService {
         }
     }
 
-    actionsKeywordsListen(editorObject: ICodeEditor, actionEditor, trigger, keywords: Array<string>) {
+    actionsKeywordsListen(editorObject: any, actionEditor, trigger, keywords: Array<string>) {
         const line = editorObject.getPosition().lineNumber;
         const wordAtPosition = editorObject.getModel().getWordAtPosition(editorObject.getPosition());
         const lineContent = editorObject.getModel().getLineContent(line);

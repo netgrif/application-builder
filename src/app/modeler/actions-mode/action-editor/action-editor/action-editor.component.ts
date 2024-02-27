@@ -11,9 +11,7 @@ import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-de
 import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
 import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
 import {MatMenuTrigger} from '@angular/material/menu';
-import {editor} from 'monaco-editor';
 import {ModelService} from '../../../services/model/model.service';
-import ICodeEditor = editor.ICodeEditor;
 
 @Component({
     selector: 'nab-action-editor',

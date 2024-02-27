@@ -1,6 +1,5 @@
-import {languages} from 'monaco-editor';
 
-export function declarationCompleteProvider(range) {
+export function declarationCompleteProvider(range, languages) {
     return [
         {
             label: 'f.',

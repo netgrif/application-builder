@@ -4,8 +4,6 @@ import {ActionItemProviderService} from '../action-item-provider.service';
 import {
     ActionEditorMenuDescriptionComponent
 } from './action-editor-menu-description/action-editor-menu-description.component';
-import {editor} from 'monaco-editor';
-import ICodeEditor = editor.ICodeEditor;
 import {ModelService} from '../../../services/model/model.service';
 
 @Component({
@@ -15,7 +13,7 @@ import {ModelService} from '../../../services/model/model.service';
 })
 export class ActionEditorMenuComponent implements OnInit {
 
-    @Input() editor: ICodeEditor;
+    @Input() editor: any;
     @ViewChild('accordion') accordion: ElementRef;
     @ViewChild('panel') panel: ElementRef;
     @Input() descriptionComponent: ActionEditorMenuDescriptionComponent;

@@ -18,22 +18,23 @@ import {SafeHtmlPipe} from './action-editor-menu/action-editor-menu-item/safe-ht
 import {FunctionEditorComponent} from './function-editor/function-editor.component';
 import {MonacoEditorModule, NgxMonacoEditorConfig} from 'ngx-monaco-editor-v2';
 import {FlexModule} from '@ngbracket/ngx-layout';
-import {editor, languages} from 'monaco-editor';
+
+declare var monaco: any;
 
 export function onMonacoLoad() {
-    languages.register({id: 'petriflow'});
-    languages.setMonarchTokensProvider('petriflow', tokenProvider() as any);
-    languages.registerCompletionItemProvider('petriflow', {
+    monaco.languages.register({id: 'petriflow'});
+    monaco.languages.setMonarchTokensProvider('petriflow', tokenProvider() as any);
+    monaco.languages.registerCompletionItemProvider('petriflow', {
         provideCompletionItems(model, position) {
-            return actionCompletionProvider(model, position);
+            return actionCompletionProvider(model, position, monaco.languages);
         }
     } as any);
-    editor.defineTheme('petriflowTheme', {
+    monaco.editor.defineTheme('petriflowTheme', {
         base: 'vs-dark', // can also be vs-dark or hc-black
         inherit: false, // can also be false to completely replace the builtin rules
-        // rules: [
-        //     {token: 'errorSyntax', foreground: 'ff0000', fontStyle: 'bold'}
-        // ]
+        rules: [
+            {token: 'errorSyntax', foreground: 'ff0000', fontStyle: 'bold'}
+        ]
     } as any);
 }
 
