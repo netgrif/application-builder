@@ -18,6 +18,7 @@ import {SafeHtmlPipe} from './action-editor-menu/action-editor-menu-item/safe-ht
 import {FunctionEditorComponent} from './function-editor/function-editor.component';
 import {MonacoEditorModule, NgxMonacoEditorConfig} from 'ngx-monaco-editor-v2';
 import {FlexModule} from '@ngbracket/ngx-layout';
+import {ResizableModule} from 'angular-resizable-element';
 
 declare var monaco: any;
 
@@ -66,6 +67,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
         FlexModule,
         MaterialImportModule,
         MonacoEditorModule.forRoot(monacoConfig),
+        ResizableModule,
     ]
 })
 export class ActionEditorModule {

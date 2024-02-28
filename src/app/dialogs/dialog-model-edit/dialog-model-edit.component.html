@@ -8,7 +8,7 @@
     <mat-form-field fxFlex>
         <mat-label>Version</mat-label>
         <input type="text" matInput [(ngModel)]="model.model.version" [formControl]="versionCtrl">
-<!--        TODO: should be version required? -->
+<!--        TODO: release/4.0.0 should be version required? -->
 <!--        <mat-error *ngIf="versionCtrl.errors && versionCtrl.errors.required">Version is required</mat-error>-->
         <mat-error *ngIf="versionCtrl.errors && versionCtrl.errors.format">Version must be in format Major.Minor.Patch</mat-error>
     </mat-form-field>

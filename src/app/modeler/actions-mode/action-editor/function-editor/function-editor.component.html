@@ -4,10 +4,8 @@
 </div>
 <mat-sidenav-container autosize>
     <mat-sidenav mode="side" #drawer
-                 mwlResizable>
-<!--        TODO: release/4.0.0 resize + duplicate with action-editor component -->
-<!--                 [resizeCursorPrecision]="10"-->
-<!--                 [resizeEdges]="{ left: true }">-->
+                 mwlResizable mwlResizeHandle
+                 [resizeEdges]="{ left: true }">
 
         <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
                                 [editor]="editor"></nab-action-editor-menu>

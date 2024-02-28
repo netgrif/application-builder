@@ -54,6 +54,7 @@ import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 import {MaterialModule} from '@netgrif/components-core';
 import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/components';
 import {JoyrideModule} from 'ngx-joyride';
+import { ResizableModule } from 'angular-resizable-element';
 
 @NgModule({
     declarations: [
@@ -108,6 +109,7 @@ import {JoyrideModule} from 'ngx-joyride';
         NgxDropzoneModule,
         PetriflowCanvasModule,
         ReactiveFormsModule,
+        ResizableModule,
         RouterModule,
         TaskContentComponentModule
     ]

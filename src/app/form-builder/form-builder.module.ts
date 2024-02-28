@@ -14,30 +14,32 @@ import {GridsterDataFieldComponent} from './gridster/gridster-datafield/gridster
 import {InfoLabelComponent} from './info-label/info-label.component';
 import {DataFieldsComponentModule} from '@netgrif/components';
 import {FlexLayoutModule} from '@ngbracket/ngx-layout';
+import {ResizableModule} from 'angular-resizable-element';
 
 @NgModule({
     declarations: [
-        FormBuilderComponent,
-        PaperComponent,
-        FieldListComponent,
-        GridsterComponent,
         EditPanelComponent,
+        FieldListComponent,
+        FormBuilderComponent,
+        GridsterComponent,
         GridsterDataFieldComponent,
         InfoLabelComponent,
+        PaperComponent,
     ],
     exports: [
         FormBuilderComponent
     ],
     imports: [
         CommonModule,
+        DataFieldsComponentModule,
         DragDropModule,
-        GridsterModule,
+        FlexLayoutModule,
         FormsModule,
+        GridsterModule,
         HttpClientModule,
         MaterialImportModule,
         ReactiveFormsModule,
-        FlexLayoutModule,
-        DataFieldsComponentModule
+        ResizableModule
     ]
 })
 export class FormBuilderModule {

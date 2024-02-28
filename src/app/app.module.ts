@@ -38,6 +38,8 @@ import {NgOptimizedImage} from '@angular/common';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {TaskContentComponentModule} from '@netgrif/components';
 import {JoyrideModule} from 'ngx-joyride';
+import {AuthenticationMethodService, ConfigurationService, NullAuthenticationService} from '@netgrif/components-core';
+import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 
 const appRoutes: Routes = [
     {
@@ -87,6 +89,8 @@ const appRoutes: Routes = [
     providers: [
         ImportService,
         ExportService,
+        {provide: AuthenticationMethodService, useValue: NullAuthenticationService},
+        {provide: ConfigurationService, useClass: AppBuilderConfigurationService},
         {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}
     ],
     bootstrap: [AppComponent]

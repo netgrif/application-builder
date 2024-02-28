@@ -4,21 +4,16 @@
 </div>
 <mat-sidenav-container autosize>
     <mat-sidenav mode="side" #drawer
-                 mwlResizable>
-<!--        TODO: release/4.0.0 resize -->
-<!--                 [resizeCursorPrecision]="10"-->
-<!--                 [resizeEdges]="{ left: true }">-->
+                 mwlResizeHandle mwlResizable
+                 [resizeEdges]="{ left: true }">
         <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
                                 [editor]="editor"></nab-action-editor-menu>
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()" mwlResizable
-                             id="{{action.event + '_' + action.phase + '_' + index}}">
-<!--            TODO: release/4.0.0 resize -->
-<!--                             [resizeCursorPrecision]="10"-->
-<!--                             [resizeEdges]="{ bottom: true }"-->
-<!--                             (resizing)="onResizeEvent($event, action.event + '_' + action.phase + '_' + index)">-->
-
+        <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()" mwlResizeHandle mwlResizable
+                             id="{{action.event + '_' + action.phase + '_' + index}}"
+                             [resizeEdges]="{ bottom: true }"
+                             (resizing)="onResizeEvent($event, action.event + '_' + action.phase + '_' + index)">
             <mat-expansion-panel-header>
                 action
             </mat-expansion-panel-header>
