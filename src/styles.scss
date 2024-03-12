@@ -131,3 +131,13 @@ body {
         padding-left: 0 !important;
     }
 }
+
+.flexRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.flexColumn {
+    display: flex;
+    flex-direction: column;
+}

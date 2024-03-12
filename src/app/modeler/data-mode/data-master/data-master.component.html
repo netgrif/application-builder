@@ -1,0 +1,19 @@
+<div fxFlex fxLayout="column">
+    <mat-action-list matSort (matSortChange)="sortData($event)" fxFlex="grow">
+        <div mat-subheader class="header">
+            <p fxFlex="50" mat-sort-header="id">ID</p>
+            <p fxFlex mat-sort-header="name">Name</p>
+            <div fxFlex="20" class="button-wrap">
+                <button mat-icon-button class="button-line" matTooltip="Add data variable" (click)="create()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+        </div>
+        @for (item of this.pageData; track item.id) {
+            <nab-data-master-item [item]="item"></nab-data-master-item>
+        }
+    </mat-action-list>
+    <mat-paginator fxFlex class="footer" [length]="totalSize" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                   [pageSizeOptions]="pageSizeOptions" (page)="onPageChanged($event)" showFirstLastButtons="false">
+    </mat-paginator>
+</div>

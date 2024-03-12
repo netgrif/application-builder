@@ -55,9 +55,16 @@ import {MaterialModule} from '@netgrif/components-core';
 import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/components';
 import {JoyrideModule} from 'ngx-joyride';
 import { ResizableModule } from 'angular-resizable-element';
+import {FlexLayoutModule} from '@ngbracket/ngx-layout';
+import {DataMasterComponent} from './data-mode/data-master/data-master.component';
+import {DataMasterItemComponent} from './data-mode/data-master-item/data-master-item.component';
+import {AppModule} from '../app.module';
+import {MasterDetailComponent} from '../components/master-detail/master-detail.component';
 
 @NgModule({
     declarations: [
+        DataMasterComponent,
+        DataMasterItemComponent,
         ModelerComponent,
         ControlPanelComponent,
         DialogManageRolesComponent,
@@ -111,7 +118,8 @@ import { ResizableModule } from 'angular-resizable-element';
         ReactiveFormsModule,
         ResizableModule,
         RouterModule,
-        TaskContentComponentModule
+        TaskContentComponentModule,
+        MasterDetailComponent,
     ]
 })
 export class ModelerModule {

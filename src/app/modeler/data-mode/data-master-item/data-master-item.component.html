@@ -1,0 +1,15 @@
+<mat-list-item class="item-bottom-border" [ngClass]="{'data-selected': selected && selected.id === item.id}"
+               (click)="select()">
+    <p fxFlex="50" class="text-ellipsis" matTooltip="{{item.id}}">
+        <strong>{{ item.id }}</strong>
+    </p>
+    <p fxFlex class="text-ellipsis" matTooltip="{{item.title.value}}">{{ item.title.value }}</p>
+    <button mat-icon-button fxFlex="10" matTooltip="Delete data field" (click)="onDelete($event, item)"
+            class="data-edit-list-icon-hidden data-edit-list-icon">
+        <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-icon-button fxFlex="10" matTooltip="Duplicate data field" (click)="onDuplicate($event, item)"
+            class="data-edit-list-icon-hidden data-edit-list-icon">
+        <mat-icon>add_to_photos</mat-icon>
+    </button>
+</mat-list-item>

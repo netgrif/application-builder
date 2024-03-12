@@ -93,6 +93,7 @@ const appRoutes: Routes = [
         {provide: ConfigurationService, useClass: AppBuilderConfigurationService},
         {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}
     ],
+    exports: [],
     bootstrap: [AppComponent]
 })
 export class AppModule {

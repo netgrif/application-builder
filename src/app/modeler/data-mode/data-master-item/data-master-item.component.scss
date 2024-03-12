@@ -1,0 +1,15 @@
+mat-list-item {
+    button {
+        display: none;
+    }
+
+    :hover button {
+        display: flex;
+    }
+}
+
+.text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

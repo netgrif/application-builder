@@ -1,0 +1,9 @@
+<div class="container">
+    <div #master class="master">
+        <ng-template [cdkPortalOutlet]="masterPortal"></ng-template>
+    </div>
+    <div #border class="border"></div>
+    <div #detail class="detail">
+        <ng-template [cdkPortalOutlet]="detailPortal"></ng-template>
+    </div>
+</div>

@@ -5,9 +5,7 @@ import {DialogDeleteComponent} from '../../dialogs/dialog-delete/dialog-delete.c
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort, Sort} from '@angular/material/sort';
 import {DialogRefactorComponent} from '../../dialogs/dialog-refactor/dialog-refactor.component';
-import {Observable} from 'rxjs';
 import {FormControl} from '@angular/forms';
-import {map, startWith, tap} from 'rxjs/operators';
 import {
     Component as PetriflowComponent,
     DataType,
@@ -22,6 +20,9 @@ import {
 } from '@netgrif/petriflow';
 import {DataFieldUtils} from '../../form-builder/data-field-utils';
 import {ModelService} from '../services/model/model.service';
+import {DataDetailComponent} from './data-detail/data-detail.component';
+import {ComponentType} from '@angular/cdk/overlay';
+import {DataMasterComponent} from './data-master/data-master.component';
 import {EnumerationFieldValue} from '@netgrif/components-core';
 
 export interface TypeArray {
@@ -32,7 +33,7 @@ export interface TypeArray {
 @Component({
     selector: 'nab-data-mode',
     templateUrl: './data-mode.component.html',
-    styleUrls: ['./data-mode.component.scss']
+    styleUrls: ['./data-mode.component.scss'],
 })
 export class DataModeComponent {
     dataSource: Array<DataVariable>;
@@ -512,5 +513,14 @@ export class DataModeComponent {
         this.itemData.init.value = '';
         // this.itemData.init.name = '';
         this.itemData.options = [];
+    }
+
+    // TODO: any type
+    get detailComponent(): ComponentType<any> {
+        return DataDetailComponent;
+    }
+
+    get masterComponent(): ComponentType<any> {
+        return DataMasterComponent;
     }
 }
