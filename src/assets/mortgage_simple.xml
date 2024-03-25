@@ -145,7 +145,7 @@
                     city: f.city;
                     change city choices {
                     def postals = psc byCode,field.value;
-                    return postals.collect({it.city}).unique();
+                        return postals.collect({it.city}).unique();
                     }
                 </action>
             </actions>
@@ -328,7 +328,7 @@
             <actions phase="pre">
                 <action id="action_5">status: f.status;
                     change status value {
-                    return status.value + " and Inscription Confirmed";
+                        return status.value + " and Inscription Confirmed";
                     }
                 </action>
             </actions>

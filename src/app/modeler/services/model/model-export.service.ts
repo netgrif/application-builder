@@ -45,10 +45,15 @@ export class ModelExportService {
 
     private exportToXml(): void {
         const serialisedModel = this._exportService.exportXml(this.model);
-        const prettyModel = format(serialisedModel, {
-            indentation: '\t',
-            collapseContent: true
+        let prettyModel = format(serialisedModel, {
+            collapseContent: false,
+            forceSelfClosingEmptyTag: true
         });
+        prettyModel = format(prettyModel, {
+            indentation: '\t',
+            collapseContent: true,
+            ignoredPaths: ['action', 'actions']
+        })
         const fileName = this.resolveFileName();
         this.startDownload(prettyModel, fileName);
     }
