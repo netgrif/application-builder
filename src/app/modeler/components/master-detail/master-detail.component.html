@@ -1,9 +1,9 @@
 <div class="container">
-    <div #master class="master">
+    <div fxFlex="40" class="master">
         <ng-template [cdkPortalOutlet]="masterPortal"></ng-template>
     </div>
-    <div #border class="border"></div>
-    <div #detail class="detail">
+    <div class="border"></div>
+    <div fxFlex="60" class="detail">
         <ng-template [cdkPortalOutlet]="detailPortal"></ng-template>
     </div>
 </div>

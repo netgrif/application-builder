@@ -50,21 +50,21 @@ import {ToolComponent} from './control-panel/tools/tool-component/tool.component
 import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
 import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.component';
 import {CdkPortalOutlet} from '@angular/cdk/portal';
-import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 import {MaterialModule} from '@netgrif/components-core';
 import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/components';
 import {JoyrideModule} from 'ngx-joyride';
-import { ResizableModule } from 'angular-resizable-element';
+import {ResizableModule} from 'angular-resizable-element';
 import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 import {DataMasterComponent} from './data-mode/data-master/data-master.component';
 import {DataMasterItemComponent} from './data-mode/data-master-item/data-master-item.component';
-import {AppModule} from '../app.module';
-import {MasterDetailComponent} from '../components/master-detail/master-detail.component';
+import {MasterDetailComponent} from './components/master-detail/master-detail.component';
+import {DataDetailComponent} from './data-mode/data-detail/data-detail.component';
 
 @NgModule({
     declarations: [
         DataMasterComponent,
         DataMasterItemComponent,
+        DataDetailComponent,
         ModelerComponent,
         ControlPanelComponent,
         DialogManageRolesComponent,
@@ -94,7 +94,8 @@ import {MasterDetailComponent} from '../components/master-detail/master-detail.c
         ModeComponent,
         ToolComponent,
         ImportToolButtonComponent,
-        ContextMenuComponent
+        ContextMenuComponent,
+        MasterDetailComponent,
     ],
     exports: [
         ActionEditorModule,
@@ -119,7 +120,6 @@ import {MasterDetailComponent} from '../components/master-detail/master-detail.c
         ResizableModule,
         RouterModule,
         TaskContentComponentModule,
-        MasterDetailComponent,
     ]
 })
 export class ModelerModule {

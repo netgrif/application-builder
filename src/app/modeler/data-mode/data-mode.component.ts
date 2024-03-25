@@ -24,6 +24,10 @@ import {DataDetailComponent} from './data-detail/data-detail.component';
 import {ComponentType} from '@angular/cdk/overlay';
 import {DataMasterComponent} from './data-master/data-master.component';
 import {EnumerationFieldValue} from '@netgrif/components-core';
+import {Observable} from 'rxjs/internal/Observable';
+import {startWith} from 'rxjs/internal/operators/startWith';
+import {map} from 'rxjs/internal/operators/map';
+import {tap} from 'rxjs/internal/operators/tap';
 
 export interface TypeArray {
     viewValue: string;

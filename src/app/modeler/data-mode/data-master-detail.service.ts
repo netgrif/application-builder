@@ -21,6 +21,10 @@ export class DataMasterDetailService {
         return this._selected.value;
     }
 
+    public selectedSubject(): BehaviorSubject<DataVariable> {
+        return this._selected;
+    }
+
     public get allData(): Array<DataVariable> {
         return this._modelService.model.getDataSet();
     }

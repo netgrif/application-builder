@@ -42,10 +42,17 @@ $netgrif-blue: (
 );
 
 $netgrif-primary: mat.define-palette($netgrif-blue);
-$netgrif-accent:  mat.define-palette($netgrif-blue, A200, A100, A400);
-$netgrif-warn:    mat.define-palette(mat.$red-palette);
+$netgrif-accent: mat.define-palette($netgrif-blue, A200, A100, A400);
+$netgrif-warn: mat.define-palette(mat.$red-palette);
 
-$netgrif-theme: mat.define-light-theme($netgrif-primary, $netgrif-accent, $netgrif-warn);
+$netgrif-theme: mat.define-light-theme((
+    color: (
+        primary: $netgrif-primary,
+        accent: $netgrif-accent,
+        warn: $netgrif-warn
+    ),
+    typography: $typography,
+));
 
 @include mat.all-component-themes($netgrif-theme);
 
@@ -61,6 +68,7 @@ body {
         height: 7px;
         background-color: white;
     }
+
     ::-webkit-scrollbar-thumb {
         border-radius: 5px;
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);

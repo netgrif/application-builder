@@ -96,7 +96,7 @@ body {
 }
 
 .data-selected {
-    background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .3);
+    background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .3) !important;
 }
 
 .checkbox-background-warn {

@@ -30,7 +30,7 @@ import {DialogTransitionEditComponent} from './dialogs/dialog-transition-edit/di
 import {SimulationModeComponent} from './modeler/simulation-mode/simulation-mode.component';
 import {DialogChangeDataComponent} from './dialogs/dialog-change-data/dialog-change-data.component';
 import {DialogModelEditComponent} from './dialogs/dialog-model-edit/dialog-model-edit.component';
-import {MaterialIconPickerComponent} from './components/material-icon-picker/material-icon-picker.component';
+import {MaterialIconPickerComponent} from './modeler/components/material-icon-picker/material-icon-picker.component';
 import {
     DialogLocalStorageModelComponent
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
