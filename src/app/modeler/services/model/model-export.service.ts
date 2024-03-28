@@ -45,17 +45,27 @@ export class ModelExportService {
 
     private exportToXml(): void {
         const serialisedModel = this._exportService.exportXml(this.model);
-        let prettyModel = format(serialisedModel, {
+        const prettyModel = this.prettyFormat(serialisedModel);
+        const fileName = this.resolveFileName();
+        this.startDownload(prettyModel, fileName);
+    }
+
+    public prettyFormat(model: string): string {
+        let prettyModel = format(model, {
             collapseContent: false,
-            forceSelfClosingEmptyTag: true
+            forceSelfClosingEmptyTag: true,
+            lineSeparator: '\n'
         });
         prettyModel = format(prettyModel, {
             indentation: '\t',
             collapseContent: true,
+            lineSeparator: '\n',
             ignoredPaths: ['action', 'actions']
-        })
-        const fileName = this.resolveFileName();
-        this.startDownload(prettyModel, fileName);
+        });
+        return  prettyModel.replace(/^(\s*)<!\[CDATA\[\n([\s\S]*?)]]>$/gm, (match: string, cdataStart: string, code: string) => {
+            const indentedCode = code.replace(/^([\s\S]*?)$/gm, `${cdataStart}$&`);
+            return `${cdataStart}<![CDATA[\n${indentedCode}]]>`;
+        });
     }
 
     /**

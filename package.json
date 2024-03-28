@@ -63,7 +63,7 @@
         "@netgrif/components": "~6.1.0",
         "@netgrif/components-core": "~6.1.0",
         "@netgrif/petri.svg": "1.1.0",
-        "@netgrif/petriflow": "2.0.0",
+        "@netgrif/petriflow": "2.0.4",
         "@netgrif/petriflow.svg": "1.1.0",
         "@ngx-translate/core": "~13.0.0",
         "@ngx-translate/http-loader": "~6.0.0",
