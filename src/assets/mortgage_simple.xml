@@ -253,7 +253,7 @@
     <transition>
         <id>t25</id>
         <x>48</x>
-        <y>208</y>
+		<y>144</y>
         <label>Initialize / System</label>
         <layout>
             <offset>0</offset>
@@ -284,8 +284,9 @@
                     change surname value { return userService.loggedOrSystem.surname; }
                     change email value { return userService.loggedOrSystem.email; }
                     change autor value { return [userService.loggedOrSystem.id]; }
-                    changeCaseProperty "title" about { "Mortgage of " + userService.loggedOrSystem.name + " " +
-                    userService.loggedOrSystem.surname; }
+                    changeCaseProperty "title" about {
+                        "Mortgage of " + userService.loggedOrSystem.name + " " + userService.loggedOrSystem.surname;
+                    }
                     ]]>
                 </action>
             </actions>
@@ -294,7 +295,7 @@
     <transition>
         <id>t23</id>
         <x>1328</x>
-        <y>208</y>
+		<y>144</y>
         <label>Confirm lien inscription / Loan officer</label>
         <layout>
             <offset>0</offset>
@@ -357,7 +358,7 @@
     <transition>
         <id>t21</id>
         <x>1328</x>
-        <y>336</y>
+		<y>272</y>
         <label>Sign insurance contract / Client</label>
         <layout>
             <offset>0</offset>
@@ -420,7 +421,7 @@
                     decision: f.status,
                     insurance: f.insurance;
                     change decision value {
-                    return decision.value + " and Insurance Signed in " + insurance.value;
+                        return decision.value + " and Insurance Signed in " + insurance.value;
                     }
                     ]]>
                 </action>
@@ -430,7 +431,7 @@
     <transition>
         <id>t19</id>
         <x>1552</x>
-        <y>272</y>
+		<y>208</y>
         <label>Send money / Account clerk</label>
         <layout>
             <offset>0</offset>
@@ -482,7 +483,7 @@
                     <![CDATA[
                     status: f.status;
                     change status value {
-                    return status.value + " and Money sent";
+                        return status.value + " and Money sent";
                     }
                     ]]>
                 </action>
@@ -492,7 +493,7 @@
     <transition>
         <id>t17</id>
         <x>1136</x>
-        <y>272</y>
+		<y>208</y>
         <label>Sign loan contract / Client</label>
         <layout>
             <offset>0</offset>
@@ -577,7 +578,7 @@
     <transition>
         <id>t15</id>
         <x>752</x>
-        <y>400</y>
+		<y>336</y>
         <label>Reject / System</label>
         <layout>
             <offset>0</offset>
@@ -592,7 +593,7 @@
     <transition>
         <id>t11</id>
         <x>880</x>
-        <y>272</y>
+		<y>208</y>
         <label>Approve / System</label>
         <layout>
             <offset>0</offset>
@@ -619,7 +620,7 @@
     <transition>
         <id>t10</id>
         <x>624</x>
-        <y>272</y>
+		<y>208</y>
         <label>Appraisal report / Property appraiser</label>
         <layout>
             <offset>0</offset>
@@ -673,17 +674,17 @@
                     loan_amount: f.loan_amount,
                     appraised_value: f.appraised_value;
                     if (appraised_value.value >= loan_amount.value) {
-                    change status value { return "Mortgage Approved"; }
-                    async.run{
-                    assignTask("t11")
-                    finishTask("t11")
-                    }
-                    }else {
-                    change status value { return "Mortgage Rejected"; }
-                    async.run{
-                    assignTask("t15")
-                    finishTask("t15")
-                    }
+                        change status value { return "Mortgage Approved"; }
+                        async.run{
+                            assignTask("t11")
+                            finishTask("t11")
+                        }
+                    } else {
+                        change status value { return "Mortgage Rejected"; }
+                        async.run{
+                            assignTask("t15")
+                            finishTask("t15")
+                        }
                     }
                     ]]>
                 </action>
@@ -693,7 +694,7 @@
     <transition>
         <id>t8</id>
         <x>368</x>
-        <y>272</y>
+		<y>208</y>
         <label>Approve / Loan Officer</label>
         <layout>
             <offset>0</offset>
@@ -738,7 +739,7 @@
     <transition>
         <id>t7</id>
         <x>368</x>
-        <y>400</y>
+		<y>336</y>
         <label>Reject / Loan officer</label>
         <layout>
             <offset>0</offset>
@@ -783,7 +784,7 @@
     <transition>
         <id>t5</id>
         <x>624</x>
-        <y>528</y>
+		<y>464</y>
         <label>Delete / Client</label>
         <layout>
             <offset>0</offset>
@@ -828,7 +829,7 @@
     <transition>
         <id>t4</id>
         <x>464</x>
-        <y>624</y>
+		<y>560</y>
         <label>Status / Client</label>
         <layout>
             <offset>0</offset>
@@ -901,7 +902,7 @@
     <transition>
         <id>t3</id>
         <x>400</x>
-        <y>112</y>
+		<y>48</y>
         <label>Case info / Loan officer / Property appraiser</label>
         <layout>
             <offset>0</offset>
@@ -956,7 +957,7 @@
     <transition>
         <id>t2</id>
         <x>176</x>
-        <y>336</y>
+		<y>272</y>
         <label>Apply for mortgage / Client</label>
         <layout>
             <offset>0</offset>
@@ -1002,7 +1003,7 @@
     <transition>
         <id>t24</id>
         <x>176</x>
-        <y>528</y>
+		<y>464</y>
         <label>Mortgage application form / System</label>
         <layout>
             <offset>0</offset>
@@ -1226,98 +1227,98 @@
     <place>
         <id>p23</id>
         <x>752</x>
-        <y>624</y>
+		<y>560</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p20</id>
         <x>1456</x>
-        <y>336</y>
+		<y>272</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p19</id>
         <x>1200</x>
-        <y>336</y>
+		<y>272</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p18</id>
         <x>1680</x>
-        <y>272</y>
+		<y>208</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p17</id>
         <x>1456</x>
-        <y>208</y>
+		<y>144</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p16</id>
         <x>1200</x>
-        <y>208</y>
+		<y>144</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p13</id>
         <x>624</x>
-        <y>400</y>
+		<y>336</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p12</id>
         <x>1008</x>
-        <y>272</y>
+		<y>208</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p11</id>
         <x>752</x>
-        <y>272</y>
+		<y>208</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p10</id>
         <x>496</x>
-        <y>272</y>
+		<y>208</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p8</id>
         <x>304</x>
-        <y>336</y>
+		<y>272</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p5</id>
         <x>368</x>
-        <y>528</y>
+		<y>464</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p3</id>
         <x>304</x>
-        <y>208</y>
+		<y>144</y>
         <tokens>0</tokens>
         <static>false</static>
     </place>
     <place>
         <id>p2</id>
         <x>48</x>
-        <y>336</y>
+		<y>272</y>
         <label>p2</label>
         <tokens>0</tokens>
         <static>false</static>
@@ -1325,7 +1326,7 @@
     <place>
         <id>p24</id>
         <x>48</x>
-        <y>112</y>
+		<y>48</y>
         <label>p1</label>
         <tokens>1</tokens>
         <static>false</static>

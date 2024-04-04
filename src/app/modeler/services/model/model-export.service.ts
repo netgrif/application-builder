@@ -51,20 +51,18 @@ export class ModelExportService {
     }
 
     public prettyFormat(model: string): string {
-        let prettyModel = format(model, {
-            collapseContent: false,
-            forceSelfClosingEmptyTag: true,
-            lineSeparator: '\n'
-        });
-        prettyModel = format(prettyModel, {
-            indentation: '\t',
+        const indentationSymbol ='\t';
+        const newLineSymbol = '\n';
+        const prettyModel = format(model, {
+            indentation: indentationSymbol,
+            lineSeparator: newLineSymbol,
             collapseContent: true,
-            lineSeparator: '\n',
-            ignoredPaths: ['action', 'actions']
+            forceSelfClosingEmptyTag: true,
         });
-        return  prettyModel.replace(/^(\s*)<!\[CDATA\[\n([\s\S]*?)]]>$/gm, (match: string, cdataStart: string, code: string) => {
-            const indentedCode = code.replace(/^([\s\S]*?)$/gm, `${cdataStart}$&`);
-            return `${cdataStart}<![CDATA[\n${indentedCode}]]>`;
+        return  prettyModel.replace(new RegExp(`^(\\s*)([\\S ]*?)<!\\[CDATA\\[${newLineSymbol}([\\s\\S]*?)]]>(\\S*?)$`, 'gm'), (match: string, tagIndent: string, startingTag: string, code: string, endingTag: string) => {
+            const contentIndent = `${tagIndent}${indentationSymbol}`;
+            const indentedCode = code.replace(/^([\s\S]*?)$/gm, `${contentIndent}$&`);
+            return `${tagIndent}${startingTag}${newLineSymbol}${contentIndent}<![CDATA[${newLineSymbol}${indentedCode}]]>${newLineSymbol}${tagIndent}${endingTag}`;
         });
     }
 
