@@ -9,11 +9,13 @@ import {Injectable} from '@angular/core';
 })
 export class RedoTool extends Tool {
 
+    public static readonly ID = 'redo';
+
     constructor(
         private history: HistoryService
     ) {
         super(
-            'redo',
+            RedoTool.ID,
             new ControlPanelButton(
                 new ControlPanelIcon('redo', false, true),
                 'Redo'

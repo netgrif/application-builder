@@ -1,83 +1,64 @@
 import {Injectable} from '@angular/core';
 import {ExportService, PetriNet} from '@netgrif/petriflow';
 import {Subject} from 'rxjs';
-import {HistoryChange} from './history-change';
 import {ModelerConfig} from '../../modeler-config';
 import {ModelService} from '../model/model.service';
+import {History} from './history';
+import {HistoryChange} from './history-change';
+import {UndoTool} from '../../control-panel/modes/undo-tool';
+import {RedoTool} from '../../control-panel/modes/redo-tool';
 
 @Injectable({
     providedIn: 'root'
 })
 export class HistoryService {
 
-    private history: Array<PetriNet>;
-    private readonly _historyChange: Subject<HistoryChange>;
-    private head: number;
+    private readonly history: History<PetriNet>;
+    private readonly _historyChange: Subject<HistoryChange<PetriNet>>;
 
     constructor(
         private modelService: ModelService,
         private exportService: ExportService,
     ) {
-        this.history = new Array<PetriNet>();
-        this.head = 0;
+        this.history = new History<PetriNet>();
         this._historyChange = new Subject();
         this.modelService.modelSubject.subscribe(model => {
-            this.push(model?.clone());
+            this.push(model?.clone(), `Model ${model.id} changed`);
         });
         this.modelService.placeChange.subscribe(value => {
-            this.push(value?.model);
+            this.push(value?.model, `Place ${value?.id} changed`);
         });
         this.modelService.transitionChange.subscribe(value => {
-            this.push(value?.model);
+            this.push(value?.model, `Transition ${value?.id} changed`);
         });
         this.modelService.arcChange.subscribe(value => {
-            this.push(value?.model);
+            this.push(value?.model, `Arc ${value?.id} changed`);
         });
     }
 
-    public undo(): PetriNet | undefined {
-        if (this.head === 0) {
-            return undefined;
-        }
-        this.head--;
-        return this.reloadModel();
+    public undo(): void {
+        this.reloadModel(this.history.undo(), UndoTool.ID);
     }
 
-    public redo(): PetriNet | undefined {
-        if (this.head === this.history.length - 1) {
-            return undefined;
-        }
-        this.head++;
-        return this.reloadModel();
+    public redo(): void {
+        this.reloadModel(this.history.redo(), RedoTool.ID);
     }
 
-    private reloadModel(): PetriNet {
-        this.historyChange.next(new HistoryChange(this.head, this.history.length));
-        const model = this.currentModel?.clone();
-        this.modelService.model = model;
+    private reloadModel(model: PetriNet, message: string): PetriNet {
+        if (model === undefined) {
+            return undefined;
+        }
+        this.historyChange.next(HistoryChange.of(this.history, message));
+        this.modelService.model = model.clone();
         return model;
     }
 
-    private push(model: PetriNet): void {
+    private push(model: PetriNet, message: string): void {
         if (!model || model.lastChanged === this.currentModel?.lastChanged) {
             return;
         }
-        if (this.history.length !== 0) {
-            if (this.head === this.history.length - 1) {
-                // TODO: NAB-326 pushed 153 models, fix
-                if (this.history.length === ModelerConfig.HISTORY_SIZE) {
-                    this.history.shift();
-                }
-            } else {
-                // this.history.length = this.head + 1;
-                this.history = this.history.slice(0, this.head + 1);
-            }
-        } else {
-            this.head = -1;
-        }
-        this.history.push(model);
-        this.head++;
-        this.historyChange.next(new HistoryChange(this.head, this.history.length));
+        const update = this.history.push(model, message);
+        this.historyChange.next(update);
         this.saveToLocalStorage(model).then();
     }
 
@@ -88,11 +69,11 @@ export class HistoryService {
         localStorage.setItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TITLE, `${model.title.value}`);
     }
 
-    get historyChange(): Subject<HistoryChange> {
+    get historyChange(): Subject<HistoryChange<PetriNet>> {
         return this._historyChange;
     }
 
     get currentModel(): PetriNet {
-        return this.history[this.head];
+        return this.history.record;
     }
 }

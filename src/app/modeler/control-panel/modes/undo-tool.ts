@@ -9,11 +9,13 @@ import {HistoryService} from '../../services/history/history.service';
 })
 export class UndoTool extends Tool {
 
+    public static readonly ID = 'undo';
+
     constructor(
         private history: HistoryService
     ) {
         super(
-            'undo',
+            UndoTool.ID,
             new ControlPanelButton(
                 new ControlPanelIcon('undo', false, true),
                 'Undo'
