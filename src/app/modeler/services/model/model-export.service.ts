@@ -30,33 +30,37 @@ export class ModelExportService {
     /**
      * Triggers a download of an XML file containing the serialised model stored in the {@link ModelService}.
      */
-    public exportXML(): void {
+    public downloadAsXml(model = this.model): void {
         if (this.deadNet()) {
             const dialogRef = this.matDialog.open(DialogDeadNetComponent);
             dialogRef.afterClosed().subscribe(result => {
                 if (result === true) {
-                    this.exportToXml();
+                    this.downloadXml(model);
                 }
             });
         } else {
-            this.exportToXml();
+            this.downloadXml(model);
         }
     }
 
-    private exportToXml(): void {
-        const serialisedModel = this._exportService.exportXml(this.model);
-        const prettyModel = format(serialisedModel, {
+    public exportXml(model = this.model): string {
+        const serialisedModel = this._exportService.exportXml(model);
+        return format(serialisedModel, {
             indentation: '\t',
             collapseContent: true
         });
-        const fileName = this.resolveFileName();
+    }
+
+    private downloadXml(model: PetriNet): void {
+        const prettyModel = this.exportXml(model);
+        const fileName = this.resolveFileName(model);
         this.startDownload(prettyModel, fileName);
     }
 
     /**
      * Triggers a download of an SVG file containing the graphical model
      */
-    public exportSvg(svg: SVGSVGElement): void {
+    public downloadAsSvg(svg: SVGSVGElement): void {
         // TODO: NAB-326 refactor https://github.com/angular/components/issues/11315
         const serializer = new XMLSerializer();
         const style = document.createElementNS(CanvasConfiguration.SVG_NAMESPACE, 'style') as SVGStyleElement;
@@ -128,7 +132,7 @@ export class ModelExportService {
         svgModel = this.removeAngular(svgModel);
         svgModel = this.setDimensionAndScale(svgModel, svg);
 
-        const fileName = this.resolveFileName('svg');
+        const fileName = this.resolveFileName(this.model, 'svg');
         this.startDownload(svgModel, fileName);
         svg.removeChild(style);
     }
@@ -187,8 +191,8 @@ export class ModelExportService {
         }
     }
 
-    private resolveFileName(extension = 'xml'): string {
-        return `${this.model.id ? this.model.id : 'newmodel'}.${extension}`;
+    private resolveFileName(model: PetriNet, extension = 'xml'): string {
+        return `${model.id ? model.id : 'newmodel'}.${extension}`;
     }
 
     private deadNet(): boolean {

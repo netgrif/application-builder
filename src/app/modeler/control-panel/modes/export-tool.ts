@@ -24,12 +24,12 @@ export class ExportTool extends Tool {
         this.hotkeyService.add(new Hotkey('ctrl+s', (event: KeyboardEvent): boolean => {
             event.stopPropagation();
             event.preventDefault();
-            this.exportService.exportXML();
+            this.exportService.downloadAsXml();
             return false;
         }));
     }
 
     onClick(): void {
-        this.exportService.exportXML();
+        this.exportService.downloadAsXml();
     }
 }

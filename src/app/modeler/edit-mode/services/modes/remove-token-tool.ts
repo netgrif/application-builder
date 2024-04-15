@@ -8,6 +8,7 @@ import {EditModeService} from '../../edit-mode.service';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
 import {ChangedPlace} from '../../../../dialogs/dialog-place-edit/changed-place';
+import {PlaceChangeType} from '../../../../dialogs/dialog-place-edit/place-change-type';
 
 export class RemoveTokenTool extends CanvasTool {
 
@@ -45,7 +46,7 @@ export class RemoveTokenTool extends CanvasTool {
         if (place.modelPlace.marking < 1) {
             return;
         }
-        const changed = new ChangedPlace(undefined, place.modelPlace);
+        const changed = new ChangedPlace(PlaceChangeType.EDIT, undefined, place.modelPlace);
         changed.place.marking -= 1;
         this.modelService.updatePlace(changed);
     }

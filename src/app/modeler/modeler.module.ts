@@ -55,6 +55,8 @@ import {ModeComponent} from './control-panel/modes/mode-component/mode.component
 import {ToolComponent} from './control-panel/tools/tool-component/tool.component';
 import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
 import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.component';
+import {HistoryModeComponent} from './history-mode/history-mode.component';
+import {MonacoEditorModule} from 'ngx-monaco-editor';
 
 @NgModule({
     declarations: [
@@ -87,7 +89,8 @@ import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.compon
         ModeComponent,
         ToolComponent,
         ImportToolButtonComponent,
-        ContextMenuComponent
+        ContextMenuComponent,
+        HistoryModeComponent
     ],
     exports: [
         ActionEditorModule,
@@ -111,7 +114,8 @@ import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.compon
         ActionEditorModule,
         NgxDropzoneModule,
         MaterialModule,
-        PetriflowCanvasModule
+        PetriflowCanvasModule,
+        MonacoEditorModule
     ]
 })
 export class ModelerModule {

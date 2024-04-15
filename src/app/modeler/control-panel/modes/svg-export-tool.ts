@@ -24,6 +24,6 @@ export class SvgExportTool extends Tool {
     }
 
     onClick(): void {
-        this.exportService.exportSvg(this.canvasService.canvas.svg);
+        this.exportService.downloadAsSvg(this.canvasService.canvas.svg);
     }
 }

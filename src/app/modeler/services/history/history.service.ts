@@ -7,26 +7,28 @@ import {History} from './history';
 import {HistoryChange} from './history-change';
 import {UndoTool} from '../../control-panel/modes/undo-tool';
 import {RedoTool} from '../../control-panel/modes/redo-tool';
+import {PlaceChangeMessageResolverService} from './place-change-message-resolver.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class HistoryService {
 
-    private readonly history: History<PetriNet>;
+    private readonly _history: History<PetriNet>;
     private readonly _historyChange: Subject<HistoryChange<PetriNet>>;
 
     constructor(
         private modelService: ModelService,
         private exportService: ExportService,
+        private placeMessageResolver: PlaceChangeMessageResolverService,
     ) {
-        this.history = new History<PetriNet>();
+        this._history = new History<PetriNet>();
         this._historyChange = new Subject();
         this.modelService.modelSubject.subscribe(model => {
             this.push(model?.clone(), `Model ${model.id} changed`);
         });
         this.modelService.placeChange.subscribe(value => {
-            this.push(value?.model, `Place ${value?.id} changed`);
+            this.push(value?.model, placeMessageResolver.resolve(value));
         });
         this.modelService.transitionChange.subscribe(value => {
             this.push(value?.model, `Transition ${value?.id} changed`);
@@ -37,18 +39,18 @@ export class HistoryService {
     }
 
     public undo(): void {
-        this.reloadModel(this.history.undo(), UndoTool.ID);
+        this.reloadModel(this._history.undo(), UndoTool.ID);
     }
 
     public redo(): void {
-        this.reloadModel(this.history.redo(), RedoTool.ID);
+        this.reloadModel(this._history.redo(), RedoTool.ID);
     }
 
     private reloadModel(model: PetriNet, message: string): PetriNet {
         if (model === undefined) {
             return undefined;
         }
-        this.historyChange.next(HistoryChange.of(this.history, message));
+        this.historyChange.next(HistoryChange.of(this._history, message));
         this.modelService.model = model.clone();
         return model;
     }
@@ -57,7 +59,7 @@ export class HistoryService {
         if (!model || model.lastChanged === this.currentModel?.lastChanged) {
             return;
         }
-        const update = this.history.push(model, message);
+        const update = this._history.push(model, message);
         this.historyChange.next(update);
         this.saveToLocalStorage(model).then();
     }
@@ -74,6 +76,10 @@ export class HistoryService {
     }
 
     get currentModel(): PetriNet {
-        return this.history.record;
+        return this._history.record;
+    }
+
+    get history(): History<PetriNet> {
+        return this._history;
     }
 }

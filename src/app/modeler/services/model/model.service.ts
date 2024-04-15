@@ -22,6 +22,7 @@ import {ArcFactory} from '../../edit-mode/domain/arc-builders/arc-factory.servic
 import {ModelerConfig} from '../../modeler-config';
 import {ChangedPetriNet} from '../../../dialogs/dialog-model-edit/changed-petri-net';
 import {ModelSource} from './model-source';
+import {PlaceChangeType} from '../../../dialogs/dialog-place-edit/place-change-type';
 
 @Injectable({
     providedIn: 'root'
@@ -113,7 +114,7 @@ export class ModelService implements ModelSource {
     private addPlace(place: Place): void {
         this.model.addPlace(place);
         this.model.lastChanged++;
-        this._placeChange.next(new ChangedPlace(this.model.clone(), place));
+        this._placeChange.next(new ChangedPlace(PlaceChangeType.CREATE, this.model.clone(), place));
     }
 
     public updatePlace(newPlace: ChangedPlace): void {
@@ -131,14 +132,14 @@ export class ModelService implements ModelSource {
             .filter(arc => arc.reference === newPlace.id)
             .forEach(arc => arc.reference = place.id);
         this.model.lastChanged++;
-        this._placeChange.next(new ChangedPlace(this.model.clone(), place, newPlace.id));
+        this._placeChange.next(new ChangedPlace(PlaceChangeType.EDIT, this.model.clone(), place, newPlace.id));
     }
 
     public movePlace(place: Place, position: DOMPoint): void {
         place.x = this.alignPositionX(position.x);
         place.y = this.alignPositionY(position.y);
         this.model.lastChanged++;
-        this._placeChange.next(new ChangedPlace(this.model.clone(), place));
+        this._placeChange.next(new ChangedPlace(PlaceChangeType.MOVE, this.model.clone(), place));
     }
 
     public removePlace(place: Place): void {
@@ -153,7 +154,7 @@ export class ModelService implements ModelSource {
             });
         this.model.removePlace(place.id);
         this.model.lastChanged++;
-        this._placeChange.next(new ChangedPlace(this.model.clone(), undefined, place.id));
+        this._placeChange.next(new ChangedPlace(PlaceChangeType.DELETE, this.model.clone(), undefined, place.id));
     }
 
     // TRANSITION

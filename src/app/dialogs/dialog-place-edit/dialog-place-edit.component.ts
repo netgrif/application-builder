@@ -1,8 +1,9 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {ModelService} from '../../modeler/services/model/model.service';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ChangedPlace} from './changed-place';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
+import {PlaceChangeType} from './place-change-type';
 
 export interface PlaceEditData {
     placeId: string;
@@ -23,7 +24,7 @@ export class DialogPlaceEditComponent {
         @Inject(MAT_DIALOG_DATA) public data: PlaceEditData,
         public modelService: ModelService
     ) {
-        this.place = new ChangedPlace(undefined, this.modelService.model.getPlace(data.placeId).clone());
+        this.place = new ChangedPlace(PlaceChangeType.EDIT, undefined, this.modelService.model.getPlace(data.placeId).clone());
         this.idCtrl = new FormControl('', [
             Validators.required,
             this.validUnique()

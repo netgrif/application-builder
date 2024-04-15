@@ -1,31 +1,31 @@
 import {HistoryChange} from './history-change';
 
 export class History<T> {
-    private memory: Array<HistoryChange<T>>;
+    private _memory: Array<HistoryChange<T>>;
     private _head: number;
     private readonly limit: number;
 
     constructor(limit: number = 100) {
-        this.memory = new Array<HistoryChange<T>>();
+        this._memory = new Array<HistoryChange<T>>();
         this.limit = limit;
         this._head = -1;
     }
 
     public get record(): T {
-        return this.memory[this._head]?.record;
+        return this._memory[this._head]?.record;
     }
 
     public push(record: T, message: string): HistoryChange<T> {
         if (this.isUpToDate()) {
             if (this.isFull()) {
-                this.memory.shift();
+                this._memory.shift();
             }
         } else {
-            this.memory = this.memory.slice(0, this._head + 1);
+            this._memory = this._memory.slice(0, this._head + 1);
         }
+        const update = new HistoryChange<T>(record, this.size, this.size + 1, message);
+        this._memory.push(update);
         this._head = this.size - 1;
-        const update = new HistoryChange<T>(record, this.head, this.size, message);
-        this.memory.push(update);
         return update;
     }
 
@@ -38,7 +38,7 @@ export class History<T> {
     }
 
     public redo(): T | undefined {
-        if (this._head === this.memory.length - 1) {
+        if (this._head === this._memory.length - 1) {
             return undefined;
         }
         this._head++;
@@ -54,10 +54,14 @@ export class History<T> {
     }
 
     public get size(): number {
-        return this.memory.length;
+        return this._memory.length;
     }
 
     public get head(): number {
         return this._head;
+    }
+
+    get memory(): Array<HistoryChange<T>> {
+        return this._memory;
     }
 }
