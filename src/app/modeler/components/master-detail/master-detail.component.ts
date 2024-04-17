@@ -1,6 +1,7 @@
-import {AfterViewInit, Component, ElementRef, Injector, Input, OnInit, ViewChild} from '@angular/core';
-import {CdkPortalOutlet, ComponentPortal} from '@angular/cdk/portal';
+import {AfterViewInit, Component, Injector, Input, OnInit} from '@angular/core';
+import {ComponentPortal} from '@angular/cdk/portal';
 import {ComponentType} from '@angular/cdk/overlay';
+import {AbstractMasterDetailService} from './abstract-master-detail.service';
 
 @Component({
     selector: 'nab-master-detail',
@@ -12,9 +13,10 @@ export class MasterDetailComponent implements OnInit, AfterViewInit {
     @Input() minWidth = 20;
     @Input() maxWidth = 50;
     @Input() defaultWidth = 30;
-    // TODO: any
     @Input() masterComponent: ComponentType<any>;
     @Input() detailComponent: ComponentType<any>;
+    @Input() masterItemComponent: ComponentType<any>;
+    @Input() masterService: AbstractMasterDetailService<any>;
     masterPortal: ComponentPortal<any>;
     detailPortal: ComponentPortal<any>;
 
@@ -26,7 +28,9 @@ export class MasterDetailComponent implements OnInit, AfterViewInit {
             providers: [],
             parent: this._parentInjector
         });
-        this.masterPortal = new ComponentPortal(this.masterComponent, null, injector);
+        if (this.masterComponent !== undefined) {
+            this.masterPortal = new ComponentPortal(this.masterComponent, null, injector);
+        }
         this.detailPortal = new ComponentPortal(this.detailComponent, null, injector);
     }
 

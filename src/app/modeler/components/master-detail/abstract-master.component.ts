@@ -1,26 +1,28 @@
+import {Component, Input} from '@angular/core';
+import {AbstractMasterDetailService} from './abstract-master-detail.service';
+import {ComponentType} from '@angular/cdk/overlay';
+import {DataVariable} from '@netgrif/petriflow';
 
-export abstract class AbstractMasterComponent<T> {
+@Component({
+    selector: 'nab-abstract-master-component',
+    template: ''
+})
+export abstract class AbstractMasterComponent {
+    protected _allData: Array<any>;
+    @Input() masterService: AbstractMasterDetailService<any>;
+    @Input() masterItemComponent: ComponentType<any>;
 
-    // protected constructor(
-    //     protected _service: MasterDetailService<T>,
-    // ) {
-    // }
-    //
-    // removeItem(item: T): void {
-    //     this._service.delete(item);
-    // }
-    //
-    // selectItem(item: T): void {
-    //     // TODO: duplicate
-    //     this._selected = item;
-    //     this._service.select(item);
-    // }
-    //
-    // get selected(): T {
-    //     return this._selected;
-    // }
-    //
-    // set selected(value: T) {
-    //     this._selected = value;
-    // }
+    public select(item: DataVariable): void {
+        this.masterService.select(item);
+    }
+
+    get selected(): DataVariable {
+        return this.masterService.getSelected();
+    }
+
+    get service(): AbstractMasterDetailService<any> {
+        return this.masterService;
+    }
+
+
 }

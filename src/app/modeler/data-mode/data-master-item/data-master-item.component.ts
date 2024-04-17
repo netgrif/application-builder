@@ -1,6 +1,7 @@
-import {Component, Input} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {DataVariable} from '@netgrif/petriflow';
-import {DataMasterDetailService} from '../data-master-detail.service';
+import {MASTER_ITEM, MASTER_SERVICE} from '../../components/master-detail/main-master-item/master-injection-tokens';
+import {AbstractMasterDetailService} from '../../components/master-detail/abstract-master-detail.service';
 
 @Component({
     selector: 'nab-data-master-item',
@@ -9,9 +10,8 @@ import {DataMasterDetailService} from '../data-master-detail.service';
 })
 export class DataMasterItemComponent {
 
-    @Input({required: true}) item!: DataVariable;
-
-    constructor(private _service: DataMasterDetailService) {
+    constructor(@Inject(MASTER_ITEM) public item: DataVariable,
+                @Inject(MASTER_SERVICE) protected _service: AbstractMasterDetailService<any>) {
     }
 
     onDelete(event: MouseEvent, item: DataVariable): void {

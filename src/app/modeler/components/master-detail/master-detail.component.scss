@@ -4,11 +4,8 @@
     height: 100%;
 }
 
-.master .detail {
-    display: flex;
-    flex-grow: 1;
-    flex-shrink: 1;
-    resize: both;
+.master, .detail {
+    height: 100%;
     overflow: auto;
 }
 

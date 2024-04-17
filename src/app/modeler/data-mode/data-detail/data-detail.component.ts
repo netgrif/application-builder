@@ -58,17 +58,19 @@ export class DataDetailComponent {
     ];
 
     public constructor(
-        private _service: DataMasterDetailService,
+        private _masterService: DataMasterDetailService,
         private _modelService: ModelService,
         private dialog: MatDialog
     ) {
         this.formControlRef = new FormControl();
         this.transitionOptions = this.createTransOptions();
-        this._service.selectedSubject().subscribe(obj => {
-            if (!obj.init) {
-                obj.init = new I18nWithDynamic('');
+        this._masterService.getSelected$().subscribe(obj => {
+            if (obj) {
+                if (!obj.init) {
+                    obj.init = new I18nWithDynamic('');
+                }
+                this.formControlRef.patchValue(obj.init.value);
             }
-            this.formControlRef.patchValue(obj.init.value);
         });
         this.filteredOptions = this.formControlRef.valueChanges.pipe(
             tap(value => {
@@ -307,6 +309,6 @@ export class DataDetailComponent {
     }
 
     get service(): DataMasterDetailService {
-        return this._service;
+        return this._masterService;
     }
 }

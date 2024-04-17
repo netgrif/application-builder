@@ -1,9 +1,10 @@
 <div class="container">
-    <div fxFlex="40" class="master">
-        <ng-template [cdkPortalOutlet]="masterPortal"></ng-template>
+    <div fxFlex="40" fxLayout="column"  class="master">
+        <nab-main-master *ngIf="masterPortal === undefined" fxFlex [masterService]="masterService" [masterItemComponent]="masterItemComponent"></nab-main-master>
+        <ng-template *ngIf="masterPortal !== undefined" fxFlex [cdkPortalOutlet]="masterPortal"></ng-template>
     </div>
     <div class="border"></div>
-    <div fxFlex="60" class="detail">
+    <div fxFlex="60"  class="detail">
         <ng-template [cdkPortalOutlet]="detailPortal"></ng-template>
     </div>
 </div>

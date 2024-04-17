@@ -49,20 +49,19 @@ import {ModeComponent} from './control-panel/modes/mode-component/mode.component
 import {ToolComponent} from './control-panel/tools/tool-component/tool.component';
 import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
 import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.component';
-import {CdkPortalOutlet} from '@angular/cdk/portal';
 import {MaterialModule} from '@netgrif/components-core';
 import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/components';
 import {JoyrideModule} from 'ngx-joyride';
 import {ResizableModule} from 'angular-resizable-element';
 import {FlexLayoutModule} from '@ngbracket/ngx-layout';
-import {DataMasterComponent} from './data-mode/data-master/data-master.component';
 import {DataMasterItemComponent} from './data-mode/data-master-item/data-master-item.component';
 import {MasterDetailComponent} from './components/master-detail/master-detail.component';
 import {DataDetailComponent} from './data-mode/data-detail/data-detail.component';
+import {MainMasterComponent} from './components/master-detail/main-master/main-master.component';
+import {MainMasterItemComponent} from './components/master-detail/main-master-item/main-master-item.component';
 
 @NgModule({
     declarations: [
-        DataMasterComponent,
         DataMasterItemComponent,
         DataDetailComponent,
         ModelerComponent,
@@ -96,6 +95,8 @@ import {DataDetailComponent} from './data-mode/data-detail/data-detail.component
         ImportToolButtonComponent,
         ContextMenuComponent,
         MasterDetailComponent,
+        MainMasterComponent,
+        MainMasterItemComponent
     ],
     exports: [
         ActionEditorModule,
@@ -104,7 +105,6 @@ import {DataDetailComponent} from './data-mode/data-detail/data-detail.component
     imports: [
         ActionEditorModule,
         CdkImportModule,
-        CdkPortalOutlet,
         CommonModule,
         DataFieldsComponentModule,
         FlexLayoutModule,

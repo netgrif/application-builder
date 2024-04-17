@@ -1,40 +1,41 @@
 import {AbstractMasterComponent} from './abstract-master.component';
-import {ViewChild} from '@angular/core';
-import {MatSort, SortDirection} from '@angular/material/sort';
-import {MasterDetailService} from './master-detail.service';
+import {Component, ViewChild} from '@angular/core';
+import {MatSort, Sort} from '@angular/material/sort';
+import {DataVariable} from '@netgrif/petriflow';
 import {PageEvent} from '@angular/material/paginator';
 
-export abstract class PageMaster<T> extends AbstractMasterComponent<T> {
-    private _pageSize: number;
-    private _pageIndex: number;
-    @ViewChild(MatSort, {static: true}) sort: MatSort;
+@Component({
+    selector: 'nab-abstract-page-master-component',
+    template: ''
+})
+export abstract class PageMaster extends AbstractMasterComponent {
 
-    protected constructor(
-        protected _service: MasterDetailService<T>,
-        pageSize: number = 20,
-        defaultSort: SortDirection = ''
-    ) {
-        super(_service);
-        this.pageSize = pageSize;
-        this.pageIndex = 0;
-        this.sort.direction = defaultSort;
+    protected _pageData: Array<any>;
+    protected _pageSize: number;
+    protected _pageIndex: number;
+    protected _pageSizeOptions: Array<number> = [10, 20, 50, 100];
+    @ViewChild(MatSort, {static: true}) protected _sort: MatSort;
+
+    protected constructor() {
+        super();
     }
 
-    removeItem(item: T): void {
-        super.removeItem(item);
-        this.updatePageData();
+    create(): void {
+        const newItem = this.masterService.create();
+        this._allData.push(newItem)
+        this.pageIndex = Math.ceil(this._allData.length / this.pageSize) - 1;
+        this.updatePage();
+        this.masterService.select(newItem);
     }
 
-    onPageChanged(event: PageEvent): void {
-        this.pageIndex = event.pageIndex;
-        this.pageSize = event.pageSize;
-        this.updatePageData();
-    }
-
-    updatePageData(): void {
-        const firstCut = this.pageIndex * this.pageSize;
-        const secondCut = firstCut + this.pageSize;
-        this._service.dataSource = this._service.masterData.slice(firstCut, secondCut);
+    sortData(event: Sort): void {
+        // TODO: check condition
+        if (!event.active || event.direction === '') {
+            event.active = 'id';
+            event.direction = 'asc';
+        }
+        this._allData = this.masterService.getAllDataSorted(event);
+        this.updatePage();
     }
 
     get pageSize(): number {
@@ -51,5 +52,37 @@ export abstract class PageMaster<T> extends AbstractMasterComponent<T> {
 
     set pageIndex(value: number) {
         this._pageIndex = value;
+    }
+
+    get sort(): MatSort {
+        return this._sort;
+    }
+
+    set sort(value: MatSort) {
+        this._sort = value;
+    }
+
+    get pageData(): Array<DataVariable> {
+        return this._pageData;
+    }
+
+    get totalSize(): number {
+        return this._allData.length;
+    }
+
+    get pageSizeOptions(): Array<number> {
+        return this._pageSizeOptions;
+    }
+
+    onPageChanged(event: PageEvent): void {
+        this.pageIndex = event.pageIndex;
+        this.pageSize = event.pageSize;
+        this.updatePage();
+    }
+
+    updatePage(): void {
+        const firstCut = this.pageIndex * this.pageSize;
+        const secondCut = firstCut + this.pageSize;
+        this._pageData = this._allData.slice(firstCut, secondCut);
     }
 }
