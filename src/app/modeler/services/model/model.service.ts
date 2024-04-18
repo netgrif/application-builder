@@ -37,6 +37,7 @@ export class ModelService implements ModelSource {
     private _transitionIdSequence = new SequenceGenerator('t');
     private _arcIdSequence = new SequenceGenerator('a');
     private _dataIdSequence = new SequenceGenerator('data');
+    private _roleIdSequence = new SequenceGenerator('role');
 
     constructor(
         private arcFactory: ArcFactory
@@ -55,6 +56,7 @@ export class ModelService implements ModelSource {
         this._transitionIdSequence.reset(newModel.getTransitions());
         this._arcIdSequence.reset(newModel.getArcs());
         this._dataIdSequence.reset(newModel.getDataSet());
+        this._roleIdSequence.reset(newModel.getRoles());
     }
 
     get model(): PetriNet {
@@ -330,6 +332,10 @@ export class ModelService implements ModelSource {
 
     public nextDataId(): string {
         return this._dataIdSequence.next();
+    }
+
+    public nextRoleId(): string {
+        return this._roleIdSequence.next();
     }
 
     public alignModel(model = this.model): void {

@@ -21,11 +21,13 @@ export abstract class PageMaster extends AbstractMasterComponent {
     }
 
     create(): void {
-        const newItem = this.masterService.create();
-        this._allData.push(newItem)
+        this.masterService.create();
+    }
+
+    updateData() {
+        this._allData = this.masterService.allData;
         this.pageIndex = Math.ceil(this._allData.length / this.pageSize) - 1;
         this.updatePage();
-        this.masterService.select(newItem);
     }
 
     sortData(event: Sort): void {

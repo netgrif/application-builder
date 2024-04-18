@@ -20,11 +20,21 @@ export class DataMasterDetailService extends AbstractMasterDetailService<DataVar
     public create(): DataVariable {
         const data = new DataVariable(this._modelService.nextDataId(), DataType.TEXT);
         this._modelService.model.addData(data);
+        this._create.next(data);
         return data;
     }
 
     public delete(item: DataVariable): void {
-        throw new Error('Method not implemented.');
+        this._modelService.removeDataVariable(item);
+        this._delete.next(item);
+    }
+
+    public duplicate(item: DataVariable): DataVariable {
+        const data = item.clone();
+        data.id = this._modelService.nextDataId();
+        this._modelService.model.addData(data);
+        this._create.next(data);
+        return data;
     }
 
     public getAllDataSorted(event: Sort) {

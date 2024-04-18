@@ -59,6 +59,8 @@ import {MasterDetailComponent} from './components/master-detail/master-detail.co
 import {DataDetailComponent} from './data-mode/data-detail/data-detail.component';
 import {MainMasterComponent} from './components/master-detail/main-master/main-master.component';
 import {MainMasterItemComponent} from './components/master-detail/main-master-item/main-master-item.component';
+import {RoleDetailComponent} from './role-mode/role-detail/role-detail.component';
+import {RoleMasterItemComponent} from './role-mode/role-master-item/role-master-item.component';
 
 @NgModule({
     declarations: [
@@ -96,7 +98,9 @@ import {MainMasterItemComponent} from './components/master-detail/main-master-it
         ContextMenuComponent,
         MasterDetailComponent,
         MainMasterComponent,
-        MainMasterItemComponent
+        MainMasterItemComponent,
+        RoleDetailComponent,
+        RoleMasterItemComponent
     ],
     exports: [
         ActionEditorModule,

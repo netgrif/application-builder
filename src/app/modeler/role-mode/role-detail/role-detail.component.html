@@ -1,0 +1,23 @@
+<div *ngIf="item !== undefined; else elseBlock" fxFlex fxLayout="column">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top32px">
+        <div fxFlex="2.5"></div>
+
+        <mat-form-field fxFlex="45">
+            <mat-label>Set ID</mat-label>
+            <input matInput [ngModel]="item.id" (change)="changeId(item, $event)">
+        </mat-form-field>
+
+        <div fxFlex="2.5"></div>
+
+        <mat-form-field fxFlex="45">
+            <mat-label>Set Title</mat-label>
+            <input matInput [ngModel]="item.title.value" (change)="changeTitle(item, $event)">
+        </mat-form-field>
+
+        <div fxFlex="2.5"></div>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <span>no selected</span>
+</ng-template>

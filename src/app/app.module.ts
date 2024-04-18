@@ -34,7 +34,7 @@ import {MaterialIconPickerComponent} from './modeler/components/material-icon-pi
 import {
     DialogLocalStorageModelComponent
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
-import {NgOptimizedImage} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {TaskContentComponentModule} from '@netgrif/components';
 import {JoyrideModule} from 'ngx-joyride';
@@ -84,7 +84,8 @@ const appRoutes: Routes = [
         AppRoutingModule,
         NgOptimizedImage,
         // TODO: release/4.0.0 error rxjs
-        TaskContentComponentModule
+        TaskContentComponentModule,
+        CommonModule
     ],
     providers: [
         ImportService,

@@ -1,25 +1,24 @@
 import {Component, Inject} from '@angular/core';
-import {DataVariable} from '@netgrif/petriflow';
 import {MASTER_ITEM, MASTER_SERVICE} from '../../components/master-detail/main-master-item/master-injection-tokens';
+import {DataVariable, Role} from '@netgrif/petriflow';
 import {AbstractMasterDetailService} from '../../components/master-detail/abstract-master-detail.service';
-import {DialogDeleteComponent} from '../../../dialogs/dialog-delete/dialog-delete.component';
 import {MatDialog} from '@angular/material/dialog';
+import {DialogDeleteComponent} from '../../../dialogs/dialog-delete/dialog-delete.component';
 
 @Component({
-    selector: 'nab-data-master-item',
-    templateUrl: './data-master-item.component.html',
-    styleUrl: './data-master-item.component.scss'
+  selector: 'nab-role-master-item',
+  templateUrl: './role-master-item.component.html',
+  styleUrl: './role-master-item.component.scss'
 })
-export class DataMasterItemComponent {
-
+export class RoleMasterItemComponent {
     public showIcons: boolean;
 
-    constructor(@Inject(MASTER_ITEM) public item: DataVariable,
+    constructor(@Inject(MASTER_ITEM) public item: Role,
                 @Inject(MASTER_SERVICE) protected _service: AbstractMasterDetailService<any>,
                 protected _dialog: MatDialog) {
     }
 
-    onDelete(event: MouseEvent, item: DataVariable): void {
+    onDelete(event: MouseEvent, item: Role): void {
         event.stopPropagation();
         const dialogRef = this._dialog.open(DialogDeleteComponent);
         dialogRef.afterClosed().subscribe(result => {
@@ -29,7 +28,7 @@ export class DataMasterItemComponent {
         });
     }
 
-    onDuplicate(event: MouseEvent, item: DataVariable): void {
+    onDuplicate(event: MouseEvent, item: Role): void {
         event.stopPropagation();
         this._service.duplicate(item);
     }
@@ -38,7 +37,7 @@ export class DataMasterItemComponent {
         this._service.select(this.item);
     }
 
-    get selected(): DataVariable {
+    get selected(): Role {
         return this._service.getSelected();
     }
 }

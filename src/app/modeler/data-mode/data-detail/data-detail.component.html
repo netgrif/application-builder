@@ -73,13 +73,11 @@
 
         <div fxFlex="2.5"></div>
 
-        <mat-tree></mat-tree>
-
         <div fxFlex="20">Component</div>
 
         <div fxFlex="25">
             <button mat-stroked-button color="primary" (click)="createOrDelete()">
-                {{ item.component === undefined ? 'Add component' : 'Delete component' }}
+                {{ item?.component === undefined ? 'Add component' : 'Delete component' }}
             </button>
         </div>
 
