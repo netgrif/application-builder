@@ -1,9 +1,8 @@
 import {Component, Inject} from '@angular/core';
 import {ModelService} from '../../modeler/services/model/model.service';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {ChangedPlace} from './changed-place';
+import {PlaceChange} from '../../modeler/history-mode/model/place/place-change';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
-import {PlaceChangeType} from './place-change-type';
 
 export interface PlaceEditData {
     placeId: string;
@@ -16,7 +15,7 @@ export interface PlaceEditData {
 })
 export class DialogPlaceEditComponent {
 
-    public place: ChangedPlace;
+    public place: PlaceChange;
     public idCtrl: FormControl;
     public markingCtrl: FormControl;
 
@@ -24,7 +23,8 @@ export class DialogPlaceEditComponent {
         @Inject(MAT_DIALOG_DATA) public data: PlaceEditData,
         public modelService: ModelService
     ) {
-        this.place = new ChangedPlace(PlaceChangeType.EDIT, undefined, this.modelService.model.getPlace(data.placeId).clone());
+        const modelPlace = this.modelService.model.getPlace(data.placeId);
+        this.place = new PlaceChange(modelPlace.clone(), modelPlace.clone(), undefined);
         this.idCtrl = new FormControl('', [
             Validators.required,
             this.validUnique()
@@ -37,7 +37,7 @@ export class DialogPlaceEditComponent {
 
     private validUnique(): ValidatorFn {
         return (fc: FormControl): { [key: string]: any } | null => {
-            if (this.modelService.model.getPlace(fc.value) !== undefined && fc.value !== this.place.id) {
+            if (this.modelService.model.getPlace(fc.value) !== undefined && fc.value !== this.place.originalPlace.id) {
                 return ({validUnique: true});
             } else {
                 return null;

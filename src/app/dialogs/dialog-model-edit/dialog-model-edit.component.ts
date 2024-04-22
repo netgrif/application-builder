@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {ChangedPetriNet} from './changed-petri-net';
+import {ChangedPetriNet} from '../../modeler/history-mode/model/changed-petri-net';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {ModelService} from '../../modeler/services/model/model.service';
 import {Router} from '@angular/router';

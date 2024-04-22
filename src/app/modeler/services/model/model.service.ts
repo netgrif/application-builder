@@ -14,22 +14,24 @@ import {
 import {ModelConfig} from './model-config';
 import {CanvasConfiguration} from '@netgrif/petri.svg';
 import {BehaviorSubject, Subject} from 'rxjs';
-import {ChangedPlace} from '../../../dialogs/dialog-place-edit/changed-place';
+import {PlaceChange} from '../../history-mode/model/place/place-change';
 import {ChangedTransition} from 'src/app/dialogs/dialog-transition-edit/changed-transition';
 import {ChangedArc} from '../../../dialogs/dialog-arc-edit/changed-arc';
 import {SequenceGenerator} from './sequence-generator';
 import {ArcFactory} from '../../edit-mode/domain/arc-builders/arc-factory.service';
 import {ModelerConfig} from '../../modeler-config';
-import {ChangedPetriNet} from '../../../dialogs/dialog-model-edit/changed-petri-net';
+import {ChangedPetriNet} from '../../history-mode/model/changed-petri-net';
 import {ModelSource} from './model-source';
-import {PlaceChangeType} from '../../../dialogs/dialog-place-edit/place-change-type';
+import {PlaceCreated} from '../../history-mode/model/place/place-created';
+import {PlaceMoved} from '../../history-mode/model/place/place-moved';
+import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ModelService implements ModelSource {
     private readonly _model: BehaviorSubject<PetriNet>;
-    private readonly _placeChange: Subject<ChangedPlace>;
+    private readonly _placeChange: Subject<PlaceChange>;
     private readonly _transitionChange: Subject<ChangedTransition>;
     private readonly _arcChange: Subject<ChangedArc>;
     private readonly _bulkChange: Subject<void>;
@@ -43,7 +45,7 @@ export class ModelService implements ModelSource {
         private arcFactory: ArcFactory
     ) {
         this._model = new BehaviorSubject<PetriNet>(this.newModel());
-        this._placeChange = new Subject<ChangedPlace>();
+        this._placeChange = new Subject<PlaceChange>();
         this._transitionChange = new Subject<ChangedTransition>();
         this._arcChange = new Subject<ChangedArc>();
         this._bulkChange = new Subject<void>();
@@ -113,33 +115,33 @@ export class ModelService implements ModelSource {
 
     private addPlace(place: Place): void {
         this.model.addPlace(place);
-        this.model.lastChanged++;
-        this._placeChange.next(new ChangedPlace(PlaceChangeType.CREATE, this.model.clone(), place));
+        this.model.lastChanged = Date.now();
+        this._placeChange.next(new PlaceCreated(place, this.model.clone()));
     }
 
-    public updatePlace(newPlace: ChangedPlace): void {
+    public updatePlace(newPlace: PlaceChange): void {
         if (!newPlace) {
             return;
         }
         // TODO: NAB-326 validate unique id
-        const place = this.model.getPlace(newPlace.id);
+        const place = this.model.getPlace(newPlace.originalPlace.id);
         place.id = newPlace.place.id;
         place.marking = newPlace.place.marking;
         place.label = newPlace.place.label;
-        this.model.removePlace(newPlace.id);
+        this.model.removePlace(newPlace.originalPlace.id);
         this.model.addPlace(place);
         this.model.getArcs()
-            .filter(arc => arc.reference === newPlace.id)
+            .filter(arc => arc.reference === newPlace.originalPlace.id)
             .forEach(arc => arc.reference = place.id);
-        this.model.lastChanged++;
-        this._placeChange.next(new ChangedPlace(PlaceChangeType.EDIT, this.model.clone(), place, newPlace.id));
+        this.model.lastChanged = Date.now();
+        this._placeChange.next(new PlaceChange(newPlace.originalPlace, place, this.model.clone()));
     }
 
     public movePlace(place: Place, position: DOMPoint): void {
         place.x = this.alignPositionX(position.x);
         place.y = this.alignPositionY(position.y);
-        this.model.lastChanged++;
-        this._placeChange.next(new ChangedPlace(PlaceChangeType.MOVE, this.model.clone(), place));
+        this.model.lastChanged = Date.now();
+        this._placeChange.next(new PlaceMoved(place, this.model.clone()));
     }
 
     public removePlace(place: Place): void {
@@ -153,8 +155,8 @@ export class ModelService implements ModelSource {
                 arc.multiplicity = 1;
             });
         this.model.removePlace(place.id);
-        this.model.lastChanged++;
-        this._placeChange.next(new ChangedPlace(PlaceChangeType.DELETE, this.model.clone(), undefined, place.id));
+        this.model.lastChanged = Date.now();
+        this._placeChange.next(new PlaceDeleted(place, this.model.clone()));
     }
 
     // TRANSITION
@@ -180,7 +182,7 @@ export class ModelService implements ModelSource {
 
     private addTransition(transition: Transition) {
         this.model.addTransition(transition);
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._transitionChange.next(new ChangedTransition(this.model.clone(), transition));
     }
 
@@ -196,14 +198,14 @@ export class ModelService implements ModelSource {
         // TODO: NAB-326 copy attributes
         this.model.removeTransition(newTransition.id);
         this.model.addTransition(transition);
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._transitionChange.next(new ChangedTransition(this.model.clone(), transition, newTransition.id));
     }
 
     public moveTransition(transition: Transition, position: DOMPoint): void {
         transition.x = this.alignPositionX(position.x);
         transition.y = this.alignPositionY(position.y);
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._transitionChange.next(new ChangedTransition(this.model.clone(), transition));
     }
 
@@ -212,7 +214,7 @@ export class ModelService implements ModelSource {
             .filter(arc => arc.source === transition || arc.destination === transition)
             .forEach(arc => this.removeArc(arc));
         this.model.removeTransition(transition.id);
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._transitionChange.next(new ChangedTransition(this.model.clone(), undefined, transition.id));
     }
 
@@ -250,7 +252,7 @@ export class ModelService implements ModelSource {
         arc.multiplicity = newArc.arc.multiplicity;
         arc.reference = newArc.arc.reference;
         arc.breakpoints = newArc.arc.breakpoints;
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._arcChange.next(new ChangedArc(this.model.clone(), arc));
         return arc;
     }
@@ -261,7 +263,7 @@ export class ModelService implements ModelSource {
             this.alignPositionY(position.y)
         );
         arc.breakpoints.splice(index, 0, breakPoint);
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._arcChange.next(new ChangedArc(this.model.clone(), arc));
     }
 
@@ -270,25 +272,25 @@ export class ModelService implements ModelSource {
         // TODO: NAB-327 breakpoint undefined?
         arc.breakpoints[index].x = position.x;
         arc.breakpoints[index].y = position.y;
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._arcChange.next(new ChangedArc(this.model.clone(), arc));
     }
 
     public removeArcBreakpoint(arc: Arc<NodeElement, NodeElement>, index: number): void {
         arc.breakpoints.splice(index, 1);
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._arcChange.next(new ChangedArc(this.model.clone(), arc));
     }
 
     private addArc(arc: Arc<NodeElement, NodeElement>) {
         this.model.addArc(arc);
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._arcChange.next(new ChangedArc(this.model.clone(), arc));
     }
 
     public removeArc(arc: Arc<NodeElement, NodeElement>): void {
         this.model.removeArc(arc.id);
-        this.model.lastChanged++;
+        this.model.lastChanged = Date.now();
         this._arcChange.next(new ChangedArc(this.model.clone(), undefined, arc.id));
     }
 
@@ -389,7 +391,7 @@ export class ModelService implements ModelSource {
         return 0;
     }
 
-    get placeChange(): Subject<ChangedPlace> {
+    get placeChange(): Subject<PlaceChange> {
         return this._placeChange;
     }
 

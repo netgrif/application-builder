@@ -3,7 +3,7 @@ import {
     DialogPlaceEditComponent,
     PlaceEditData
 } from '../../../../../dialogs/dialog-place-edit/dialog-place-edit.component';
-import {ChangedPlace} from '../../../../../dialogs/dialog-place-edit/changed-place';
+import {PlaceChange} from '../../../../history-mode/model/place/place-change';
 import {CanvasPlace} from '../../../domain/canvas-place';
 import {CanvasTool} from '../../../services/modes/canvas-tool';
 
@@ -22,7 +22,7 @@ export class EditPlaceMenuItem extends MenuItem {
                     data: {
                         placeId: place.modelPlace.id
                     } as PlaceEditData
-                }, (editedPlace: ChangedPlace) => {
+                }, (editedPlace: PlaceChange) => {
                     tool.modelService.updatePlace(editedPlace);
                 });
             }

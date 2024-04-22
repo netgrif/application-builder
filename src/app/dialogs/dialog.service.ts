@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {DialogModelEditComponent} from './dialog-model-edit/dialog-model-edit.component';
-import {ChangedPetriNet} from './dialog-model-edit/changed-petri-net';
+import {ChangedPetriNet} from '../modeler/history-mode/model/changed-petri-net';
 import {MatDialog} from '@angular/material/dialog';
 import {PetriNet} from '@netgrif/petriflow';
 import {ModelService} from '../modeler/services/model/model.service';

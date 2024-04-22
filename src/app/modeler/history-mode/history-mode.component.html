@@ -21,9 +21,9 @@
         <div *ngIf="selected" fxFlex fxLayout="column" fxLayoutAlign="start start">
             <div fxFlex fxLayout="row">
                 <mat-form-field fxFlex>
-                    <mat-select [(value)]="editorOptions.renderSideBySide" (selectionChange)="updateEditor()">
-                        <mat-option value="{{true}}">Side by side</mat-option>
-                        <mat-option value="{{false}}">Inline</mat-option>
+                    <mat-select [(ngModel)]="editorOptions.renderSideBySide" (selectionChange)="updateEditor()">
+                        <mat-option [value]="true">Side by side</mat-option>
+                        <mat-option [value]="false">Inline</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <div fxFlex fxFill></div>

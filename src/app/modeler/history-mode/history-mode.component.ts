@@ -6,9 +6,9 @@ import {HistoryChange} from '../services/history/history-change';
 import {DiffEditorModel} from 'ngx-monaco-editor';
 import {ModelExportService} from '../services/model/model-export.service';
 import {editor} from 'monaco-editor';
+import {ModelService} from '../services/model/model.service';
 import ICodeEditor = editor.ICodeEditor;
 import IEditorOptions = editor.IEditorOptions;
-import {ModelService} from '../services/model/model.service';
 
 @Component({
     selector: 'nab-history-mode',
@@ -22,7 +22,8 @@ export class HistoryModeComponent implements OnInit {
     public modifiedModel: DiffEditorModel;
     public originalModel: DiffEditorModel;
     public editorOptions = {
-        renderSideBySide: false
+        renderSideBySide: false,
+        readOnly: true
     };
     public editor: ICodeEditor;
 
@@ -41,7 +42,7 @@ export class HistoryModeComponent implements OnInit {
         this.selected = this.history.memory[index];
         this.modifiedModel = {
             code: this.exportService.exportXml(this.selected.record),
-            language: 'xml'
+            language: 'xml',
         };
         let code = '';
         if (index > 0) {
@@ -52,7 +53,7 @@ export class HistoryModeComponent implements OnInit {
         }
         this.originalModel = {
             code: code,
-            language: 'xml'
+            language: 'xml',
         };
     }
 
@@ -61,10 +62,11 @@ export class HistoryModeComponent implements OnInit {
     }
 
     public revert(): void {
-        this.modelService.model = this.selected.record.clone();
+        // TODO: NAB-351 clone?
+        this.historyService.reload(this.selected.record);
     }
 
-    public onEditorInit(editorObject): void {
+    public onEditorInit(editorObject: ICodeEditor): void {
         this.editor = editorObject;
     }
 

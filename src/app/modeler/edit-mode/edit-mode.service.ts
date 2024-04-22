@@ -15,7 +15,7 @@ import {CanvasArc} from './domain/canvas-arc';
 import {Arc, ArcType, NodeElement, Place, Transition} from '@netgrif/petriflow';
 import {CanvasTransition} from './domain/canvas-transition';
 import {MatDialog} from '@angular/material/dialog';
-import {ChangedPlace} from '../../dialogs/dialog-place-edit/changed-place';
+import {PlaceChange} from '../history-mode/model/place/place-change';
 import {ChangedArc} from '../../dialogs/dialog-arc-edit/changed-arc';
 import {ArcFactory} from './domain/arc-builders/arc-factory.service';
 import {BehaviorSubject} from 'rxjs';
@@ -149,13 +149,14 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
         return canvasPlace;
     }
 
-    public updatePlace(newPlace: ChangedPlace): void {
-        const canvasPlace = this.elements.getPlace(newPlace.id);
+    public updatePlace(newPlace: PlaceChange): void {
+        const canvasPlace = this.elements.getPlace(newPlace.originalPlace?.id);
         if (!canvasPlace) {
             return;
         }
         this.elements.arcs.forEach(arc => arc.svgArc.setMultiplicity(this.multiplicityText(arc)));
-        if (!newPlace.place && newPlace.id) {
+        // TODO: NAB-351 check condition
+        if (!newPlace.place && newPlace.originalPlace.id) {
             this.removeSvgPlace(canvasPlace);
             return;
         }

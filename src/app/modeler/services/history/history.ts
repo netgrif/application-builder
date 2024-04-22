@@ -61,6 +61,10 @@ export class History<T> {
         return this._head;
     }
 
+    set head(value: number) {
+        this._head = value;
+    }
+
     get memory(): Array<HistoryChange<T>> {
         return this._memory;
     }

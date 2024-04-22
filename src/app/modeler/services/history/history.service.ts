@@ -7,7 +7,6 @@ import {History} from './history';
 import {HistoryChange} from './history-change';
 import {UndoTool} from '../../control-panel/modes/undo-tool';
 import {RedoTool} from '../../control-panel/modes/redo-tool';
-import {PlaceChangeMessageResolverService} from './place-change-message-resolver.service';
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +19,6 @@ export class HistoryService {
     constructor(
         private modelService: ModelService,
         private exportService: ExportService,
-        private placeMessageResolver: PlaceChangeMessageResolverService,
     ) {
         this._history = new History<PetriNet>();
         this._historyChange = new Subject();
@@ -28,7 +26,7 @@ export class HistoryService {
             this.push(model?.clone(), `Model ${model.id} changed`);
         });
         this.modelService.placeChange.subscribe(value => {
-            this.push(value?.model, placeMessageResolver.resolve(value));
+            this.push(value?.model, value.message);
         });
         this.modelService.transitionChange.subscribe(value => {
             this.push(value?.model, `Transition ${value?.id} changed`);
@@ -46,6 +44,11 @@ export class HistoryService {
         this.reloadModel(this._history.redo(), RedoTool.ID);
     }
 
+    public reload(model: PetriNet): void {
+        this._history.head = this._history.memory.findIndex(value => value.record === model);
+        this.reloadModel(model, '');
+    }
+
     private reloadModel(model: PetriNet, message: string): PetriNet {
         if (model === undefined) {
             return undefined;
@@ -56,7 +59,9 @@ export class HistoryService {
     }
 
     private push(model: PetriNet, message: string): void {
-        if (!model || model.lastChanged === this.currentModel?.lastChanged) {
+        if (!model || model.lastChanged === this.currentModel?.lastChanged || this.history.memory.find(change =>
+            change.record.lastChanged === model.lastChanged)
+        ) {
             return;
         }
         const update = this._history.push(model, message);
