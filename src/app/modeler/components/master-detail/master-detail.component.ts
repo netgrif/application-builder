@@ -8,7 +8,7 @@ import {AbstractMasterDetailService} from './abstract-master-detail.service';
     templateUrl: './master-detail.component.html',
     styleUrl: './master-detail.component.scss'
 })
-export class MasterDetailComponent implements OnInit, AfterViewInit {
+export class MasterDetailComponent implements OnInit {
 
     @Input() minWidth = 20;
     @Input() maxWidth = 50;
@@ -24,6 +24,10 @@ export class MasterDetailComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
+        this.updatePortal();
+    }
+
+    protected updatePortal() {
         const injector = Injector.create({
             providers: [],
             parent: this._parentInjector
@@ -32,8 +36,5 @@ export class MasterDetailComponent implements OnInit, AfterViewInit {
             this.masterPortal = new ComponentPortal(this.masterComponent, null, injector);
         }
         this.detailPortal = new ComponentPortal(this.detailComponent, null, injector);
-    }
-
-    ngAfterViewInit(): void {
     }
 }

@@ -61,6 +61,12 @@ import {MainMasterComponent} from './components/master-detail/main-master/main-m
 import {MainMasterItemComponent} from './components/master-detail/main-master-item/main-master-item.component';
 import {RoleDetailComponent} from './role-mode/role-detail/role-detail.component';
 import {RoleMasterItemComponent} from './role-mode/role-master-item/role-master-item.component';
+import {ActionMasterComponent} from './actions-mode/action-master/action-master.component';
+import {ActionMasterItemComponent} from './actions-mode/action-master/action-master-item/action-master-item.component';
+import {
+    FunctionMasterItemComponent
+} from './actions-mode/action-master/function-master-item/function-master-item.component';
+import {ActionDetailComponent} from './actions-mode/action-detail/action-detail.component';
 
 @NgModule({
     declarations: [
@@ -100,7 +106,11 @@ import {RoleMasterItemComponent} from './role-mode/role-master-item/role-master-
         MainMasterComponent,
         MainMasterItemComponent,
         RoleDetailComponent,
-        RoleMasterItemComponent
+        RoleMasterItemComponent,
+        ActionMasterComponent,
+        ActionMasterItemComponent,
+        FunctionMasterItemComponent,
+        ActionDetailComponent
     ],
     exports: [
         ActionEditorModule,

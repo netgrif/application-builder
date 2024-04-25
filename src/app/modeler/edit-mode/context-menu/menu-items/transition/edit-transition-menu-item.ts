@@ -16,6 +16,7 @@ export class EditTransitionMenuItem extends MenuItem {
             () => {
                 tool.openDialog(DialogTransitionEditComponent, {
                     width: '50%',
+                    panelClass: "dialog-width-50",
                     data: {
                         transitionId: transition.id
                     } as TransitionEditData

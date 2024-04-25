@@ -1,5 +1,5 @@
 <div fxLayout="column" fxLayoutAlign="space-around none">
-    <mat-card fxFlexFill class="localeSelect">
+    <mat-card fxFlexFill class="localeSelect netgrif-input">
         <mat-form-field fxFlex="25">
             <mat-label>{{noLocales() ? 'No language available, please add new language' : 'Select language'}}</mat-label>
             <mat-select [(value)]="locale" [disabled]="noLocales()" (selectionChange)="selectLocale()">

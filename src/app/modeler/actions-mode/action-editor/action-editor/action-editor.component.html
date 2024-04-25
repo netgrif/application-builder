@@ -67,7 +67,7 @@
 <!--                                   [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>-->
             </div>
             <mat-action-row>
-                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center">
+                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input">
                     <mat-form-field class="margin-left-8px">
                         <mat-label>event</mat-label>
                         <mat-select [(value)]="action.event"
@@ -77,7 +77,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center">
+                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input">
                     <mat-form-field class="margin-left-8px">
                         <mat-label>phase</mat-label>
                         <mat-select [(value)]="action.phase"
@@ -88,7 +88,7 @@
                     </mat-form-field>
                 </div>
                 <div *ngIf="action.type === 'DATA' || action.type === 'DATAREF'" fxLayout="row"
-                     fxLayoutAlign="start center">
+                     fxLayoutAlign="start center" class="netgrif-input">
                     <mat-form-field class="margin-left-8px">
                         <mat-label>event</mat-label>
                         <mat-select [(value)]="action.event" (selectionChange)="actionDataEventsChanged(index)">

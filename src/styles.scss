@@ -141,3 +141,15 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+.dialog-width-50 {
+    width: 50% !important;
+}
+
+.dialog-width-60 {
+    width: 60% !important;
+}
+
+.mat-mdc-dialog-container .mat-mdc-dialog-title+.mat-mdc-dialog-content {
+    padding-top: 8px !important;
+}

@@ -340,6 +340,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     openRefactorDialog(event, item: DataVariable): void {
         const dialogRef = this.dialog.open(DialogRefactorComponent, {
             width: '50%',
+            panelClass: "dialog-width-50",
             data: {originalId: item.id}
         });
         dialogRef.afterClosed().subscribe(result => {

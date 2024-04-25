@@ -1,4 +1,4 @@
-<div *ngIf="item !== undefined; else elseBlock" fxFlex fxLayout="column">
+<div *ngIf="item !== undefined; else elseBlock" fxFlex fxLayout="column" class="height-fix netgrif-input">
     <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top32px">
 
         <div fxFlex="2.5"></div>
@@ -327,5 +327,7 @@
 </div>
 
 <ng-template #elseBlock>
-    <span>no selected</span>
+    <div fxLayoutAlign="center center" class="height-fix full-width">
+        <span><strong>No data selected</strong></span>
+    </div>
 </ng-template>

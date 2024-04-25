@@ -12,11 +12,11 @@ export abstract class AbstractMasterComponent {
     @Input() masterService: AbstractMasterDetailService<any>;
     @Input() masterItemComponent: ComponentType<any>;
 
-    public select(item: DataVariable): void {
+    public select(item: any): void {
         this.masterService.select(item);
     }
 
-    get selected(): DataVariable {
+    get selected(): any {
         return this.masterService.getSelected();
     }
 

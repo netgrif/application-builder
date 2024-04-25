@@ -5,11 +5,11 @@ import {ControlPanelButton} from '../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../control-panel/control-panel-icon';
 import {ToolGroup} from '../control-panel/tools/tool-group';
 import {ModeService} from '../control-panel/modes/mode-component/mode.service';
-import {DataActionsTool} from './data-actions-tool';
-import {TransitionActionsTool} from './transition-actions-tool';
-import {RoleActionsTool} from './role-actions-tool';
-import {ProcessActionsTool} from './process-actions-tool';
-import {FunctionsTool} from './functions-tool';
+import {DataActionsTool} from './tools/data-actions-tool';
+import {TransitionActionsTool} from './tools/transition-actions-tool';
+import {RoleActionsTool} from './tools/role-actions-tool';
+import {ProcessActionsTool} from './tools/process-actions-tool';
+import {FunctionsTool} from './tools/functions-tool';
 import {Tool} from '../control-panel/tools/tool';
 
 @Injectable({

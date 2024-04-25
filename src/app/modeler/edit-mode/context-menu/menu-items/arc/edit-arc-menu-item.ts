@@ -13,6 +13,7 @@ export class EditArcMenuItem extends MenuItem {
             () => {
                 tool.openDialog(DialogArcEditComponent, {
                     width: '50%',
+                    panelClass: "dialog-width-50",
                     data: {
                         arcId: arc.modelArc.id
                     } as ArcEditData

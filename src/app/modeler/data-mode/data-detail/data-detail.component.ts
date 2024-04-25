@@ -103,6 +103,7 @@ export class DataDetailComponent {
     openRefactorDialog(): void {
         const dialogRef = this.dialog.open(DialogRefactorComponent, {
             width: '50%',
+            panelClass: "dialog-width-50",
             data: {originalId: this.item.id}
         });
         dialogRef.afterClosed().subscribe(result => {

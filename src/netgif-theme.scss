@@ -55,6 +55,8 @@ $netgrif-theme: mat.define-light-theme((
 ));
 
 @include mat.all-component-themes($netgrif-theme);
+@include mat.typography-hierarchy($netgrif-theme);
+@include nae-lib-theme($netgrif-theme, $typography);
 
 body {
     ::-webkit-scrollbar-track {

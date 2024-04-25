@@ -115,3 +115,11 @@
     width: 100%;
     overflow-y: auto;
 }
+
+.height-fix {
+    height: calc(100vh - 42px);
+}
+
+.full-width {
+    width: 100%;
+}

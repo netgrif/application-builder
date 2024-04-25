@@ -39,6 +39,7 @@ export class DialogModelEditComponent {
     openPermissions() {
         this.dialog.open(DialogManageRolesComponent, {
             width: '60%',
+            panelClass: "dialog-width-60",
             data: {
                 type: RoleRefType.PROCESS,
                 roles: this.modelService.model.getRoles(),

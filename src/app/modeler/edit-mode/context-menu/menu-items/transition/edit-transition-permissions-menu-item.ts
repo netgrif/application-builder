@@ -16,6 +16,7 @@ export class EditTransitionPermissionsMenuItem extends MenuItem {
             () => {
                 tool.openDialog(DialogManageRolesComponent, {
                     width: '60%',
+                    panelClass: "dialog-width-60",
                     data: {
                         type: RoleRefType.TRANSITION,
                         roles: tool.modelService.model.getRoles(),

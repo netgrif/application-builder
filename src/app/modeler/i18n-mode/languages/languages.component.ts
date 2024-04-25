@@ -59,11 +59,11 @@ export class LanguagesComponent implements OnInit {
     }
 
     unusedLocales(): Array<Locale> {
-        return Locales.list.filter(l => !this.i18nService.locales.includes(l));
+        return Locales.list.filter(l => !this.i18nService?.locales?.includes(l));
     }
 
     usedLocales(): Array<Locale> {
-        return this.i18nService.locales;
+        return this.i18nService?.locales;
     }
 
     addLocal() {

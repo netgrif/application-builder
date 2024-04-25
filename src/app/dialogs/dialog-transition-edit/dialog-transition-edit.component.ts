@@ -67,6 +67,7 @@ export class DialogTransitionEditComponent implements OnInit {
     openPermissions() {
         this.dialog.open(DialogManageRolesComponent, {
             width: '60%',
+            panelClass: "dialog-width-60",
             data: {
                 type: RoleRefType.TRANSITION,
                 roles: this.modelService.model.getRoles(),

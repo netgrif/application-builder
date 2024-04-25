@@ -64,7 +64,7 @@ export abstract class PageMaster extends AbstractMasterComponent {
         this._sort = value;
     }
 
-    get pageData(): Array<DataVariable> {
+    get pageData(): Array<any> {
         return this._pageData;
     }
 
