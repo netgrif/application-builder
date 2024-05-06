@@ -9,7 +9,7 @@
     overflow: auto;
 }
 
-ng-template {
+.fill-space {
     width: 100%;
     height: 100%;
 }
@@ -22,6 +22,3 @@ ng-template {
     border-left: 1px solid #dddddd;
 }
 
-mwlResizable {
-    box-sizing: border-box; // required for the enableGhostResize option to work
-}

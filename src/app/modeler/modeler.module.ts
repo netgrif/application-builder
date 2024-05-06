@@ -29,7 +29,6 @@ import {TranslationsComponent} from './i18n-mode/translations/translations.compo
 import {ProgressComponent} from './i18n-mode/languages/progress/progress.component';
 import {FlagComponent} from './i18n-mode/languages/flag/flag.component';
 import {FlagFallbackDirective} from './i18n-mode/languages/flag/flag-fallback.directive';
-import {TranslationGroupComponent} from './i18n-mode/translations/translation-group/translation-group.component';
 import {
     ModelTranslationComponent
 } from './i18n-mode/translations/translation-group/model-translation/model-translation.component';
@@ -67,6 +66,7 @@ import {
     FunctionMasterItemComponent
 } from './actions-mode/action-master/function-master-item/function-master-item.component';
 import {ActionDetailComponent} from './actions-mode/action-detail/action-detail.component';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 @NgModule({
     declarations: [
@@ -91,7 +91,6 @@ import {ActionDetailComponent} from './actions-mode/action-detail/action-detail.
         ProgressComponent,
         FlagComponent,
         FlagFallbackDirective,
-        TranslationGroupComponent,
         ModelTranslationComponent,
         I18nFieldComponent,
         DataTranslationComponent,
@@ -134,6 +133,7 @@ import {ActionDetailComponent} from './actions-mode/action-detail/action-detail.
         ResizableModule,
         RouterModule,
         TaskContentComponentModule,
+        ScrollingModule
     ]
 })
 export class ModelerModule {

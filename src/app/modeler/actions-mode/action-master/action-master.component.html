@@ -1,6 +1,6 @@
 <div fxLayout="column" class="height-fix">
-
-        <div *ngIf="!isFunctionsModeSelected()" class="height-max" matSort (matSortChange)="sortData($event)">
+    <div class="height-max" matSort (matSortChange)="sortData($event)">
+        <div *ngIf="!isFunctionsModeSelected()" class="height-100">
             <div mat-subheader class="header-action">
                 <p fxFlex="40" mat-sort-header="id"><strong>ID</strong></p>
                 <p fxFlex mat-sort-header="name">Name</p>
@@ -12,7 +12,7 @@
                                   [masterService]="masterService" ></nab-main-master-item>
             </mat-action-list>
         </div>
-        <div *ngIf="isFunctionsModeSelected()" class="height-max" matSort (matSortChange)="sortData($event)">
+        <div *ngIf="isFunctionsModeSelected()" class="height-100">
             <div mat-subheader class="header-action">
                 <p fxFlex="40"><strong>Name</strong></p>
                 <p fxFlex>Scope</p>
@@ -27,7 +27,7 @@
                                   [masterService]="masterService" ></nab-main-master-item>
             </mat-action-list>
         </div>
-
+    </div>
     <mat-paginator fxFlex class="footer" [length]="totalSize" [pageSize]="pageSize" [pageIndex]="pageIndex"
                    [pageSizeOptions]="pageSizeOptions" (page)="onPageChanged($event)" showFirstLastButtons="false">
     </mat-paginator>

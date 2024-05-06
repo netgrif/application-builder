@@ -20,10 +20,10 @@ import {JoyrideService} from 'ngx-joyride';
 export class AppComponent implements AfterViewInit {
     title = 'Netgrif Application Builder';
 
-    @HostListener('window:beforeunload', ['$event'])
-    WindowBeforeUnload($event: any) {
-        $event.returnValue = 'Your data will be lost!';
-    }
+    // @HostListener('window:beforeunload', ['$event'])
+    // WindowBeforeUnload($event: any) {
+    //     $event.returnValue = 'Your data will be lost!';
+    // }
 
     constructor(
         private router: Router,

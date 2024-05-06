@@ -14,9 +14,8 @@ import {map, startWith} from 'rxjs/operators';
 })
 export class LanguagesComponent implements OnInit {
 
-    @ViewChild('newLanguageSelect')
-    newLanguageSelect: MatSelect;
-    newLocaleFormControl = new FormControl('', {
+    @ViewChild('newLanguageSelect') newLanguageSelect: MatSelect;
+    newLocaleFormControl = new FormControl<Locale>(undefined, {
         validators: [this.autocompleteStringValidator(), Validators.required]
     });
     filteredLocales: Observable<Array<Locale>>;
@@ -68,8 +67,7 @@ export class LanguagesComponent implements OnInit {
 
     addLocal() {
         console.log(this.newLocaleFormControl.value);
-        // TODO: release/4.0.0
-        // this.i18nService.addLocale(this.newLocaleFormControl.value.languageCode);
-        // this.newLocaleFormControl.reset();
+        this.i18nService.addLocale(this.newLocaleFormControl.value.languageCode);
+        this.newLocaleFormControl.reset();
     }
 }

@@ -4,7 +4,12 @@ nab-flag {
     padding-right: 16px;
 }
 
-button {
+.button-line {
     width: 40px;
     max-width: 40px;
+}
+
+.card {
+    padding: 0 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }

@@ -28,6 +28,7 @@ export class ActionDetailComponent implements OnInit {
     // TREE
     public treeControl = new NestedTreeControl<TreeNode>(node => node.children);
     public dataSource = new MatTreeNestedDataSource<TreeNode>();
+    public loading: boolean;
 
     constructor(private _modelService: ModelService,
                 private _actionsModeService: ActionsModeService,
