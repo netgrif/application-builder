@@ -1,7 +1,7 @@
 import {MenuItem} from '../menu-item';
 import {CanvasTool} from '../../../services/modes/canvas-tool';
-import {ChangedPetriNet} from '../../../../history-mode/model/changed-petri-net';
 import {DialogModelEditComponent} from '../../../../../dialogs/dialog-model-edit/dialog-model-edit.component';
+import {ModelChange} from '../../../../history-mode/model/model/model-change';
 
 export class EditModelMenuItem extends MenuItem {
 
@@ -12,8 +12,8 @@ export class EditModelMenuItem extends MenuItem {
             () => {
                 tool.openDialog(DialogModelEditComponent, {
                     width: '50%',
-                    data: new ChangedPetriNet(tool.model.id, tool.model.clone())
-                }, (changedModel: ChangedPetriNet) => {
+                    data: new ModelChange(tool.model, tool.model.clone())
+                }, (changedModel: ModelChange) => {
                     if (changedModel != undefined) {
                         tool.modelService.updateModel(changedModel);
                     }

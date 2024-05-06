@@ -30,6 +30,7 @@ import {EditModelMenuItem} from '../../context-menu/menu-items/model/edit-model-
 import {ManageModelPermissionsMenuItem} from '../../context-menu/menu-items/model/manage-model-permissions-menu-item';
 import {DeletePlaceMenuItem} from '../../context-menu/menu-items/place/delete-place-menu-item';
 import {ContextMenuInterruptionError} from '../../../services/canvas/listeners/context-menu-interruption-error';
+import {HistoryService} from '../../../services/history/history.service';
 
 export abstract class CanvasTool extends CanvasListenerTool {
 
@@ -223,5 +224,9 @@ export abstract class CanvasTool extends CanvasListenerTool {
 
     get editModeService(): EditModeService {
         return this._editModeService;
+    }
+
+    get historyService(): HistoryService {
+        return this.editModeService.historyService;
     }
 }

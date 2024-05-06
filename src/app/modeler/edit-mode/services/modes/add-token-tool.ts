@@ -45,5 +45,6 @@ export class AddTokenTool extends CanvasTool {
         const changed = new PlaceChange(place.modelPlace, place.modelPlace, undefined);
         changed.place.marking += 1;
         this.modelService.updatePlace(changed);
+        this.historyService.save(`Token has been added to place ${place.id}.`);
     }
 }

@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ModelService} from '../../modeler/services/model/model.service';
-import {Arc, ArcType, DataType, TransitionPlaceArc, XmlArcType} from '@netgrif/petriflow';
+import {Arc, DataType, TransitionPlaceArc, XmlArcType} from '@netgrif/petriflow';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ChangedArc} from './changed-arc';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
@@ -37,12 +37,7 @@ export class DialogArcEditComponent implements OnInit {
     filteredReferences: Observable<Array<ReferenceGroup>>;
 
     public arcTypeMapping = Arc.arcTypeMapping;
-    public xmlArcTypeMapping: Map<XmlArcType, ArcType> = new Map([
-        [XmlArcType.REGULAR, ArcType.REGULAR_PT],
-        [XmlArcType.READ, ArcType.READ],
-        [XmlArcType.RESET, ArcType.RESET],
-        [XmlArcType.INHIBITOR, ArcType.INHIBITOR],
-    ]);
+
     public arcTypeIcons: Map<XmlArcType, string> = new Map([
         [XmlArcType.REGULAR, 'play_arrow'],
         [XmlArcType.READ, 'circle'],
@@ -95,7 +90,7 @@ export class DialogArcEditComponent implements OnInit {
     }
 
     onTypeChange(newValue: XmlArcType): void {
-        this.arc.arcType = this.xmlArcTypeMapping.get(newValue);
+        this.arc.arcType = this.modelService.toArcType(newValue);
     }
 
     private _filter(value: string): Array<ReferenceGroup> {

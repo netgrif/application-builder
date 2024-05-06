@@ -68,7 +68,7 @@ export class QuickDrawTool extends CanvasTool {
         this.editModeService.elements.transitions.forEach(t => t.svgTransition.deactivate());
     }
 
-    onMouseUp(event: PointerEvent) {
+    onMouseUp(event: PointerEvent): void {
         super.onMouseUp(event);
         if (this.isRightButtonClick(event) && this.isWorkInProgress()) {
             this.reset();
@@ -77,17 +77,19 @@ export class QuickDrawTool extends CanvasTool {
         if (this.isLeftButtonClick(event)) {
             if (this.step === Step.PLACE) {
                 const canvasPlace = this.editModeService.createPlace(this.mousePosition(event));
+                this.historyService.save(`Place ${canvasPlace.id} has been created.`);
                 this.bindPlace(canvasPlace);
                 this.onPlaceUp(event, canvasPlace);
             } else if (this.step === Step.TRANSITION) {
                 const canvasTransition = this.editModeService.createTransition(this.mousePosition(event));
+                this.historyService.save(`Task ${canvasTransition.id} has been created.`);
                 this.bindTransition(canvasTransition);
                 this.onTransitionUp(event, canvasTransition);
             }
         }
     }
 
-    onMouseMove(event: PointerEvent) {
+    onMouseMove(event: PointerEvent): void {
         super.onMouseMove(event);
         this.onMove(event);
     }
@@ -102,6 +104,7 @@ export class QuickDrawTool extends CanvasTool {
             if (this.source) {
                 const canvasArc = this.editModeService.createNewRegularTransitionPlaceArc(this.source as CanvasTransition, canvasPlace);
                 this.editModeService.removeTemporaryArc(this.arcLine);
+                this.historyService.save(`New ${this.modelService.toXmlArcType(canvasArc.modelArc.type)} arc ${canvasArc.id} has been created`);
                 this.bindArc(canvasArc);
             }
             this.source = canvasPlace;
@@ -127,6 +130,7 @@ export class QuickDrawTool extends CanvasTool {
             }
             if (this.step === Step.TRANSITION && this.source) {
                 const canvasArc = this.editModeService.createNewRegularPlaceTransitionArc(this.source as CanvasPlace, canvasTransition);
+                this.historyService.save(`New ${this.modelService.toXmlArcType(canvasArc.modelArc.type)} arc ${canvasArc.id} has been created`);
                 this.editModeService.removeTemporaryArc(this.arcLine);
                 this.bindArc(canvasArc);
             }

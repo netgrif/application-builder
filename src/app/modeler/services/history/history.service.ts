@@ -22,18 +22,11 @@ export class HistoryService {
     ) {
         this._history = new History<PetriNet>();
         this._historyChange = new Subject();
-        this.modelService.modelSubject.subscribe(model => {
-            this.push(model?.clone(), `Model ${model.id} changed`);
-        });
-        this.modelService.placeChange.subscribe(value => {
-            this.push(value?.model, value.message);
-        });
-        this.modelService.transitionChange.subscribe(value => {
-            this.push(value?.model, `Transition ${value?.id} changed`);
-        });
-        this.modelService.arcChange.subscribe(value => {
-            this.push(value?.model, `Arc ${value?.id} changed`);
-        });
+    }
+
+    public save(message: string): void {
+        this.modelService.model.lastChanged = Date.now();
+        this.push(this.modelService.model.clone(), message);
     }
 
     public undo(): void {

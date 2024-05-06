@@ -9,7 +9,8 @@ import {
     NodeElement,
     PetriNet,
     Place,
-    Transition
+    Transition,
+    XmlArcType
 } from '@netgrif/petriflow';
 import {ModelConfig} from './model-config';
 import {CanvasConfiguration} from '@netgrif/petri.svg';
@@ -20,26 +21,39 @@ import {ChangedArc} from '../../../dialogs/dialog-arc-edit/changed-arc';
 import {SequenceGenerator} from './sequence-generator';
 import {ArcFactory} from '../../edit-mode/domain/arc-builders/arc-factory.service';
 import {ModelerConfig} from '../../modeler-config';
-import {ChangedPetriNet} from '../../history-mode/model/changed-petri-net';
 import {ModelSource} from './model-source';
-import {PlaceCreated} from '../../history-mode/model/place/place-created';
 import {PlaceMoved} from '../../history-mode/model/place/place-moved';
 import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
+import {ModelChange} from '../../history-mode/model/model/model-change';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ModelService implements ModelSource {
     private readonly _model: BehaviorSubject<PetriNet>;
+    private readonly _modelChange: Subject<ModelChange>;
     private readonly _placeChange: Subject<PlaceChange>;
     private readonly _transitionChange: Subject<ChangedTransition>;
     private readonly _arcChange: Subject<ChangedArc>;
-    private readonly _bulkChange: Subject<void>;
 
     private _placeIdSequence = new SequenceGenerator('p');
     private _transitionIdSequence = new SequenceGenerator('t');
     private _arcIdSequence = new SequenceGenerator('a');
     private _dataIdSequence = new SequenceGenerator('data');
+
+    private xmlArcTypeMapping: Map<XmlArcType, ArcType> = new Map([
+        [XmlArcType.REGULAR, ArcType.REGULAR_PT],
+        [XmlArcType.READ, ArcType.READ],
+        [XmlArcType.RESET, ArcType.RESET],
+        [XmlArcType.INHIBITOR, ArcType.INHIBITOR],
+    ]);
+    private arcTypeMapping: Map<ArcType, XmlArcType> = new Map([
+        [ArcType.REGULAR_PT, XmlArcType.REGULAR],
+        [ArcType.REGULAR_TP, XmlArcType.REGULAR],
+        [ArcType.READ, XmlArcType.READ],
+        [ArcType.RESET, XmlArcType.RESET],
+        [ArcType.INHIBITOR, XmlArcType.INHIBITOR],
+    ]);
 
     constructor(
         private arcFactory: ArcFactory
@@ -48,7 +62,6 @@ export class ModelService implements ModelSource {
         this._placeChange = new Subject<PlaceChange>();
         this._transitionChange = new Subject<ChangedTransition>();
         this._arcChange = new Subject<ChangedArc>();
-        this._bulkChange = new Subject<void>();
     }
 
     set model(newModel: PetriNet) {
@@ -68,7 +81,7 @@ export class ModelService implements ModelSource {
         return this._model;
     }
 
-    newModel(): PetriNet {
+    public newModel(): PetriNet {
         const model = new PetriNet();
         model.id = ModelConfig.IDENTIFIER;
         model.version = ModelConfig.VERSION;
@@ -78,7 +91,7 @@ export class ModelService implements ModelSource {
         return model;
     }
 
-    updateModel(changedModel: ChangedPetriNet): void {
+    public updateModel(changedModel: ModelChange): void {
         this.model.id = changedModel.model.id;
         this.model.title = changedModel.model.title;
         this.model.initials = changedModel.model.initials;
@@ -100,7 +113,7 @@ export class ModelService implements ModelSource {
         if (this.model.getPlaces().length === 0) {
             place.marking = 1;
         }
-        this.addPlace(place);
+        this.model.addPlace(place);
         return place;
     }
 
@@ -109,14 +122,8 @@ export class ModelService implements ModelSource {
         place.id = this.nextPlaceId();
         place.x += ModelerConfig.SIZE;
         place.y += ModelerConfig.SIZE;
-        this.addPlace(place);
-        return place;
-    }
-
-    private addPlace(place: Place): void {
         this.model.addPlace(place);
-        this.model.lastChanged = Date.now();
-        this._placeChange.next(new PlaceCreated(place, this.model.clone()));
+        return place;
     }
 
     public updatePlace(newPlace: PlaceChange): void {
@@ -292,6 +299,14 @@ export class ModelService implements ModelSource {
         this.model.removeArc(arc.id);
         this.model.lastChanged = Date.now();
         this._arcChange.next(new ChangedArc(this.model.clone(), undefined, arc.id));
+    }
+
+    public toXmlArcType(arcType: ArcType): XmlArcType {
+        return this.arcTypeMapping.get(arcType);
+    }
+
+    public toArcType(xmlArcType: XmlArcType): ArcType {
+        return this.xmlArcTypeMapping.get(xmlArcType);
     }
 
     // DATA

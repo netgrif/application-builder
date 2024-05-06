@@ -35,7 +35,9 @@ export class CreatePlaceTool extends CanvasTool {
     onMouseUp(event: PointerEvent) {
         super.onMouseUp(event);
         if (this.isLeftButtonClick(event)) {
-            this.bindPlace(this.editModeService.createPlace(this.mousePosition(event)));
+            const place = this.editModeService.createPlace(this.mousePosition(event));
+            this.bindPlace(place);
+            this.historyService.save(`Place ${place.id} has been created.`);
         }
     }
 }

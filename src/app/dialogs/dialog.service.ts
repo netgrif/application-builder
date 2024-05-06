@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {DialogModelEditComponent} from './dialog-model-edit/dialog-model-edit.component';
-import {ChangedPetriNet} from '../modeler/history-mode/model/changed-petri-net';
 import {MatDialog} from '@angular/material/dialog';
 import {PetriNet} from '@netgrif/petriflow';
 import {ModelService} from '../modeler/services/model/model.service';
 import {ArcEditData, DialogArcEditComponent} from './dialog-arc-edit/dialog-arc-edit.component';
 import {ChangedArc} from './dialog-arc-edit/changed-arc';
 import {CanvasArc} from '../modeler/edit-mode/domain/canvas-arc';
+import {ModelChange} from '../modeler/history-mode/model/model/model-change';
 
 @Injectable({
     providedIn: 'root'
@@ -22,8 +22,8 @@ export class DialogService {
     public openModelEditDialog(model: PetriNet = this.modelService.model): void {
         this.dialog.open(DialogModelEditComponent, {
             width: '50%',
-            data: new ChangedPetriNet(model.id, model.clone())
-        }).afterClosed().subscribe((changedModel: ChangedPetriNet) => {
+            data: new ModelChange(model, model.clone())
+        }).afterClosed().subscribe((changedModel: ModelChange) => {
             this.modelService.updateModel(changedModel);
         });
     }

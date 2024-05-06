@@ -39,6 +39,9 @@ import {SelectedTransitionService} from '../selected-transition.service';
 import {Router} from '@angular/router';
 import {HistoryService} from '../services/history/history.service';
 import {PanzoomOptions} from '@panzoom/panzoom';
+import {CanvasElementCollection} from './domain/canvas-element-collection';
+import {transition} from '@angular/animations';
+import {width} from 'cspell/util/util';
 
 @Injectable({
     providedIn: 'root'
@@ -348,5 +351,9 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
         lasso.setAttributeNS(null, 'height', `${Math.abs(height)}`);
         lasso.setAttributeNS(null, 'x', `${newX}`);
         lasso.setAttributeNS(null, 'y', `${newY}`);
+    }
+
+    get historyService(): HistoryService {
+        return this._historyService;
     }
 }

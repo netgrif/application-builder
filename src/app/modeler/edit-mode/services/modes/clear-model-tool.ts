@@ -38,7 +38,9 @@ export class ClearModelTool extends CanvasTool {
         const dialogRef = this.dialog.open(DialogDeleteModelComponent);
         dialogRef.afterClosed().subscribe(result => {
             if (result === true) {
+                const oldId = this.modelService.model.id;
                 this.modelService.model = this.modelService.newModel();
+                this.historyService.save(`Model ${oldId} has been deleted.`);
             }
         });
     }

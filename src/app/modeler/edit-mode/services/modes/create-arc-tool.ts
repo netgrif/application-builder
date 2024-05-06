@@ -1,6 +1,6 @@
 import {CanvasNodeElement} from '../../domain/canvas-node-element';
 import {ArcType, NodeElement} from '@netgrif/petriflow';
-import {NodeElement as SvgNodeElement, RegularTransitionPlaceArc as SvgArc} from '@netgrif/petri.svg'
+import {NodeElement as SvgNodeElement} from '@netgrif/petri.svg'
 import {PetriflowNode} from '@netgrif/petriflow.svg';
 import {CanvasTool} from './canvas-tool';
 import {ControlPanelButton} from '../../../control-panel/control-panel-button';
@@ -12,7 +12,6 @@ import {SelectedTransitionService} from '../../../selected-transition.service';
 import {CanvasArc} from '../../domain/canvas-arc';
 import {CanvasPlace} from '../../domain/canvas-place';
 import {CanvasTransition} from '../../domain/canvas-transition';
-import {absoluteFrom} from '@angular/compiler-cli';
 
 export abstract class CreateArcTool<T extends CanvasNodeElement<NodeElement, PetriflowNode<SvgNodeElement>>> extends CanvasTool {
 
@@ -69,7 +68,9 @@ export abstract class CreateArcTool<T extends CanvasNodeElement<NodeElement, Pet
 
     createArc(type: ArcType, source: CanvasNodeElement<any, any>, destination: CanvasNodeElement<any, any>): CanvasArc {
         const modelArc = this.modelService.newArc(source.modelElement, destination.modelElement, type);
-        return this.editModeService.newSvgArc(modelArc);
+        const svgArc = this.editModeService.newSvgArc(modelArc);
+        this.historyService.save(`New ${this.modelService.toXmlArcType(modelArc.type)} arc ${modelArc.id} has been created`);
+        return svgArc;
     }
 
     unbind() {

@@ -23,7 +23,6 @@ import {DeleteSelectedMenuItem} from '../../context-menu/menu-items/delete-selec
 import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
 import {SelectArcsMenuItem} from '../../context-menu/menu-items/select-arcs-menu-item';
 import {CanvasNodeElement} from '../../domain/canvas-node-element';
-import {transition} from '@angular/animations';
 
 export class SelectTool extends CanvasTool {
 
@@ -150,6 +149,7 @@ export class SelectTool extends CanvasTool {
         });
         this.deselectAll();
         this.selectAll(copiedElements);
+        this.historyService.save(`Elements (${copiedElements.totalSize()}) has been duplicated`);
     }
 
     selectAll(collection = this.editModeService.elements): void {
@@ -186,6 +186,7 @@ export class SelectTool extends CanvasTool {
     }
 
     private deleteElements(): void {
+        const size = this.selectedElements.totalSize();
         this.selectedElements.places.forEach(p => {
             this.deletePlace(p);
         });
@@ -196,6 +197,7 @@ export class SelectTool extends CanvasTool {
             this.deleteArc(a);
         });
         this.deselectAll();
+        this.historyService.save(`Elements (${size}) has been deleted`);
     }
 
     undo(): void {
@@ -481,6 +483,7 @@ export class SelectTool extends CanvasTool {
                 this.editModeService.moveArcBreakpoint(a, index);
             });
         });
+        this.historyService.save(`Elements (${this.selectedElements.totalSize()}) has been moved`);
     }
 
     isDraggingOnlyArc(): boolean {
@@ -507,6 +510,7 @@ export class SelectTool extends CanvasTool {
     private insertBreakpoint(arc: CanvasArc, point: DOMPoint, index: number): void {
         this.arcPointIndex = index;
         this.editModeService.createArcBreakpoint(arc, point, index);
+        this.historyService.save(`Breakpoint added to arc ${arc.id}`);
     }
 
     private isBetween(first: DOMPoint, second: DOMPoint, mouse: DOMPoint): boolean {

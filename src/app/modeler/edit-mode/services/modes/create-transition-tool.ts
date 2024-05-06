@@ -37,6 +37,7 @@ export class CreateTransitionTool extends CanvasTool {
         if (this.isLeftButtonClick(event)) {
             const canvasTransition = this.editModeService.createTransition(this.mousePosition(event));
             this.bindTransition(canvasTransition);
+            this.historyService.save(`Task ${canvasTransition.id} has been created.`);
         }
     }
 }

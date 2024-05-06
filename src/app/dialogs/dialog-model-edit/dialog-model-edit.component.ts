@@ -1,11 +1,11 @@
 import {Component, Inject} from '@angular/core';
-import {ChangedPetriNet} from '../../modeler/history-mode/model/changed-petri-net';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {ModelService} from '../../modeler/services/model/model.service';
 import {Router} from '@angular/router';
 import {DialogManageRolesComponent, RoleRefType} from '../dialog-manage-roles/dialog-manage-roles.component';
 import {DataType} from '@netgrif/petriflow';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
+import {ModelChange} from '../../modeler/history-mode/model/model/model-change';
 
 @Component({
     selector: 'nab-dialog-model-edit',
@@ -14,14 +14,14 @@ import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 })
 export class DialogModelEditComponent {
 
-    public model: ChangedPetriNet;
+    public model: ModelChange;
     public idCtrl: FormControl;
     public versionCtrl: FormControl;
     public titleCtrl: FormControl;
     public initialsCtrl: FormControl;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: ChangedPetriNet,
+        @Inject(MAT_DIALOG_DATA) public data: ModelChange,
         public modelService: ModelService,
         private router: Router,
         private dialog: MatDialog
