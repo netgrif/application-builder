@@ -14,11 +14,6 @@ jobs:
             -   name: Checkout repository
                 uses: actions/checkout@v4
 
-            -   name: Setup Node.js
-                uses: actions/setup-node@v3
-                with:
-                    node-version: 18
-
             -   name: Log in to Docker Hub
                 uses: docker/login-action@v1
                 with:
@@ -41,6 +36,13 @@ jobs:
                 with:
                     push: true
                     tags: netgrif/application-builder:latest
+
+            -   name: Push Next
+                if: ${{ contains(steps.getVersion.outputs.version, '-') }}
+                uses: docker/build-push-action@v5
+                with:
+                    push: true
+                    tags: netgrif/application-builder:next
 
     publish-assets:
         name: Upload Release Assets
@@ -69,7 +71,7 @@ jobs:
 
             -   name: Build project
                 run: |
-                    zip -r netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip target/application-builder
+                    zip -r netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip dist/application-builder
 
             -   name: Upload binaries to release
                 uses: svenstaro/upload-release-action@v2
@@ -79,3 +81,16 @@ jobs:
                     asset_name: netgrif-application-builder-${{ steps.getVersion.outputs.version }}.zip
                     tag: ${{ github.ref }}
                     overwrite: true
+
+    deploy:
+        name: Deploy on K3S cluster
+        runs-on: ubuntu-latest
+        needs: publish-docker
+        steps:
+            -   name: Apply new release
+                uses: actions-hub/kubectl@master
+                env:
+                    KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+                    KUBE_CONTEXT: default-github-builder
+                with:
+                    args: rollout restart deployment/netgrif-application-builder-${{ contains(steps.getVersion.outputs.version, '-') && 'uat' || 'prod' }}-dpl --namespace builder

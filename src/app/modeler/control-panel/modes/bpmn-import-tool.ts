@@ -1,21 +1,25 @@
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {FileTool} from '../tools/file-tool';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {AppBuilderConfigurationService} from '../../../app-builder-configuration.service';
+import {ModelImportService} from '../../model-import-service';
 import {ControlPanelButton} from '../control-panel-button';
 import {ControlPanelIcon} from '../control-panel-icon';
+import {FileTool} from '../tools/file-tool';
 import {ImportToolButtonComponent} from './import-tool-button/import-tool-button.component';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {ModelImportService} from '../../model-import-service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class BpmnImportTool extends FileTool {
 
+    private bpmn2pnUrl: string;
+
     constructor(
+        config: AppBuilderConfigurationService,
         private importService: ModelImportService,
         private http: HttpClient,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
     ) {
         super(
             'bpmn_import',
@@ -23,16 +27,17 @@ export class BpmnImportTool extends FileTool {
                 new ControlPanelIcon('upload_file', false, true),
                 'Choose a BPMN file to open',
             ),
-            ImportToolButtonComponent
+            ImportToolButtonComponent,
         );
+        this.bpmn2pnUrl = config.get().services?.urls?.bpmn2pn;
     }
 
     handleFileContent(content: string) {
-        this.http.post('https://bpmn2pn.netgrif.cloud/bpmn2pn/', content, {
+        this.http.post(this.bpmn2pnUrl, content, {
             headers: {
                 'Content-Type': 'text/xml;charset=US-ASCII',
             },
-            responseType: 'text'
+            responseType: 'text',
         }).pipe().subscribe((xmlContent: string) => {
             this.importService.importFromXml(xmlContent);
         }, (error: HttpErrorResponse) => {

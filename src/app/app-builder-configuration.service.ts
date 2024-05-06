@@ -5,7 +5,7 @@ import {default as naeConfig} from '../../nae.json';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class AppBuilderConfigurationService extends ConfigurationService {
     constructor() {

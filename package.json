@@ -32,7 +32,7 @@
         "build": "ng build --configuration production --aot=false --build-optimizer=false",
         "test": "ng test",
         "lint": "ng lint",
-        "spell": "cspell \"{**/*.md,src/**/*.ts}\"",
+        "spell": "cspell \"{docs/**/*,**/*.md,src/**/*.ts}\"",
         "e2e": "ng e2e",
         "full-test": "npm run lint && npm run spell && npm run test",
         "builder:clean-dist": "rm -rf dist",
