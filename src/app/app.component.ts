@@ -1,10 +1,6 @@
 import {AfterViewInit, Component, HostListener} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
-import {TutorialService} from './tutorial/tutorial-service';
-import {MortgageService} from './modeler/mortgage.service';
 import {Router} from '@angular/router';
-import {LanguageService} from '@netgrif/components-core';
 import {NetgrifApplicationEngine} from '@netgrif/components-core/';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
@@ -27,10 +23,10 @@ export class AppComponent implements AfterViewInit {
     title = 'Netgrif Application Builder';
     config: NetgrifApplicationEngine;
 
-    // @HostListener('window:beforeunload', ['$event'])
-    // WindowBeforeUnload($event: any) {
-    //     $event.returnValue = 'Your data will be lost!';
-    // }
+    @HostListener('window:beforeunload', ['$event'])
+    WindowBeforeUnload($event: any) {
+        $event.returnValue = 'Your data will be lost!';
+    }
 
     constructor(
         config: AppBuilderConfigurationService,
