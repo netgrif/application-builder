@@ -24,6 +24,8 @@ import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
 import {SelectArcsMenuItem} from '../../context-menu/menu-items/select-arcs-menu-item';
 import {CanvasNodeElement} from '../../domain/canvas-node-element';
 import {transition} from '@angular/animations';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 
 export class SelectTool extends CanvasTool {
 
@@ -44,7 +46,9 @@ export class SelectTool extends CanvasTool {
         editModeService: EditModeService,
         router: Router,
         transitionService: SelectedTransitionService,
-        private _historyService: HistoryService
+        actionMode: ActionsModeService,
+        actionsMasterDetail: ActionsMasterDetailService,
+        private _historyService: HistoryService,
     ) {
         super(
             SelectTool.ID,
@@ -56,7 +60,9 @@ export class SelectTool extends CanvasTool {
             dialog,
             editModeService,
             router,
-            transitionService
+            transitionService,
+            actionMode,
+            actionsMasterDetail
         );
         this._selectedElements = new CanvasElementCollection();
         this._clipboardElements = new CanvasElementCollection();

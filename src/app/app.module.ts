@@ -40,6 +40,7 @@ import {TaskContentComponentModule} from '@netgrif/components';
 import {JoyrideModule} from 'ngx-joyride';
 import {AuthenticationMethodService, ConfigurationService, NullAuthenticationService} from '@netgrif/components-core';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const appRoutes: Routes = [
     {
@@ -85,7 +86,8 @@ const appRoutes: Routes = [
         NgOptimizedImage,
         // TODO: release/4.0.0 error rxjs
         TaskContentComponentModule,
-        CommonModule
+        CommonModule,
+        MatProgressSpinnerModule
     ],
     providers: [
         ImportService,

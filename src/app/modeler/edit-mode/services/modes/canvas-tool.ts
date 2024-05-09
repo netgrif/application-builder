@@ -30,6 +30,9 @@ import {EditModelMenuItem} from '../../context-menu/menu-items/model/edit-model-
 import {ManageModelPermissionsMenuItem} from '../../context-menu/menu-items/model/manage-model-permissions-menu-item';
 import {DeletePlaceMenuItem} from '../../context-menu/menu-items/place/delete-place-menu-item';
 import {ContextMenuInterruptionError} from '../../../services/canvas/listeners/context-menu-interruption-error';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {TransitionActionsTool} from '../../../actions-mode/tools/transition-actions-tool';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 
 export abstract class CanvasTool extends CanvasListenerTool {
 
@@ -42,7 +45,9 @@ export abstract class CanvasTool extends CanvasListenerTool {
         dialog: MatDialog,
         editModeService: EditModeService,
         router: Router,
-        transitionService: SelectedTransitionService
+        transitionService: SelectedTransitionService,
+        public actionMode: ActionsModeService,
+        public actionsMasterDetail: ActionsMasterDetailService
     ) {
         super(id, button, modelService, dialog, router, transitionService);
         this._editModeService = editModeService;

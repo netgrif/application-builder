@@ -23,7 +23,7 @@ export class ActionMasterItemComponent {
         this._service.select(this.item);
     }
 
-    get selected(): DataVariable {
+    get selected(): DataVariable | Transition | Role {
         return this._service.getSelected();
     }
 }

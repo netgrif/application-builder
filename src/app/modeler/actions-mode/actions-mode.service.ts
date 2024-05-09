@@ -42,4 +42,16 @@ export class ActionsModeService extends ModeService<Tool> {
             new ToolGroup<Tool>(_dataActionsTool, _transitionActionsTool, _roleActionsTool, _processActionsTool, _functionsTool)
         ];
     }
+
+    get transitionActionsTool(): TransitionActionsTool {
+        return this._transitionActionsTool;
+    }
+
+    get roleActionsTool(): TransitionActionsTool {
+        return this._roleActionsTool;
+    }
+
+    get dataActionsTool(): TransitionActionsTool {
+        return this._dataActionsTool;
+    }
 }

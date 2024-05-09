@@ -66,7 +66,7 @@ import {
     FunctionMasterItemComponent
 } from './actions-mode/action-master/function-master-item/function-master-item.component';
 import {ActionDetailComponent} from './actions-mode/action-detail/action-detail.component';
-import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [
@@ -92,7 +92,6 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
         FlagComponent,
         FlagFallbackDirective,
         ModelTranslationComponent,
-        I18nFieldComponent,
         DataTranslationComponent,
         RoleTranslationComponent,
         TaskTranslationComponent,
@@ -133,7 +132,8 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
         ResizableModule,
         RouterModule,
         TaskContentComponentModule,
-        ScrollingModule
+        MatProgressSpinnerModule,
+        I18nFieldComponent
     ]
 })
 export class ModelerModule {

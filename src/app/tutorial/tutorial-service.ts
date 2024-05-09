@@ -3,6 +3,9 @@ import {MortgageService} from '../modeler/mortgage.service';
 import {Router} from '@angular/router';
 import {TutorialStep} from './tutorial-step';
 import {ModelService} from '../modeler/services/model/model.service';
+import {ActionsModeService} from '../modeler/actions-mode/actions-mode.service';
+import {TransitionActionsTool} from '../modeler/actions-mode/tools/transition-actions-tool';
+import {RoleActionsTool} from '../modeler/actions-mode/tools/role-actions-tool';
 
 @Injectable({
     providedIn: 'root'

@@ -20,6 +20,9 @@ import {ModelService} from '../../services/model/model.service';
 import {tap} from 'rxjs/internal/operators/tap';
 import {startWith} from 'rxjs/internal/operators/startWith';
 import {map} from 'rxjs/internal/operators/map';
+import {Router} from '@angular/router';
+import {ActionsModeService} from '../../actions-mode/actions-mode.service';
+import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
 
 export interface TypeArray {
     viewValue: string;
@@ -60,7 +63,10 @@ export class DataDetailComponent {
     public constructor(
         private _masterService: DataMasterDetailService,
         private _modelService: ModelService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private _router: Router,
+        private _actionMode: ActionsModeService,
+        private _actionsMasterDetail: ActionsMasterDetailService
     ) {
         this.formControlRef = new FormControl();
         this.transitionOptions = this.createTransOptions();
@@ -311,5 +317,11 @@ export class DataDetailComponent {
 
     get service(): DataMasterDetailService {
         return this._masterService;
+    }
+
+    openActions() {
+        this._actionMode.activate(this._actionMode.dataActionsTool);
+        this._actionsMasterDetail.select(this._masterService.getSelected());
+        this._router.navigate(['modeler/actions']);
     }
 }

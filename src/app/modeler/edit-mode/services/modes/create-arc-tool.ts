@@ -13,14 +13,18 @@ import {CanvasArc} from '../../domain/canvas-arc';
 import {CanvasPlace} from '../../domain/canvas-place';
 import {CanvasTransition} from '../../domain/canvas-transition';
 import {absoluteFrom} from '@angular/compiler-cli';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 
 export abstract class CreateArcTool<T extends CanvasNodeElement<NodeElement, PetriflowNode<SvgNodeElement>>> extends CanvasTool {
 
     private _source: T;
     private _arcLine: SVGElement;
 
-    constructor(_id: string, button: ControlPanelButton, modelService: ModelService, dialog: MatDialog, editModeService: EditModeService, router: Router, transitionService: SelectedTransitionService) {
-        super(_id, button, modelService, dialog, editModeService, router, transitionService);
+    constructor(_id: string, button: ControlPanelButton, modelService: ModelService, dialog: MatDialog,
+                editModeService: EditModeService, router: Router, transitionService: SelectedTransitionService,
+                actionMode: ActionsModeService, actionsMasterDetail: ActionsMasterDetailService) {
+        super(_id, button, modelService, dialog, editModeService, router, transitionService, actionMode, actionsMasterDetail);
     }
 
     abstract startDrawingArc(node: CanvasPlace | CanvasTransition): void;

@@ -6,6 +6,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {EditModeService} from '../../edit-mode.service';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 
 export class CreateTransitionTool extends CanvasTool {
 
@@ -16,7 +18,9 @@ export class CreateTransitionTool extends CanvasTool {
         dialog: MatDialog,
         editModeService: EditModeService,
         router: Router,
-        transitionService: SelectedTransitionService
+        transitionService: SelectedTransitionService,
+        actionMode: ActionsModeService,
+        actionsMasterDetail: ActionsMasterDetailService
     ) {
         super(
             CreateTransitionTool.ID,
@@ -28,7 +32,9 @@ export class CreateTransitionTool extends CanvasTool {
             dialog,
             editModeService,
             router,
-            transitionService
+            transitionService,
+            actionMode,
+            actionsMasterDetail
         );
     }
 

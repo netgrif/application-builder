@@ -12,6 +12,8 @@ import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
 import {ArcType} from '@netgrif/petriflow';
 import {Observable, of} from 'rxjs';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 
 export class CreateRegularArcTool extends CreateArcTool<CanvasPlace | CanvasTransition> {
 
@@ -22,7 +24,9 @@ export class CreateRegularArcTool extends CreateArcTool<CanvasPlace | CanvasTran
         dialog: MatDialog,
         editModeService: EditModeService,
         router: Router,
-        transitionService: SelectedTransitionService
+        transitionService: SelectedTransitionService,
+        actionMode: ActionsModeService,
+        actionsMasterDetail: ActionsMasterDetailService
     ) {
         super(
             CreateRegularArcTool.ID,
@@ -34,7 +38,9 @@ export class CreateRegularArcTool extends CreateArcTool<CanvasPlace | CanvasTran
             dialog,
             editModeService,
             router,
-            transitionService
+            transitionService,
+            actionMode,
+            actionsMasterDetail
         );
     }
 

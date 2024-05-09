@@ -11,7 +11,13 @@
             <mat-label>Label</mat-label>
             <input type="text" matInput [(ngModel)]="transition.transition.label.value">
         </mat-form-field>
-        <nab-material-icon-picker [(icon)]="transition.transition.icon"></nab-material-icon-picker>
+        @defer (on viewport) {
+            <nab-material-icon-picker [(icon)]="transition.transition.icon"></nab-material-icon-picker>
+        } @placeholder {
+            <div class="loading-text" fxLayoutAlign="start center">
+                <span>...loading</span>
+            </div>
+        }
         <mat-form-field fxFlex>
             <mat-label>Assign policy</mat-label>
             <mat-select [(value)]="transition.transition.assignPolicy">

@@ -8,6 +8,8 @@ import {EditModeService} from '../../edit-mode.service';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
 import {ChangedPlace} from '../../../../dialogs/dialog-place-edit/changed-place';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 
 export class AddTokenTool extends CanvasTool {
 
@@ -18,7 +20,9 @@ export class AddTokenTool extends CanvasTool {
         dialog: MatDialog,
         editModeService: EditModeService,
         router: Router,
-        transitionService: SelectedTransitionService
+        transitionService: SelectedTransitionService,
+        actionMode: ActionsModeService,
+        actionsMasterDetail: ActionsMasterDetailService
     ) {
         super(
             AddTokenTool.ID,
@@ -30,7 +34,9 @@ export class AddTokenTool extends CanvasTool {
             dialog,
             editModeService,
             router,
-            transitionService
+            transitionService,
+            actionMode,
+            actionsMasterDetail
         );
     }
 

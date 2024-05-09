@@ -3,6 +3,10 @@ import {DataVariable, Role} from '@netgrif/petriflow';
 import {ModelService} from '../../services/model/model.service';
 import {MatDialog} from '@angular/material/dialog';
 import {RoleMasterDetailService} from '../role-master-detail.service';
+import {Router} from '@angular/router';
+import {ActionsModeService} from '../../actions-mode/actions-mode.service';
+import {TransitionActionsTool} from '../../actions-mode/tools/transition-actions-tool';
+import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
 
 @Component({
   selector: 'nab-role-detail',
@@ -14,7 +18,9 @@ export class RoleDetailComponent {
     public constructor(
         private _masterService: RoleMasterDetailService,
         private _modelService: ModelService,
-        private dialog: MatDialog
+        private _router: Router,
+        private _actionMode: ActionsModeService,
+        private _actionsMasterDetail: ActionsMasterDetailService
     ) {
 
     }
@@ -48,5 +54,11 @@ export class RoleDetailComponent {
 
     get service(): RoleMasterDetailService {
         return this._masterService;
+    }
+
+    openActions() {
+        this._actionMode.activate(this._actionMode.roleActionsTool);
+        this._actionsMasterDetail.select(this._masterService.getSelected());
+        this._router.navigate(['modeler/actions']);
     }
 }

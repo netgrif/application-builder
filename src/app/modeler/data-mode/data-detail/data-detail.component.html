@@ -324,6 +324,17 @@
 
         <div fxFlex="2.5"></div>
     </div>
+
+    <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="2.5"></div>
+
+        <button mat-stroked-button color="primary" (click)="openActions()" mat-dialog-close>
+            <mat-icon>code</mat-icon>
+            <span>Open Actions</span>
+        </button>
+
+        <div fxFlex></div>
+    </div>
 </div>
 
 <ng-template #elseBlock>
