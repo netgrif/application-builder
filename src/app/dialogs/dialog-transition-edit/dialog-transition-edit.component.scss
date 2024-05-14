@@ -19,11 +19,6 @@ mat-dialog-actions {
     overflow: hidden;
 }
 
-button {
-    padding-right: 8px;
-    padding-left: 4px;
-
-    mat-icon {
-        padding-right: 2px;
-    }
+.loading-text {
+    height: 65px;
 }

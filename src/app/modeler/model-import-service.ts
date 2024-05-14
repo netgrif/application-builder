@@ -29,7 +29,8 @@ export class ModelImportService {
             petriNetResult.errors.forEach(e => console.log(e));
 
             this.dialog.open(DialogErrorsComponent, {
-                maxWidth: '60%',
+                width: '60%',
+                panelClass: "dialog-width-60",
                 data: {
                     errors: petriNetResult.errors,
                     warnings: petriNetResult.warnings,

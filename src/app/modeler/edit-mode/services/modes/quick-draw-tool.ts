@@ -17,6 +17,8 @@ import {EditModeService} from '../../edit-mode.service';
 import {ModelService} from '../../../services/model/model.service';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 
 enum Step {
     PLACE,
@@ -37,7 +39,9 @@ export class QuickDrawTool extends CanvasTool {
         dialog: MatDialog,
         editModeService: EditModeService,
         router: Router,
-        transitionService: SelectedTransitionService
+        transitionService: SelectedTransitionService,
+        actionMode: ActionsModeService,
+        actionsMasterDetail: ActionsMasterDetailService
     ) {
         super(
             QuickDrawTool.ID,
@@ -49,7 +53,9 @@ export class QuickDrawTool extends CanvasTool {
             dialog,
             editModeService,
             router,
-            transitionService
+            transitionService,
+            actionMode,
+            actionsMasterDetail
         );
     }
 

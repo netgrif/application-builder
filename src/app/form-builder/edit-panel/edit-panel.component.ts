@@ -26,12 +26,15 @@ import {Observable} from 'rxjs';
 import {FormControl} from '@angular/forms';
 import {map, startWith, tap} from 'rxjs/operators';
 import {MAT_DATE_FORMATS} from '@angular/material/core';
-import {DATE_FORMAT, DATE_TIME_FORMAT, EnumerationFieldValue} from '@netgrif/components-core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {DataFieldUtils} from '../data-field-utils';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
 import {ModelService} from '../../modeler/services/model/model.service';
+import {DATE_FORMAT, DATE_TIME_FORMAT, EnumerationFieldValue} from '@netgrif/components-core';
+import {Router} from '@angular/router';
+import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
+import {ActionsMasterDetailService} from '../../modeler/actions-mode/actions-master-detail.setvice';
 
 @Component({
     selector: 'nab-edit-panel',
@@ -72,8 +75,14 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
 
     behaviorOptions;
 
-    constructor(public gridsterService: GridsterService, public modelService: ModelService, private dialog: MatDialog, private transitionService: SelectedTransitionService) {
-        this.transitionOptions = [];
+    constructor(public gridsterService: GridsterService,
+                public modelService: ModelService,
+                private dialog: MatDialog,
+                private transitionService: SelectedTransitionService,
+                private _router: Router,
+                private _actionMode: ActionsModeService,
+                private _actionsMasterDetail: ActionsMasterDetailService) {
+        // this.transitionOptions = [];
         this.formControlRef = new FormControl();
         this.behaviorOptions = [
             DataRefBehavior.EDITABLE, DataRefBehavior.VISIBLE, DataRefBehavior.HIDDEN, DataRefBehavior.FORBIDDEN
@@ -340,6 +349,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     openRefactorDialog(event, item: DataVariable): void {
         const dialogRef = this.dialog.open(DialogRefactorComponent, {
             width: '50%',
+            panelClass: "dialog-width-50",
             data: {originalId: item.id}
         });
         dialogRef.afterClosed().subscribe(result => {
@@ -483,5 +493,11 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         if (this.dataVariable.init.value) {
             this.dataVariable.init.value = this.dataVariable.init.value.substring(0,10);
         }
+    }
+
+    openActions() {
+        this._actionMode.activate(this._actionMode.dataActionsTool);
+        this._actionsMasterDetail.select(this.gridsterService.selectedDataField.dataVariable);
+        this._router.navigate(['modeler/actions']);
     }
 }

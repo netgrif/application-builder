@@ -22,6 +22,7 @@ export class DialogService {
     public openModelEditDialog(model: PetriNet = this.modelService.model): void {
         this.dialog.open(DialogModelEditComponent, {
             width: '50%',
+            panelClass: "dialog-width-50",
             data: new ModelChange(model, model.clone())
         }).afterClosed().subscribe((changedModel: ModelChange) => {
             this.modelService.updateModel(changedModel);
@@ -31,6 +32,7 @@ export class DialogService {
     public openArcEditDialog(arc: CanvasArc): void {
         this.dialog.open(DialogArcEditComponent, {
             width: '50%',
+            panelClass: "dialog-width-50",
             data: {
                 arcId: arc.modelArc.id
             } as ArcEditData

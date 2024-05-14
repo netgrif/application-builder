@@ -1,10 +1,14 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {I18nString, I18nTranslations} from '@netgrif/petriflow';
+import {MaterialModule} from '@netgrif/components-core';
+import {CommonModule} from '@angular/common';
 
 @Component({
     selector: 'nab-i18n-field',
     templateUrl: './i18n-field.component.html',
-    styleUrls: ['./i18n-field.component.scss']
+    styleUrls: ['./i18n-field.component.scss'],
+    standalone: true,
+    imports: [MaterialModule, CommonModule]
 })
 export class I18nFieldComponent implements OnInit {
 

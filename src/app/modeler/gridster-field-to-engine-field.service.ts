@@ -1,34 +1,5 @@
 import {Injectable} from '@angular/core';
 import {
-    BooleanField,
-    ButtonField,
-    Component,
-    DataField,
-    DateField,
-    DateTimeField,
-    DynamicEnumerationField,
-    EnumerationField,
-    EnumerationFieldValue,
-    EnumerationFieldView,
-    FieldAlignment,
-    FieldTypeResource,
-    FileField,
-    FileListField,
-    FilterField,
-    I18nField,
-    Layout,
-    MaterialAppearance,
-    MultichoiceField,
-    MultichoiceFieldView,
-    NumberField,
-    Properties,
-    TaskRefField,
-    TemplateAppearance,
-    TextField,
-    TextFieldView,
-    UserField
-} from '@netgrif/components-core';
-import {
     Alignment,
     Appearance,
     Component as PetriflowComponent,
@@ -38,10 +9,36 @@ import {
     Template
 } from '@netgrif/petriflow';
 import moment from 'moment';
-import {Behavior} from '@netgrif/components-core/lib/data-fields/models/behavior';
+import {
+    BooleanField,
+    ButtonField,
+    Component,
+    DataField,
+    DateField,
+    DateTimeField,
+    DynamicEnumerationField,
+    EnumerationField,
+    EnumerationFieldValue,
+    FieldAlignment,
+    FieldTypeResource,
+    FileField,
+    FileListField,
+    FilterField,
+    I18nField,
+    Layout,
+    MaterialAppearance,
+    MultichoiceField,
+    NumberField,
+    Properties,
+    TaskRefField,
+    TemplateAppearance,
+    TextField,
+    UserField
+} from '@netgrif/components-core';
 import {GridsterDataField} from '../form-builder/gridster/classes/gridster-data-field';
-import {Icon} from '@netgrif/components-core/lib/data-fields/models/icon';
 import {I18nFieldValue} from '@netgrif/components-core/lib/data-fields/i18n-field/models/i18n-field-value';
+import {Behavior} from '@netgrif/components-core/lib/data-fields/models/behavior';
+import { Icon } from '@netgrif/components-core/lib/data-fields/models/icon';
 
 // noinspection JSMethodCanBeStatic
 @Injectable({
@@ -99,7 +96,6 @@ export class GridsterFieldToEngineFieldService {
             dataField.dataVariable.desc?.value,
             this.buildLayout(dataField),
             [],
-            TextFieldView.DEFAULT,
             this.buildComponent(dataField)
         );
     }
@@ -146,7 +142,6 @@ export class GridsterFieldToEngineFieldService {
             dataField.dataVariable.placeholder?.value,
             dataField.dataVariable.desc?.value,
             this.buildLayout(dataField),
-            EnumerationFieldView.DEFAULT,
             dataField.dataVariable.type === DataType.ENUMERATION ? FieldTypeResource.ENUMERATION : FieldTypeResource.ENUMERATION_MAP,
             [],
             this.buildComponent(dataField)
@@ -163,7 +158,6 @@ export class GridsterFieldToEngineFieldService {
             dataField.dataVariable.placeholder?.value,
             dataField.dataVariable.desc?.value,
             this.buildLayout(dataField),
-            EnumerationFieldView.DEFAULT,
             dataField.dataVariable.type === DataType.ENUMERATION ? FieldTypeResource.ENUMERATION : FieldTypeResource.ENUMERATION_MAP,
             [],
             this.buildComponent(dataField)
@@ -180,7 +174,6 @@ export class GridsterFieldToEngineFieldService {
             dataField.dataVariable.placeholder?.value,
             dataField.dataVariable.desc?.value,
             this.buildLayout(dataField),
-            MultichoiceFieldView.DEFAULT,
             dataField.dataVariable.type === DataType.MULTICHOICE ? FieldTypeResource.MULTICHOICE : FieldTypeResource.MULTICHOICE_MAP,
             [],
             this.buildComponent(dataField)
@@ -239,7 +232,6 @@ export class GridsterFieldToEngineFieldService {
             dataField.dataVariable.placeholder?.value,
             dataField.dataVariable.desc?.value,
             this.buildLayout(dataField),
-            undefined,
             [],
             this.buildComponent(dataField)
         );
@@ -350,7 +342,7 @@ export class GridsterFieldToEngineFieldService {
 
     private createPropertiesObjectFromEntries(component: PetriflowComponent): Properties {
         component = this.getComponentWithMissingProperties(component);
-        if (!component || component.properties === []) {
+        if (!component || component.properties?.length === 0) {
             return undefined;
         }
         return component.properties.reduce((acc, obj) =>

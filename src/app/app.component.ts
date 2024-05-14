@@ -1,25 +1,27 @@
 import {AfterViewInit, Component, HostListener} from '@angular/core';
-import {LanguageService} from '@netgrif/components-core';
 import {MatDialog} from '@angular/material/dialog';
-import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
-import {JoyrideService} from 'ngx-joyride';
-import {TutorialService} from './tutorial/tutorial-service';
-import {MortgageService} from './modeler/mortgage.service';
 import {Router} from '@angular/router';
-import {ModelService} from './modeler/services/model/model.service';
-import {ModelerConfig} from './modeler/modeler-config';
+import {NetgrifApplicationEngine} from '@netgrif/components-core/';
+import {AppBuilderConfigurationService} from './app-builder-configuration.service';
+import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
 import {
-    DialogLocalStorageModelComponent
+    DialogLocalStorageModelComponent,
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
 import {ModelImportService} from './modeler/model-import-service';
+import {ModelerConfig} from './modeler/modeler-config';
+import {MortgageService} from './modeler/mortgage.service';
+import {ModelService} from './modeler/services/model/model.service';
+import {TutorialService} from './tutorial/tutorial-service';
+import {JoyrideService} from 'ngx-joyride';
 
 @Component({
     selector: 'nab-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
     title = 'Netgrif Application Builder';
+    config: NetgrifApplicationEngine;
 
     @HostListener('window:beforeunload', ['$event'])
     WindowBeforeUnload($event: any) {
@@ -27,15 +29,16 @@ export class AppComponent implements AfterViewInit {
     }
 
     constructor(
+        config: AppBuilderConfigurationService,
         private router: Router,
-        private _languageService: LanguageService,
         private matDialog: MatDialog,
         private readonly joyrideService: JoyrideService,
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
         private modelService: ModelService,
-        private importService: ModelImportService
+        private importService: ModelImportService,
     ) {
+        this.config = config.get();
     }
 
     ngAfterViewInit(): void {
@@ -49,7 +52,7 @@ export class AppComponent implements AfterViewInit {
                 id: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.ID),
                 timestamp: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TIMESTAMP),
                 title: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TITLE),
-            }
+            },
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result === true) {
@@ -74,7 +77,7 @@ export class AppComponent implements AfterViewInit {
     help() {
         this.joyrideService.startTour({
             steps: this.tutorialService.steps,
-            themeColor: '#0f4c81dd'
+            themeColor: '#0f4c81dd',
         });
     }
 

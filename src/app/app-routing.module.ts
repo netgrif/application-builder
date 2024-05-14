@@ -5,7 +5,7 @@ import {CommonModule} from '@angular/common';
 const routes: Routes = [];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+    imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule, CommonModule]
 })
 export class AppRoutingModule {

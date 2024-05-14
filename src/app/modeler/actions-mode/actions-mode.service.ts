@@ -5,11 +5,11 @@ import {ControlPanelButton} from '../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../control-panel/control-panel-icon';
 import {ToolGroup} from '../control-panel/tools/tool-group';
 import {ModeService} from '../control-panel/modes/mode-component/mode.service';
-import {DataActionsTool} from './data-actions-tool';
-import {TransitionActionsTool} from './transition-actions-tool';
-import {RoleActionsTool} from './role-actions-tool';
-import {ProcessActionsTool} from './process-actions-tool';
-import {FunctionsTool} from './functions-tool';
+import {DataActionsTool} from './tools/data-actions-tool';
+import {TransitionActionsTool} from './tools/transition-actions-tool';
+import {RoleActionsTool} from './tools/role-actions-tool';
+import {ProcessActionsTool} from './tools/process-actions-tool';
+import {FunctionsTool} from './tools/functions-tool';
 import {Tool} from '../control-panel/tools/tool';
 
 @Injectable({
@@ -41,5 +41,17 @@ export class ActionsModeService extends ModeService<Tool> {
         this.tools = [
             new ToolGroup<Tool>(_dataActionsTool, _transitionActionsTool, _roleActionsTool, _processActionsTool, _functionsTool)
         ];
+    }
+
+    get transitionActionsTool(): TransitionActionsTool {
+        return this._transitionActionsTool;
+    }
+
+    get roleActionsTool(): TransitionActionsTool {
+        return this._roleActionsTool;
+    }
+
+    get dataActionsTool(): TransitionActionsTool {
+        return this._dataActionsTool;
     }
 }

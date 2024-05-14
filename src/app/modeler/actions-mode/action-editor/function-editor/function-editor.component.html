@@ -4,9 +4,9 @@
 </div>
 <mat-sidenav-container autosize>
     <mat-sidenav mode="side" #drawer
-                 mwlResizable
-                 [resizeCursorPrecision]="10"
+                 mwlResizable mwlResizeHandle
                  [resizeEdges]="{ left: true }">
+
         <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
                                 [editor]="editor"></nab-action-editor-menu>
     </mat-sidenav>
@@ -61,8 +61,8 @@
             </div>
         </div>
         <div fxLayout="column" fxLayoutAlign="start stretch" id="_div'}}">
-            <ngx-monaco-editor class="full-size-editor" id="_editor'}}" [options]="editorOptions"
-                               [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>
+<!--            <ngx-monaco-editor class="full-size-editor" id="_editor'}}" [options]="editorOptions"-->
+<!--                               [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>-->
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

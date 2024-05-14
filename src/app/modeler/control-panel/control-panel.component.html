@@ -1,4 +1,4 @@
-<div fxLayoutAlign="start center" class="control">
+<div class="control" style="display: flex; flex-direction: row; justify-content: start; align-items: center">
 <!-- TODO: panel height: 40px, button height: 28px, margin (l,r): 1px -->
     <nab-control-panel-mode *ngFor="let mode of controlPanelService.modeRegistry.getItems()"
                             [mode]="mode"></nab-control-panel-mode>

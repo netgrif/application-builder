@@ -6,6 +6,8 @@ import {DialogManageRolesComponent, RoleRefType} from '../dialog-manage-roles/di
 import {DataType} from '@netgrif/petriflow';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {ModelChange} from '../../modeler/history-mode/model/model/model-change';
+import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
+import {ProcessActionsTool} from '../../modeler/actions-mode/tools/process-actions-tool';
 
 @Component({
     selector: 'nab-dialog-model-edit',
@@ -24,7 +26,9 @@ export class DialogModelEditComponent {
         @Inject(MAT_DIALOG_DATA) public data: ModelChange,
         public modelService: ModelService,
         private router: Router,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private _actionMode: ActionsModeService,
+        private _processTool: ProcessActionsTool
     ) {
         this.model = data;
         this.idCtrl = new FormControl('', [Validators.required]);
@@ -39,6 +43,7 @@ export class DialogModelEditComponent {
     openPermissions() {
         this.dialog.open(DialogManageRolesComponent, {
             width: '60%',
+            panelClass: "dialog-width-60",
             data: {
                 type: RoleRefType.PROCESS,
                 roles: this.modelService.model.getRoles(),
@@ -50,7 +55,7 @@ export class DialogModelEditComponent {
     }
 
     openActions() {
-        // TODO: NAB-327 open process view
+        this._actionMode.activate(this._processTool);
         this.router.navigate(['modeler/actions']);
     }
 

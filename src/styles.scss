@@ -10,7 +10,7 @@ body {
 }
 
 .app-mat-viewnav {
-    background-color: map-get(netgif-theme.$netgrif-blue, 600);
+    background-color: map-get(netgif-theme.$netgrif-blue, 600) !important;
 
     .selected {
         border-left: map-get(netgif-theme.$netgrif-blue, A200);
@@ -96,7 +96,7 @@ body {
 }
 
 .data-selected {
-    background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .3);
+    background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .3) !important;
 }
 
 .checkbox-background-warn {
@@ -130,4 +130,26 @@ body {
     .mat-list-item-content {
         padding-left: 0 !important;
     }
+}
+
+.flexRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.flexColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.dialog-width-50 {
+    width: 50% !important;
+}
+
+.dialog-width-60 {
+    width: 60% !important;
+}
+
+.mat-mdc-dialog-container .mat-mdc-dialog-title+.mat-mdc-dialog-content {
+    padding-top: 8px !important;
 }

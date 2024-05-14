@@ -1,5 +1,12 @@
 import {Injectable} from '@angular/core';
-import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from 'angular-gridster2';
+import {
+    CompactType,
+    DisplayGrid,
+    GridsterConfig,
+    GridsterItem,
+    GridsterItemComponentInterface,
+    GridType
+} from 'angular-gridster2';
 import {ModelService} from '../../modeler/services/model/model.service';
 import {GridsterDataField} from './classes/gridster-data-field';
 import {
@@ -17,7 +24,6 @@ import {
     TransitionLayout
 } from '@netgrif/petriflow';
 import {BehaviorSubject, ReplaySubject, Subject} from 'rxjs';
-import {GridsterItemComponentInterface} from 'angular-gridster2/lib/gridsterItemComponent.interface';
 import {DataFieldUtils} from '../data-field-utils';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 import {FieldListService} from '../field-list/field-list.service';

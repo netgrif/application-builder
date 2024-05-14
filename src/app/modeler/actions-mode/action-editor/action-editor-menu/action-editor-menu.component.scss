@@ -1,5 +1,6 @@
 .action-menu-panel {
     font-size: 14px;
+    letter-spacing: normal;
 }
 
 .description-info-button {
@@ -18,6 +19,7 @@
 
 .actions-list-expansion-panel {
     box-shadow: none !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .itemLabel {
@@ -31,4 +33,9 @@ mat-expansion-panel-header {
 
 .mat-expansion-panel-body {
     padding-left: 0 !important;
+}
+
+.menu-list-item {
+    padding-left: 0;
+    padding-right: 0;
 }

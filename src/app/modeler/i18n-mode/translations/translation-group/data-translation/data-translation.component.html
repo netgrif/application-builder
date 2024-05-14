@@ -1,19 +1,27 @@
-<!--TODO: NAB-327 async load: https://medium.com/@vyakymenko/increasing-rendering-performance-in-angular-with-lazy-render-ngfor-ae8c5d16e194-->
 <div fxLayout="column" *ngFor="let dataVariable of model.getDataSet(); let i = index">
-    <h3>{{dataVariable.title.value}} [{{dataVariable.id}}]</h3>
-    <nab-i18n-field [field]="dataVariable.title" [name]="'Title'" [translation]="translation"></nab-i18n-field>
-    <nab-i18n-field [field]="dataVariable.placeholder" [name]="'Placeholder'" [translation]="translation"></nab-i18n-field>
-    <nab-i18n-field [field]="dataVariable.desc" [name]="'Description'" [translation]="translation"></nab-i18n-field>
-    <nab-i18n-field *ngIf="isI18nField(dataVariable)" [field]="dataVariable.init" [name]="'Init'" [translation]="translation"></nab-i18n-field>
-    <div *ngIf="dataVariable.options?.length > 0">
-        <h4>Options:</h4>
-        <nab-i18n-field *ngFor="let option of dataVariable.options" [field]="option.value"
-                        [name]="option.key" class="options" [translation]="translation"></nab-i18n-field>
-    </div>
-    <div *ngIf="dataVariable.validations?.length > 0">
-        <h4>Validations:</h4>
-        <nab-i18n-field *ngFor="let validation of dataVariable.validations" [field]="validation.message"
-                        [name]="validation.expression.expression" class="options" [translation]="translation"></nab-i18n-field>
-    </div>
-    <mat-divider *ngIf="notLast(i)"></mat-divider>
+    @defer (on viewport) {
+        <div>
+            <h3>{{dataVariable.title.value}} [{{dataVariable.id}}]</h3>
+            <nab-i18n-field [field]="dataVariable.title" [name]="'Title'" [translation]="translation"></nab-i18n-field>
+            <nab-i18n-field [field]="dataVariable.placeholder" [name]="'Placeholder'" [translation]="translation"></nab-i18n-field>
+            <nab-i18n-field [field]="dataVariable.desc" [name]="'Description'" [translation]="translation"></nab-i18n-field>
+            <nab-i18n-field *ngIf="isI18nField(dataVariable)" [field]="dataVariable.init" [name]="'Init'" [translation]="translation"></nab-i18n-field>
+            <div *ngIf="dataVariable.options?.length > 0">
+                <h4>Options:</h4>
+                <nab-i18n-field *ngFor="let option of dataVariable.options" [field]="option.value"
+                                [name]="option.key" class="options" [translation]="translation"></nab-i18n-field>
+            </div>
+            <div *ngIf="dataVariable.validations?.length > 0">
+                <h4>Validations:</h4>
+                <nab-i18n-field *ngFor="let validation of dataVariable.validations" [field]="validation.message"
+                                [name]="validation.expression.expression" class="options" [translation]="translation"></nab-i18n-field>
+            </div>
+            <mat-divider *ngIf="notLast(i)"></mat-divider>
+        </div>
+    } @placeholder {
+        <div>
+            <h3>{{dataVariable.title.value}} [{{dataVariable.id}}]</h3>
+            <mat-spinner></mat-spinner>
+        </div>
+    }
 </div>

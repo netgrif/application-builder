@@ -3,7 +3,6 @@ import {Injectable} from '@angular/core';
 import {ControlPanelButton} from '../control-panel-button';
 import {ControlPanelIcon} from '../control-panel-icon';
 import {ModelExportService} from '../../services/model/model-export.service';
-import {Hotkey, HotkeysService} from 'angular2-hotkeys';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +11,6 @@ export class ExportTool extends Tool {
 
     constructor(
         private exportService: ModelExportService,
-        private hotkeyService: HotkeysService
     ) {
         super(
             'export',
@@ -21,12 +19,6 @@ export class ExportTool extends Tool {
                 'Export as XML',
             )
         );
-        this.hotkeyService.add(new Hotkey('ctrl+s', (event: KeyboardEvent): boolean => {
-            event.stopPropagation();
-            event.preventDefault();
-            this.exportService.downloadAsXml();
-            return false;
-        }));
     }
 
     onClick(): void {

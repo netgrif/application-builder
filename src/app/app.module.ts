@@ -2,7 +2,6 @@ import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {MaterialImportModule} from './material-import/material-import.module';
 import {FormBuilderModule} from './form-builder/form-builder.module';
 import {RouterModule, Routes} from '@angular/router';
@@ -14,14 +13,10 @@ import {DataModeComponent} from './modeler/data-mode/data-mode.component';
 import {RoleModeComponent} from './modeler/role-mode/role-mode.component';
 import {ActionsModeComponent} from './modeler/actions-mode/actions-mode.component';
 import {MatIconRegistry} from '@angular/material/icon';
-import {AuthenticationModule, ConfigurationService, TranslateLibModule} from '@netgrif/components-core';
-import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 import {environment} from '../environments/environment';
 import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
-import {JoyrideModule} from 'ngx-joyride';
 import {DialogRefactorComponent} from './dialogs/dialog-refactor/dialog-refactor.component';
 import {DialogErrorsComponent} from './dialogs/dialog-errors/dialog-errors.component';
-import {TaskContentComponentModule} from '@netgrif/components';
 import {ExportService, ImportService} from '@netgrif/petriflow';
 import {SelectedTransitionService} from './modeler/selected-transition.service';
 import {I18nModeComponent} from './modeler/i18n-mode/i18n-mode.component';
@@ -33,13 +28,20 @@ import {DialogDeleteModelComponent} from './dialogs/dialog-delete-model/dialog-d
 import {DialogArcEditComponent} from './dialogs/dialog-arc-edit/dialog-arc-edit.component';
 import {DialogTransitionEditComponent} from './dialogs/dialog-transition-edit/dialog-transition-edit.component';
 import {SimulationModeComponent} from './modeler/simulation-mode/simulation-mode.component';
-import {DialogChangeDataComponent} from './dialogs/dialog-change-data/dialog-change-data.component';
-import {DialogModelEditComponent} from './dialogs/dialog-model-edit/dialog-model-edit.component';
-import {MaterialIconPickerComponent} from './components/material-icon-picker/material-icon-picker.component';
 import {
     DialogLocalStorageModelComponent
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
 import {HistoryModeComponent} from './modeler/history-mode/history-mode.component';
+import {DialogChangeDataComponent} from './dialogs/dialog-change-data/dialog-change-data.component';
+import {DialogModelEditComponent} from './dialogs/dialog-model-edit/dialog-model-edit.component';
+import {MaterialIconPickerComponent} from './modeler/components/material-icon-picker/material-icon-picker.component';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import {TaskContentComponentModule} from '@netgrif/components';
+import {JoyrideModule} from 'ngx-joyride';
+import {AuthenticationMethodService, ConfigurationService, NullAuthenticationService} from '@netgrif/components-core';
+import {AppBuilderConfigurationService} from './app-builder-configuration.service';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const appRoutes: Routes = [
     {
@@ -78,21 +80,25 @@ const appRoutes: Routes = [
         BrowserModule,
         BrowserAnimationsModule,
         MaterialImportModule,
-        FlexLayoutModule,
         FormBuilderModule,
-        ModelerModule,
-        TranslateLibModule,
-        AuthenticationModule,
-        RouterModule.forRoot(appRoutes, {relativeLinkResolution: 'legacy'}),
         JoyrideModule.forRoot(),
+        ModelerModule,
+        RouterModule.forRoot(appRoutes),
+        AppRoutingModule,
+        NgOptimizedImage,
+        // TODO: release/4.0.0 error rxjs
         TaskContentComponentModule,
-        AppRoutingModule
+        CommonModule,
+        MatProgressSpinnerModule
     ],
     providers: [
         ImportService,
         ExportService,
+        {provide: AuthenticationMethodService, useValue: NullAuthenticationService},
         {provide: ConfigurationService, useClass: AppBuilderConfigurationService},
+        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}
     ],
+    exports: [],
     bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -25,11 +25,20 @@ export class MaterialIconPickerComponent implements OnInit {
         this.filteredIcons = this.formControlRef.valueChanges.pipe(
             startWith(''),
             map(value => this._filter(value || '')),
+            map(value => {
+                if (value.length > 20) {
+                    return value.slice(0, 20)
+                }
+                return value;
+            })
         );
     }
 
     private _filter(value: string): Array<string> {
         const filterValue = value.toLowerCase();
+        if (value === '') {
+            return new Array<string>();
+        }
         const startsWith = new Array<string>();
         const includes = new Array<string>();
         this.icons.forEach(icon => {

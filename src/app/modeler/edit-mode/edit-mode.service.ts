@@ -42,6 +42,9 @@ import {PanzoomOptions} from '@panzoom/panzoom';
 import {CanvasElementCollection} from './domain/canvas-element-collection';
 import {transition} from '@angular/animations';
 import {width} from 'cspell/util/util';
+import {ActionsModeService} from '../actions-mode/actions-mode.service';
+import {TransitionActionsTool} from '../actions-mode/tools/transition-actions-tool';
+import {ActionsMasterDetailService} from '../actions-mode/actions-master-detail.setvice';
 
 @Injectable({
     providedIn: 'root'
@@ -70,7 +73,9 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
         transitionService: SelectedTransitionService,
         private _tutorialService: TutorialService,
         private _parentInjector: Injector,
-        private _historyService: HistoryService
+        private _historyService: HistoryService,
+        protected _actionMode: ActionsModeService,
+        protected _actionsMasterDetail: ActionsMasterDetailService
     ) {
         super(_arcFactory, modelService, _canvasService);
         this.mode = new Mode(
@@ -85,25 +90,25 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
             this._parentInjector
         );
         this.switchTools = new ToolGroup<CanvasTool>(
-            new ClearModelTool(modelService, dialog, this, router, transitionService),
-            new ResetPositionAndZoomTool(modelService, dialog, this, router, transitionService),
-            new GridTool(modelService, dialog, this, router, transitionService),
-            new SwitchLabelTool(modelService, dialog, this, router, transitionService)
+            new ClearModelTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+            new ResetPositionAndZoomTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+            new GridTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+            new SwitchLabelTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail)
         );
         this.tools = [
             new ToolGroup<CanvasTool>(
-                new SelectTool(modelService, dialog, this, router, transitionService, _historyService),
-                new QuickDrawTool(modelService, dialog, this, router, transitionService),
-                new CreateTransitionTool(modelService, dialog, this, router, transitionService),
-                new CreatePlaceTool(modelService, dialog, this, router, transitionService),
-                new AddTokenTool(modelService, dialog, this, router, transitionService),
-                new RemoveTokenTool(modelService, dialog, this, router, transitionService)
+                new SelectTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail, _historyService),
+                new QuickDrawTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+                new CreateTransitionTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+                new CreatePlaceTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+                new AddTokenTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+                new RemoveTokenTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail)
             ),
             new ToolGroup<CanvasTool>(
-                new CreateRegularArcTool(modelService, dialog, this, router, transitionService),
-                new CreateResetArcTool(modelService, dialog, this, router, transitionService),
-                new CreateInhibitorArcTool(modelService, dialog, this, router, transitionService),
-                new CreateReadArcTool(modelService, dialog, this, router, transitionService)
+                new CreateRegularArcTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+                new CreateResetArcTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+                new CreateInhibitorArcTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail),
+                new CreateReadArcTool(modelService, dialog, this, router, transitionService, _actionMode, _actionsMasterDetail)
             ),
             this.switchTools
         ];

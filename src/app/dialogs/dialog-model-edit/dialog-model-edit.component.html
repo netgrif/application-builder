@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>Edit model</h2>
-<mat-dialog-content>
+<mat-dialog-content class="netgrif-input">
     <mat-form-field fxFlex>
         <mat-label>Id</mat-label>
         <input type="text" matInput [(ngModel)]="model.model.id" [formControl]="idCtrl">
@@ -8,7 +8,7 @@
     <mat-form-field fxFlex>
         <mat-label>Version</mat-label>
         <input type="text" matInput [(ngModel)]="model.model.version" [formControl]="versionCtrl">
-<!--        TODO: should be version required? -->
+<!--        TODO: release/4.0.0 should be version required? -->
 <!--        <mat-error *ngIf="versionCtrl.errors && versionCtrl.errors.required">Version is required</mat-error>-->
         <mat-error *ngIf="versionCtrl.errors && versionCtrl.errors.format">Version must be in format Major.Minor.Patch</mat-error>
     </mat-form-field>
@@ -29,7 +29,7 @@
     <mat-slide-toggle class="full-width" [(ngModel)]="model.model.anonymousRole">
         Anonymous role
     </mat-slide-toggle>
-    <mat-form-field fxFlex>
+    <mat-form-field fxFlex class="padding-top">
         <mat-label>Default case name</mat-label>
         <input type="text" matInput [(ngModel)]="model.model.caseName.value">
     </mat-form-field>

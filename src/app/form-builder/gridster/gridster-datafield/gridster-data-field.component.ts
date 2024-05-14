@@ -1,11 +1,11 @@
 import {Component, Input, OnDestroy, OnInit, QueryList, TemplateRef, ViewChildren} from '@angular/core';
 import {GridsterDataField} from '../classes/gridster-data-field';
 import {DataRefBehavior, DataType, I18nWithDynamic} from '@netgrif/petriflow';
-import {DataField, EnumerationField, MultichoiceField} from '@netgrif/components-core';
 import {GridsterService} from '../gridster.service';
 import {GridsterFieldToEngineFieldService} from '../../../modeler/gridster-field-to-engine-field.service';
 import {Subscription} from 'rxjs';
 import moment from 'moment';
+import {DataField, EnumerationField, MultichoiceField} from '@netgrif/components-core';
 
 @Component({
     selector: 'nab-gridster-datafield',

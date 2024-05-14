@@ -1,7 +1,7 @@
 import {declarationCompleteProvider} from './declaration-provider';
 import {functionCompletionProposals} from './function-provider';
 
-export function actionCompletionProvider(model, position) {
+export function actionCompletionProvider(model, position, languages) {
     // find out if we are completing a property in the 'dependencies' object.
     // const textUntilPosition = model.getValueInRange({startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
     let definition = true;
@@ -27,7 +27,7 @@ export function actionCompletionProvider(model, position) {
                 endColumn: position.column
             };
             return {
-                suggestions: declarationCompleteProvider(r)
+                suggestions: declarationCompleteProvider(r, languages)
             }; // CALL RESOLVER OF VARIABLES
         }
         return {suggestions: []};
@@ -40,6 +40,6 @@ export function actionCompletionProvider(model, position) {
         endColumn: word.endColumn
     };
     return {
-        suggestions: functionCompletionProposals(range)
+        suggestions: functionCompletionProposals(range, languages)
     };
 }

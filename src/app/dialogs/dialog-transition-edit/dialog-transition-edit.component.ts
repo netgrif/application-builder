@@ -7,6 +7,10 @@ import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {DialogManageRolesComponent, RoleRefType} from '../dialog-manage-roles/dialog-manage-roles.component';
+import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
+import {ProcessActionsTool} from '../../modeler/actions-mode/tools/process-actions-tool';
+import {TransitionActionsTool} from '../../modeler/actions-mode/tools/transition-actions-tool';
+import {ActionsMasterDetailService} from '../../modeler/actions-mode/actions-master-detail.setvice';
 
 export interface TransitionEditData {
     transitionId: string;
@@ -29,7 +33,9 @@ export class DialogTransitionEditComponent implements OnInit {
         public modelService: ModelService,
         private router: Router,
         private transitionService: SelectedTransitionService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private _actionMode: ActionsModeService,
+        private _actionsMasterDetail: ActionsMasterDetailService
     ) {
         this.transition = new ChangedTransition(undefined, this.modelService.model.getTransition(data.transitionId).clone());
         this.form = new FormControl('', [
@@ -50,6 +56,8 @@ export class DialogTransitionEditComponent implements OnInit {
     }
 
     openActions() {
+        this._actionMode.activate(this._actionMode.transitionActionsTool);
+        this._actionsMasterDetail.select(this.transition.transition);
         this.transitionService.id = this.transition.id;
         this.router.navigate(['modeler/actions']);
     }
@@ -67,6 +75,7 @@ export class DialogTransitionEditComponent implements OnInit {
     openPermissions() {
         this.dialog.open(DialogManageRolesComponent, {
             width: '60%',
+            panelClass: "dialog-width-60",
             data: {
                 type: RoleRefType.TRANSITION,
                 roles: this.modelService.model.getRoles(),
