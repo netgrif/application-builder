@@ -44,6 +44,7 @@ export class GridsterService {
     selectedDataFieldChangeStream: BehaviorSubject<void>;
     onNewFieldPlaced: ReplaySubject<DataVariable>;
     optionChanged: Subject<void>;
+    historySave: boolean;
 
     constructor(private modelService: ModelService, private transitionService: SelectedTransitionService) {
         this.options = {
@@ -115,7 +116,7 @@ export class GridsterService {
 
     get transition(): Transition {
         const transition = this.modelService.model.getTransition(this.transitionId);
-        if (!transition.layout) {
+        if (!transition?.layout) {
             transition.layout = new TransitionLayout();
         }
         return transition;
@@ -145,6 +146,7 @@ export class GridsterService {
         item.y = item.dataRef.layout.y = resized.$item.y;
         item.rows = item.dataRef.layout.rows = resized.$item.rows;
         item.cols = item.dataRef.layout.cols = resized.$item.cols;
+        this.historySave = true;
         this.updateGridsterRows();
     }
 
@@ -175,6 +177,7 @@ export class GridsterService {
         this.placedDataFields.splice(this.placedDataFields.findIndex(field => field.dataVariable.id === id), 1);
         this.selectedDataField = undefined;
         this.selectedDataFieldStream.next(this.selectedDataField);
+        this.historySave = true;
     }
 
     public addNewDataVariable(type: DataType): DataVariable {
@@ -189,6 +192,7 @@ export class GridsterService {
             dataVariable.init = new I18nWithDynamic('', '', false);
         }
         this.modelService.model.addData(dataVariable);
+        this.historySave = true;
         return dataVariable;
     }
 
@@ -232,6 +236,7 @@ export class GridsterService {
         this.placedDataFields.push(this.selectedDataField);
         this.onNewFieldPlaced.next(dataVariable);
         this.updateGridsterRows();
+        this.historySave = true;
         return dataRef;
     }
 

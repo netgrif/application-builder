@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {DataMasterDetailService} from '../data-master-detail.service';
 import {
     Component as PetriflowComponent,
@@ -23,10 +23,16 @@ import {map} from 'rxjs/internal/operators/map';
 import {Router} from '@angular/router';
 import {ActionsModeService} from '../../actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
+import {HistoryService} from '../../services/history/history.service';
 
 export interface TypeArray {
     viewValue: string;
     value: string;
+}
+
+export interface HistoryDataSave {
+    item: DataVariable,
+    save: boolean;
 }
 
 @Component({
@@ -34,7 +40,7 @@ export interface TypeArray {
     templateUrl: './data-detail.component.html',
     styleUrl: './data-detail.component.scss'
 })
-export class DataDetailComponent {
+export class DataDetailComponent implements OnDestroy {
 
     counterEnumMap = 0;
     formControlRef: FormControl;
@@ -59,6 +65,7 @@ export class DataDetailComponent {
         {viewValue: 'Task Ref', value: 'taskRef'},
         {viewValue: 'Case Ref', value: 'caseRef'}
     ];
+    historyDataSave: HistoryDataSave;
 
     public constructor(
         private _masterService: DataMasterDetailService,
@@ -66,16 +73,24 @@ export class DataDetailComponent {
         private dialog: MatDialog,
         private _router: Router,
         private _actionMode: ActionsModeService,
-        private _actionsMasterDetail: ActionsMasterDetailService
+        private _actionsMasterDetail: ActionsMasterDetailService,
+        private _historyService: HistoryService
     ) {
         this.formControlRef = new FormControl();
         this.transitionOptions = this.createTransOptions();
         this._masterService.getSelected$().subscribe(obj => {
+            if (this.historyDataSave?.save) {
+                this._historyService.save(`DataVariable ${this.historyDataSave.item.id} has been changed.`);
+            }
             if (obj) {
                 if (!obj.init) {
                     obj.init = new I18nWithDynamic('');
                 }
                 this.formControlRef.patchValue(obj.init.value);
+                this.historyDataSave = {
+                    item: obj,
+                    save: false
+                }
             }
         });
         this.filteredOptions = this.formControlRef.valueChanges.pipe(
@@ -99,6 +114,12 @@ export class DataDetailComponent {
         );
     }
 
+    ngOnDestroy() {
+        if (this.historyDataSave?.save) {
+            this._historyService.save(`DataVariable ${this.historyDataSave.item.id} has been changed.`);
+        }
+    }
+
     createTransOptions() {
         return this._modelService.model.getTransitions().map(trans => ({
             key: trans.id,
@@ -114,6 +135,8 @@ export class DataDetailComponent {
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result !== undefined) {
+                this._historyService.save(`DataVariable ${this.item.id} ID has been changed to ${result} ${this.historyDataSave.save ? ', and has been changed' : ''}.`);
+                this.historyDataSave.save = false;
                 this.item.id = result;
             }
         });
@@ -208,6 +231,7 @@ export class DataDetailComponent {
                 break;
             }
         }
+        this.historyDataSave.save = true;
     }
 
     removeSpecificAttributeOnChange() {
@@ -222,26 +246,32 @@ export class DataDetailComponent {
         } else {
             this.item.component = undefined;
         }
+        this.historyDataSave.save = true;
     }
 
     deleteProperty(index: number) {
         this.item.component.properties.splice(index, 1);
+        this.historyDataSave.save = true;
     }
 
     addProperty() {
         this.item.component.properties.push(new Property('', ''));
+        this.historyDataSave.save = true;
     }
 
     changeInitsValue(inits: Array<string>) {
         this.item.inits = inits.map(initKey => new I18nWithDynamic(initKey));
+        this.historyDataSave.save = true;
     }
 
     deleteAllowedNet(index: number) {
         this.item.allowedNets.splice(index, 1);
+        this.historyDataSave.save = true;
     }
 
     addAllowedNet() {
         this.item.allowedNets.push('');
+        this.historyDataSave.save = true;
     }
 
     addValidation(): void {
@@ -249,22 +279,27 @@ export class DataDetailComponent {
         validation.expression = new Expression('', false);
         validation.message = new I18nString('');
         this.item.validations.push(validation);
+        this.historyDataSave.save = true;
     }
 
     deleteValidation(index: number): void {
         this.item.validations.splice(index, 1);
+        this.historyDataSave.save = true;
     }
 
     addOption() {
         this.item.options.push(new Option(this.createKeyId(), new I18nString('value')));
+        this.historyDataSave.save = true;
     }
 
     dropOption(event: CdkDragDrop<Array<string>>) {
         moveItemInArray(this.item.options, event.previousIndex, event.currentIndex);
+        this.historyDataSave.save = true;
     }
 
     deleteOption(index: number) {
         this.item.options.splice(index, 1);
+        this.historyDataSave.save = true;
     }
 
     getInitsValue(): Array<string> {

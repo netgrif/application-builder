@@ -16,7 +16,7 @@
 
     <div fxFlex="100" *ngIf="usedLocales().length > 0">
         <h2>Translations:</h2>
-        <nab-progress *ngFor="let locale of usedLocales()" [locale]="locale">
+        <nab-progress *ngFor="let locale of usedLocales()" (deleteLocale)="deleteLocale()" [locale]="locale">
         </nab-progress>
     </div>
 </div>

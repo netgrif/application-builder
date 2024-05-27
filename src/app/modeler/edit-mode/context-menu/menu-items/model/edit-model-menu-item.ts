@@ -17,6 +17,9 @@ export class EditModelMenuItem extends MenuItem {
                 }, (changedModel: ModelChange) => {
                     if (changedModel != undefined) {
                         tool.modelService.updateModel(changedModel);
+                        if (changedModel) {
+                            tool.historyService.save(`Model has been changed.`);
+                        }
                     }
                 });
             }

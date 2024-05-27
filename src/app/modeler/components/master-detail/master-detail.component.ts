@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Injector, Input, OnInit} from '@angular/core';
+import {Component, Injector, Input, OnInit} from '@angular/core';
 import {ComponentPortal} from '@angular/cdk/portal';
 import {ComponentType} from '@angular/cdk/overlay';
 import {AbstractMasterDetailService} from './abstract-master-detail.service';
@@ -17,6 +17,10 @@ export class MasterDetailComponent implements OnInit {
     @Input() detailComponent: ComponentType<any>;
     @Input() masterItemComponent: ComponentType<any>;
     @Input() masterService: AbstractMasterDetailService<any>;
+    @Input() firstColName: string;
+    @Input() secondColName: string;
+    @Input() buttonTooltip: string;
+    @Input() showAddButton: boolean = true;
     masterPortal: ComponentPortal<any>;
     detailPortal: ComponentPortal<any>;
 

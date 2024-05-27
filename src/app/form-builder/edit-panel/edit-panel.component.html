@@ -8,34 +8,34 @@
 
         <h5 class="full-width margin-html">Assign event</h5>
         <mat-form-field class="full-width margin-html">
-            <input matInput type="text" placeholder="Title" [(ngModel)]="assignEvent.title.value">
+            <input matInput type="text" placeholder="Title" [(ngModel)]="assignEvent.title.value" (change)="registerChange()">
         </mat-form-field>
         <mat-form-field class="full-width margin-html">
-            <input matInput type="text" placeholder="Message" [(ngModel)]="assignEvent.message.value">
+            <input matInput type="text" placeholder="Message" [(ngModel)]="assignEvent.message.value" (change)="registerChange()">
         </mat-form-field>
 
         <h5 class="full-width margin-html">Finish event</h5>
         <mat-form-field class="full-width margin-html">
-            <input matInput type="text" placeholder="Title" [(ngModel)]="finishEvent.title.value">
+            <input matInput type="text" placeholder="Title" [(ngModel)]="finishEvent.title.value" (change)="registerChange()">
         </mat-form-field>
         <mat-form-field class="full-width margin-html">
-            <input matInput type="text" placeholder="Message" [(ngModel)]="finishEvent.message.value">
+            <input matInput type="text" placeholder="Message" [(ngModel)]="finishEvent.message.value" (change)="registerChange()">
         </mat-form-field>
 
         <h5 class="full-width margin-html">Cancel event</h5>
         <mat-form-field class="full-width margin-html">
-            <input matInput type="text" placeholder="Title" [(ngModel)]="cancelEvent.title.value">
+            <input matInput type="text" placeholder="Title" [(ngModel)]="cancelEvent.title.value" (change)="registerChange()">
         </mat-form-field>
         <mat-form-field class="full-width margin-html">
-            <input matInput type="text" placeholder="Message" [(ngModel)]="cancelEvent.message.value">
+            <input matInput type="text" placeholder="Message" [(ngModel)]="cancelEvent.message.value" (change)="registerChange()">
         </mat-form-field>
 
         <h5 class="full-width margin-html">Delegate event</h5>
         <mat-form-field class="full-width margin-html">
-            <input matInput type="text" placeholder="Title" [(ngModel)]="delegateEvent.title.value">
+            <input matInput type="text" placeholder="Title" [(ngModel)]="delegateEvent.title.value" (change)="registerChange()">
         </mat-form-field>
         <mat-form-field class="full-width margin-html">
-            <input matInput type="text" placeholder="Message" [(ngModel)]="delegateEvent.message.value">
+            <input matInput type="text" placeholder="Message" [(ngModel)]="delegateEvent.message.value" (change)="registerChange()">
         </mat-form-field>
 
         <!--  TRANSITION OFFSET MANAGEMENT  -->
@@ -343,7 +343,7 @@
                 <button mat-stroked-button color="primary" (click)="openActions()"
                         class="full-width save-button">
                     <mat-icon>code</mat-icon>
-                    Open Actions
+                    Datafield Actions
                 </button>
             </div>
 

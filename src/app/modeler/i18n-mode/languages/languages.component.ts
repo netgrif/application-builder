@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Locale} from '../classes/locale';
 import {Locales} from '../classes/locales';
 import {I18nModeService} from '../i18n-mode.service';
@@ -6,21 +6,22 @@ import {MatSelect} from '@angular/material/select';
 import {AbstractControl, FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import {HistoryService} from '../../services/history/history.service';
 
 @Component({
     selector: 'nab-languages',
     templateUrl: './languages.component.html',
     styleUrls: ['./languages.component.scss']
 })
-export class LanguagesComponent implements OnInit {
+export class LanguagesComponent implements OnInit, OnDestroy {
 
-    @ViewChild('newLanguageSelect') newLanguageSelect: MatSelect;
+    historySave: boolean;
     newLocaleFormControl = new FormControl<Locale>(undefined, {
         validators: [this.autocompleteStringValidator(), Validators.required]
     });
     filteredLocales: Observable<Array<Locale>>;
 
-    constructor(private i18nService: I18nModeService) {
+    constructor(private i18nService: I18nModeService, protected _historyService: HistoryService) {
     }
 
     ngOnInit(): void {
@@ -28,6 +29,12 @@ export class LanguagesComponent implements OnInit {
             startWith(''),
             map(name => this._filter(name)),
         );
+    }
+
+    ngOnDestroy() {
+        if (this.historySave) {
+            this._historyService.save("Translations has been changed.");
+        }
     }
 
     invalidLocale(): boolean {
@@ -69,5 +76,10 @@ export class LanguagesComponent implements OnInit {
         console.log(this.newLocaleFormControl.value);
         this.i18nService.addLocale(this.newLocaleFormControl.value.languageCode);
         this.newLocaleFormControl.reset();
+        this.historySave = true;
+    }
+
+    deleteLocale() {
+        this.historySave = true;
     }
 }

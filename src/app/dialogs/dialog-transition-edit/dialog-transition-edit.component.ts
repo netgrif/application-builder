@@ -8,8 +8,6 @@ import {SelectedTransitionService} from '../../modeler/selected-transition.servi
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {DialogManageRolesComponent, RoleRefType} from '../dialog-manage-roles/dialog-manage-roles.component';
 import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
-import {ProcessActionsTool} from '../../modeler/actions-mode/tools/process-actions-tool';
-import {TransitionActionsTool} from '../../modeler/actions-mode/tools/transition-actions-tool';
 import {ActionsMasterDetailService} from '../../modeler/actions-mode/actions-master-detail.setvice';
 
 export interface TransitionEditData {

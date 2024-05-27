@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MatSort, MatSortable, Sort} from '@angular/material/sort';
@@ -6,6 +6,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {DataVariable, ProcessRoleRef, ProcessUserRef, Role, RoleRef, UserRef} from '@netgrif/petriflow';
 import {ModelService} from '../../modeler/services/model/model.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
+import {HistoryService} from '../../modeler/services/history/history.service';
 
 export enum RoleRefType {
     TRANSITION = 'transition',
@@ -27,7 +28,7 @@ export interface ManagePermissionData {
     templateUrl: './dialog-manage-roles.component.html',
     styleUrls: ['./dialog-manage-roles.component.scss']
 })
-export class DialogManageRolesComponent implements OnInit {
+export class DialogManageRolesComponent implements OnInit, OnDestroy {
     pageSizes = [5, 10, 20];
     defaultPageSize = 10;
     displayedColumns: Array<string>;
@@ -38,10 +39,12 @@ export class DialogManageRolesComponent implements OnInit {
     @ViewChild('matUserPaginator', {static: true}) userPaginator: MatPaginator;
     @ViewChild('firstTableSort', {static: true}) sort: MatSort;
     @ViewChild('secondTableSort', {static: true}) userSort: MatSort;
+    private historyChange: boolean;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: ManagePermissionData,
-        private modelService: ModelService
+        private modelService: ModelService,
+        private historyService: HistoryService
     ) {
         let arrayRoleRefs: Array<RoleRef> | Array<ProcessRoleRef>;
         let arrayUserRefs: Array<UserRef> | Array<ProcessUserRef>;
@@ -127,6 +130,7 @@ export class DialogManageRolesComponent implements OnInit {
         } else {
             this.setProcessRoleRef(this.data.processRolesRefs.find(item => item.id === id), id, change);
         }
+        this.historyChange = true;
     }
 
     setUserValue($event, id: string, change: string) {
@@ -135,6 +139,7 @@ export class DialogManageRolesComponent implements OnInit {
         } else {
             this.setProcessUserRef(this.data.processUserRefs.find(item => item.id === id), id, change);
         }
+        this.historyChange = true;
     }
 
     private setRoleRef(roleRef: RoleRef, id: string, change: string) {
@@ -258,5 +263,11 @@ export class DialogManageRolesComponent implements OnInit {
     sortUserRefs(sort: Sort): void {
         localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_SORT, sort.active);
         localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_DIRECTION, sort.direction);
+    }
+
+    ngOnDestroy(): void {
+        if (this.historyChange) {
+            this.historyService.save("Role assignments has been changed.");
+        }
     }
 }

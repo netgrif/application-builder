@@ -1,0 +1,16 @@
+<mat-list-item class="item-bottom-border" fxFlex
+               [ngClass]="{'item-selected': selected === item}"
+               (click)="select()">
+    <div fxFlex="40" fxLayoutAlign="start center">
+        <span  class="text-ellipsis" matTooltip="{{item.time.toLocaleTimeString()}}">
+            <strong>{{ item.time.toLocaleTimeString() }}</strong>
+        </span>
+    </div>
+    <div fxFlex="60" fxLayoutAlign="start center">
+        <span  class="text-ellipsis" matTooltip="{{item.message}}">
+            {{ item.message }}
+        </span>
+    </div>
+</mat-list-item>
+
+

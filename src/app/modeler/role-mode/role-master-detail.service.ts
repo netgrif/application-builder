@@ -3,13 +3,15 @@ import {AbstractMasterDetailService} from '../components/master-detail/abstract-
 import {DataType, DataVariable, Role} from '@netgrif/petriflow';
 import {ModelService} from '../services/model/model.service';
 import {Sort} from '@angular/material/sort';
+import {HistoryService} from '../services/history/history.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RoleMasterDetailService extends AbstractMasterDetailService<Role> {
 
-    constructor(protected _modelService: ModelService) {
+    constructor(protected _modelService: ModelService,
+                protected _historyService: HistoryService) {
         super();
     }
 
@@ -21,6 +23,7 @@ export class RoleMasterDetailService extends AbstractMasterDetailService<Role> {
         const role = new Role(this._modelService.nextRoleId());
         this._modelService.model.addRole(role);
         this._create.next(role);
+        this._historyService.save(`Role ${role.id} has been created.`)
         return role;
     }
 
@@ -35,6 +38,7 @@ export class RoleMasterDetailService extends AbstractMasterDetailService<Role> {
             }
         });
         this._delete.next(item);
+        this._historyService.save(`Role ${item.id} has been deleted.`)
     }
 
     public duplicate(item: Role): Role {
@@ -42,6 +46,7 @@ export class RoleMasterDetailService extends AbstractMasterDetailService<Role> {
         role.id = this._modelService.nextRoleId();
         this._modelService.model.addRole(role);
         this._create.next(role);
+        this._historyService.save(`Role ${role.id} has been created.`)
         return role;
     }
 

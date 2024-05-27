@@ -159,6 +159,10 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         return this.getOrCreateEvent(TransitionEventType.DELEGATE);
     }
 
+    registerChange() {
+        this.gridsterService.historySave = true;
+    }
+
     private getOrCreateEvent(type: TransitionEventType): TransitionEvent {
         let event = this.transition.eventSource.getEvent(type);
         if (!event) {
@@ -217,6 +221,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         this.gridsterService.options.maxItemCols = newCols;
         this.modelService.model.getTransition(this.transId).dataGroups[0].cols = newCols;
         this.gridsterService.options.api.optionsChanged();
+        this.registerChange();
     }
 
     isSomeGridsterFieldSelected() {
@@ -317,6 +322,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
             this.gridsterService.options.api.optionsChanged();
         }
         this.gridsterService.selectedDataFieldChangeStream.next();
+        this.registerChange();
         // TODO
         // this.notify.notifyDatafields.next(this.gridsterService.selectedDataField.id);
     }
@@ -356,6 +362,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
             if (result !== undefined) {
                 this.gridsterService.selectedDataField = this.gridsterService.placedDataFields.find(f => f.dataVariable.id === result);
                 this.gridsterService.selectedDataFieldStream.next(this.gridsterService.selectedDataField);
+                this.registerChange();
             }
         });
     }

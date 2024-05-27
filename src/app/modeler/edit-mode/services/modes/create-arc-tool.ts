@@ -12,7 +12,6 @@ import {SelectedTransitionService} from '../../../selected-transition.service';
 import {CanvasArc} from '../../domain/canvas-arc';
 import {CanvasPlace} from '../../domain/canvas-place';
 import {CanvasTransition} from '../../domain/canvas-transition';
-import {absoluteFrom} from '@angular/compiler-cli';
 import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 

@@ -39,11 +39,7 @@ import {SelectedTransitionService} from '../selected-transition.service';
 import {Router} from '@angular/router';
 import {HistoryService} from '../services/history/history.service';
 import {PanzoomOptions} from '@panzoom/panzoom';
-import {CanvasElementCollection} from './domain/canvas-element-collection';
-import {transition} from '@angular/animations';
-import {width} from 'cspell/util/util';
 import {ActionsModeService} from '../actions-mode/actions-mode.service';
-import {TransitionActionsTool} from '../actions-mode/tools/transition-actions-tool';
 import {ActionsMasterDetailService} from '../actions-mode/actions-master-detail.setvice';
 
 @Injectable({

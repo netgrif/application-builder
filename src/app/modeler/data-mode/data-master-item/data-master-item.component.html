@@ -1,4 +1,4 @@
-<mat-list-item class="item-bottom-border" [ngClass]="{'data-selected': selected && selected.id === item.id}"
+<mat-list-item class="item-bottom-border" [ngClass]="{'item-selected': selected && selected.id === item.id}"
                (click)="select()" (mouseenter)="showIcons = true" (mouseleave)="showIcons = false">
     <div fxFlex="40" fxLayoutAlign="start center">
         <span  class="text-ellipsis" matTooltip="{{item.id}}">

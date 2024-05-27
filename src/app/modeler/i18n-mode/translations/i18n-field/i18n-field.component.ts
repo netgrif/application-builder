@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {I18nString, I18nTranslations} from '@netgrif/petriflow';
 import {MaterialModule} from '@netgrif/components-core';
 import {CommonModule} from '@angular/common';
+import {I18nModeService} from '../../i18n-mode.service';
 
 @Component({
     selector: 'nab-i18n-field',
@@ -17,7 +18,7 @@ export class I18nFieldComponent implements OnInit {
     private _translationField: I18nString;
     private _translation: I18nTranslations;
 
-    constructor() {
+    constructor(protected _i18nModeService: I18nModeService) {
     }
 
     ngOnInit(): void {
@@ -58,5 +59,9 @@ export class I18nFieldComponent implements OnInit {
     @Input()
     set field(value: I18nString) {
         this._field = value;
+    }
+
+    changeTranslation() {
+        this._i18nModeService.translationsSave = true;
     }
 }

@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Locale} from '../classes/locale';
 import {I18nModeService} from '../i18n-mode.service';
 import {TranslationGroupConfiguration, Type} from './translation-group/translation-group-configuration';
 import {I18nTranslations} from '@netgrif/petriflow';
 import {ModelService} from '../../services/model/model.service';
+import {HistoryService} from '../../services/history/history.service';
 
 @Component({
     selector: 'nab-translations',
     templateUrl: './translations.component.html',
     styleUrls: ['./translations.component.scss']
 })
-export class TranslationsComponent implements OnInit {
+export class TranslationsComponent implements OnInit, OnDestroy {
 
     locale: Locale;
     modelMetadataConfig: TranslationGroupConfiguration;
@@ -21,7 +22,8 @@ export class TranslationsComponent implements OnInit {
 
     constructor(
         private i18nService: I18nModeService,
-        private modelService: ModelService
+        private modelService: ModelService,
+        private historyService: HistoryService
     ) {
     }
 
@@ -58,6 +60,13 @@ export class TranslationsComponent implements OnInit {
             () => this.modelService.model.getRoles().length === 0,
             'There are no roles in the model'
         );
+    }
+
+    ngOnDestroy() {
+        if (this.i18nService.translationsSave) {
+            this.i18nService.translationsSave = false;
+            this.historyService.save("Translations has been changed.")
+        }
     }
 
     usedLocales(): Array<Locale> {

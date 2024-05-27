@@ -1,5 +1,5 @@
 <mat-list-item class="item-bottom-border" fxFlex
-               [ngClass]="{'data-selected': selected && selected.id === item.id}"
+               [ngClass]="{'item-selected': selected && selected.id === item.id}"
                (click)="select()">
     <div fxFlex="40" fxLayoutAlign="start center">
         <span  class="text-ellipsis" matTooltip="{{item.id}}">

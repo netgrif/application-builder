@@ -1,5 +1,5 @@
 <mat-list-item class="item-bottom-border"
-               [ngClass]="{'data-selected': this.selected && this.selected === item}"
+               [ngClass]="{'item-selected': this.selected && this.selected === item}"
                (click)="select()"
                (mouseenter)="showIcons = true" (mouseleave)="showIcons = false">
     <div fxFlex="40" fxLayoutAlign="start center">

@@ -13,6 +13,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatSortModule} from '@angular/material/sort';
 import {ModelerModule} from '../modeler.module';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
 
 describe('ActionsModeComponent', () => {
     let component: ActionsModeComponent;
@@ -31,7 +32,7 @@ describe('ActionsModeComponent', () => {
                 MatCheckboxModule,
                 MatTabsModule,
                 RouterModule,
-                // MonacoEditorModule.forRoot(),
+                MonacoEditorModule.forRoot(),
                 HotkeyModule.forRoot(),
                 MatSortModule,
                 ResizableModule,

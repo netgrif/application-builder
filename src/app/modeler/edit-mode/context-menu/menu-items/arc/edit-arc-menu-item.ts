@@ -19,6 +19,9 @@ export class EditArcMenuItem extends MenuItem {
                     } as ArcEditData
                 }, (editedArc: ChangedArc) => {
                     tool.modelService.updateArc(editedArc);
+                    if (editedArc) {
+                        tool.historyService.save(`Arc ${arc.id} has been changed.`);
+                    }
                 });
             }
         );

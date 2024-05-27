@@ -32,7 +32,6 @@ import {DeletePlaceMenuItem} from '../../context-menu/menu-items/place/delete-pl
 import {ContextMenuInterruptionError} from '../../../services/canvas/listeners/context-menu-interruption-error';
 import {HistoryService} from '../../../services/history/history.service';
 import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
-import {TransitionActionsTool} from '../../../actions-mode/tools/transition-actions-tool';
 import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 
 export abstract class CanvasTool extends CanvasListenerTool {

@@ -49,7 +49,6 @@ import {ToolComponent} from './control-panel/tools/tool-component/tool.component
 import {ImportToolButtonComponent} from './control-panel/modes/import-tool-button/import-tool-button.component';
 import {ContextMenuComponent} from './edit-mode/context-menu/context-menu.component';
 import {HistoryModeComponent} from './history-mode/history-mode.component';
-import {MonacoEditorModule} from 'ngx-monaco-editor';
 import {MaterialModule} from '@netgrif/components-core';
 import {DataFieldsComponentModule, TaskContentComponentModule} from '@netgrif/components';
 import {JoyrideModule} from 'ngx-joyride';
@@ -69,6 +68,9 @@ import {
 } from './actions-mode/action-master/function-master-item/function-master-item.component';
 import {ActionDetailComponent} from './actions-mode/action-detail/action-detail.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {HistoryMasterItemComponent} from './history-mode/history-master-item/history-master-item.component';
+import {HistoryDetailComponent} from './history-mode/history-detail/history-detail.component';
+import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
 
 @NgModule({
     declarations: [
@@ -102,7 +104,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
         ToolComponent,
         ImportToolButtonComponent,
         ContextMenuComponent,
-        HistoryModeComponent
+        HistoryModeComponent,
         MasterDetailComponent,
         MainMasterComponent,
         MainMasterItemComponent,
@@ -111,7 +113,9 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
         ActionMasterComponent,
         ActionMasterItemComponent,
         FunctionMasterItemComponent,
-        ActionDetailComponent
+        ActionDetailComponent,
+        HistoryMasterItemComponent,
+        HistoryDetailComponent
     ],
     exports: [
         ActionEditorModule,
@@ -132,7 +136,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
         NgxDropzoneModule,
         MaterialModule,
         PetriflowCanvasModule,
-        MonacoEditorModule
+        MonacoEditorModule,
         PetriflowCanvasModule,
         ReactiveFormsModule,
         ResizableModule,

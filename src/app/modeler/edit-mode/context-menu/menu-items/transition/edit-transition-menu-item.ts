@@ -23,6 +23,9 @@ export class EditTransitionMenuItem extends MenuItem {
                 }, (editedTransition: ChangedTransition) => {
                     tool.modelService.updateTransition(editedTransition);
                     tool.bindKeys();
+                    if (editedTransition) {
+                        tool.historyService.save(`Task ${transition.id} has been changed.`);
+                    }
                 });
             }
         );

@@ -1,7 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {AbstractMasterDetailService} from './abstract-master-detail.service';
 import {ComponentType} from '@angular/cdk/overlay';
-import {DataVariable} from '@netgrif/petriflow';
 
 @Component({
     selector: 'nab-abstract-master-component',
@@ -11,6 +10,11 @@ export abstract class AbstractMasterComponent {
     protected _allData: Array<any>;
     @Input() masterService: AbstractMasterDetailService<any>;
     @Input() masterItemComponent: ComponentType<any>;
+
+    @Input() firstColName: string;
+    @Input() secondColName: string;
+    @Input() buttonTooltip: string;
+    @Input() showAddButton: boolean = true;
 
     public select(item: any): void {
         this.masterService.select(item);

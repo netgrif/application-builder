@@ -42,12 +42,12 @@
                             {
                                 "glob": "**/*",
                                 "input": "node_modules/monaco-editor/min",
-                                "output": "./src/assets/monaco/min"
+                                "output": "./assets/monaco/min"
                             },
                             {
                                 "glob": "**/*",
                                 "input": "node_modules/monaco-editor/min-maps",
-                                "output": "./src/assets/monaco/min-maps"
+                                "output": "./assets/monaco/min-maps"
                             }
                         ],
                         "styles": [

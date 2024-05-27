@@ -1,10 +1,4 @@
-import {Component, Injector, Input, OnInit, ViewChild} from '@angular/core';
-import {MatSort, Sort} from '@angular/material/sort';
-import {DataVariable} from '@netgrif/petriflow';
-import {PageEvent} from '@angular/material/paginator';
-import {AbstractMasterDetailService} from '../abstract-master-detail.service';
-import {ComponentType} from '@angular/cdk/overlay';
-import {ComponentPortal} from '@angular/cdk/portal';
+import {Component, Injector, OnInit} from '@angular/core';
 import {PageMaster} from '../page-master';
 
 @Component({

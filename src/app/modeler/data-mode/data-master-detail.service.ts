@@ -3,13 +3,15 @@ import {DataType, DataVariable} from '@netgrif/petriflow';
 import {ModelService} from '../services/model/model.service';
 import {AbstractMasterDetailService} from '../components/master-detail/abstract-master-detail.service';
 import {Sort} from '@angular/material/sort';
+import {HistoryService} from '../services/history/history.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class DataMasterDetailService extends AbstractMasterDetailService<DataVariable> {
 
-    constructor(protected _modelService: ModelService) {
+    constructor(protected _modelService: ModelService,
+                protected _historyService: HistoryService) {
         super();
     }
 
@@ -21,12 +23,14 @@ export class DataMasterDetailService extends AbstractMasterDetailService<DataVar
         const data = new DataVariable(this._modelService.nextDataId(), DataType.TEXT);
         this._modelService.model.addData(data);
         this._create.next(data);
+        this._historyService.save(`DataVariable ${data.id} has been created.`)
         return data;
     }
 
     public delete(item: DataVariable): void {
         this._modelService.removeDataVariable(item);
         this._delete.next(item);
+        this._historyService.save(`DataVariable ${item.id} has been deleted.`)
     }
 
     public duplicate(item: DataVariable): DataVariable {
@@ -34,6 +38,7 @@ export class DataMasterDetailService extends AbstractMasterDetailService<DataVar
         data.id = this._modelService.nextDataId();
         this._modelService.model.addData(data);
         this._create.next(data);
+        this._historyService.save(`DataVariable ${data.id} has been created.`)
         return data;
     }
 

@@ -23,7 +23,6 @@ import {DeleteSelectedMenuItem} from '../../context-menu/menu-items/delete-selec
 import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
 import {SelectArcsMenuItem} from '../../context-menu/menu-items/select-arcs-menu-item';
 import {CanvasNodeElement} from '../../domain/canvas-node-element';
-import {transition} from '@angular/animations';
 import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
 

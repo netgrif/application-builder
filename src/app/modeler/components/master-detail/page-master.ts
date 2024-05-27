@@ -1,7 +1,6 @@
 import {AbstractMasterComponent} from './abstract-master.component';
 import {Component, ViewChild} from '@angular/core';
 import {MatSort, Sort} from '@angular/material/sort';
-import {DataVariable} from '@netgrif/petriflow';
 import {PageEvent} from '@angular/material/paginator';
 
 @Component({

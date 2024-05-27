@@ -13,6 +13,6 @@
     <div fxFlex="5"></div>
     <mat-form-field fxFlex="25" *ngIf="translationField">
         <mat-label>Translation</mat-label>
-        <input matInput [(ngModel)]="translationField.value">
+        <input matInput [(ngModel)]="translationField.value" (change)="changeTranslation()">
     </mat-form-field>
 </div>

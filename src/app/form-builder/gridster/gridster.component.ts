@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {GridsterConfig} from 'angular-gridster2';
 import {GridsterService} from './gridster.service';
 import {FieldListService} from '../field-list/field-list.service';
@@ -6,6 +6,7 @@ import {ModelService} from '../../modeler/services/model/model.service';
 import {Router} from '@angular/router';
 import {GridsterDataField} from './classes/gridster-data-field';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
+import {HistoryService} from '../../modeler/services/history/history.service';
 
 @Component({
     selector: 'nab-gridster-component',
@@ -14,9 +15,14 @@ import {SelectedTransitionService} from '../../modeler/selected-transition.servi
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class GridsterComponent implements OnInit {
+export class GridsterComponent implements OnInit, OnDestroy {
 
-    constructor(private gridsterService: GridsterService, private fieldListService: FieldListService, private modelService: ModelService, private router: Router, private transitionService: SelectedTransitionService) {
+    constructor(private gridsterService: GridsterService,
+                private fieldListService: FieldListService,
+                private modelService: ModelService,
+                private router: Router,
+                private transitionService: SelectedTransitionService,
+                private historyService: HistoryService) {
     }
 
     ngOnInit() {
@@ -30,6 +36,13 @@ export class GridsterComponent implements OnInit {
         }
         this.gridsterService.updatePlacedDataFields();
         this.gridsterService.updateGridsterRows();
+    }
+
+    ngOnDestroy() {
+        if (this.gridsterService.historySave) {
+            this.gridsterService.historySave = false;
+            this.historyService.save('DataRefs has been changed');
+        }
     }
 
     get options(): GridsterConfig {

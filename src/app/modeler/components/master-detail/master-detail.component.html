@@ -1,6 +1,14 @@
 <div class="container">
     <div [fxFlex]="defaultWidth" fxLayout="column"  class="master">
-        <nab-main-master *ngIf="masterPortal === undefined" fxFlex [masterService]="masterService" [masterItemComponent]="masterItemComponent"></nab-main-master>
+        <nab-main-master *ngIf="masterPortal === undefined"
+                         fxFlex
+                         [masterService]="masterService"
+                         [masterItemComponent]="masterItemComponent"
+                         [firstColName]="firstColName"
+                         [secondColName]="secondColName"
+                         [showAddButton]="showAddButton"
+                         [buttonTooltip]="buttonTooltip"
+        ></nab-main-master>
         <ng-template *ngIf="masterPortal !== undefined" fxFlex [cdkPortalOutlet]="masterPortal"></ng-template>
     </div>
     <div class="border"></div>

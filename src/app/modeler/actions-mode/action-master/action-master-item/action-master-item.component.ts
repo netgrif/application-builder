@@ -9,7 +9,6 @@ import {AbstractMasterDetailService} from '../../../components/master-detail/abs
   styleUrl: './action-master-item.component.scss'
 })
 export class ActionMasterItemComponent {
-    public showIcons: boolean;
 
     constructor(@Inject(MASTER_ITEM) public item: DataVariable | Transition | Role,
                 @Inject(MASTER_SERVICE) protected _service: AbstractMasterDetailService<any>) {

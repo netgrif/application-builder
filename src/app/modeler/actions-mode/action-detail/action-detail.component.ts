@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ModelService} from '../../services/model/model.service';
 import {ActionsModeService} from '../actions-mode.service';
 import {NestedTreeControl} from '@angular/cdk/tree';
@@ -13,13 +13,14 @@ import {ActionsMasterDetailService} from '../actions-master-detail.setvice';
 import {Scope} from '../actions-mode.component';
 import {MasterItem} from '../action-editor/classes/master-item';
 import {ActionEditorTreeService} from '../action-editor/action-editor-tree.service';
+import {HistoryService} from '../../services/history/history.service';
 
 @Component({
   selector: 'nab-action-detail',
   templateUrl: './action-detail.component.html',
   styleUrl: './action-detail.component.scss'
 })
-export class ActionDetailComponent implements OnInit {
+export class ActionDetailComponent implements OnInit, OnDestroy {
 
     functionScopes: Array<Scope> = [
         {viewValue: 'Process', value: FunctionScope.PROCESS},
@@ -34,11 +35,16 @@ export class ActionDetailComponent implements OnInit {
                 private _actionsModeService: ActionsModeService,
                 private actionEditorService: ActionEditorService,
                 private _masterService: ActionsMasterDetailService,
-                private _actionEditorTreeService: ActionEditorTreeService,) {
+                private _actionEditorTreeService: ActionEditorTreeService,
+                private _historyService: HistoryService) {
     }
 
     ngOnInit(): void {
         this._masterService.getSelected$().subscribe(item => {
+            if (this.actionEditorService.historySave) {
+                this._historyService.save("Actions has been changed.");
+                this.actionEditorService.historySave = false;
+            }
             if (item instanceof Transition) {
                 const transition = this._modelService.model.getTransition(item.id);
                 this.actionEditorService.populateEditedActionsFromTransition(transition);
@@ -76,6 +82,13 @@ export class ActionDetailComponent implements OnInit {
                 this.dataSource.data = this._actionEditorTreeService.createRoleTreeStructure(this.actionEditorService.editedActions[0].editableActions, (leaf: TreeNode, actionCount: number) => this.collapseParentCallback(leaf, actionCount));
             }
         })
+    }
+
+    ngOnDestroy() {
+        if (this.actionEditorService.historySave) {
+            this._historyService.save("Actions has been changed.");
+            this.actionEditorService.historySave = false;
+        }
     }
 
     isFunctionsModeSelected(): boolean {

@@ -19,6 +19,8 @@ import {ModelService} from '../services/model/model.service';
 })
 export class I18nModeService extends ModeService<Tool> {
 
+    private _translationsSave: boolean
+
     constructor(
         private modelService: ModelService,
         private tutorialService: TutorialService,
@@ -41,6 +43,14 @@ export class I18nModeService extends ModeService<Tool> {
         this.tools = [
             new ToolGroup<Tool>(languagesTool, translationsTool)
         ];
+    }
+
+    get translationsSave(): boolean {
+        return this._translationsSave;
+    }
+
+    set translationsSave(value: boolean) {
+        this._translationsSave = value;
     }
 
     get locales(): Array<Locale> {

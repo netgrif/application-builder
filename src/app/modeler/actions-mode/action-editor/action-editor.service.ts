@@ -30,7 +30,7 @@ import {EventType} from './event-type';
 export class ActionEditorService {
 
     public editedActions: Array<ActionGroup>;
-
+    public historySave: boolean;
     private _datarefMap: Map<string, DataRef>;
     private _lastUsedId: number;
     private _currentlyEdited: Transition | DataVariable | PetriNet | Role;
@@ -163,6 +163,7 @@ export class ActionEditorService {
     public saveActionChange(changedAction: EditableAction) {
         this.saveAction(changedAction);
         changedAction.commitChanges();
+        this.historySave = true;
     }
 
     private saveAction(changedAction: EditableAction): void {

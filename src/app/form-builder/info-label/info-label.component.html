@@ -4,6 +4,10 @@
                   *ngIf="selectedTransition.icon">{{selectedTransition.icon}}</mat-icon>
         <span>ID: {{selectedTransition.id}}</span>
         <span fxFlex></span>
+        <button mat-stroked-button color="accent" class="action-button" (click)="openActions()">
+            <mat-icon>code</mat-icon>
+            Transition and Dataref Actions
+        </button>
         <span class="spacer">Label: {{selectedTransition.label?.value}}</span>
     </mat-toolbar-row>
 </mat-toolbar>

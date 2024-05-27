@@ -1,5 +1,4 @@
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {DataVariable} from '@netgrif/petriflow';
 import {Injectable, OnDestroy} from '@angular/core';
 import {Sort} from '@angular/material/sort';
 

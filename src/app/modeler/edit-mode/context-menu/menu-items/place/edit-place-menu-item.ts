@@ -25,6 +25,9 @@ export class EditPlaceMenuItem extends MenuItem {
                     } as PlaceEditData
                 }, (editedPlace: PlaceChange) => {
                     tool.modelService.updatePlace(editedPlace);
+                    if (editedPlace) {
+                        tool.historyService.save(`Place ${place.id} has been changed.`);
+                    }
                 });
             }
         );
