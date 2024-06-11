@@ -45,16 +45,29 @@ export class ModelExportService {
 
     public exportXml(model = this.model): string {
         const serialisedModel = this._exportService.exportXml(model);
-        return format(serialisedModel, {
-            indentation: '\t',
-            collapseContent: true
-        });
+        return this.prettyFormat(serialisedModel);
     }
 
     private downloadXml(model: PetriNet): void {
         const prettyModel = this.exportXml(model);
         const fileName = this.resolveFileName(model);
         this.startDownload(prettyModel, fileName);
+    }
+
+    public prettyFormat(model: string): string {
+        const indentationSymbol ='\t';
+        const newLineSymbol = '\n';
+        const prettyModel = format(model, {
+            indentation: indentationSymbol,
+            lineSeparator: newLineSymbol,
+            collapseContent: true,
+            forceSelfClosingEmptyTag: true,
+        });
+        return  prettyModel.replace(new RegExp(`^(\\s*)([\\S ]*?)<!\\[CDATA\\[${newLineSymbol}([\\s\\S]*?)]]>(\\S*?)$`, 'gm'), (match: string, tagIndent: string, startingTag: string, code: string, endingTag: string) => {
+            const contentIndent = `${tagIndent}${indentationSymbol}`;
+            const indentedCode = code.replace(/^([\s\S]*?)$/gm, `${contentIndent}$&`);
+            return `${tagIndent}${startingTag}${newLineSymbol}${contentIndent}<![CDATA[${newLineSymbol}${indentedCode}]]>${newLineSymbol}${tagIndent}${endingTag}`;
+        });
     }
 
     /**
