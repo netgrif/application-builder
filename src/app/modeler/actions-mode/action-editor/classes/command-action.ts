@@ -1432,7 +1432,6 @@ export const actions: Array<CommandActions> = [
                 description: 'Creates an URL for the public view of the given process identifier encoded using Base64',
                 example: 'makeUrl("mortgage")'
             },
-
         ]
     },
     {
