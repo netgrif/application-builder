@@ -15,15 +15,13 @@ import {FormControl} from '@angular/forms';
 import {DataFieldUtils} from '../../../form-builder/data-field-utils';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {EnumerationFieldValue} from '@netgrif/components-core';
-import {Observable} from 'rxjs/internal/Observable';
 import {ModelService} from '../../services/model/model.service';
-import {tap} from 'rxjs/internal/operators/tap';
-import {startWith} from 'rxjs/internal/operators/startWith';
-import {map} from 'rxjs/internal/operators/map';
 import {Router} from '@angular/router';
 import {ActionsModeService} from '../../actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
 import {HistoryService} from '../../services/history/history.service';
+import {Observable} from 'rxjs';
+import {map, startWith, tap} from 'rxjs/operators';
 
 export interface TypeArray {
     viewValue: string;

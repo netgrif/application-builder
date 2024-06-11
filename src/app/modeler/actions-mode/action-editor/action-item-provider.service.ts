@@ -7,7 +7,7 @@ export class ActionItemProviderService {
 
     actionKeywords: Array<string> = ['transition', 'datafield', 'datafieldId', 'transitionId',
         'task', 'behaviour', 'condition', 'property', 'processInstanceId', 'value', 'choices',
-        'options', 'dataSet', 'type', 'processInstanceId', 'taskPredicate', 'casePredicate'];
+        'options', 'dataSet', 'type', 'taskPredicate', 'casePredicate'];
     variables: Array<string> = [
         '[a,b,c]',
         '["a","b","c"]',
