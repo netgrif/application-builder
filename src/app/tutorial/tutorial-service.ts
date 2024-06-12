@@ -3,9 +3,6 @@ import {MortgageService} from '../modeler/mortgage.service';
 import {Router} from '@angular/router';
 import {TutorialStep} from './tutorial-step';
 import {ModelService} from '../modeler/services/model/model.service';
-import {ActionsModeService} from '../modeler/actions-mode/actions-mode.service';
-import {TransitionActionsTool} from '../modeler/actions-mode/tools/transition-actions-tool';
-import {RoleActionsTool} from '../modeler/actions-mode/tools/role-actions-tool';
 
 @Injectable({
     providedIn: 'root'
@@ -23,6 +20,7 @@ export class TutorialService {
     dataEditor: TutorialStep;
     actions: TutorialStep;
     i18n: TutorialStep;
+    history: TutorialStep;
     bug: TutorialStep;
     steps: Array<string>;
     onClose: () => void;
@@ -103,7 +101,7 @@ export class TutorialService {
             'Actions Editor',
             'In Action Editor you can program reactions on events of process instances, its tasks and data fields. Actions use Groovy as a programming language. Types of events that you can catch includes construction of the process instance, assignment of a task to a user, cancellation of a task, finish  of a task, and change of a data field value. In actions that react on events, you can trigger events in different process instances and in this way for example create a new instance when you finish a task, to assign a new task to a user when you finish actual task, to recalculate a value of a data field whenever you change another data field, or hide/show data fields when you change another data field. In actions you can use search functions to find specific process instances or tasks based on values of process attributes, process instance attributes, task attributes and data variables. In actions you can also call external functions as well as to send and receive data from external systems via rest or soap web services.',
             () => {
-                this.onClose();
+                this.router.navigate(['/modeler/i18n']);
             },
             () => {
                 this.router.navigate(['/modeler/roles']);
@@ -115,8 +113,21 @@ export class TutorialService {
             'Internationalization',
             'You can add translations for different languages.',
             () => {
+                this.router.navigate(['/modeler/history']);
             },
             () => {
+                this.router.navigate(['/modeler/actions']);
+            },
+            'right'
+        );
+        this.history = TutorialStep.of(
+            'history',
+            'History',
+            'You can review recent changes of the model as well as download or revert to previous version of the model.',
+            () => {
+            },
+            () => {
+                this.router.navigate(['/modeler/i18n']);
             },
             'right'
         );
@@ -127,6 +138,7 @@ export class TutorialService {
             () => {
             },
             () => {
+                this.router.navigate(['/modeler/history']);
             },
             'right'
         );
@@ -163,7 +175,7 @@ export class TutorialService {
         this.bug = TutorialStep.of(
             'bug',
             'Bug report',
-            'You can use our service desk to report any bug you encounter.',
+            'You can use our github issue page to report any bug you encounter while using the Netgrif Application Builder.',
             () => {
             },
             () => {
@@ -178,6 +190,7 @@ export class TutorialService {
             this.roleEditor.step,
             this.actions.step,
             this.i18n.step,
+            this.history.step,
             this.demo.step,
             this.youtube.step,
             this.github.step,

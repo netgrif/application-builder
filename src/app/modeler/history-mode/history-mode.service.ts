@@ -24,7 +24,7 @@ export class HistoryModeService extends ModeService<Tool> {
             ),
             './history',
             '/modeler/history',
-            this._tutorialService.dataEditor,
+            this._tutorialService.history,
             this._parentInjector
         );
         this.tools = [];
