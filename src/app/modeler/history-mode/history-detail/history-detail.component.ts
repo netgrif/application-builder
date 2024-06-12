@@ -4,6 +4,9 @@ import {HistoryService} from '../../services/history/history.service';
 import {ModelExportService} from '../../services/model/model-export.service';
 import {DiffEditorModel} from 'ngx-monaco-editor-v2';
 import {Subscription} from 'rxjs';
+import {editor} from 'monaco-editor';
+import IDiffEditorOptions = editor.IDiffEditorOptions;
+import IDiffEditor = editor.IDiffEditor;
 
 @Component({
     selector: 'nab-history-detail',
@@ -14,11 +17,22 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
 
     public modifiedModel: DiffEditorModel;
     public originalModel: DiffEditorModel;
-    public editorOptions = {
+    public editorOptions: IDiffEditorOptions = {
         renderSideBySide: false,
-        readOnly: true
+        useInlineViewWhenSpaceIsLimited: false,
+        readOnly: true,
+        hideUnchangedRegions: {
+            enabled: true
+        },
+        minimap: {
+            enabled: false,
+            showSlider: 'mouseover'
+        },
+        scrollbar: {
+            verticalScrollbarSize: 8
+        }
     };
-    public editor: any;
+    public editor: IDiffEditor;
     protected subSelect: Subscription;
 
     constructor(private historyService: HistoryService,
@@ -60,13 +74,13 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         this.historyService.reload(this.masterService.getSelected().record);
     }
 
-    public onEditorInit(editorObject: any): void {
+    public onEditorInit(editorObject: IDiffEditor): void {
         this.editor = editorObject;
     }
 
     public updateEditor(): void {
         if (this.editor) {
-            this.editor.updateOptions(this.editorOptions as any);
+            this.editor.updateOptions(this.editorOptions as IDiffEditorOptions);
         }
     }
 
