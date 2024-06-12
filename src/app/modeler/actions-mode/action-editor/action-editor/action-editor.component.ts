@@ -68,7 +68,6 @@ export class ActionEditorComponent implements OnInit {
 
     // options: https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
     editorOptions = {
-        theme: 'vs-dark',
         language: 'petriflow',
         scrollBeyondLastLine: false,
         automaticLayout: true,

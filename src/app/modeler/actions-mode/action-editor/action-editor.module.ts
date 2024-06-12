@@ -27,15 +27,8 @@ export function onMonacoLoad() {
     monaco.languages.setMonarchTokensProvider('petriflow', tokenProvider() as any);
     monaco.languages.registerCompletionItemProvider('petriflow', {
         provideCompletionItems(model, position) {
-            return actionCompletionProvider(model, position, monaco.languages);
+            return actionCompletionProvider(model, position, monaco.languages)  ;
         }
-    } as any);
-    monaco.editor.defineTheme('petriflowTheme', {
-        base: 'vs-dark', // can also be vs-dark or hc-black
-        inherit: false, // can also be false to completely replace the builtin rules
-        rules: [
-            {token: 'errorSyntax', foreground: 'ff0000', fontStyle: 'bold'}
-        ]
     } as any);
 }
 
