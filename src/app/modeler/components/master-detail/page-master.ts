@@ -1,5 +1,5 @@
 import {AbstractMasterComponent} from './abstract-master.component';
-import {Component, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatSort, Sort} from '@angular/material/sort';
 import {PageEvent} from '@angular/material/paginator';
 
@@ -7,16 +7,33 @@ import {PageEvent} from '@angular/material/paginator';
     selector: 'nab-abstract-page-master-component',
     template: ''
 })
-export abstract class PageMaster extends AbstractMasterComponent {
+export abstract class PageMaster extends AbstractMasterComponent implements OnInit {
 
-    protected _pageData: Array<any>;
-    protected _pageSize: number;
+    @Input()protected _pageSize: number = 20;
     protected _pageIndex: number;
+    protected _pageData: Array<any>;
     protected _pageSizeOptions: Array<number> = [10, 20, 50, 100];
     @ViewChild(MatSort, {static: true}) protected _sort: MatSort;
 
     protected constructor() {
         super();
+    }
+
+    ngOnInit(): void {
+        this.pageIndex = 0;
+        this._allData = this.masterService.allData;
+        this.updatePage();
+
+        this.masterService.getCreateEvent$().subscribe(newItem => {
+            this.updateData();
+            this.masterService.select(newItem);
+        });
+        this.masterService.getDeleteEvent$().subscribe(deletedItem => {
+            this.updateData();
+            if (this.selected === deletedItem) {
+                this.masterService.select(undefined);
+            }
+        });
     }
 
     create(): void {

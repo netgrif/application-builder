@@ -43,4 +43,8 @@ export abstract class AbstractMasterDetailService<T> implements OnDestroy {
     ngOnDestroy(): void {
         this._selected.complete();
     }
+
+    public compare(a: string, b: string, isAsc: boolean): number {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
 }

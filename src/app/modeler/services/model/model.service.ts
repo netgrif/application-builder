@@ -9,6 +9,7 @@ import {
     NodeElement,
     PetriNet,
     Place,
+    Role,
     Transition,
     XmlArcType
 } from '@netgrif/petriflow';
@@ -25,6 +26,8 @@ import {ModelSource} from './model-source';
 import {PlaceMoved} from '../../history-mode/model/place/place-moved';
 import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
 import {ModelChange} from '../../history-mode/model/model/model-change';
+import {ChangedRole} from '../../role-mode/role-detail/changed-role';
+import {ModelerUtils} from '../../modeler-utils';
 
 @Injectable({
     providedIn: 'root'
@@ -334,26 +337,103 @@ export class ModelService implements ModelSource {
         this.model.removeData(data.id);
     }
 
+    // ROLE
+
+    public newRole(): Role {
+        const role = new Role(this.nextRoleId());
+        this.model.addRole(role);
+        this.model.lastChanged = Date.now();
+        return role;
+    }
+
+    public copyRole(copy: Role): Role {
+        // TODO: release/4.0.0 action ids after clone everywhere
+        const role = copy.clone();
+        role.id = this.nextRoleId();
+        this.model.addRole(role);
+        this.model.lastChanged = Date.now();
+        return role;
+    }
+
+    public updateRole(newRole: ChangedRole): Role {
+        if (!newRole) {
+            return;
+        }
+        const role = this.model.getRole(newRole.id);
+        role.id = newRole.role.id;
+        role.title = newRole.role.title;
+        this.model.removeRole(newRole.id);
+        this.model.addRole(role);
+
+        const processRoleRef = this.model.getRoleRef(newRole.id);
+        if (processRoleRef) {
+            this.model.removeRoleRef(newRole.id);
+            processRoleRef.id = role.id;
+            this.model.addRoleRef(processRoleRef);
+        }
+        this.model.getTransitions()
+            .map(t => t.roleRefs.find(ref => ref.id === newRole.id))
+            .filter(r => r !== undefined)
+            .forEach(roleRef => {
+                roleRef.id = role.id;
+            });
+
+        this.model.lastChanged = Date.now();
+        return role;
+    }
+
+    public removeRole(role: Role): void {
+        this.model.removeRole(role.id);
+        this.model.removeRoleRef(role.id);
+        this.model.getTransitions().forEach(trans => {
+            const index = trans.roleRefs.findIndex(roleRef => roleRef.id === role.id);
+            if (index !== -1) {
+                trans.roleRefs.splice(index, 1);
+            }
+        });
+        this.model.lastChanged = Date.now();
+    }
+
     // utils
 
     public nextPlaceId(): string {
-        return this._placeIdSequence.next();
+        const id = this._placeIdSequence.next();
+        if (this.model.getPlace(id) !== undefined) {
+            return this.nextPlaceId();
+        }
+        return id;
     }
 
     public nextTransitionId(): string {
-        return this._transitionIdSequence.next();
+        const id = this._transitionIdSequence.next();
+        if (this.model.getTransition(id) !== undefined) {
+            return this.nextTransitionId();
+        }
+        return id;
     }
 
     public nextArcId(): string {
-        return this._arcIdSequence.next();
+        const id = this._arcIdSequence.next();
+        if (this.model.getArc(id) !== undefined) {
+            return this.nextArcId();
+        }
+        return id;
     }
 
     public nextDataId(): string {
-        return this._dataIdSequence.next();
+        const id = this._dataIdSequence.next();
+        if (this.model.getData(id) !== undefined) {
+            return this.nextDataId();
+        }
+        return id;
     }
 
     public nextRoleId(): string {
-        return this._roleIdSequence.next();
+        const id = this._roleIdSequence.next();
+        if (this.model.getRole(id) !== undefined) {
+            return this.nextRoleId();
+        }
+        return id;
     }
 
     public alignModel(model = this.model): void {
@@ -425,12 +505,8 @@ export class ModelService implements ModelSource {
     }
 
     numberOfActions(): number {
-        const caseEvents = this.model.getCaseEvents()
-            .map(e => e.preActions.length + e.postActions.length)
-            .reduce((sum, current) => sum + current, 0);
-        const processEvents = this.model.getProcessEvents()
-            .map(e => e.preActions.length + e.postActions.length)
-            .reduce((sum, current) => sum + current, 0);
+        const caseEvents = ModelerUtils.numberOfEventActions(this.model.getCaseEvents());
+        const processEvents = ModelerUtils.numberOfEventActions(this.model.getProcessEvents());
         return caseEvents + processEvents;
     }
 
@@ -447,14 +523,12 @@ export class ModelService implements ModelSource {
     }
 
     numberOfTransitionActions(transition: Transition): number {
-        const eventActions = transition.eventSource.getEvents()
-            .map(e => e.preActions.length + e.postActions.length)
-            .reduce((sum, current) => sum + current, 0);
+        const eventActions = ModelerUtils.numberOfEventActions(transition.eventSource.getEvents());
         const dataRefActions = transition.dataGroups
             .map(dg =>
                 dg.getDataRefs()
                     .map(ref =>
-                        ref.getEvents().map(e => e.preActions.length + e.postActions.length).reduce((sum, current) => sum + current, 0)
+                        ModelerUtils.numberOfEventActions(ref.getEvents())
                     ).reduce((sum, current) => sum + current, 0)
             ).reduce((sum, current) => sum + current, 0);
         return eventActions + dataRefActions;

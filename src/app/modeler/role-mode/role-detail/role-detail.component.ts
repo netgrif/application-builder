@@ -1,28 +1,25 @@
 import {Component, OnDestroy} from '@angular/core';
-import {DataVariable, Role} from '@netgrif/petriflow';
+import {Role} from '@netgrif/petriflow';
 import {ModelService} from '../../services/model/model.service';
-import {MatDialog} from '@angular/material/dialog';
 import {RoleMasterDetailService} from '../role-master-detail.service';
 import {Router} from '@angular/router';
 import {ActionsModeService} from '../../actions-mode/actions-mode.service';
-import {TransitionActionsTool} from '../../actions-mode/tools/transition-actions-tool';
 import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
 import {HistoryService} from '../../services/history/history.service';
-
-export interface HistoryRoleSave {
-    item: Role,
-    save: boolean;
-}
-
+import {FormControl, ValidatorFn, Validators} from '@angular/forms';
+import {ChangedRole} from './changed-role';
+import {ModelerUtils} from '../../modeler-utils';
 
 @Component({
-  selector: 'nab-role-detail',
-  templateUrl: './role-detail.component.html',
-  styleUrl: './role-detail.component.scss'
+    selector: 'nab-role-detail',
+    templateUrl: './role-detail.component.html',
+    styleUrl: './role-detail.component.scss'
 })
 export class RoleDetailComponent implements OnDestroy {
 
-    historyRoleSave: HistoryRoleSave;
+    public role: ChangedRole;
+    public shouldSave: boolean = false;
+    public form: FormControl;
 
     public constructor(
         private _masterService: RoleMasterDetailService,
@@ -33,45 +30,48 @@ export class RoleDetailComponent implements OnDestroy {
         protected _historyService: HistoryService
     ) {
         this._masterService.getSelected$().subscribe(item => {
-            if (this.historyRoleSave?.save) {
-                this._historyService.save(`Role ${this.historyRoleSave.item.id} has been changed.`);
+            this.saveChange();
+            if (item === undefined) {
+                return;
             }
-            this.historyRoleSave = {
-                item: item,
-                save: false
-            }
+            this.role = new ChangedRole(item.clone());
         });
+        this.form = new FormControl('', [
+            Validators.required,
+            this.validUnique()
+        ]);
     }
 
-    ngOnDestroy() {
-        if (this.historyRoleSave?.save) {
-            this._historyService.save(`Role ${this.historyRoleSave.item.id} has been changed.`);
-        }
+    ngOnDestroy(): void {
+        this.saveChange();
     }
 
-    changeId(role: Role, $event) {
-        const oldId = role.id;
-        this._modelService.model.removeRole(oldId);
-        role.id = $event.target.value;
-        this._modelService.model.addRole(role);
-        const processRoleRef = this._modelService.model.getRoleRef(oldId);
-        if (processRoleRef) {
-            this._modelService.model.removeRoleRef(oldId);
-            processRoleRef.id = $event.target.value;
-            this._modelService.model.addRoleRef(processRoleRef);
+    private saveChange(): void {
+        if (!this.shouldSave) {
+            return;
         }
-        this._modelService.model.getTransitions().forEach(trans => {
-            const roleRef = trans.roleRefs.find(ref => ref.id === oldId);
-            if (roleRef) {
-                roleRef.id = role.id;
+        this._modelService.updateRole(this.role);
+        this._historyService.save(`Role ${this.role.id} has been changed.`);
+    }
+
+    private validUnique(): ValidatorFn {
+        return (fc: FormControl): { [key: string]: any } | null => {
+            if (this._modelService.model.getRole(fc.value) !== undefined && fc.value !== this.item.id) {
+                return ({validUnique: true});
+            } else {
+                return null;
             }
-        });
-        this.historyRoleSave.save = true;
+        };
     }
 
-    changeTitle(role: Role, $event) {
-        role.title.value = $event.target.value;
-        this.historyRoleSave.save = true;
+    changeId($event): void {
+        this.role.role.id = $event.target.value;
+        this.shouldSave = true;
+    }
+
+    changeTitle($event): void {
+        this.role.role.title.value = $event.target.value;
+        this.shouldSave = true;
     }
 
     get item(): Role {
@@ -82,9 +82,13 @@ export class RoleDetailComponent implements OnDestroy {
         return this._masterService;
     }
 
-    openActions() {
+    openActions(): void {
         this._actionMode.activate(this._actionMode.roleActionsTool);
-        this._actionsMasterDetail.select(this._masterService.getSelected());
+        this._actionsMasterDetail.select(this.item);
         this._router.navigate(['modeler/actions']);
+    }
+
+    numberOfActions(): number {
+        return ModelerUtils.numberOfEventActions(this.role.role.getEvents());
     }
 }

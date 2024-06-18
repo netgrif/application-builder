@@ -8,24 +8,7 @@ import {PageMaster} from '../page-master';
 })
 export class MainMasterComponent extends PageMaster implements OnInit {
 
-    constructor(private _parentInjector: Injector) {
+    constructor() {
         super();
     }
-
-    ngOnInit(): void {
-        this.pageSize = 20;
-        this.pageIndex = 0;
-        this._allData = this.masterService.allData;
-        this.updatePage();
-
-        this.masterService.getCreateEvent$().subscribe(newItem => {
-            this.updateData();
-            this.masterService.select(newItem);
-        });
-        this.masterService.getDeleteEvent$().subscribe(() => {
-            this.updateData();
-            this.masterService.select(undefined);
-        });
-    }
-
 }

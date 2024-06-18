@@ -27,6 +27,7 @@ export class ActionsMasterDetailService extends AbstractMasterDetailService<Tran
     }
 
     public get allData(): Array<Transition | DataVariable | MasterItem | Role | PetriflowFunction> {
+        // TODO: release/4.0.0 refactor
         if (this._actionsModeService.activeTool.id === DataActionsTool.ID) {
             return this._modelService.model.getDataSet();
         } else if (this._actionsModeService.activeTool.id === TransitionActionsTool.ID) {
@@ -73,11 +74,7 @@ export class ActionsMasterDetailService extends AbstractMasterDetailService<Tran
         });
     }
 
-    protected compare(a: string, b: string, isAsc: boolean): number {
-        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-    }
-
-    protected compareId(a: number | string, b: number | string, isAsc: boolean) {
+    protected compareId(a: number | string, b: number | string, isAsc: boolean): number {
         const parseda = parseInt(String(a), 10);
         const parsedb = parseInt(String(b), 10);
         if (isNaN(parseda) || isNaN(parsedb)) {

@@ -3,15 +3,17 @@
         <div fxFlex="2.5"></div>
 
         <mat-form-field fxFlex="45">
-            <mat-label>Set ID</mat-label>
-            <input matInput [ngModel]="item.id" (change)="changeId(item, $event)">
+            <mat-label>Id</mat-label>
+            <input matInput [(ngModel)]="item.id" (change)="changeId($event)" [formControl]="form">
+            <mat-error *ngIf="form.errors && form.errors.required">Id is required</mat-error>
+            <mat-error *ngIf="form.errors && form.errors.validUnique">Transition with given id already exists</mat-error>
         </mat-form-field>
 
         <div fxFlex="2.5"></div>
 
         <mat-form-field fxFlex="45">
-            <mat-label>Set Title</mat-label>
-            <input matInput [ngModel]="item.title.value" (change)="changeTitle(item, $event)">
+            <mat-label>Title</mat-label>
+            <input matInput [ngModel]="item.title.value" (change)="changeTitle($event)">
         </mat-form-field>
 
         <div fxFlex="2.5"></div>
@@ -21,7 +23,7 @@
 
         <button mat-stroked-button color="primary" (click)="openActions()" mat-dialog-close>
             <mat-icon>code</mat-icon>
-            <span>Open Actions</span>
+            <span>Open Actions ({{numberOfActions()}})</span>
         </button>
 
         <div fxFlex></div>
@@ -30,6 +32,6 @@
 
 <ng-template #elseBlock>
     <div fxLayoutAlign="center center" class="height-fix full-width">
-        <span><strong>No role selected</strong></span>
+        <span>No role selected</span>
     </div>
 </ng-template>

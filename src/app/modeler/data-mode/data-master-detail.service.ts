@@ -53,8 +53,4 @@ export class DataMasterDetailService extends AbstractMasterDetailService<DataVar
             }
         });
     }
-
-    protected compare(a: string, b: string, isAsc: boolean): number {
-        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-    }
 }
