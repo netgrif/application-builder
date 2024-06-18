@@ -9,6 +9,8 @@ import {ComponentType} from '@angular/cdk/overlay';
 import {ActionMasterItemComponent} from './action-master-item/action-master-item.component';
 import {FunctionMasterItemComponent} from './function-master-item/function-master-item.component';
 import {ActionsMasterDetailService} from '../actions-master-detail.setvice';
+import {FunctionsTool} from '../tools/functions-tool';
+import {ProcessActionsTool} from '../tools/process-actions-tool';
 
 @Component({
   selector: 'nab-action-master',
@@ -42,7 +44,11 @@ export class ActionMasterComponent extends PageMaster implements OnInit {
     }
 
     isFunctionsModeSelected(): boolean {
-        return this._actionsModeService.activeTool.id === 'functions';
+        return this._actionsModeService.activeTool.id === FunctionsTool.ID;
+    }
+
+    isProcessAndCase(): boolean {
+        return this._actionsModeService.activeTool.id === ProcessActionsTool.ID;
     }
 
     sortData(event: Sort): void {

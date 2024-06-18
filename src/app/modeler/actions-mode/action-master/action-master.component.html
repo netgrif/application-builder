@@ -1,7 +1,7 @@
 <div fxLayout="column" class="height-fix">
     <div class="height-max" matSort (matSortChange)="sortData($event)">
         <div *ngIf="!isFunctionsModeSelected()" class="height-100">
-            <div mat-subheader class="header-action">
+            <div mat-subheader *ngIf="!isProcessAndCase()" class="header-action">
                 <p fxFlex="40" mat-sort-header="id"><strong>ID</strong></p>
                 <p fxFlex mat-sort-header="name">Name</p>
             </div>
