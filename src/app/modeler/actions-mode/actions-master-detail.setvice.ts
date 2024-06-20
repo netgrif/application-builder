@@ -63,7 +63,7 @@ export class ActionsMasterDetailService extends AbstractMasterDetailService<Tran
             const isAsc = event.direction === 'asc';
             switch (event.active) {
                 case 'id':
-                    return this.compareId(a.id, b.id, isAsc);
+                    return this.compare(a.id, b.id, isAsc);
                 case 'name':
                     if (a instanceof Transition) {
                         return this.compare(a.label?.value, b.label?.value, isAsc);
@@ -72,16 +72,6 @@ export class ActionsMasterDetailService extends AbstractMasterDetailService<Tran
                     }
             }
         });
-    }
-
-    protected compareId(a: number | string, b: number | string, isAsc: boolean): number {
-        const parseda = parseInt(String(a), 10);
-        const parsedb = parseInt(String(b), 10);
-        if (isNaN(parseda) || isNaN(parsedb)) {
-            return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-        } else {
-            return (parseda < parsedb ? -1 : 1) * (isAsc ? 1 : -1);
-        }
     }
 
     private createProcessAndCaseMasterItems(): Array<MasterItem> {
