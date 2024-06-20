@@ -6,6 +6,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {ModelService} from './services/model/model.service';
+import {HistoryService} from './services/history/history.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +18,8 @@ export class ModelImportService {
         private modelService: ModelService,
         private snackBar: MatSnackBar,
         private dialog: MatDialog,
-        private router: Router
+        private router: Router,
+        private historyService: HistoryService
     ) {
     }
 
@@ -43,6 +45,7 @@ export class ModelImportService {
 
         if (petriNetResult.model !== undefined) {
             this.modelService.model = petriNetResult.model;
+            this.historyService.save("Petri net has been imported!")
         }
         this.router.navigate(['/modeler']);
     }
