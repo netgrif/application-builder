@@ -1,5 +1,5 @@
 <div *ngIf="item !== undefined; else elseBlock" fxFlex fxLayout="column" class="height-fix netgrif-input">
-    <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top32px">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top32px builder-field-input">
 
         <div fxFlex="2.5"></div>
 
@@ -26,7 +26,7 @@
 
         <div fxFlex="2.5"></div>
     </div>
-    <div fxLayout="row wrap" fxLayoutAlign="start center">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="builder-field-input">
 
         <div fxFlex="2.5"></div>
 
@@ -48,7 +48,7 @@
 
         <div fxFlex="2.5"></div>
     </div>
-    <div fxLayout="row wrap" fxLayoutAlign="start center">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="builder-field-input">
 
         <div fxFlex="2.5"></div>
 
@@ -69,7 +69,7 @@
         <div fxFlex="2.5"></div>
     </div>
 
-    <div fxLayout="row wrap" fxLayoutAlign="start center">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="builder-field-input">
 
         <div fxFlex="2.5"></div>
 
@@ -92,7 +92,7 @@
         <div fxFlex="2.5"></div>
     </div>
 
-    <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="item.component !== undefined">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="item.component !== undefined" class="builder-field-input">
 
         <div fxFlex="2.5"></div>
 
@@ -138,7 +138,7 @@
     </div>
 
     <!--            <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="!isOptionField(item.type)">-->
-    <div fxLayout="row wrap" fxLayoutAlign="start center">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="builder-field-input">
 
         <div fxFlex="2.5"></div>
 
@@ -196,7 +196,7 @@
     </div>
 
     <div fxLayout="row wrap" fxLayoutAlign="start center"
-         *ngIf="item.type === 'caseRef' || item.type === 'filter'">
+         *ngIf="item.type === 'caseRef' || item.type === 'filter'" class="builder-field-input">
         <div fxFlex="2.5"></div>
         <div fxFlexAlign="start" fxFlex="20">Allowed Nets</div>
         <div fxFlex="2.5"></div>
@@ -227,7 +227,7 @@
     </div>
 
     <div fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="item.type !== 'enumeration' && item.type !== 'multichoice'
-                        && item.type !== 'enumeration_map' && item.type !== 'multichoice_map'">
+                        && item.type !== 'enumeration_map' && item.type !== 'multichoice_map'" >
         <div fxFlex="2.5"></div>
 
         <div fxFlex="20">Validations</div>
@@ -235,7 +235,7 @@
         <div fxFlex="75" fxLayout="column">
             <div class="margin-html">
                 <div *ngIf="item.validations?.length > 0">
-                    <div *ngFor="let validation of item.validations; let i = index">
+                    <div *ngFor="let validation of item.validations; let i = index" class="builder-field-input">
                         <mat-form-field fxFlex="45" class="margin-right8px">
                             <mat-label>Expression</mat-label>
                             <input matInput type="text" [(ngModel)]="validation.expression.expression">
@@ -264,10 +264,10 @@
         <div fxFlex="2.5"></div>
     </div>
 
-    <div class="options" *ngIf="isOptionField()"
+    <div class="options builder-field-input" *ngIf="isOptionField()"
          fxLayout="row wrap" fxLayoutAlign="start center">
         <div fxFlex="2.5"></div>
-        <div fxFlexAlign="start" fxFlex="20">Options</div>
+        <div fxFlex="20">Options</div>
         <div fxFlex="2.5"></div>
         <div fxFlex="72.5" fxLayout="column">
             <div cdkDropList class="drag-list margin-html" (cdkDropListDropped)="dropOption($event)">
@@ -302,7 +302,7 @@
     </div>
 
     <div *ngIf="item.type === 'enumeration_map' || item.type === 'multichoice_map'" fxLayout="row wrap"
-         fxLayoutAlign="start center">
+         fxLayoutAlign="start center" class="builder-field-input">
 
         <div fxFlex="2.5"></div>
 

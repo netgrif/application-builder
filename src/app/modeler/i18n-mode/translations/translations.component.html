@@ -7,7 +7,7 @@
             </mat-select>
         </mat-form-field>
     </div>
-    <mat-tab-group *ngIf="!noLocales() && locale">
+    <mat-tab-group *ngIf="!noLocales() && locale" class="mat-tab-group-height">
         <mat-tab [disabled]="modelMetadataConfig.disabled()">
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">{{modelMetadataConfig.icon}}</mat-icon>

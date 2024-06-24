@@ -12,7 +12,7 @@ export abstract class PageMaster extends AbstractMasterComponent implements OnIn
     @Input()protected _pageSize: number = 20;
     protected _pageIndex: number;
     protected _pageData: Array<any>;
-    protected _pageSizeOptions: Array<number> = [10, 20, 50, 100];
+    protected _pageSizeOptions: Array<number> = [10, 20, 50];
     @ViewChild(MatSort, {static: true}) protected _sort: MatSort;
 
     protected constructor() {
@@ -40,9 +40,11 @@ export abstract class PageMaster extends AbstractMasterComponent implements OnIn
         this.masterService.create();
     }
 
-    updateData() {
+    updateData(recalculatePageIndex: boolean = true) {
         this._allData = this.masterService.allData;
-        this.pageIndex = Math.ceil(this._allData.length / this.pageSize) - 1;
+        if (recalculatePageIndex) {
+            this.pageIndex = Math.ceil(this._allData.length / this.pageSize) - 1;
+        }
         this.updatePage();
     }
 

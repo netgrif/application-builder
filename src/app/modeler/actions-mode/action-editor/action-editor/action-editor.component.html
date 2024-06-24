@@ -3,16 +3,15 @@
                                         #descriptionComponent></nab-action-editor-menu-description>
 </div>
 <mat-sidenav-container autosize>
-    <mat-sidenav mode="side" #drawer
-                 mwlResizeHandle mwlResizable
-                 [resizeEdges]="{ left: true }">
+    <mat-sidenav mode="side" #drawer>
         <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
                                 [editor]="editor"></nab-action-editor-menu>
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()" mwlResizeHandle mwlResizable
+        <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()" mwlResizable
                              id="{{action.event + '_' + action.phase + '_' + index}}"
-                             [resizeEdges]="{ bottom: true }" class="panel-fix"
+                             class="panel-fix"
+                             [enableGhostResize]="true"
                              (resizing)="onResizeEvent($event, action.event + '_' + action.phase + '_' + index)">
             <mat-expansion-panel-header class="header">
                 Action: {{action.id}}
@@ -68,7 +67,7 @@
                                        [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>
                 </div>
             </ng-template>
-            <mat-action-row>
+            <mat-action-row mwlResizeHandle [resizeEdges]="{ bottom: true}">
                 <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input">
                     <mat-form-field class="margin-left-8px">
                         <mat-label>event</mat-label>

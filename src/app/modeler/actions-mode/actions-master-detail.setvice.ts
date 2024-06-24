@@ -62,7 +62,7 @@ export class ActionsMasterDetailService extends AbstractMasterDetailService<Tran
         return this.allData.toSorted((a: any, b: any) => {
             const isAsc = event.direction === 'asc';
             switch (event.active) {
-                case 'id':
+                default:
                     return this.compare(a.id, b.id, isAsc);
                 case 'name':
                     if (a instanceof Transition) {

@@ -42,6 +42,8 @@ import {JoyrideModule} from 'ngx-joyride';
 import {AuthenticationMethodService, ConfigurationService, NullAuthenticationService} from '@netgrif/components-core';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatPaginatorIntl} from '@angular/material/paginator';
+import {BuilderPaginatorIntl} from './modeler/components/master-detail/main-master/builder-paginator-inpl';
 
 const appRoutes: Routes = [
     {
@@ -94,6 +96,7 @@ const appRoutes: Routes = [
     providers: [
         ImportService,
         ExportService,
+        {provide: MatPaginatorIntl, useClass: BuilderPaginatorIntl},
         {provide: AuthenticationMethodService, useValue: NullAuthenticationService},
         {provide: ConfigurationService, useClass: AppBuilderConfigurationService},
         {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}

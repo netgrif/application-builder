@@ -1,4 +1,4 @@
-<div fxLayout="column" class="height-fix" matSort (matSortChange)="sortData($event)">
+<div fxLayout="column" class="height-fix pag-density" matSort (matSortChange)="sortData($event)">
     <div mat-subheader class="header">
         <p fxFlex="40" mat-sort-header="{{firstColName | lowercase}}"><strong>{{firstColName}}</strong></p>
         <p fxFlex mat-sort-header="{{secondColName | lowercase}}">{{secondColName}}</p>

@@ -45,7 +45,7 @@ export class RoleMasterDetailService extends AbstractMasterDetailService<Role> {
             switch (event.active) {
                 case 'name':
                     return this.compare(a.title.value, b.title.value, isAsc);
-                case 'id':
+                default:
                     return this.compare(a.id, b.id, isAsc);
             }
         });

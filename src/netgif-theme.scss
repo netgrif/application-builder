@@ -51,12 +51,14 @@ $netgrif-theme: mat.define-light-theme((
         accent: $netgrif-accent,
         warn: $netgrif-warn
     ),
-    typography: $typography,
+    typography: $typography
 ));
 
 @include mat.all-component-themes($netgrif-theme);
 @include mat.typography-hierarchy($netgrif-theme);
 @include nae-lib-theme($netgrif-theme, $typography);
+
+@include mat.paginator-density(-5);
 
 body {
     ::-webkit-scrollbar-track {
@@ -139,4 +141,8 @@ body {
 
 .svg-icon-inactive {
     display: none;
+}
+
+.pag-density {
+    @include mat.paginator-density(0);
 }
