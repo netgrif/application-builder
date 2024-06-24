@@ -153,3 +153,18 @@ body {
 .mat-mdc-dialog-container .mat-mdc-dialog-title+.mat-mdc-dialog-content {
     padding-top: 8px !important;
 }
+
+nab-edit-mode {
+    height: calc(100% - 42px);
+}
+
+nab-simulation-mode {
+    height: calc(100% - 42px);
+}
+
+.inter-field-input {
+    margin-top: 6px;
+    .mat-mdc-form-field-subscript-wrapper {
+        position: absolute;
+    }
+}

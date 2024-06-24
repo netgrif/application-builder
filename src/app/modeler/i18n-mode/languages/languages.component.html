@@ -1,5 +1,5 @@
 <div fxLayout="col wrap">
-    <mat-card fxFlex="100" class="netgrif-input" fxLayout="row">
+    <div fxFlex="100" class="netgrif-input" fxLayout="row">
         <mat-form-field fxFlex="25">
             <mat-label>Add new language</mat-label>
             <input type="text" matInput [formControl]="newLocaleFormControl" [matAutocomplete]="auto">
@@ -12,10 +12,10 @@
         <button mat-icon-button class="button-line" matTooltip="Add locale" (click)="addLocal()" [disabled]="invalidLocale()">
             <mat-icon>add</mat-icon>
         </button>
-    </mat-card>
+    </div>
 
     <div fxFlex="100" *ngIf="usedLocales().length > 0">
-        <h2>Translations:</h2>
+        <h2 class="margin-none">Translations:</h2>
         <nab-progress *ngFor="let locale of usedLocales()" (deleteLocale)="deleteLocale()" [locale]="locale">
         </nab-progress>
     </div>
