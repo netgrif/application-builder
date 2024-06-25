@@ -1,8 +1,8 @@
 <button id="tool_{{fileTool.id}}" mat-icon-button class="button-line" matTooltip="{{fileTool.tooltip}}"
         (click)="fileTool.onClick">
-    <input #xmlFileInput type="file" id="otvorSubor" class="button--input" (change)="fileTool.onClick()"/>
-    <label id="otvorSuborButton">
+    <input type="file" class="button--input" (change)="fileTool.onClick()"/>
+    <label>
         <mat-icon *ngIf="fileTool.icon.isSvg" svgIcon="{{fileTool.icon.name}}"></mat-icon>
-        <mat-icon *ngIf="!fileTool.icon.isSvg">{{fileTool.icon.name}}</mat-icon>
+        <mat-icon *ngIf="!fileTool.icon.isSvg">{{ fileTool.icon.name }}</mat-icon>
     </label>
 </button>

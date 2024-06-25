@@ -1,35 +1,73 @@
 import {Injectable} from '@angular/core';
 import {ControlPanelButton} from '../control-panel-button';
-import {FileTool} from '../tools/file-tool';
 import {ControlPanelIcon} from '../control-panel-icon';
 import {ImportToolButtonComponent} from './import-tool-button/import-tool-button.component';
 import {ModelImportService} from '../../model-import-service';
+import {Tool} from '../tools/tool';
+import {AppBuilderConfigurationService} from '../../../app-builder-configuration.service';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Injectable({
     providedIn: 'root'
 })
-export class ImportTool extends FileTool {
+export class ImportTool extends Tool {
+
+    private bpmn2pnUrl: string;
+    private fileHandlers: Map<string, (content: string) => void>;
 
     constructor(
+        private config: AppBuilderConfigurationService,
         private importService: ModelImportService,
+        private http: HttpClient,
+        private snackBar: MatSnackBar,
     ) {
         super(
             'import',
             new ControlPanelButton(
                 new ControlPanelIcon('upload', false, true),
-                'Choose an XML file to open'
+                'Choose a file to open'
             ),
             ImportToolButtonComponent
         );
-        // TODO: NAB-326 implement ctrl+o
-        // this.hotkeyService.add(new Hotkey('ctrl+o', (event: KeyboardEvent): boolean => {
-        //     event.stopPropagation();
-        //     event.preventDefault();
-        //     return false;
-        // }));
+        this.bpmn2pnUrl = config.get().services?.urls?.bpmn2pn;
+        this.fileHandlers = new Map();
+        this.fileHandlers.set('xml', content => {
+            this.importService.importFromXml(content)
+        });
+        this.fileHandlers.set('bpmn', content => {
+            this.http.post(this.bpmn2pnUrl, content, {
+                headers: {
+                    'Content-Type': 'text/xml;charset=US-ASCII',
+                },
+                responseType: 'text',
+            }).pipe().subscribe((xmlContent: string) => {
+                this.importService.importFromXml(xmlContent);
+            }, (error: HttpErrorResponse) => {
+                this.snackBar.open(error.message, 'X');
+            });
+        });
     }
 
-    handleFileContent(content: string): void {
-        this.importService.importFromXml(content);
+    onClick() {
+    }
+
+    public onEvent($event: Event): void {
+        const file = ($event.target as HTMLInputElement).files[0];
+        const extension = file.name.split('.').pop().toLowerCase()
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.handleFileContent(reader.result as string, extension);
+        };
+        reader.readAsText(file);
+    }
+
+    handleFileContent(content: string, extension: string): void {
+        if (!this.fileHandlers.has(extension)) {
+            this.snackBar.open('Unknown file type', 'X');
+            return;
+        }
+        const handle = this.fileHandlers.get(extension)
+        handle(content);
     }
 }
