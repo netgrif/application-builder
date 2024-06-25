@@ -15,7 +15,7 @@ export class DialogArcAttachComponent {
     length: number;
     pageSize: number;
     pageIndex: number;
-    pageSizeOptions: Array<number> = [10, 20, 50, 100];
+    pageSizeOptions: Array<number> = [10, 20, 50];
     selectedItem: DataVariable | Place;
 
     constructor(

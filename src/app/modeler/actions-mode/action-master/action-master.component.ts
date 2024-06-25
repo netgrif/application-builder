@@ -30,8 +30,11 @@ export class ActionMasterComponent extends PageMaster implements OnInit {
         this._actionsModeService.activeToolSubject.subscribe(tool => {
             this.pageSize = 20;
             this.pageIndex = 0;
-            this.updateData();
+            this.updateData(false);
             this.sort.direction = '';
+            if (this._allData.length > 0) {
+                this.masterService.select(this._allData[0]);
+            }
         });
     }
 
@@ -57,7 +60,8 @@ export class ActionMasterComponent extends PageMaster implements OnInit {
             if (this._actionsModeService.activeTool.id === DataActionsTool.ID ||
                 this._actionsModeService.activeTool.id === TransitionActionsTool.ID ||
                 this._actionsModeService.activeTool.id === RoleActionsTool.ID) {
-                this.updateData();
+                this.pageIndex = 0;
+                this.updateData(false);
             }
             return;
         }

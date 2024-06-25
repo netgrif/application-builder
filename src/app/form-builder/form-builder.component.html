@@ -6,12 +6,14 @@
 <nab-paper-component>
 </nab-paper-component>
 
-<mat-sidenav mwlResizable mwlResizeHandle
-             [resizeEdges]="{ left: true }"
+<mat-sidenav mwlResizable
              (resizing)="onResizeEvent($event)"
              [style.width.px]="width"
              fixedInViewport=true
              disableClose="true"
              class="app-mat-sidenav-right" mode="side" position="end" opened>
-    <nab-edit-panel></nab-edit-panel>
+    <div fxLayout="row">
+        <div class="handle" mwlResizeHandle [resizeEdges]="{ left: true }"></div>
+        <nab-edit-panel fxFlex></nab-edit-panel>
+    </div>
 </mat-sidenav>

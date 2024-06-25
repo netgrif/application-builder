@@ -363,10 +363,7 @@ export class ActionEditorComponent implements OnInit {
         element.style.height = newHeight + 'px';
         const innerSize = newHeight - headerSize - bottomSize - 45;
         div.style.height = innerSize + 'px';
-        if (editorObject !== undefined && editorObject !== null) {
-            editorObject.style.height = innerSize + 'px';
-        }
-
+        editorObject.style.height = innerSize + 'px';
     }
 
     openDialog(index: number): void {

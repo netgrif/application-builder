@@ -162,9 +162,10 @@ nab-simulation-mode {
     height: calc(100% - 42px);
 }
 
-.inter-field-input {
+.builder-field-input {
     margin-top: 6px;
     .mat-mdc-form-field-subscript-wrapper {
         position: absolute;
+        width: auto;
     }
 }
