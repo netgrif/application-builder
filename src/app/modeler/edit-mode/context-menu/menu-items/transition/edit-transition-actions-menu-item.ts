@@ -1,8 +1,6 @@
 import {MenuItem} from '../menu-item';
 import {CanvasTransition} from '../../../domain/canvas-transition';
 import {CanvasTool} from '../../../services/modes/canvas-tool';
-import {ActionsModeService} from '../../../../actions-mode/actions-mode.service';
-import {TransitionActionsTool} from '../../../../actions-mode/tools/transition-actions-tool';
 
 export class EditTransitionActionsMenuItem extends MenuItem {
 
