@@ -49,7 +49,7 @@ const appRoutes: Routes = [
     {
         path: 'modeler', component: ModelerComponent, children: [
             {path: '', component: EditModeComponent},
-            {path: 'simulation', component: SimulationModeComponent},
+            {path: SimulationModeComponent.URL, component: SimulationModeComponent},
             {path: 'data', component: DataModeComponent},
             {path: 'roles', component: RoleModeComponent},
             {path: 'actions', component: ActionsModeComponent},

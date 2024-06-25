@@ -23,12 +23,14 @@
         <mat-error *ngIf="initialsCtrl.errors && initialsCtrl.errors.required">Id is required</mat-error>
     </mat-form-field>
     <nab-material-icon-picker [(icon)]="model.model.icon"></nab-material-icon-picker>
-    <mat-slide-toggle class="full-width" [(ngModel)]="model.model.defaultRole">
-        Default role
-    </mat-slide-toggle>
-    <mat-slide-toggle class="full-width" [(ngModel)]="model.model.anonymousRole">
-        Anonymous role
-    </mat-slide-toggle>
+    <div fxFlex>
+        <mat-slide-toggle fxFlex [(ngModel)]="model.model.defaultRole">
+            Default role
+        </mat-slide-toggle>
+        <mat-slide-toggle fxFlex [(ngModel)]="model.model.anonymousRole">
+            Anonymous role
+        </mat-slide-toggle>
+    </div>
     <mat-form-field fxFlex class="padding-top">
         <mat-label>Default case name</mat-label>
         <input type="text" matInput [(ngModel)]="model.model.caseName.value">

@@ -29,6 +29,9 @@ export abstract class SimulationTool extends CanvasListenerTool {
         this._simulationModeService = simulationModeService;
     }
 
+    onVisibilityChange() {
+    }
+
     onTransitionEnter(event: MouseEvent, transition: CanvasTransition): void {
     }
 

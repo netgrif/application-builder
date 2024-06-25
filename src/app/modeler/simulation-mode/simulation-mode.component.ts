@@ -9,6 +9,7 @@ import {ModelService} from '../services/model/model.service';
     styleUrls: ['./simulation-mode.component.scss']
 })
 export class SimulationModeComponent implements AfterViewInit, OnDestroy {
+    public static readonly URL = 'simulation';
     @ViewChild('canvas') canvas: ElementRef;
 
     constructor(

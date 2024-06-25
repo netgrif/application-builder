@@ -192,7 +192,7 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
             e.stopPropagation();
         };
         document.onvisibilitychange = (ev: Event) => {
-            this.reset();
+            this.onVisibilityChange();
         };
     }
 
@@ -207,6 +207,10 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
         canvas.svg.onpointermove = undefined;
         canvas.svg.oncontextmenu = undefined;
         document.onvisibilitychange = undefined;
+    }
+
+    onVisibilityChange(): void {
+        this.reset();
     }
 
     onMouseDown(event: PointerEvent): void {

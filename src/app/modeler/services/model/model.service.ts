@@ -22,7 +22,6 @@ import {ChangedArc} from '../../../dialogs/dialog-arc-edit/changed-arc';
 import {SequenceGenerator} from './sequence-generator';
 import {ArcFactory} from '../../edit-mode/domain/arc-builders/arc-factory.service';
 import {ModelerConfig} from '../../modeler-config';
-import {ModelSource} from './model-source';
 import {PlaceMoved} from '../../history-mode/model/place/place-moved';
 import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
 import {ModelChange} from '../../history-mode/model/model/model-change';
@@ -32,7 +31,7 @@ import {ModelerUtils} from '../../modeler-utils';
 @Injectable({
     providedIn: 'root'
 })
-export class ModelService implements ModelSource {
+export class ModelService {
     private readonly _model: BehaviorSubject<PetriNet>;
     private readonly _modelChange: Subject<ModelChange>;
     private readonly _placeChange: Subject<PlaceChange>;
@@ -68,6 +67,7 @@ export class ModelService implements ModelSource {
         this._arcChange = new Subject<ChangedArc>();
     }
 
+    // TODO: release/4.0.0 history
     set model(newModel: PetriNet) {
         this.alignModel(newModel);
         this._model.next(newModel);

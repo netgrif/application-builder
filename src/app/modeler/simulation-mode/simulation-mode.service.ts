@@ -20,14 +20,12 @@ import {GridTool} from './tool/grid-tool';
 import {SwitchLabelTool} from './tool/switch-label-tool';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../selected-transition.service';
-import {ModelSource} from '../services/model/model-source';
 import {SimulationMode} from './simulation-mode';
-import {ModelSourceService} from '../services/model/model-source.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class SimulationModeService extends CanvasModeService<SimulationTool> implements ModelSource {
+export class SimulationModeService extends CanvasModeService<SimulationTool> {
 
     private _simulation: BasicSimulation;
     private _data: Map<string, number>;
@@ -39,7 +37,6 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> imp
     constructor(
         _arcFactory: ArcFactory,
         modelService: ModelService,
-        modelSource: ModelSourceService,
         _canvasService: PetriflowCanvasService,
         dialog: MatDialog,
         router: Router,
@@ -52,8 +49,6 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> imp
         this.mode = new SimulationMode(
             this.tutorialService.simulator,
             this.parentInjector,
-            this,
-            modelSource
         );
         this.onTransitionDraw = (_: CanvasTransition) => {
         };

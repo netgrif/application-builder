@@ -2,26 +2,27 @@ import {Injectable} from '@angular/core';
 import {PetriNet} from '@netgrif/petriflow';
 import {ModelSource} from './model-source';
 import {ModelService} from './model.service';
+import {SimulationModeService} from '../../simulation-mode/simulation-mode.service';
+import {Router} from '@angular/router';
+import {SimulationModeComponent} from '../../simulation-mode/simulation-mode.component';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ModelSourceService {
 
-    private _source: ModelSource;
-
     constructor(
-        private modelService: ModelService
+        private router: Router,
+        private modelService: ModelService,
+        private simulationService: SimulationModeService
     ) {
-        // TODO: release/4.0.0 fix init
-        this.source = modelService;
-    }
-
-    public set source(value: ModelSource) {
-        this._source = value;
     }
 
     public getModel(): PetriNet {
-        return this._source.model;
+        console.log(`route: ${this.router.url}, is sim: ${this.router.url.includes(SimulationModeComponent.URL)}`);
+        if (this.router.url.includes(SimulationModeComponent.URL)) {
+            return this.simulationService.model;
+        }
+        return this.modelService.model;
     }
 }
