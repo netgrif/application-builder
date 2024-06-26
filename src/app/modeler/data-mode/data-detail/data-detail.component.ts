@@ -45,23 +45,25 @@ export class DataDetailComponent implements OnDestroy {
     transitionOptions: Array<EnumerationFieldValue>;
     filteredOptions: Observable<Array<EnumerationFieldValue>>;
     typeArray: Array<TypeArray> = [
-        {viewValue: 'Text', value: 'text'},
-        {viewValue: 'Number', value: 'number'},
-        {viewValue: 'Enumeration', value: 'enumeration'},
-        {viewValue: 'Enumeration Map', value: 'enumeration_map'},
-        {viewValue: 'Multichoice', value: 'multichoice'},
-        {viewValue: 'Multichoice Map', value: 'multichoice_map'},
-        {viewValue: 'Button', value: 'button'},
-        {viewValue: 'File', value: 'file'},
-        {viewValue: 'File List', value: 'fileList'},
-        {viewValue: 'Boolean', value: 'boolean'},
-        {viewValue: 'Date', value: 'date'},
-        {viewValue: 'Datetime', value: 'dateTime'},
-        {viewValue: 'User', value: 'user'},
-        {viewValue: 'User List', value: 'userList'},
-        {viewValue: 'Filter', value: 'filter'},
-        {viewValue: 'Task Ref', value: 'taskRef'},
-        {viewValue: 'Case Ref', value: 'caseRef'}
+        {viewValue: 'Boolean', value: DataType.BOOLEAN},
+        {viewValue: 'Button', value: DataType.BUTTON},
+        {viewValue: 'Case Ref', value: DataType.CASE_REF},
+        {viewValue: 'Date', value: DataType.DATE},
+        {viewValue: 'Datetime', value: DataType.DATETIME},
+        {viewValue: 'Enumeration', value: DataType.ENUMERATION},
+        {viewValue: 'Enumeration Map', value: DataType.ENUMERATION_MAP},
+        {viewValue: 'File', value: DataType.FILE},
+        {viewValue: 'File List', value: DataType.FILE_LIST},
+        {viewValue: 'Filter', value: DataType.FILTER},
+        {viewValue: 'I18n', value: DataType.I18N},
+        {viewValue: 'Multichoice', value: DataType.MULTICHOICE},
+        {viewValue: 'Multichoice Map', value: DataType.MULTICHOICE_MAP},
+        {viewValue: 'Number', value: DataType.NUMBER},
+        {viewValue: 'User', value: DataType.USER},
+        {viewValue: 'User List', value: DataType.USER_LIST},
+        {viewValue: 'String Collection', value: 'stringCollection'},
+        {viewValue: 'Task Ref', value: DataType.TASK_REF},
+        {viewValue: 'Text', value: DataType.TEXT}
     ];
     historyDataSave: HistoryDataSave;
 
@@ -156,7 +158,7 @@ export class DataDetailComponent implements OnDestroy {
             }
             case 'type': {
                 this.removeSpecificAttributeOnChange();
-                this.item.type = $event.value;
+                this.item.type = ($event.value as DataType);
                 break;
             }
             case 'immediate': {

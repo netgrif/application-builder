@@ -88,21 +88,21 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
         this.dataSource.sortingDataAccessor = (item, property) => {
             switch (property) {
                 case 'perform':
-                    return (item as RoleRef).logic.perform.toString();
+                    return (item as RoleRef).logic.perform?.toString();
                 case 'delegate':
-                    return (item as RoleRef).logic.delegate.toString();
+                    return (item as RoleRef).logic.delegate?.toString();
                 case 'cancel':
-                    return (item as RoleRef).logic.cancel.toString();
+                    return (item as RoleRef).logic.cancel?.toString();
                 case 'assign':
-                    return (item as RoleRef).logic.assign.toString();
+                    return (item as RoleRef).logic.assign?.toString();
                 case 'create':
-                    return (item as ProcessRoleRef).caseLogic.create.toString();
+                    return (item as ProcessRoleRef).caseLogic.create?.toString();
                 case 'delete':
-                    return (item as ProcessRoleRef).caseLogic.delete.toString();
+                    return (item as ProcessRoleRef).caseLogic.delete?.toString();
                 case 'view':
-                    return (item as RoleRef).logic.view.toString();
+                    return (item as RoleRef).logic.view?.toString();
                 case 'processView':
-                    return (item as ProcessRoleRef).caseLogic.view.toString();
+                    return (item as ProcessRoleRef).caseLogic.view?.toString();
                 default:
                     return item[property];
             }
