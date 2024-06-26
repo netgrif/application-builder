@@ -7,6 +7,7 @@ import {DataVariable, ProcessRoleRef, ProcessUserRef, Role, RoleRef, UserRef} fr
 import {ModelService} from '../../modeler/services/model/model.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
 import {HistoryService} from '../../modeler/services/history/history.service';
+import {MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxChange, MatCheckboxDefaultOptions} from '@angular/material/checkbox';
 
 export enum RoleRefType {
     TRANSITION = 'transition',
@@ -26,7 +27,10 @@ export interface ManagePermissionData {
 @Component({
     selector: 'nab-dialog.manage-roles',
     templateUrl: './dialog-manage-roles.component.html',
-    styleUrls: ['./dialog-manage-roles.component.scss']
+    styleUrls: ['./dialog-manage-roles.component.scss'],
+    providers: [
+        {provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } as MatCheckboxDefaultOptions}
+    ]
 })
 export class DialogManageRolesComponent implements OnInit, OnDestroy {
     pageSizes = [5, 10, 20];
@@ -124,7 +128,7 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
         }) as MatSortable);
     }
 
-    setValue($event, id: string, change: string) {
+    setValue(id: string, change: string) {
         if (this.data.type === RoleRefType.TRANSITION) {
             this.setRoleRef(this.data.rolesRefs.find(item => item.id === id), id, change);
         } else {
@@ -133,7 +137,7 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
         this.historyChange = true;
     }
 
-    setUserValue($event, id: string, change: string) {
+    setUserValue(id: string, change: string) {
         if (this.data.type === RoleRefType.TRANSITION) {
             this.setUserRef(this.data.userRefs.find(item => item.id === id), id, change);
         } else {
@@ -224,17 +228,12 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
         }
     }
 
-    getChecked(logic: boolean) {
-        if (logic === undefined) {
-            return false;
-        } else if (logic === true) {
-            return true;
-        }
-        return undefined;
+    getChecked(logic: boolean): boolean {
+        return logic === true;
     }
 
-    getIndeterminate(logic: boolean) {
-        return !(logic === undefined || logic === true);
+    getIndeterminate(logic: boolean): boolean {
+        return logic === false;
     }
 
     private addDefaultRoleRefs(arrayRoleRefs: Array<RoleRef>) {
