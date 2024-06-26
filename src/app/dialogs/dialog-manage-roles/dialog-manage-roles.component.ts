@@ -218,14 +218,11 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
         return newValue;
     }
 
-    stringValue(logic: boolean) {
+    stringValue(logic: boolean): string {
         if (logic === undefined) {
             return ' ';
-        } else if (logic === true) {
-            return 'True';
-        } else {
-            return 'False';
         }
+        return `${logic}`;
     }
 
     getChecked(logic: boolean): boolean {
