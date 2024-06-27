@@ -7,6 +7,7 @@ import {Tool} from '../tools/tool';
 import {AppBuilderConfigurationService} from '../../../app-builder-configuration.service';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {TutorialService} from '../../../tutorial/tutorial-service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,10 +18,11 @@ export class ImportTool extends Tool {
     private fileHandlers: Map<string, (content: string) => void>;
 
     constructor(
-        private config: AppBuilderConfigurationService,
+        config: AppBuilderConfigurationService,
         private importService: ModelImportService,
         private http: HttpClient,
         private snackBar: MatSnackBar,
+        tutorialService: TutorialService
     ) {
         super(
             'import',
@@ -28,7 +30,8 @@ export class ImportTool extends Tool {
                 new ControlPanelIcon('upload', false, true),
                 'Choose a file to open'
             ),
-            ImportToolButtonComponent
+            ImportToolButtonComponent,
+            tutorialService.importTool
         );
         this.bpmn2pnUrl = config.get().services?.urls?.bpmn2pn;
         this.fileHandlers = new Map();

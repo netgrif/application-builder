@@ -4,14 +4,16 @@ import {Identifiable} from '../../edit-mode/domain/identifiable';
 import {ControlPanelIcon} from '../control-panel-icon';
 import {ToolComponent} from './tool-component/tool.component';
 import {BehaviorSubject} from 'rxjs';
+import {TutorialStep} from '../../../tutorial/tutorial-step';
 
 export abstract class Tool extends Identifiable {
 
     private _button: ControlPanelButton;
     private _component: Type<any>;
+    private _tutorialStep: TutorialStep;
     private readonly _disabled: BehaviorSubject<boolean>;
 
-    protected constructor(id: string, button: ControlPanelButton, component?: Type<any>) {
+    protected constructor(id: string, button: ControlPanelButton, component?: Type<any>, tutorialStep?: TutorialStep) {
         super(id);
         this._button = button;
         if (!!component) {
@@ -21,6 +23,7 @@ export abstract class Tool extends Identifiable {
         }
         this._button.onClick = this.onClick.bind(this);
         this._disabled = new BehaviorSubject<boolean>(false);
+        this._tutorialStep = tutorialStep;
     }
 
     public onClick(): void {
@@ -40,6 +43,14 @@ export abstract class Tool extends Identifiable {
 
     set component(value: Type<any>) {
         this._component = value;
+    }
+
+    get tutorialStep(): TutorialStep {
+        return this._tutorialStep;
+    }
+
+    set tutorialStep(value: TutorialStep) {
+        this._tutorialStep = value;
     }
 
     get tooltip(): string {

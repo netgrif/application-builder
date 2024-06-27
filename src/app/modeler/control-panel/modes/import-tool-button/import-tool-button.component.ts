@@ -1,6 +1,7 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {NAB_CONTROL_PANEL_TOOL} from '../../control-panel-tool-injection-token';
 import {ImportTool} from '../import-tool';
+import {TutorialService} from '../../../../tutorial/tutorial-service';
 
 @Component({
     selector: 'nab-import-tool-button',
@@ -13,6 +14,7 @@ export class ImportToolButtonComponent {
 
     constructor(
         @Inject(NAB_CONTROL_PANEL_TOOL) public tool: ImportTool,
+        public tutorialService: TutorialService
     ) {
     }
 
