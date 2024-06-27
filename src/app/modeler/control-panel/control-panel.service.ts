@@ -10,7 +10,6 @@ import {RoleModeService} from '../role-mode/role-mode.service';
 import {EditModeService} from '../edit-mode/edit-mode.service';
 import {GlobalToolRegistry} from './tools/global-tool-registry';
 import {ImportTool} from './modes/import-tool';
-import {BpmnImportTool} from './modes/bpmn-import-tool';
 import {ExportTool} from './modes/export-tool';
 import {SvgExportTool} from './modes/svg-export-tool';
 import {NavigationEnd, Router} from '@angular/router';
@@ -41,7 +40,6 @@ export class ControlPanelService {
         private _importModelTool: ImportTool,
         private _exportModelTool: ExportTool,
         private _exportSvgTool: SvgExportTool,
-        private _bpmnImportTool: BpmnImportTool,
         private _redoTool: RedoTool,
         private _undoTool: UndoTool,
         private _router: Router
@@ -58,7 +56,6 @@ export class ControlPanelService {
         this.activate();
         this._globalToolRegistry.registerItem(_importModelTool);
         this._globalToolRegistry.registerItem(_exportModelTool);
-        this._globalToolRegistry.registerItem(_bpmnImportTool);
         this._globalToolRegistry.registerItem(_exportSvgTool);
         this._globalToolRegistry.registerItem(_undoTool);
         this._globalToolRegistry.registerItem(_redoTool);

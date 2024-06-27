@@ -71,6 +71,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {HistoryMasterItemComponent} from './history-mode/history-master-item/history-master-item.component';
 import {HistoryDetailComponent} from './history-mode/history-detail/history-detail.component';
 import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
+import {FileToolComponent} from './control-panel/tools/file-tool-component/file-tool.component';
 
 @NgModule({
     declarations: [
@@ -102,6 +103,7 @@ import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
         EditModeComponent,
         ModeComponent,
         ToolComponent,
+        FileToolComponent,
         ImportToolButtonComponent,
         ContextMenuComponent,
         HistoryModeComponent,

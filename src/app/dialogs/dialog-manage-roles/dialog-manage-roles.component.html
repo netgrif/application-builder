@@ -20,9 +20,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.perform)"
                                   [indeterminate]="getIndeterminate(element.logic.perform)"
-                                  (change)="setValue($event, element.id, 'perform')"
+                                  (click)="setValue(element.id, 'perform')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.perform), 'checkbox-background-green': getChecked(element.logic.perform)}">
-                        <span>{{stringValue(element.logic.perform)}}</span>
+                        <span>{{stringValue(element.logic.perform) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -36,9 +36,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.delegate)"
                                   [indeterminate]="getIndeterminate(element.logic.delegate)"
-                                  (change)="setValue($event, element.id, 'delegate')"
+                                  (click)="setValue(element.id, 'delegate')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.delegate), 'checkbox-background-green': getChecked(element.logic.delegate)}">
-                        <span>{{stringValue(element.logic.delegate)}}</span>
+                        <span>{{stringValue(element.logic.delegate) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -52,9 +52,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.cancel)"
                                   [indeterminate]="getIndeterminate(element.logic.cancel)"
-                                  (change)="setValue($event, element.id, 'cancel')"
+                                  (click)="setValue(element.id, 'cancel')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.cancel), 'checkbox-background-green': getChecked(element.logic.cancel)}">
-                        <span>{{stringValue(element.logic.cancel)}}</span>
+                        <span>{{stringValue(element.logic.cancel) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -68,9 +68,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.assign)"
                                   [indeterminate]="getIndeterminate(element.logic.assign)"
-                                  (change)="setValue($event, element.id, 'assign')"
+                                  (click)="setValue(element.id, 'assign')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.assign), 'checkbox-background-green': getChecked(element.logic.assign)}">
-                        <span>{{stringValue(element.logic.assign)}}</span>
+                        <span>{{stringValue(element.logic.assign) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -84,9 +84,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.view)"
                                   [indeterminate]="getIndeterminate(element.logic.view)"
-                                  (change)="setValue($event, element.id, 'view')"
+                                  (click)="setValue(element.id, 'view')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.view), 'checkbox-background-green': getChecked(element.logic.view)}">
-                        <span>{{stringValue(element.logic.view)}}</span>
+                        <span>{{stringValue(element.logic.view) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -100,9 +100,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.caseLogic.create)"
                                   [indeterminate]="getIndeterminate(element.caseLogic.create)"
-                                  (change)="setValue($event, element.id, 'create')"
+                                  (click)="setValue(element.id, 'create')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.caseLogic.create), 'checkbox-background-green': getChecked(element.caseLogic.create)}">
-                        <span>{{stringValue(element.caseLogic.create)}}</span>
+                        <span>{{stringValue(element.caseLogic.create) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -116,9 +116,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.caseLogic.delete)"
                                   [indeterminate]="getIndeterminate(element.caseLogic.delete)"
-                                  (change)="setValue($event, element.id, 'delete')"
+                                  (click)="setValue(element.id, 'delete')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.caseLogic.delete), 'checkbox-background-green': getChecked(element.caseLogic.delete)}">
-                        <span>{{stringValue(element.caseLogic.delete)}}</span>
+                        <span>{{stringValue(element.caseLogic.delete) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -126,15 +126,15 @@
             <!-- Process View Column -->
             <ng-container matColumnDef="processView" *ngIf="data.type === 'process'">
                 <th mat-header-cell id="processView" *matHeaderCellDef mat-sort-header fxFlex
-                    class="padding-table-header"> View
+                    class="padding-table-header">View
                 </th>
                 <td mat-cell *matCellDef="let element" fxFlex fxLayout="row" fxLayoutAlign="start center">
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.caseLogic.view)"
                                   [indeterminate]="getIndeterminate(element.caseLogic.view)"
-                                  (change)="setValue($event, element.id, 'view')"
+                                  (click)="setValue(element.id, 'view')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.caseLogic.view), 'checkbox-background-green': getChecked(element.caseLogic.view)}">
-                        <span>{{stringValue(element.caseLogic.view)}}</span>
+                        <span>{{stringValue(element.caseLogic.view) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -166,9 +166,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.perform)"
                                   [indeterminate]="getIndeterminate(element.logic.perform)"
-                                  (change)="setUserValue($event, element.id, 'perform')"
+                                  (click)="setUserValue(element.id, 'perform')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.perform), 'checkbox-background-green': getChecked(element.logic.perform)}">
-                        <span>{{stringValue(element.logic.perform)}}</span>
+                        <span>{{stringValue(element.logic.perform) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -182,9 +182,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.delegate)"
                                   [indeterminate]="getIndeterminate(element.logic.delegate)"
-                                  (change)="setUserValue($event, element.id, 'delegate')"
+                                  (click)="setUserValue(element.id, 'delegate')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.delegate), 'checkbox-background-green': getChecked(element.logic.delegate)}">
-                        <span>{{stringValue(element.logic.delegate)}}</span>
+                        <span>{{stringValue(element.logic.delegate) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -198,9 +198,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.cancel)"
                                   [indeterminate]="getIndeterminate(element.logic.cancel)"
-                                  (change)="setUserValue($event, element.id, 'cancel')"
+                                  (click)="setUserValue(element.id, 'cancel')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.cancel), 'checkbox-background-green': getChecked(element.logic.cancel)}">
-                        <span>{{stringValue(element.logic.cancel)}}</span>
+                        <span>{{stringValue(element.logic.cancel) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -214,9 +214,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.assign)"
                                   [indeterminate]="getIndeterminate(element.logic.assign)"
-                                  (change)="setUserValue($event, element.id, 'assign')"
+                                  (click)="setUserValue(element.id, 'assign')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.assign), 'checkbox-background-green': getChecked(element.logic.assign)}">
-                        <span>{{stringValue(element.logic.assign)}}</span>
+                        <span>{{stringValue(element.logic.assign) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -230,9 +230,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.logic.view)"
                                   [indeterminate]="getIndeterminate(element.logic.view)"
-                                  (change)="setUserValue($event, element.id, 'view')"
+                                  (click)="setUserValue(element.id, 'view')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.logic.view), 'checkbox-background-green': getChecked(element.logic.view)}">
-                        <span>{{stringValue(element.logic.view)}}</span>
+                        <span>{{stringValue(element.logic.view) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -246,9 +246,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.caseLogic.create)"
                                   [indeterminate]="getIndeterminate(element.caseLogic.create)"
-                                  (change)="setUserValue($event, element.id, 'create')"
+                                  (click)="setUserValue(element.id, 'create')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.caseLogic.create), 'checkbox-background-green': getChecked(element.caseLogic.create)}">
-                        <span>{{stringValue(element.caseLogic.create)}}</span>
+                        <span>{{stringValue(element.caseLogic.create) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -262,9 +262,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.caseLogic.delete)"
                                   [indeterminate]="getIndeterminate(element.caseLogic.delete)"
-                                  (change)="setUserValue($event, element.id, 'delete')"
+                                  (click)="setUserValue(element.id, 'delete')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.caseLogic.delete), 'checkbox-background-green': getChecked(element.caseLogic.delete)}">
-                        <span>{{stringValue(element.caseLogic.delete)}}</span>
+                        <span>{{stringValue(element.caseLogic.delete) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -278,9 +278,9 @@
                     <mat-checkbox fxLayoutAlign="start center" class="height-row"
                                   [checked]="getChecked(element.caseLogic.view)"
                                   [indeterminate]="getIndeterminate(element.caseLogic.view)"
-                                  (change)="setUserValue($event, element.id, 'view')"
+                                  (click)="setUserValue(element.id, 'view')"
                                   [ngClass]="{'checkbox-background-warn': getIndeterminate(element.caseLogic.view), 'checkbox-background-green': getChecked(element.caseLogic.view)}">
-                        <span>{{stringValue(element.caseLogic.view)}}</span>
+                        <span>{{stringValue(element.caseLogic.view) | titlecase}}</span>
                     </mat-checkbox>
                 </td>
             </ng-container>

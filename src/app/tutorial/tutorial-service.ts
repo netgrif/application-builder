@@ -21,6 +21,9 @@ export class TutorialService {
     actions: TutorialStep;
     i18n: TutorialStep;
     history: TutorialStep;
+    importTool: TutorialStep;
+    exportTool: TutorialStep;
+    svgExportTool: TutorialStep;
     bug: TutorialStep;
     steps: Array<string>;
     onClose: () => void;
@@ -131,6 +134,37 @@ export class TutorialService {
             },
             'right'
         );
+        this.importTool = TutorialStep.of(
+            'importTool',
+            'Model import',
+            'You can import existing model saved in XML file or transform BPMN file into Petriflow model.',
+            () => {
+            },
+            () => {
+                this.router.navigate(['/modeler/history']);
+            },
+            'right'
+        );
+        this.exportTool = TutorialStep.of(
+            'exportTool',
+            'Model export',
+            'You can export current model as XML file. In simulation mode this will export the simulated model in current state of simulation.',
+            () => {
+            },
+            () => {
+            },
+            'right'
+        );
+        this.svgExportTool = TutorialStep.of(
+            'svgExportTool',
+            'SVG export',
+            'You can export current model as SVG file. In simulation mode this will export the simulated model exactly as seen on canvas.',
+            () => {
+            },
+            () => {
+            },
+            'right'
+        );
         this.demo = TutorialStep.of(
             'demo',
             'Demo Application',
@@ -138,7 +172,6 @@ export class TutorialService {
             () => {
             },
             () => {
-                this.router.navigate(['/modeler/history']);
             },
             'right'
         );
@@ -191,6 +224,9 @@ export class TutorialService {
             this.actions.step,
             this.i18n.step,
             this.history.step,
+            this.importTool.step,
+            this.exportTool.step,
+            this.svgExportTool.step,
             this.demo.step,
             this.youtube.step,
             this.github.step,

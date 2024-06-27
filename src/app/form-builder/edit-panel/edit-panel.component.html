@@ -210,8 +210,8 @@
             </div>
             <div *ngIf="dataVariable.component !== undefined" class="full-width">
                 <mat-form-field class="full-width margin-html">
-                    <input matInput [(ngModel)]="dataVariable.component.name" placeholder="Component name"
-                           (change)="setComponent($event);notifyGridster()">
+                    <mat-label>Component Name</mat-label>
+                    <input matInput [(ngModel)]="dataVariable.component.name" (change)="setComponent($event);notifyGridster()">
                 </mat-form-field>
                 <div>
                     <div *ngIf="dataVariable.component.properties.length > 0">
@@ -283,7 +283,8 @@
             </div>
             <div *ngIf="dataRef.component !== undefined" class="full-width">
                 <mat-form-field class="full-width">
-                    <input matInput [(ngModel)]="dataRef.component.name" placeholder="Component name"
+                    <mat-label>Component Name</mat-label>
+                    <input matInput [(ngModel)]="dataRef.component.name"
                            (change)="setDataRefComponent($event);notifyGridster()">
                 </mat-form-field>
                 <div>
@@ -370,7 +371,8 @@
             </mat-form-field>
             <div>
                 <mat-form-field class="full-width margin-html">
-                    <input matInput type="number" placeholder="Set field offset"
+                    <mat-label>Field offset</mat-label>
+                    <input matInput type="number"
                            [(ngModel)]="gridsterService.selectedDataField.dataRef.layout.offset"
                            (change)="notifyGridster()">
                 </mat-form-field>

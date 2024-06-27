@@ -1,5 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
-import {FileTool} from '../file-tool';
+import {Component, Inject} from '@angular/core';
 import {NAB_CONTROL_PANEL_TOOL} from '../../control-panel-tool-injection-token';
 import {Tool} from '../tool';
 
@@ -10,6 +9,6 @@ import {Tool} from '../tool';
 })
 export class FileToolComponent {
 
-    constructor(@Inject(NAB_CONTROL_PANEL_TOOL) public fileTool: FileTool) {
+    constructor(@Inject(NAB_CONTROL_PANEL_TOOL) public fileTool: Tool) {
     }
 }

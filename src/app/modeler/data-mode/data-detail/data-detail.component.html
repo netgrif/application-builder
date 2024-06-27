@@ -96,9 +96,8 @@
 
         <div fxFlex="2.5"></div>
 
-        <div fxFlex="20">Component Name</div>
-
-        <mat-form-field fxFlex="25">
+        <mat-form-field fxFlex="45">
+            <mat-label>Component Name</mat-label>
             <input matInput [(ngModel)]="item.component.name"
                    (change)="setValue($event,'component-name')">
         </mat-form-field>
