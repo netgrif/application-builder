@@ -10,7 +10,9 @@
     .editor-container {
         height: calc(100vh - 100px);
     }
-    height: 350px;
+    height: 420px;
+    border: 1px solid #0000001f;
+    border-radius: 4px;
 }
 
 #description {
@@ -30,7 +32,8 @@
 
 
 .mat-action-row {
-    padding: 4px 16px 4px 16px;
+    padding: 0 16px 4px 16px;
+    border: none;
 }
 
 .header {

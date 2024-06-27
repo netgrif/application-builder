@@ -21,8 +21,16 @@ export abstract class PageMaster extends AbstractMasterComponent implements OnIn
 
     ngOnInit(): void {
         this.pageIndex = 0;
-        this._allData = this.masterService.allData;
-        this.updatePage();
+        if (this.sort) {
+            this.sort.active = 'id';
+            this.sort.direction = 'asc';
+        }
+        this.sortData({active: 'id', direction: 'asc'});
+        if (this._allData.length > 0 && this.masterService.getSelected()?.constructor?.name !== this._allData[0].constructor.name) {
+            this.masterService.select(this._allData[0]);
+        } else if (this._allData.length === 0) {
+            this.masterService.select(undefined);
+        }
 
         this.masterService.getCreateEvent$().subscribe(newItem => {
             this.updateData();
@@ -53,6 +61,7 @@ export abstract class PageMaster extends AbstractMasterComponent implements OnIn
         if (!event.active || event.direction === '') {
             event.active = 'id';
             event.direction = 'asc';
+            this.pageIndex = 0;
         }
         this._allData = this.masterService.getAllDataSorted(event);
         this.updatePage();

@@ -10,6 +10,14 @@
     z-index: 1;
 }
 
+.field-list-expansion-header {
+    height: 40px;
+}
+
+.field-list-mat-list-item {
+    height: 40px;
+}
+
 .field-list-mat-list-item:hover {
     cursor: move !important;
 
@@ -27,6 +35,7 @@
 }
 
 .field-list-mat-list-item-title {
+    height: 40px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

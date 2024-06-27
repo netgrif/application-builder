@@ -41,6 +41,7 @@ body {
 }
 
 .field-list-mat-list-item-disabled-title {
+    height: 40px;
     color: #bbbbbb;
 }
 
@@ -100,13 +101,15 @@ body {
 }
 
 .checkbox-background-warn {
-    .mat-checkbox-background {
+    .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background, .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true]:enabled~.mdc-checkbox__background {
+        border-color: map-get(netgif-theme.$netgrif-warn, 500) !important;
         background-color: map-get(netgif-theme.$netgrif-warn, 500) !important;
     }
 }
 
 .checkbox-background-green {
-    .mat-checkbox-background {
+    .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background, .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true]:enabled~.mdc-checkbox__background {
+        border-color:#008800 !important;
         background-color: #008800 !important;
     }
 }
@@ -167,5 +170,19 @@ nab-simulation-mode {
     .mat-mdc-form-field-subscript-wrapper {
         position: absolute;
         width: auto;
+    }
+}
+
+.netgrif-input {
+    .properties {
+        .mat-mdc-form-field-infix {
+            min-width: 80px !important;
+        }
+    }
+
+    .drag-box {
+        .mat-mdc-form-field-infix {
+            min-width: 80px !important;
+        }
     }
 }

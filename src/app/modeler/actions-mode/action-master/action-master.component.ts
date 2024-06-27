@@ -30,11 +30,17 @@ export class ActionMasterComponent extends PageMaster implements OnInit {
         this._actionsModeService.activeToolSubject.subscribe(tool => {
             this.pageSize = 20;
             this.pageIndex = 0;
-            this.updateData(false);
-            this.sort.direction = '';
-            if (this._allData.length > 0) {
-                this.masterService.select(this._allData[0]);
+            if (this.sort) {
+                this.sort.active = 'id';
+                this.sort.direction = 'asc';
             }
+            this.sortData({active: 'id', direction: 'asc'});
+            if (this._allData.length > 0 && this.masterService.getSelected()?.constructor?.name !== this._allData[0].constructor.name) {
+                this.masterService.select(this._allData[0]);
+            } else if (this._allData.length === 0) {
+                this.masterService.select(undefined);
+            }
+
         });
     }
 
@@ -57,13 +63,15 @@ export class ActionMasterComponent extends PageMaster implements OnInit {
     sortData(event: Sort): void {
         // TODO: check condition
         if (!event.active || event.direction === '') {
-            if (this._actionsModeService.activeTool.id === DataActionsTool.ID ||
-                this._actionsModeService.activeTool.id === TransitionActionsTool.ID ||
-                this._actionsModeService.activeTool.id === RoleActionsTool.ID) {
+            if (this._actionsModeService.activeTool.id === 'data' ||
+                this._actionsModeService.activeTool.id === 'transition' ||
+                this._actionsModeService.activeTool.id === 'role') {
+                event.active = 'id';
+                event.direction = 'asc';
                 this.pageIndex = 0;
-                this.updateData(false);
+            } else {
+                return;
             }
-            return;
         }
         this._allData = this.masterService.getAllDataSorted(event);
         this.updatePage();

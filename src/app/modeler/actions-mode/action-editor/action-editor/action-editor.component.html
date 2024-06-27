@@ -8,11 +8,9 @@
                                 [editor]="editor"></nab-action-editor-menu>
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()" mwlResizable
+        <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()"
                              id="{{action.event + '_' + action.phase + '_' + index}}"
-                             class="panel-fix"
-                             [enableGhostResize]="true"
-                             (resizing)="onResizeEvent($event, action.event + '_' + action.phase + '_' + index)">
+                             class="panel-fix">
             <mat-expansion-panel-header class="header">
                 Action: {{action.id}}
             </mat-expansion-panel-header>
@@ -67,8 +65,8 @@
                                        [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>
                 </div>
             </ng-template>
-            <mat-action-row mwlResizeHandle [resizeEdges]="{ bottom: true}">
-                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input">
+            <mat-action-row>
+                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input builder-field-input">
                     <mat-form-field class="margin-left-8px">
                         <mat-label>event</mat-label>
                         <mat-select [(value)]="action.event"
@@ -78,7 +76,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input">
+                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input builder-field-input">
                     <mat-form-field class="margin-left-8px">
                         <mat-label>phase</mat-label>
                         <mat-select [(value)]="action.phase"
@@ -89,7 +87,7 @@
                     </mat-form-field>
                 </div>
                 <div *ngIf="action.type === 'DATA' || action.type === 'DATAREF'" fxLayout="row"
-                     fxLayoutAlign="start center" class="netgrif-input">
+                     fxLayoutAlign="start center" class="netgrif-input builder-field-input">
                     <mat-form-field class="margin-left-8px">
                         <mat-label>event</mat-label>
                         <mat-select [(value)]="action.event" (selectionChange)="actionDataEventsChanged(index)">

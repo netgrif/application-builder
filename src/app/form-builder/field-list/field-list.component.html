@@ -7,14 +7,16 @@
                 Existing fields
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <div fxLayoutAlign="start center" class="netgrif-input">
-            <mat-icon fxFlex="13">search</mat-icon>
-            <mat-form-field fxFlex="75">
+        <div fxLayoutAlign="start center" class="netgrif-input builder-field-input">
+            <mat-form-field fxFlex>
+                <mat-icon matPrefix>search</mat-icon>
                 <input matInput type="text" placeholder="search" [(ngModel)]="existingFieldsSearchInput">
+                <button matSuffix (click)="existingFieldsSearchInput=''"  mat-icon-button
+                        *ngIf="existingFieldsSearchInput.length > 0">
+                    <mat-icon color="warn">close</mat-icon>
+                </button>
             </mat-form-field>
-            <mat-icon fxFlex="12" class="clear-search-icon" *ngIf="existingFieldsSearchInput.length > 0"
-                      (click)="existingFieldsSearchInput=''">clear
-            </mat-icon>
+
         </div>
         <ng-container *ngFor="let item of existingDataFields">
             <mat-list-item class="field-list-mat-list-item mat-list-item-compact" *ngIf="!isPlaced(item) && containsSearchExpression(item)"
@@ -22,11 +24,11 @@
                            (dragstart)="dragStartHandlerExisting($event, item)"
                            (click)="addExistingField(item)">
                 <div class="field-list-mat-list-item-title" matTooltip="{{item.title?.value}} [{{item.id}}]">
-                    <mat-icon class="icon-color" (click)="deleteField(item, $event)">delete</mat-icon>
                     <mat-icon class="icon-color">drag_indicator</mat-icon>
                     <span>
                         {{item.title?.value}} [{{item.id}}]
                     </span>
+                    <mat-icon class="icon-color" (click)="deleteField(item, $event)">delete</mat-icon>
                 </div>
             </mat-list-item>
         </ng-container>
