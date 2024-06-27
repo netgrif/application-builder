@@ -32,7 +32,6 @@ export class DialogRefactorComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.dialogRef.beforeClosed().subscribe(() => this.dialogRef.close(this.result));
     }
 
     refactor() {

@@ -88,7 +88,6 @@ const appRoutes: Routes = [
         RouterModule.forRoot(appRoutes),
         AppRoutingModule,
         NgOptimizedImage,
-        // TODO: release/4.0.0 error rxjs
         TaskContentComponentModule,
         CommonModule,
         MatProgressSpinnerModule

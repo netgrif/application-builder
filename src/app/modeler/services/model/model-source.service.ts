@@ -19,7 +19,6 @@ export class ModelSourceService {
     }
 
     public getModel(): PetriNet {
-        console.log(`route: ${this.router.url}, is sim: ${this.router.url.includes(SimulationModeComponent.URL)}`);
         if (this.router.url.includes(SimulationModeComponent.URL)) {
             return this.simulationService.model;
         }
