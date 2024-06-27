@@ -323,8 +323,6 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         }
         this.gridsterService.selectedDataFieldChangeStream.next();
         this.registerChange();
-        // TODO
-        // this.notify.notifyDatafields.next(this.gridsterService.selectedDataField.id);
     }
 
     drop(event: CdkDragDrop<Array<string>>) {

@@ -45,7 +45,7 @@ export class ModelImportService {
 
         if (petriNetResult.model !== undefined) {
             this.modelService.model = petriNetResult.model;
-            this.historyService.save("Petri net has been imported!")
+            this.historyService.save(`Model ${this.modelService.model.id} has been imported.`)
         }
         this.router.navigate(['/modeler']);
     }

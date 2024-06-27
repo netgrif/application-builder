@@ -4,7 +4,7 @@
 
         <mat-form-field fxFlex="45">
             <mat-label>Id</mat-label>
-            <input matInput [(ngModel)]="item.id" (change)="changeId($event)" [formControl]="form">
+            <input matInput [(ngModel)]="role.role.id" (change)="changeId($event)" [formControl]="form">
             <mat-error *ngIf="form.errors && form.errors.required">Id is required</mat-error>
             <mat-error *ngIf="form.errors && form.errors.validUnique">Transition with given id already exists</mat-error>
         </mat-form-field>
@@ -13,7 +13,7 @@
 
         <mat-form-field fxFlex="45">
             <mat-label>Title</mat-label>
-            <input matInput [ngModel]="item.title.value" (change)="changeTitle($event)">
+            <input matInput [ngModel]="role.role.title.value" (change)="changeTitle($event)">
         </mat-form-field>
 
         <div fxFlex="2.5"></div>
