@@ -8,6 +8,7 @@ import {ProjectService} from '../project-builder/project.service';
 import {HttpClient} from '@angular/common/http';
 import {EditModeService} from './edit-mode/edit-mode.service';
 import {ModelService} from './services/model/model.service';
+import {HistoryService} from './services/history/history.service';
 
 @Component({
     selector: 'nab-modeler',
@@ -28,7 +29,8 @@ export class ModelerComponent {
         private route: ActivatedRoute,
         private httpClient: HttpClient,
         private _importService: ImportService,
-        private _petriflowCanvasService: EditModeService
+        private _petriflowCanvasService: EditModeService,
+        private historyService: HistoryService
     ) {
         this.projectModels = this.projectService.models;
         this.route.queryParams.subscribe(params => {
@@ -40,6 +42,7 @@ export class ModelerComponent {
                         const model = this._importService.parseFromXml(data as string)?.model;
                         if (model) {
                             this.modelService.model = model;
+                            this.historyService.save(`Model ${this.modelService.model.id} has been imported.`);
                         }
                     } catch (e) {
                         console.log(e);
@@ -52,7 +55,8 @@ export class ModelerComponent {
             }
         });
         if (!this.modelService.model) {
-            this.modelService.model = new PetriflowPetriNet();
+            this.modelService.model = this.modelService.newModel();
+            this.historyService.save(`New model has been created.`);
         }
     }
 }

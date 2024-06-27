@@ -61,13 +61,12 @@ export class ModelService {
     constructor(
         private arcFactory: ArcFactory
     ) {
-        this._model = new BehaviorSubject<PetriNet>(this.newModel());
+        this._model = new BehaviorSubject<PetriNet>(undefined);
         this._placeChange = new Subject<PlaceChange>();
         this._transitionChange = new Subject<ChangedTransition>();
         this._arcChange = new Subject<ChangedArc>();
     }
 
-    // TODO: release/4.0.0 history
     set model(newModel: PetriNet) {
         this.alignModel(newModel);
         this._model.next(newModel);

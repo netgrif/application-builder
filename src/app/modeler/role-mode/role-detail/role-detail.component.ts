@@ -52,6 +52,7 @@ export class RoleDetailComponent implements OnDestroy {
         }
         this._modelService.updateRole(this.role);
         this._historyService.save(`Role ${this.role.id} has been changed.`);
+        this.shouldSave = false;
     }
 
     private validUnique(): ValidatorFn {

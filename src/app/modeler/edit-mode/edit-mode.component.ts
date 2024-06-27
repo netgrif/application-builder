@@ -7,6 +7,7 @@ import {EditModeService} from './edit-mode.service';
 import {ModelService} from '../services/model/model.service';
 import {ContextMenuComponent} from './context-menu/context-menu.component';
 import {ContextMenu} from './context-menu/context-menu';
+import {HistoryService} from '../services/history/history.service';
 
 @Component({
     selector: 'nab-edit-mode',
@@ -22,6 +23,7 @@ export class EditModeComponent implements AfterViewInit, OnDestroy {
         private importService: ModelImportService,
         private _modelService: ModelService,
         private _editModeService: EditModeService,
+        private historyService: HistoryService,
         public dialog: MatDialog
     ) {
     }
@@ -43,6 +45,7 @@ export class EditModeComponent implements AfterViewInit, OnDestroy {
         setTimeout(() => {
             if (this._modelService.model === undefined) {
                 this._modelService.model = this._modelService.newModel();
+                this.historyService.save(`New model has been created.`);
             } else {
                 this._editModeService.renderModel();
             }
