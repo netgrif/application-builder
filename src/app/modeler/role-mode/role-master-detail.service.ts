@@ -4,6 +4,7 @@ import {Role} from '@netgrif/petriflow';
 import {ModelService} from '../services/model/model.service';
 import {Sort} from '@angular/material/sort';
 import {HistoryService} from '../services/history/history.service';
+import {ModelerConfig} from '../modeler-config';
 
 @Injectable({
     providedIn: 'root'
@@ -49,5 +50,15 @@ export class RoleMasterDetailService extends AbstractMasterDetailService<Role> {
                     return this.compare(a.id, b.id, isAsc);
             }
         });
+    }
+
+    getSortFromLocalStorage(): Sort {
+        return {active: localStorage.getItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.ROLE_SORT),
+            direction: localStorage.getItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.ROLE_DIRECTION)} as Sort;
+    }
+
+    setSortToLocalStorage(sort: Sort) {
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.ROLE_SORT, sort.active);
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.ROLE_DIRECTION, sort.direction);
     }
 }

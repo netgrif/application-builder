@@ -39,6 +39,8 @@ export abstract class AbstractMasterDetailService<T> implements OnDestroy {
     public abstract delete(item: T);
     public abstract duplicate(item: T): T;
     public abstract getAllDataSorted(event: Sort);
+    public abstract getSortFromLocalStorage(): Sort;
+    public abstract setSortToLocalStorage(sort: Sort);
 
     ngOnDestroy(): void {
         this._selected.complete();

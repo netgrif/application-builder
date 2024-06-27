@@ -21,11 +21,7 @@ export abstract class PageMaster extends AbstractMasterComponent implements OnIn
 
     ngOnInit(): void {
         this.pageIndex = 0;
-        if (this.sort) {
-            this.sort.active = 'id';
-            this.sort.direction = 'asc';
-        }
-        this.sortData({active: 'id', direction: 'asc'});
+        this.initializeAndSort();
         if (this._allData.length > 0 && this.masterService.getSelected()?.constructor?.name !== this._allData[0].constructor.name) {
             this.masterService.select(this._allData[0]);
         } else if (this._allData.length === 0) {
@@ -63,6 +59,7 @@ export abstract class PageMaster extends AbstractMasterComponent implements OnIn
             event.direction = 'asc';
             this.pageIndex = 0;
         }
+        this.masterService.setSortToLocalStorage(event);
         this._allData = this.masterService.getAllDataSorted(event);
         this.updatePage();
     }
@@ -113,5 +110,20 @@ export abstract class PageMaster extends AbstractMasterComponent implements OnIn
         const firstCut = this.pageIndex * this.pageSize;
         const secondCut = firstCut + this.pageSize;
         this._pageData = this._allData.slice(firstCut, secondCut);
+    }
+
+    protected initializeAndSort() {
+        const sort = this.masterService.getSortFromLocalStorage();
+        if (sort.active === null && sort.direction === null) {
+            sort.active = 'id';
+            sort.direction = 'asc';
+            this.masterService.setSortToLocalStorage(sort);
+        }
+        if (this.sort) {
+            this.sort.active = sort.active
+            this.sort.direction = sort.direction
+            this.sort._stateChanges.next();
+        }
+        this.sortData({active: sort.active, direction: sort.direction});
     }
 }

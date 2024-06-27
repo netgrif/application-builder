@@ -105,12 +105,21 @@ body {
         border-color: map-get(netgif-theme.$netgrif-warn, 500) !important;
         background-color: map-get(netgif-theme.$netgrif-warn, 500) !important;
     }
+
+    .mdc-checkbox .mdc-checkbox__native-control:enabled~.mdc-checkbox__background .mdc-checkbox__mixedmark {
+        border-color: white;
+        color: white;
+    }
 }
 
 .checkbox-background-green {
     .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background, .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true]:enabled~.mdc-checkbox__background {
         border-color:#008800 !important;
         background-color: #008800 !important;
+    }
+
+    .mdc-checkbox .mdc-checkbox__native-control:enabled~.mdc-checkbox__background .mdc-checkbox__checkmark {
+        color: white;
     }
 }
 

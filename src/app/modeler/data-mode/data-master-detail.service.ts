@@ -4,6 +4,7 @@ import {ModelService} from '../services/model/model.service';
 import {AbstractMasterDetailService} from '../components/master-detail/abstract-master-detail.service';
 import {Sort} from '@angular/material/sort';
 import {HistoryService} from '../services/history/history.service';
+import {ModelerConfig} from '../modeler-config';
 
 @Injectable({
     providedIn: 'root'
@@ -52,5 +53,15 @@ export class DataMasterDetailService extends AbstractMasterDetailService<DataVar
                     return this.compare(a.id, b.id, isAsc);
             }
         });
+    }
+
+    getSortFromLocalStorage(): Sort {
+        return {active: localStorage.getItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.DATA_SORT),
+            direction: localStorage.getItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.DATA_DIRECTION)} as Sort;
+    }
+
+    setSortToLocalStorage(sort: Sort) {
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.DATA_SORT, sort.active);
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.DATA_DIRECTION, sort.direction);
     }
 }

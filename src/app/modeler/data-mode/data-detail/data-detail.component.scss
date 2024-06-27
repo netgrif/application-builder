@@ -50,7 +50,6 @@
 }
 
 .drag-box {
-    padding: 5px 5px;
     color: rgba(0, 0, 0, 0.87);
     display: flex;
     flex-direction: row;
@@ -59,7 +58,7 @@
     box-sizing: border-box;
     cursor: move;
     font-size: 14px;
-    height: 67px;
+    height: 50px;
 }
 
 .drag-box:hover {
@@ -95,12 +94,12 @@
 }
 
 .icon-color {
-    padding-right: 4px;
+    padding-right: 12px;
     color: #bbbbbb;
 }
 
 .margin-right8px {
-    margin-right: 16px;
+    margin-right: 6px;
 }
 
 .text-ellipsis {
@@ -122,4 +121,8 @@
 
 .full-width {
     width: 100%;
+}
+
+.margin-html {
+    margin-top: 6px;
 }

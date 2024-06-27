@@ -3,7 +3,8 @@
 }
 
 .main-toolbar-logo {
-    width: 42px;
+    width: 35px;
+    height: 37px;
 }
 
 .app-mat-viewnav {
@@ -13,7 +14,7 @@
     .logo {
         display: flex;
         justify-content: center;
-        padding-top: 8px;
+        padding-top: 5px;
     }
 
     mat-action-list {
@@ -80,8 +81,10 @@
 }
 
 .menu-items {
+    padding-top: 0;
     .mdc-list-item {
         padding-left: 9px;
         padding-right: 9px;
+        height: 42px;
     }
 }
