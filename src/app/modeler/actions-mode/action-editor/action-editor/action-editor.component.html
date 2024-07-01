@@ -66,36 +66,6 @@
                 </div>
             </ng-template>
             <mat-action-row>
-                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input builder-field-input">
-                    <mat-form-field class="margin-left-8px">
-                        <mat-label>event</mat-label>
-                        <mat-select [(value)]="action.event"
-                                    (selectionChange)="actionTransitionEventsChanged(index)">
-                            <mat-option *ngFor="let option of TRANSITION_EVENT_TYPES"
-                                        value="{{option}}">{{option}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div *ngIf="action.type === 'TRANSITION'" fxLayout="row" fxLayoutAlign="start center" class="netgrif-input builder-field-input">
-                    <mat-form-field class="margin-left-8px">
-                        <mat-label>phase</mat-label>
-                        <mat-select [(value)]="action.phase"
-                                    (selectionChange)="actionTransitionEventsChanged(index)">
-                            <mat-option *ngFor="let option of PHASE_TYPES"
-                                        value="{{option}}">{{option}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div *ngIf="action.type === 'DATA' || action.type === 'DATAREF'" fxLayout="row"
-                     fxLayoutAlign="start center" class="netgrif-input builder-field-input">
-                    <mat-form-field class="margin-left-8px">
-                        <mat-label>event</mat-label>
-                        <mat-select [(value)]="action.event" (selectionChange)="actionDataEventsChanged(index)">
-                            <mat-option *ngFor="let option of DATA_EVENT_TYPES"
-                                        value="{{option}}">{{option}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
                 <button mat-icon-button (click)="openDialog(index)">
                     <mat-icon>delete</mat-icon>
                 </button>
