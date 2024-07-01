@@ -122,7 +122,9 @@ export class FieldListComponent implements OnInit, AfterViewInit {
     }
 
     containsSearchExpression(item: DataVariable): boolean {
-        return item.title?.value?.toLocaleLowerCase()?.includes(this.existingFieldsSearchInput.toLocaleLowerCase());
+        const search = this.existingFieldsSearchInput.toLocaleLowerCase();
+        return item.title?.value?.toLocaleLowerCase()?.includes(search)
+            || item.id.toLocaleLowerCase().includes(search);
     }
 
     backModeler() {
