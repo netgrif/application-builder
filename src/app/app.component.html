@@ -1,7 +1,7 @@
 <div class="app-container">
     <mat-sidenav-container class="app-mat-sidenav-container">
         <mat-sidenav class="app-mat-viewnav" mode="side" disableClose="true" opened>
-            <a href="https://www.netgrif.com" class="logo">
+            <a [href]="config.services.urls.netgrif" target="_blank" class="logo">
                 <img src="../assets/netgrif_logo.svg" alt="Netgrif logo" class="main-toolbar-logo">
             </a>
             <mat-action-list class="menu-items">
@@ -10,7 +10,7 @@
                                title="{{tutorial.demo.title}}"
                                text="{{tutorial.demo.text}}"
                                stepPosition="{{tutorial.demo.position}}"
-                               (click)="openInTab('https://demo.netgrif.com/')"
+                               (click)="openInTab(config.services.urls.engine)"
                                matTooltip="Netgrif Demo" matTooltipPosition="right">
                     <mat-icon>play_arrow</mat-icon>
                 </mat-list-item>
@@ -19,7 +19,7 @@
                                title="{{tutorial.youtube.title}}"
                                text="{{tutorial.youtube.text}}"
                                stepPosition="{{tutorial.youtube.position}}"
-                               (click)="openInTab('https://www.youtube.com/channel/UCNfqgnjskMMpy7QvOOKhKgw')"
+                               (click)="openInTab(config.services.urls.youtube)"
                                matTooltip="Youtube Channel" matTooltipPosition="right">
                     <mat-icon svgIcon="youtube"></mat-icon>
                 </mat-list-item>
@@ -28,7 +28,7 @@
                                title="{{tutorial.github.title}}"
                                text="{{tutorial.github.text}}"
                                stepPosition="{{tutorial.github.position}}"
-                               (click)="openInTab('https://github.com/netgrif')"
+                               (click)="openInTab(config.services.urls.github)"
                                matTooltip="Github" matTooltipPosition="right">
                     <mat-icon svgIcon="github">device_hub</mat-icon>
                 </mat-list-item>
@@ -49,7 +49,7 @@
                                text="{{tutorial.bug.text}}"
                                stepPosition="{{tutorial.bug.position}}"
                                (done)="tutorial.onClose()"
-                               (click)="openInTab('https://github.com/netgrif/application-builder/issues')"
+                               (click)="openInTab(config.services.urls.issues)"
                                matTooltip="Report a bug" matTooltipPosition="right">
                     <mat-icon>bug_report</mat-icon>
                 </mat-list-item>
