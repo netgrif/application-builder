@@ -73,7 +73,6 @@ export class LanguagesComponent implements OnInit, OnDestroy {
     }
 
     addLocal() {
-        console.log(this.newLocaleFormControl.value);
         this.i18nService.addLocale(this.newLocaleFormControl.value.languageCode);
         this.newLocaleFormControl.reset();
         this.historySave = true;

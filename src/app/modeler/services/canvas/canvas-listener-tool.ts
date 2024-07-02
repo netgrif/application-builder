@@ -23,7 +23,7 @@ import {CanvasObject} from '../../edit-mode/domain/canvas-object';
 
 export abstract class CanvasListenerTool extends Tool implements MouseListener, PlaceListener, TransitionListener, ArcListener, KeyListener {
 
-    private static readonly clickMargin = 2;
+    private static readonly clickMargin = 3;
 
     private readonly _modelService: ModelService;
     private readonly _dialog: MatDialog;
