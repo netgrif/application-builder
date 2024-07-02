@@ -14,7 +14,9 @@ mat-sidenav-content {
     .editor-container {
         height: calc(100vh - 100px);
     }
-    height: 350px;
+    height: calc(100vh - 157px);
+    border: 1px solid #0000001f;
+    border-radius: 4px;
 }
 
 #description {

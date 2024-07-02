@@ -39,3 +39,29 @@ mat-expansion-panel-header {
     padding-left: 0;
     padding-right: 0;
 }
+
+.list-accordion {
+    .mat-expansion-panel-spacing {
+        margin: 0;
+    }
+
+    .mdc-list {
+        padding: 0;
+    }
+
+    .mat-expansion-panel-header.mat-expanded {
+        height: 48px;
+    }
+
+    .mat-expansion-panel-body {
+        padding: 0 12px 0;
+    }
+}
+
+.menu-span-item {
+    max-width: 210px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+}

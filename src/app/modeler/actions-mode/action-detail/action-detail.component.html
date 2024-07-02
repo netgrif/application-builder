@@ -46,17 +46,17 @@
     </mat-tree>
 </div>
 <div fxFlex class="no-overflow" *ngIf="isFunctionsModeSelected()">
-    <div *ngIf="this.selectedFn && isFunctionSelected()" class="scroll-vertical netgrif-input">
-        <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top32px">
+    <div *ngIf="this.selectedFn && isFunctionSelected()" class="scroll-vertical netgrif-input builder-field-input">
+        <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top6px">
             <div fxFlex="2.5"></div>
-            <div fxFlex="45" fxLayoutAlign="start center">
+            <div fxFlex="46.5" fxLayoutAlign="start center">
                 <mat-form-field fxFlex>
                     <mat-label>Name</mat-label>
                     <input matInput [(ngModel)]="this.selectedFn.name" (change)="updateFunctions()">
                 </mat-form-field>
             </div>
-            <div fxFlex="2.5"></div>
-            <div fxFlex="45">
+            <div fxFlex="2"></div>
+            <div fxFlex="46.5">
                 <mat-form-field fxFlex>
                     <mat-label>Scope</mat-label>
                     <mat-select [(value)]="this.selectedFn.scope">
@@ -68,7 +68,7 @@
             </div>
             <div fxFlex="2.5"></div>
         </div>
-        <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top32px">
+        <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top6px">
             <div fxFlex="2.5"></div>
             <nab-function-editor fxFlex="95" [fn]="this.selectedFn"></nab-function-editor>
             <div fxFlex="2.5"></div>

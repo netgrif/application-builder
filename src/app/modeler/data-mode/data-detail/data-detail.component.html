@@ -203,9 +203,10 @@
             <div class="margin-html">
                 <div *ngIf="item.allowedNets?.length > 0">
                     <div *ngFor="let net of item.allowedNets; let i = index">
-                        <mat-form-field class=" margin-right8px" fxFlex="90">
+                        <mat-form-field class=" margin-right8px margin-html" fxFlex="90">
+                            <mat-label>Process identifier</mat-label>
                             <input matInput (change)="setValue($event,'allowedNets', i)" type="text"
-                                   placeholder="Process identifier" [value]="net">
+                                   [value]="net">
                         </mat-form-field>
                         <button mat-icon-button (click)="deleteAllowedNet(i)" fxFlex="10">
                             <mat-icon>delete</mat-icon>

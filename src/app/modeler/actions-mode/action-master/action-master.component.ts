@@ -12,6 +12,7 @@ import {ActionsMasterDetailService} from '../actions-master-detail.setvice';
 import {FunctionsTool} from '../tools/functions-tool';
 import {ProcessActionsTool} from '../tools/process-actions-tool';
 import {ModelerConfig} from '../../modeler-config';
+import {MasterItem} from '../action-editor/classes/master-item';
 
 @Component({
   selector: 'nab-action-master',
@@ -32,7 +33,7 @@ export class ActionMasterComponent extends PageMaster implements OnInit {
             this.pageSize = 20;
             this.pageIndex = 0;
             this.initializeAndSort();
-            if (this._allData.length > 0 && this.masterService.getSelected()?.constructor?.name !== this._allData[0].constructor.name) {
+            if (this._allData.length > 0 && this.masterService.getSelected()?.constructor?.name !== this._allData[0].constructor.name || this.masterService.getSelected() instanceof MasterItem) {
                 this.masterService.select(this._allData[0]);
             } else if (this._allData.length === 0) {
                 this.masterService.select(undefined);
