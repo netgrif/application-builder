@@ -123,7 +123,7 @@ export class FieldListService {
             ]
         },
         {
-            type: 'i18n',
+            type: DataType.I18N,
             components: [
                 {title: 'Simple'},
                 {title: 'Divider', name: 'divider', cols: 4}
@@ -137,6 +137,12 @@ export class FieldListService {
         },
         {
             type: DataType.CASE_REF,
+            components: [
+                {title: 'Simple'}
+            ]
+        },
+        {
+            type: 'stringCollection',
             components: [
                 {title: 'Simple'}
             ]
