@@ -40,6 +40,9 @@ export abstract class CanvasModeService<T extends Tool> extends ModeService<T> {
     }
 
     public renderModel(model: PetriNet = this.model): void {
+        if (model === undefined) {
+            return;
+        }
         this.reset();
         model.getPlaces().forEach(modelPlace => {
             this.newSvgPlace(modelPlace);
