@@ -203,7 +203,7 @@ export class SelectTool extends CanvasTool {
             this.deleteArc(a);
         });
         this.deselectAll();
-        this.historyService.save(`Elements (${size}) has been deleted`);
+        this.historyService.save(`Elements have been deleted`);
     }
 
     undo(): void {
@@ -489,7 +489,7 @@ export class SelectTool extends CanvasTool {
                 this.editModeService.moveArcBreakpoint(a, index);
             });
         });
-        this.historyService.save(`Elements (${this.selectedElements.totalSize()}) has been moved`);
+        this.historyService.save(`Elements have been moved`);
     }
 
     isDraggingOnlyArc(): boolean {

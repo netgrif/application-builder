@@ -263,6 +263,7 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
     public removeBreakpoint(arc: CanvasArc, index: number): void {
         this.modelService.removeArcBreakpoint(arc.modelArc, index);
         arc.removeBreakpoint(index);
+        this.historyService.save(`Arc ${arc.id} breakpoint has been deleted.`);
     }
 
     private updateArc(changedArc: ChangedArc): void {
