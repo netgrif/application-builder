@@ -250,6 +250,7 @@ export class GridsterService {
     }
 
     private createId(type: string) {
+        // TODO: release/4.0.0 update with model service logic
         let counter: number;
         if (this.mapCounter.has(type)) {
             counter = this.mapCounter.get(type);
