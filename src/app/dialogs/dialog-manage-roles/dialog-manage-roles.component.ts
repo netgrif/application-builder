@@ -7,7 +7,7 @@ import {DataVariable, ProcessRoleRef, ProcessUserRef, Role, RoleRef, UserRef} fr
 import {ModelService} from '../../modeler/services/model/model.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
 import {HistoryService} from '../../modeler/services/history/history.service';
-import {MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxChange, MatCheckboxDefaultOptions} from '@angular/material/checkbox';
+import {MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions} from '@angular/material/checkbox';
 
 export enum RoleRefType {
     TRANSITION = 'transition',
@@ -29,7 +29,7 @@ export interface ManagePermissionData {
     templateUrl: './dialog-manage-roles.component.html',
     styleUrls: ['./dialog-manage-roles.component.scss'],
     providers: [
-        {provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } as MatCheckboxDefaultOptions}
+        {provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: {clickAction: 'noop'} as MatCheckboxDefaultOptions}
     ]
 })
 export class DialogManageRolesComponent implements OnInit, OnDestroy {
@@ -74,8 +74,8 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
             arrayRoleRefs = [...this.data.processRolesRefs];
             this.addDefaultProcessRoleRefs(arrayRoleRefs);
             arrayUserRefs = [...this.data.processUserRefs];
-            this.displayedColumns = ['id', 'create', 'delete', 'processView'];
-            this.usersDisplayedColumns = ['id', 'create', 'delete', 'processView'];
+            this.displayedColumns = ['id', 'create', 'delete', 'view'];
+            this.usersDisplayedColumns = ['id', 'create', 'delete', 'view'];
             this.data.roles.forEach(item => {
                 if (this.data.processRolesRefs.find(itm => itm.id === item.id) === undefined) {
                     (arrayRoleRefs as Array<ProcessRoleRef>).push(new ProcessRoleRef(item.id));
@@ -89,28 +89,37 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
             this.dataSource = new MatTableDataSource<ProcessRoleRef>(arrayRoleRefs);
             this.usersDataSource = new MatTableDataSource<ProcessUserRef>(arrayUserRefs);
         }
-        this.dataSource.sortingDataAccessor = (item, property) => {
-            switch (property) {
-                case 'perform':
-                    return (item as RoleRef).logic.perform?.toString();
-                case 'delegate':
-                    return (item as RoleRef).logic.delegate?.toString();
-                case 'cancel':
-                    return (item as RoleRef).logic.cancel?.toString();
-                case 'assign':
-                    return (item as RoleRef).logic.assign?.toString();
-                case 'create':
-                    return (item as ProcessRoleRef).caseLogic.create?.toString();
-                case 'delete':
-                    return (item as ProcessRoleRef).caseLogic.delete?.toString();
-                case 'view':
-                    return (item as RoleRef).logic.view?.toString();
-                case 'processView':
-                    return (item as ProcessRoleRef).caseLogic.view?.toString();
-                default:
-                    return item[property];
-            }
+        this.dataSource.sortData = (data: (RoleRef | ProcessRoleRef)[], sort: MatSort): (RoleRef | ProcessRoleRef)[] => {
+            return this.sortRefs(sort, data) as (RoleRef | ProcessRoleRef)[];
         };
+        this.usersDataSource.sortData = (data: (UserRef | ProcessUserRef)[], sort: MatSort): (UserRef | ProcessUserRef)[] => {
+            return this.sortRefs(sort, data) as (UserRef | ProcessUserRef)[];
+        }
+    }
+
+    private sortRefs(sort: MatSort, data: ((UserRef | ProcessUserRef)[]) | (RoleRef | ProcessRoleRef)[]) {
+        if (sort.active === undefined) {
+            return data;
+        }
+        const order = sort.direction === 'desc' ? -1 : (sort.direction === 'asc' ? 1 : 0);
+        return data.sort((a: RoleRef | ProcessRoleRef | UserRef | ProcessUserRef, b: RoleRef | ProcessRoleRef | UserRef | ProcessUserRef) => {
+            const refA = this.refStringValue(a, sort.active);
+            const refB = this.refStringValue(b, sort.active);
+            if (refA === refB || order === 0) {
+                return a.id.localeCompare(b.id);
+            }
+            return refA.localeCompare(refB) * order;
+        });
+    }
+
+    refStringValue(item: RoleRef | ProcessRoleRef | UserRef | ProcessUserRef, property: string): string {
+        let value: boolean | undefined;
+        if (item instanceof RoleRef || item instanceof UserRef) {
+            value = item.logic[property];
+        } else {
+            value = item.caseLogic[property];
+        }
+        return value === undefined ? '' : `${value.toString()}`;
     }
 
     ngOnInit() {
