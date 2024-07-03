@@ -7,6 +7,7 @@ import {AbstractControl, FormControl, ValidatorFn, Validators} from '@angular/fo
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {HistoryService} from '../../services/history/history.service';
+import {LanguageSelectService} from './language-select.service';
 
 @Component({
     selector: 'nab-languages',
@@ -21,7 +22,9 @@ export class LanguagesComponent implements OnInit, OnDestroy {
     });
     filteredLocales: Observable<Array<Locale>>;
 
-    constructor(private i18nService: I18nModeService, protected _historyService: HistoryService) {
+    constructor(protected i18nService: I18nModeService,
+                protected _historyService: HistoryService,
+                protected _languageSelect: LanguageSelectService) {
     }
 
     ngOnInit(): void {
@@ -80,5 +83,10 @@ export class LanguagesComponent implements OnInit, OnDestroy {
 
     deleteLocale() {
         this.historySave = true;
+    }
+
+    selectLocale(locale) {
+        this._languageSelect.locale = locale;
+        this.i18nService.activate(this.i18nService.translationsTool);
     }
 }

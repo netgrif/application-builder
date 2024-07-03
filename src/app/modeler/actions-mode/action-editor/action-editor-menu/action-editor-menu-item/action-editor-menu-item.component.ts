@@ -14,6 +14,7 @@ export class ActionEditorMenuItemComponent implements AfterViewChecked {
 
     @Input() configuration: MenuItemConfiguration;
 
+    @Input() parentTrigger: MatMenuTrigger;
     @Input() trigger: MatMenuTrigger;
 
     @ViewChild(MatMenu, {static: true}) menu: MatMenu;

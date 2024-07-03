@@ -140,8 +140,6 @@ export class ActionItemProviderService {
             this.referenceField(editorObject, value, 'f.');
         } else if (this.variables.includes(value)) {
             this.newVariable(editorObject, value);
-        } else {
-            // do-nothing
         }
     }
 

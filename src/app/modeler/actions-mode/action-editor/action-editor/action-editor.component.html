@@ -36,7 +36,7 @@
                     <div fxFlex="50" fxLayoutGap="3em" fxLayoutAlign="end center">
                         <mat-menu #referencesMenu="matMenu">
                             <ng-container *ngFor="let configuration of editorConfigurations">
-                                <nab-action-editor-menu-item [trigger]="referenceItemTrigger" #referenceItem="menuInOtherComponent" [configuration]="configuration" [hidden]="!referencesOpened"></nab-action-editor-menu-item>
+                                <nab-action-editor-menu-item [parentTrigger]="referencesTrigger" [trigger]="referenceItemTrigger" #referenceItem="menuInOtherComponent" [configuration]="configuration" [hidden]="!referencesOpened"></nab-action-editor-menu-item>
                                 <button mat-menu-item #referenceItemTrigger="matMenuTrigger" [matMenuTriggerFor]="referenceItem.menu">
                                     {{configuration.title}}
                                 </button>

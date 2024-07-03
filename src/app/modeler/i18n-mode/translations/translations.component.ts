@@ -5,6 +5,7 @@ import {TranslationGroupConfiguration, Type} from './translation-group/translati
 import {I18nTranslations} from '@netgrif/petriflow';
 import {ModelService} from '../../services/model/model.service';
 import {HistoryService} from '../../services/history/history.service';
+import {LanguageSelectService} from '../languages/language-select.service';
 
 @Component({
     selector: 'nab-translations',
@@ -20,11 +21,15 @@ export class TranslationsComponent implements OnInit, OnDestroy {
     roleMetadataConfig: TranslationGroupConfiguration;
     private _translation: I18nTranslations;
 
-    constructor(
-        private i18nService: I18nModeService,
-        private modelService: ModelService,
-        private historyService: HistoryService
-    ) {
+    constructor(private i18nService: I18nModeService,
+                private modelService: ModelService,
+                private historyService: HistoryService,
+                protected _languageSelect: LanguageSelectService) {
+        if (this._languageSelect.locale !== undefined) {
+            this.locale = this._languageSelect.locale;
+            this._translation = this.modelService.model.getI18n(this.locale?.languageCode);
+            this._languageSelect.locale = undefined;
+        }
     }
 
     ngOnInit(): void {

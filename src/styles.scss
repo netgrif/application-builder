@@ -91,6 +91,11 @@ body {
     color: black;
     fill: black;
 }
+nab-tool, nab-control-panel-mode, nab-import-tool-button {
+    .mat-mdc-icon-button .mat-mdc-button-persistent-ripple {
+        border-radius: 5px;
+    }
+}
 
 .button-line:hover {
     background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .50) !important;

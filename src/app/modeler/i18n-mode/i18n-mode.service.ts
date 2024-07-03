@@ -25,8 +25,8 @@ export class I18nModeService extends ModeService<Tool> {
         private modelService: ModelService,
         private tutorialService: TutorialService,
         private parentInjector: Injector,
-        private translationsTool: TranslationsTool,
-        private languagesTool: LanguagesTool
+        private _translationsTool: TranslationsTool,
+        private _languagesTool: LanguagesTool
     ) {
         super();
         this.mode = new Mode(
@@ -41,8 +41,12 @@ export class I18nModeService extends ModeService<Tool> {
             this.parentInjector
         );
         this.tools = [
-            new ToolGroup<Tool>(languagesTool, translationsTool)
+            new ToolGroup<Tool>(_languagesTool, _translationsTool)
         ];
+    }
+
+    get translationsTool() {
+        return this._translationsTool;
     }
 
     get translationsSave(): boolean {

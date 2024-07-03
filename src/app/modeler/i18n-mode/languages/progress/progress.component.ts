@@ -11,6 +11,7 @@ export class ProgressComponent {
 
     @Input() locale: Locale;
     @Output() deleteLocale = new EventEmitter<Locale>();
+    @Output() selectLocale = new EventEmitter<Locale>();
 
     constructor(private i18nService: I18nModeService) {
     }
@@ -18,5 +19,9 @@ export class ProgressComponent {
     removeLocale() {
         this.i18nService.removeLocale(this.locale.languageCode);
         this.deleteLocale.emit(this.locale);
+    }
+
+    emitSelectLocale() {
+        this.selectLocale.emit(this.locale);
     }
 }

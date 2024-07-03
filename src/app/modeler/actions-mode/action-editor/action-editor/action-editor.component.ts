@@ -140,7 +140,7 @@ export class ActionEditorComponent implements OnInit {
             ['<transition>', '<transitionId>', '<task>'],
             this.editor,
             this,
-            this.modelService.model.getTransitions().map(t => new MenuItem(t.id, `${t.label?.value}[<b>${t.id}</b>[]`))
+            this.modelService.model.getTransitions().map(t => new MenuItem(t.id, `${t.label?.value} [${t.id}]`))
         );
         this.dataFieldItemsConfiguration = new MenuItemConfiguration(
             'Data fields',
@@ -149,7 +149,7 @@ export class ActionEditorComponent implements OnInit {
             ['<datafield>', '<datafieldId>'],
             this.editor,
             this,
-            this.modelService.model.getDataSet().map(f => new MenuItem(f.id, `${f.title?.value}[<b>${f.id}</b>]`))
+            this.modelService.model.getDataSet().map(f => new MenuItem(f.id, `${f.title?.value} [${f.id}]`))
         );
         this.behaviourItemsConfiguration = new MenuItemConfiguration(
             'Behaviours',
