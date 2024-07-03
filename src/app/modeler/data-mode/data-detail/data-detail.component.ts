@@ -22,6 +22,7 @@ import {ActionsMasterDetailService} from '../../actions-mode/actions-master-deta
 import {HistoryService} from '../../services/history/history.service';
 import {Observable} from 'rxjs';
 import {map, startWith, tap} from 'rxjs/operators';
+import {ModelerUtils} from '../../modeler-utils';
 
 export interface TypeArray {
     viewValue: string;
@@ -358,5 +359,9 @@ export class DataDetailComponent implements OnDestroy {
         this._actionMode.activate(this._actionMode.dataActionsTool);
         this._actionsMasterDetail.select(this._masterService.getSelected());
         this._router.navigate(['modeler/actions']);
+    }
+
+    numberOfActions(): number {
+        return ModelerUtils.numberOfEventActions(this.item.getEvents());
     }
 }

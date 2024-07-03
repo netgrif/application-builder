@@ -7,7 +7,7 @@ export class EditTransitionActionsMenuItem extends MenuItem {
     constructor(transition: CanvasTransition,
                 tool: CanvasTool) {
         super(
-            `Actions editor (${tool.modelService.numberOfTransitionActions(transition.modelTransition)})`,
+            `Edit Actions (${tool.modelService.numberOfTransitionActions(transition.modelTransition)})`,
             'code',
             () => {
                 tool.actionMode.activate(tool.actionMode.transitionActionsTool);

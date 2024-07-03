@@ -42,7 +42,7 @@ export class ActionDetailComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this._masterService.getSelected$().subscribe(item => {
             if (this.actionEditorService.historySave) {
-                this._historyService.save("Actions has been changed.");
+                this._historyService.save("Actions have been changed.");
                 this.actionEditorService.historySave = false;
             }
             if (item instanceof Transition) {
@@ -86,7 +86,7 @@ export class ActionDetailComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (this.actionEditorService.historySave) {
-            this._historyService.save("Actions has been changed.");
+            this._historyService.save("Actions have been changed.");
             this.actionEditorService.historySave = false;
         }
     }

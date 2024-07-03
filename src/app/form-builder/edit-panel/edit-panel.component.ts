@@ -511,4 +511,8 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         this._actionsMasterDetail.select(this.modelService.model.getTransition(this.transitionService.id));
         this._router.navigate(['modeler/actions']);
     }
+
+    numberOfActions(): number {
+        return this.modelService.numberOfTransitionActions(this.transition);
+    }
 }
