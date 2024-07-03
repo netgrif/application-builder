@@ -219,10 +219,6 @@ export class DataDetailComponent implements OnDestroy {
                 this.item.optionsInit.dynamic = $event.target.value;
                 break;
             }
-            case 'allowedNets': {
-                this.item.allowedNets[index] = $event.target.value;
-                break;
-            }
             case 'property_key': {
                 this.item.component.properties[index].key = $event.target.value as string;
                 break;
@@ -363,5 +359,9 @@ export class DataDetailComponent implements OnDestroy {
 
     numberOfActions(): number {
         return ModelerUtils.numberOfEventActions(this.item.getEvents());
+    }
+
+    trackByFn(index: any, item: any) {
+        return index;
     }
 }

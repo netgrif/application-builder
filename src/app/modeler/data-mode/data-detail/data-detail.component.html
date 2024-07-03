@@ -165,7 +165,8 @@
             </ng-template>
         </mat-form-field>
 
-        <mat-form-field fxFlex="25" *ngIf="item.type === 'taskRef'">
+        <mat-form-field fxFlex="45" *ngIf="item.type === 'taskRef'">
+            <mat-label>Initial value</mat-label>
             <input type="text"
                    aria-label="Autocomplete"
                    matInput
@@ -202,11 +203,11 @@
         <div fxFlex="72.5" fxLayout="column">
             <div class="margin-html">
                 <div *ngIf="item.allowedNets?.length > 0">
-                    <div *ngFor="let net of item.allowedNets; let i = index">
+                    <div *ngFor="let net of item.allowedNets; let i = index; trackBy:trackByFn">
                         <mat-form-field class=" margin-right8px margin-html" fxFlex="90">
                             <mat-label>Process identifier</mat-label>
-                            <input matInput (change)="setValue($event,'allowedNets', i)" type="text"
-                                   [value]="net">
+                            <input matInput  type="text"
+                                   [(ngModel)]="item.allowedNets[i]">
                         </mat-form-field>
                         <button mat-icon-button (click)="deleteAllowedNet(i)" fxFlex="10">
                             <mat-icon>delete</mat-icon>
