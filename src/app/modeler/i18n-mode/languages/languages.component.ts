@@ -72,7 +72,15 @@ export class LanguagesComponent implements OnInit, OnDestroy {
     }
 
     usedLocales(): Array<Locale> {
-        return this.i18nService?.locales;
+        return this.i18nService?.locales.sort((a, b) => {
+            if (a.prettyName < b.prettyName) {
+                return -1;
+            }
+            if (a.prettyName > b.prettyName) {
+                return 1;
+            }
+            return 0;
+        });
     }
 
     addLocal() {
