@@ -25,6 +25,7 @@ export class DialogTransitionEditComponent implements OnInit {
     public assignPolicies: Array<AssignPolicy>;
     public finishPolicies: Array<FinishPolicy>;
     public form: FormControl;
+    protected counterTags = 0;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: TransitionEditData,
@@ -82,5 +83,41 @@ export class DialogTransitionEditComponent implements OnInit {
                 userLists: this.modelService.model.getDataSet().filter(item => item.type === DataType.USER_LIST)
             }
         });
+    }
+
+
+    getTags() {
+        return Array.from(this.transition.transition.tags, ([key, value]) => ({ key, value }));
+    }
+
+    addTag() {
+        this.transition.transition.tags.set(this.createKeyId() , 'value');
+    }
+
+    deleteTag(key: string) {
+        this.transition.transition.tags.delete(key);
+    }
+
+    setKey($event, key: string) {
+        const value = this.transition.transition.tags.get(key);
+        this.transition.transition.tags.delete(key);
+        this.transition.transition.tags.set($event.target.value, value);
+    }
+
+    setValue($event, key: string) {
+        this.transition.transition.tags.set(key, $event.target.value);
+    }
+
+    trackByFn(index: any, item: any) {
+        return index + item.key;
+    }
+
+    createKeyId(): string {
+        this.counterTags++;
+        if (this.transition.transition.tags.has('key' + this.counterTags)) {
+            return this.createKeyId();
+        } else {
+            return 'key' + String(this.counterTags);
+        }
     }
 }

@@ -512,11 +512,11 @@ export class ModelService {
     numberOfPermissions(): number {
         const rolePermissions = this.model.getRoleRefs()
             .map(ref => {
-                return (ref.caseLogic.view !== undefined || ref.caseLogic.create !== undefined || ref.caseLogic.delete !== undefined) ? 1 : 0;
+                return (ref.logic.view !== undefined || ref.logic.create !== undefined || ref.logic.delete !== undefined) ? 1 : 0;
             }).reduce((sum, current) => sum + current, 0);
         const userPermission = this.model.getUserRefs()
             .map(ref => {
-                return (ref.caseLogic.view !== undefined || ref.caseLogic.create !== undefined || ref.caseLogic.delete !== undefined) ? 1 : 0;
+                return (ref.logic.view !== undefined || ref.logic.create !== undefined || ref.logic.delete !== undefined) ? 1 : 0;
             }).reduce((sum, current) => sum + current, 0);
         return rolePermissions + userPermission;
     }

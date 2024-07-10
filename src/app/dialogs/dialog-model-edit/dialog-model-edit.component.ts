@@ -21,6 +21,7 @@ export class DialogModelEditComponent {
     public versionCtrl: FormControl;
     public titleCtrl: FormControl;
     public initialsCtrl: FormControl;
+    protected counterTags = 0;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: ModelChange,
@@ -70,5 +71,40 @@ export class DialogModelEditComponent {
             }
             return ({format: true})
         };
+    }
+
+    getTags() {
+        return Array.from(this.model.model.tags, ([key, value]) => ({ key, value }));
+    }
+
+    addTag() {
+        this.model.model.tags.set(this.createKeyId() , 'value');
+    }
+
+    deleteTag(key: string) {
+        this.model.model.tags.delete(key);
+    }
+
+    setKey($event, key: string) {
+        const value = this.model.model.tags.get(key);
+        this.model.model.tags.delete(key);
+        this.model.model.tags.set($event.target.value, value);
+    }
+
+    setValue($event, key: string) {
+        this.model.model.tags.set(key, $event.target.value);
+    }
+
+    trackByFn(index: any, item: any) {
+        return index + item.key;
+    }
+
+    createKeyId(): string {
+        this.counterTags++;
+        if (this.model.model.tags.has('key' + this.counterTags)) {
+            return this.createKeyId();
+        } else {
+            return 'key' + String(this.counterTags);
+        }
     }
 }
