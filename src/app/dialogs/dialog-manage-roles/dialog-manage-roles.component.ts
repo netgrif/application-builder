@@ -50,30 +50,28 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
         private modelService: ModelService,
         private historyService: HistoryService
     ) {
-        let arrayRoleRefs: Array<TransitionPermissionRef> | Array<ProcessPermissionRef>;
-        let arrayUserRefs: Array<TransitionPermissionRef> | Array<ProcessPermissionRef>;
         if (this.data.type === RoleRefType.TRANSITION) {
-            arrayRoleRefs = [...this.data.rolesRefs];
+            const arrayRoleRefs = [...this.data.rolesRefs];
             this.addDefaultRoleRefs(arrayRoleRefs);
-            arrayUserRefs = [...this.data.userRefs];
+            const arrayUserRefs = [...this.data.userRefs];
             this.displayedColumns = ['id', 'perform', 'delegate', 'cancel', 'assign', 'view'];
             this.usersDisplayedColumns = ['id', 'perform', 'delegate', 'cancel', 'assign', 'view'];
             this.data.roles.forEach(item => {
                 if (this.data.rolesRefs.find(itm => itm.id === item.id) === undefined) {
-                    (arrayRoleRefs as Array<TransitionPermissionRef>).push(new TransitionPermissionRef(item.id));
+                    (arrayRoleRefs as Array<TransitionPermissionRef>).push(new  TransitionPermissionRef(item.id));
                 }
             });
             this.data.userLists.forEach(item => {
                 if (this.data.userRefs.find(itm => itm.id === item.id) === undefined) {
-                    (arrayUserRefs as Array<TransitionPermissionRef>).push(new TransitionPermissionRef(item.id));
+                    (arrayUserRefs as Array<TransitionPermissionRef>).push(new  TransitionPermissionRef(item.id));
                 }
             });
-            this.dataSource = new MatTableDataSource<TransitionPermissionRef>(arrayRoleRefs);
-            this.usersDataSource = new MatTableDataSource<TransitionPermissionRef>(arrayUserRefs);
+            this.dataSource = new MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>(arrayRoleRefs);
+            this.usersDataSource = new MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>(arrayUserRefs);
         } else {
-            arrayRoleRefs = [...this.data.processRolesRefs];
+            const arrayRoleRefs = [...this.data.processRolesRefs];
             this.addDefaultProcessRoleRefs(arrayRoleRefs);
-            arrayUserRefs = [...this.data.processUserRefs];
+            const arrayUserRefs = [...this.data.processUserRefs];
             this.displayedColumns = ['id', 'create', 'delete', 'view'];
             this.usersDisplayedColumns = ['id', 'create', 'delete', 'view'];
             this.data.roles.forEach(item => {
@@ -86,8 +84,8 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
                     (arrayUserRefs as Array<ProcessPermissionRef>).push(new ProcessPermissionRef(item.id));
                 }
             });
-            this.dataSource = new MatTableDataSource<ProcessPermissionRef>(arrayRoleRefs);
-            this.usersDataSource = new MatTableDataSource<ProcessPermissionRef>(arrayUserRefs);
+            this.dataSource = new MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>(arrayRoleRefs);
+            this.usersDataSource = new MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>(arrayUserRefs);
         }
         this.dataSource.sortData = (data: (TransitionPermissionRef | ProcessPermissionRef)[], sort: MatSort): (TransitionPermissionRef | ProcessPermissionRef)[] => {
             return this.sortRefs(sort, data) as (TransitionPermissionRef | ProcessPermissionRef)[];
@@ -170,7 +168,7 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
             this.data.processRolesRefs.find(item => item.id === id).logic[change] = true;
             (this.dataSource.data.find(item => item.id === id) as ProcessPermissionRef).logic[change] = true;
         } else {
-            const newValue = this.resolveNewProcessValue(processRoleRef, change);
+            const newValue = this.resolveNewValue(processRoleRef, change);
             this.data.processRolesRefs.find(item => item.id === id).logic[change] = newValue;
             (this.dataSource.data.find(item => item.id === id) as ProcessPermissionRef).logic[change] = newValue;
         }
@@ -196,23 +194,13 @@ export class DialogManageRolesComponent implements OnInit, OnDestroy {
             this.data.processUserRefs.find(item => item.id === id).logic[change] = true;
             (this.usersDataSource.data.find(item => item.id === id) as ProcessPermissionRef).logic[change] = true;
         } else {
-            const newValue = this.resolveNewProcessValue(processUserRef, change);
+            const newValue = this.resolveNewValue(processUserRef, change);
             this.data.processUserRefs.find(item => item.id === id).logic[change] = newValue;
             (this.usersDataSource.data.find(item => item.id === id) as ProcessPermissionRef).logic[change] = newValue;
         }
     }
 
-    protected resolveNewValue(roleRef, change) {
-        let newValue;
-        if (roleRef.logic[change] === undefined) {
-            newValue = true;
-        } else if (roleRef.logic[change] === true) {
-            newValue = false;
-        }
-        return newValue;
-    }
-
-    protected resolveNewProcessValue(roleRef, change) {
+    protected resolveNewValue(roleRef: ProcessPermissionRef | TransitionPermissionRef, change: string) {
         let newValue;
         if (roleRef.logic[change] === undefined) {
             newValue = true;

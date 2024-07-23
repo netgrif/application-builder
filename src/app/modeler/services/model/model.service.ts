@@ -103,6 +103,7 @@ export class ModelService {
         this.model.defaultRole = changedModel.model.defaultRole;
         this.model.anonymousRole = changedModel.model.anonymousRole;
         this.model.caseName = changedModel.model.caseName;
+        this.model.tags = changedModel.model.tags;
     }
 
     // PLACE
@@ -206,6 +207,7 @@ export class ModelService {
         transition.id = newTransition.transition.id;
         transition.label = newTransition.transition.label;
         transition.icon = newTransition.transition.icon;
+        transition.tags = newTransition.transition.tags;
         // TODO: NAB-326 copy attributes
         this.model.removeTransition(newTransition.id);
         this.model.addTransition(transition);
