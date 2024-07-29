@@ -86,7 +86,12 @@ jobs:
         name: Deploy on K3S cluster
         runs-on: ubuntu-latest
         needs: publish-docker
+        permissions:
+            contents: read
         steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v4
+        
             -   name: Read package.json
                 uses: zvonimirsun/read-package-version-actions@v2
                 id: getVersion
