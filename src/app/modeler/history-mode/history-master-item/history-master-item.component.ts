@@ -3,16 +3,20 @@ import {MASTER_ITEM, MASTER_SERVICE} from '../../components/master-detail/main-m
 import {PetriNet} from '@netgrif/petriflow';
 import {AbstractMasterDetailService} from '../../components/master-detail/abstract-master-detail.service';
 import {HistoryChange} from '../../services/history/history-change';
+import {ModelService} from '../../services/model/model.service';
 
 @Component({
-  selector: 'nab-history-master-item',
-  templateUrl: './history-master-item.component.html',
-  styleUrl: './history-master-item.component.scss'
+    selector: 'nab-history-master-item',
+    templateUrl: './history-master-item.component.html',
+    styleUrl: './history-master-item.component.scss'
 })
 export class HistoryMasterItemComponent {
 
-    constructor(@Inject(MASTER_ITEM) public item: HistoryChange<PetriNet>,
-                @Inject(MASTER_SERVICE) protected _service: AbstractMasterDetailService<any>) {
+    constructor(
+        @Inject(MASTER_ITEM) public item: HistoryChange<PetriNet>,
+        @Inject(MASTER_SERVICE) protected _service: AbstractMasterDetailService<any>,
+        private _modelService: ModelService
+    ) {
     }
 
     select(): void {
@@ -23,4 +27,7 @@ export class HistoryMasterItemComponent {
         return this._service.getSelected();
     }
 
+    isActual(): boolean {
+        return this.item.record.id === this._modelService.model.id && this.item.record.lastChanged === this._modelService.model.lastChanged;
+    }
 }

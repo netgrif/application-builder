@@ -1,7 +1,8 @@
 <div *ngIf="getSelected() !== undefined; else elseBlock" fxFlex fxLayout="column" fxLayoutAlign="start start"
      class="height-fix netgrif-input">
-    <div fxFlex fxLayout="row" class="full-width">
+    <div fxFlex fxLayout="row" class="full-width top-padding-8">
         <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Render type</mat-label>
             <mat-select [(ngModel)]="editorOptions.renderSideBySide" (selectionChange)="updateEditor()">
                 <mat-option [value]="true">Side by side</mat-option>
                 <mat-option [value]="false">Inline</mat-option>

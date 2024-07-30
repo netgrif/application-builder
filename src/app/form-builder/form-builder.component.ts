@@ -1,13 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {ModelService} from '../modeler/services/model/model.service';
+import {ModelerUtils} from '../modeler/modeler-utils';
 
 @Component({
     selector: 'nab-form-builder',
     templateUrl: './form-builder.component.html',
     styleUrls: ['./form-builder.component.scss']
 })
-export class FormBuilderComponent {
+export class FormBuilderComponent implements AfterViewInit {
     title = 'form-builder';
     width: number;
 
@@ -15,6 +16,10 @@ export class FormBuilderComponent {
         if (!this.modelService.model) {
             this.router.navigate(['/modeler']);
         }
+    }
+
+    ngAfterViewInit(): void {
+        ModelerUtils.clearSelection();
     }
 
     onResizeEvent(event: any): void {

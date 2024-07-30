@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angul
 import {SimulationModeService} from './simulation-mode.service';
 import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
 import {ModelService} from '../services/model/model.service';
+import {ModelerUtils} from '../modeler-utils';
 
 @Component({
     selector: 'nab-simulation-mode',
@@ -20,6 +21,7 @@ export class SimulationModeComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
+        ModelerUtils.clearSelection();
         this.simulationService.originalModel.next(this.modelService.model);
         this.simulationService.activate();
     }

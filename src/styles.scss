@@ -105,6 +105,10 @@ nab-tool, nab-control-panel-mode, nab-import-tool-button {
     background: rgba(map-get(netgif-theme.$netgrif-blue, A100), .3) !important;
 }
 
+.item-actual {
+    background: rgba(map-get(netgif-theme.$netgrif-accent, A200), .3) !important;
+}
+
 .checkbox-background-warn {
     .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background, .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true]:enabled~.mdc-checkbox__background {
         border-color: map-get(netgif-theme.$netgrif-warn, 500) !important;

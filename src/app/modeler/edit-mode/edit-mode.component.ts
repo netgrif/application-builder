@@ -1,5 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
-import {PetriflowCanvasConfiguration} from '@netgrif/petriflow.svg';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {NgxDropzoneChangeEvent} from 'ngx-dropzone';
 import {ModelImportService} from '../model-import-service';
@@ -8,6 +7,7 @@ import {ModelService} from '../services/model/model.service';
 import {ContextMenuComponent} from './context-menu/context-menu.component';
 import {ContextMenu} from './context-menu/context-menu';
 import {HistoryService} from '../services/history/history.service';
+import {ModelerUtils} from '../modeler-utils';
 
 @Component({
     selector: 'nab-edit-mode',
@@ -29,6 +29,7 @@ export class EditModeComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
+        ModelerUtils.clearSelection();
         this._editModeService.contextMenuItems.subscribe(menu => {
             if (!menu) {
                 this.contextMenu.nativeElement.style.visibility = 'hidden';

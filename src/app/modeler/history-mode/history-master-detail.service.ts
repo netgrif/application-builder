@@ -20,7 +20,7 @@ export class HistoryMasterDetailService extends AbstractMasterDetailService<Hist
     }
 
     public create(): HistoryChange<PetriNet> {
-        return ;
+        return;
     }
 
     public delete(item: HistoryChange<PetriNet>): void {
@@ -30,13 +30,18 @@ export class HistoryMasterDetailService extends AbstractMasterDetailService<Hist
         return;
     }
 
-    public getAllDataSorted(event: Sort) {
+    public getAllDataSorted(event: Sort): Array<HistoryChange<PetriNet>> {
+        if (event.direction === 'asc') {
+            return this.allData.toReversed();
+        }
         return this.allData;
     }
 
     getSortFromLocalStorage(): Sort {
-        return {active: localStorage.getItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.HISTORY_SORT),
-            direction: localStorage.getItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.HISTORY_DIRECTION)} as Sort;
+        return {
+            active: localStorage.getItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.HISTORY_SORT),
+            direction: localStorage.getItem(ModelerConfig.LOCALSTORAGE.MASTER_DETAIL.HISTORY_DIRECTION)
+        } as Sort;
     }
 
     setSortToLocalStorage(sort: Sort) {
