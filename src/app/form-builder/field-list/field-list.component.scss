@@ -1,5 +1,5 @@
 .field-list-heading {
-    padding: 20px;
+    padding: 16px 16px 0;
     margin: 0;
     position: sticky;
     position: -webkit-sticky;
@@ -16,6 +16,8 @@
 
 .field-list-mat-list-item {
     height: 40px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .field-list-mat-list-item:hover {
@@ -106,8 +108,16 @@
     color: #bbbbbb;
 }
 
+.icon-delete {
+    cursor: pointer !important;
+}
+
 .mat-list {
     padding: 0;
+}
+
+.noselect {
+    padding-top: 0;
 }
 
 .noselect * {
@@ -130,4 +140,8 @@
     user-select: none;
     /* Non-prefixed version, currently
                                      supported by Chrome and Opera */
+}
+
+.existing-field-search {
+    margin-top: 0;
 }

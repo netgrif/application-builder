@@ -1,5 +1,5 @@
 <mat-list class="noselect">
-    <h2 class="field-list-heading">Data fields</h2>
+    <h3 class="field-list-heading">Data fields</h3>
 
     <mat-expansion-panel #existingFieldPanel class="field-list-expansion-panel expansion-panel-compact">
         <mat-expansion-panel-header class="field-list-expansion-header">
@@ -7,7 +7,7 @@
                 Existing fields
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <div fxLayoutAlign="start center" class="netgrif-input builder-field-input">
+        <div fxLayoutAlign="start center" class="netgrif-input builder-field-input existing-field-search">
             <mat-form-field fxFlex>
                 <mat-icon matPrefix>search</mat-icon>
                 <input matInput type="text" placeholder="search" [(ngModel)]="existingFieldsSearchInput">
@@ -23,18 +23,18 @@
                            draggable="true"
                            (dragstart)="dragStartHandlerExisting($event, item)"
                            (click)="addExistingField(item)">
-                <div class="field-list-mat-list-item-title" matTooltip="{{item.title?.value}} [{{item.id}}]">
+                <div class="field-list-mat-list-item-title" matTooltip="{{item.title?.value}} [{{item.id}}]" matTooltipShowDelay="500">
                     <mat-icon class="icon-color">drag_indicator</mat-icon>
+                    <mat-icon class="icon-color icon-delete" (click)="deleteField(item, $event)">delete</mat-icon>
                     <span>
                         {{item.title?.value}} [{{item.id}}]
                     </span>
-                    <mat-icon class="icon-color" (click)="deleteField(item, $event)">delete</mat-icon>
                 </div>
             </mat-list-item>
         </ng-container>
         <ng-container *ngFor="let item of existingDataFields">
-            <mat-list-item *ngIf="isPlaced(item) && containsSearchExpression(item)">
-                <div class="field-list-mat-list-item-disabled-title" matTooltip="{{item.title?.value}} [{{item.id}}]">
+            <mat-list-item *ngIf="isPlaced(item) && containsSearchExpression(item)" class="field-list-mat-list-item mat-list-item-compact">
+                <div class="field-list-mat-list-item-disabled-title" matTooltip="{{item.title?.value}} [{{item.id}}]" matTooltipShowDelay="500">
                     <span>{{item.title?.value}} [{{item.id}}]</span>
                 </div>
             </mat-list-item>
