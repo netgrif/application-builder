@@ -208,7 +208,9 @@ export class ModelService {
         transition.label = newTransition.transition.label;
         transition.icon = newTransition.transition.icon;
         transition.tags = newTransition.transition.tags;
-        // TODO: NAB-326 copy attributes
+        transition.assignPolicy = newTransition.transition.assignPolicy;
+        transition.finishPolicy = newTransition.transition.finishPolicy;
+        transition.triggers = newTransition.transition.triggers;
         this.model.removeTransition(newTransition.id);
         this.model.addTransition(transition);
         this.model.lastChanged = Date.now();

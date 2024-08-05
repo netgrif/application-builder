@@ -35,6 +35,8 @@
             </mat-select>
         </mat-form-field>
     </div>
+    <nab-trigger-tree [triggers]="transition.transition.triggers">
+    </nab-trigger-tree>
     <div fxLayoutAlign="center center">
         <span>Tags</span>
     </div>
@@ -69,8 +71,6 @@
             </div>
         </div>
     </div>
-    <nab-trigger-tree [triggers]="transition.transition.triggers">
-    </nab-trigger-tree>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-stroked-button color="primary" (click)="openFormBuilder()" mat-dialog-close>

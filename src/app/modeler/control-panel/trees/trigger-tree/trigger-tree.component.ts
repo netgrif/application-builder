@@ -85,13 +85,13 @@ export class TriggerTreeComponent {
     }
 
     emitChanges() {
-        const triggers = [];
+        this.triggers.length = 0;
         this.dataSource.data[0].trigger.forEach(item => {
             const trigger = new Trigger();
             trigger.type = item.trigger[0].type as TriggerType;
             trigger.exact = item.trigger[0].exact;
             trigger.delay = item.trigger[0].delay;
-            triggers.push(trigger);
+            this.triggers.push(trigger);
         });
     }
 
