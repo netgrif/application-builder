@@ -165,8 +165,11 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
             return;
         }
         const place = canvasPlace.svgPlace;
+        place.changeId(newPlace.place.id);
         place.canvasElement.updateMarking(newPlace.place.marking);
         place.canvasElement.setLabelText(this.labelText(newPlace.place));
+        this.elements.removePlace(newPlace.originalPlace?.id);
+        this.elements.addPlace(canvasPlace);
     }
 
     public movePlace(place: CanvasPlace): void {
@@ -211,8 +214,11 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
             return;
         }
         const transition = canvasTransition.svgTransition;
+        transition.changeId(newTransition.transition.id);
         transition.setIcon(newTransition.transition.icon);
         transition.canvasElement.setLabelText(this.labelText(newTransition.transition));
+        this.elements.removeTransition(newTransition.id);
+        this.elements.addTransition(canvasTransition);
     }
 
     public moveTransition(transition: CanvasTransition): void {
