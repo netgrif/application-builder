@@ -58,7 +58,8 @@ export class FieldListService {
             type: DataType.MULTICHOICE_MAP,
             components: [
                 {title: 'Select'},
-                {title: 'List', name: 'list'}
+                {title: 'List', name: 'list'},
+                {title: 'Autocomplete', name: 'autocomplete'}
             ]
         },
         {
