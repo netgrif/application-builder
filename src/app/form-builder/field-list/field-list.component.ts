@@ -113,14 +113,6 @@ export class FieldListComponent implements OnInit, AfterViewInit {
         this.dragStartHandler($event, true);
     }
 
-    shortening(title: string) {
-        if (title?.length > 10) {
-            const tmp = title.slice(0, 10);
-            return tmp + '...';
-        }
-        return title;
-    }
-
     containsSearchExpression(item: DataVariable): boolean {
         const search = this.existingFieldsSearchInput.toLocaleLowerCase();
         return item.title?.value?.toLocaleLowerCase()?.includes(search)

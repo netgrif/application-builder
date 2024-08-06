@@ -212,3 +212,20 @@ nab-simulation-mode {
     }
 }
 
+.field-list-expansion-panel {
+    .mat-expansion-panel-header {
+        padding-left: 8px;
+        padding-right: 4px;
+    }
+    .mat-expansion-panel-body {
+        padding-left: 8px;
+        padding-right: 4px;
+    }
+    .mat-expanded {
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+    .mat-expansion-panel-header.mat-expanded {
+        height: 40px;
+    }
+}
