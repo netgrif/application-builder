@@ -5,7 +5,7 @@
 
     <nc-data-field-template *ngIf="dataField.dataVariable.type !== DataType.CASE_REF &&
                  dataField.dataVariable.type !== DataType.TASK_REF &&
-                 dataField.dataVariable.type !== DataType.FILTER" [dataField]="engineField" [offset]="0" fxFlex>
+                 dataField.dataVariable.type !== DataType.FILTER" [additionalFieldProperties]="{taskId: ''}" [dataField]="engineField" [offset]="0" fxFlex >
     </nc-data-field-template>
 </div>
 <div *ngIf="isHidden()" fxLayout="row" fxLayoutAlign="center center" class="gridster-item-content min-row-height hidden-field">

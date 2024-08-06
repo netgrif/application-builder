@@ -31,7 +31,7 @@ import {
     NumberField,
     Properties,
     TaskRefField,
-    TemplateAppearance,
+    TemplateAppearance, TextAreaField,
     TextField,
     UserField
 } from '@netgrif/components-core';
@@ -87,6 +87,19 @@ export class GridsterFieldToEngineFieldService {
     }
 
     private toTextField(dataField: GridsterDataField): TextField {
+        if (this.getComponent(dataField)?.name === 'htmltextarea') {
+            return new TextAreaField(
+                dataField.dataVariable.id,
+                dataField.dataVariable.title?.value,
+                dataField.dataVariable.init?.value,
+                this.buildBehavior(dataField),
+                dataField.dataVariable.placeholder?.value,
+                dataField.dataVariable.desc?.value,
+                this.buildLayout(dataField),
+                [],
+                this.buildComponent(dataField)
+            );
+        }
         return new TextField(
             dataField.dataVariable.id,
             dataField.dataVariable.title?.value,
