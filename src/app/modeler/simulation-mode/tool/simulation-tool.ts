@@ -11,6 +11,8 @@ import {CanvasPlace} from '../../edit-mode/domain/canvas-place';
 import {CanvasArc} from '../../edit-mode/domain/canvas-arc';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../selected-transition.service';
+import {id} from '@swimlane/ngx-charts';
+import {transition} from '@angular/animations';
 
 export abstract class SimulationTool extends CanvasListenerTool {
 
@@ -27,6 +29,16 @@ export abstract class SimulationTool extends CanvasListenerTool {
     ) {
         super(id, button, modelService, dialog, router, transitionService);
         this._simulationModeService = simulationModeService;
+    }
+
+    bindTransition(transition: CanvasTransition) {
+        super.bindTransition(transition);
+        if (transition.svgTransition.iconElement) {
+            transition.svgTransition.iconElement.onmouseenter = undefined;
+            transition.svgTransition.iconElement.onmouseleave = undefined;
+            transition.svgTransition.iconElement.onpointerenter = undefined;
+            transition.svgTransition.iconElement.onpointerleave = undefined;
+        }
     }
 
     onVisibilityChange() {
