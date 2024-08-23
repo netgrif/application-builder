@@ -57,7 +57,7 @@
     "@covalent/core": "~3.1.0",
     "@covalent/highlight": "~3.1.0",
     "@covalent/markdown": "~3.1.0",
-    "@covalent/text-editor": "~3.1.0",
+    "@covalent/text-editor": "~4.1.0",
     "@mdi/angular-material": "^4.9.95",
     "@mdi/font": "^6.5.95",
     "@netgrif/components": "~6.1.0",
