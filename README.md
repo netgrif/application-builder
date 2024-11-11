@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-NETGRIF%20Community%20License-green)](https://netgrif.com/license)
 [![Angular dependency](https://img.shields.io/github/package-json/dependency-version/netgrif/application-builder/@angular/core?color=red)](https://www.angular.io/)
-[![Petriflow 1.0.1](https://img.shields.io/badge/Petriflow-1.0.1-0aa8ff)](https://petriflow.com)
+[![Petriflow 1.0.1](https://img.shields.io/badge/Petriflow-1.0.4-0aa8ff)](https://petriflow.com)
 [![Docker Pulls](https://img.shields.io/docker/pulls/netgrif/application-builder)](https://hub.docker.com/r/netgrif/application-builder)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/netgrif/application-builder?display_name=tag&sort=semver)](https://github.com/netgrif/application-builder/releases)
 [![Master Build](https://github.com/netgrif/application-builder/actions/workflows/master-build.yaml/badge.svg)](https://github.com/netgrif/application-builder/actions/workflows/master-build.yaml)
@@ -12,13 +12,13 @@
 Netgrif Application Builder is an angular web application for implementing process-driven application in low-code language Petriflow.
 Petriflow processes can be run/interpreted in Netgrif Application Engine.
 
-Live build: [https://builder.netgrif.com](https://builder.netgrif.com)
+Live build: [https://builder.netgrif.cloud](https://builder.netgrif.cloud)
 
 Application Builder consists of several modules that helps with development of business processes, application's dataset, permission schema, and many more.
 Builder can be deployed as is directly from the release artifact or as a docker container. It doesn't save your work on any server. It works only in a browser.
 
 * Petriflow low-code language: [http://petriflow.com](https://petriflow.com)
-* Netgrif Application Engine: [NAE repozitory](https://github.com/netgrif/application-engine), [NAE documentation](https://engine.netgrif.com)
+* Netgrif Application Engine: [NAE repository](https://github.com/netgrif/application-engine), [NAE documentation](https://engine.netgrif.com)
 * Issue Tracker: [GitHub issues](https://github.com/netgrif/application-builder/issues)
 * License: [NETGRIF Community License](https://github.com/netgrif/application-builder/blob/master/LICENSE)
 
