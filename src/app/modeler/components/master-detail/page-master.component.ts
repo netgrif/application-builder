@@ -7,7 +7,7 @@ import {PageEvent} from '@angular/material/paginator';
     selector: 'nab-abstract-page-master-component',
     template: ''
 })
-export abstract class PageMaster extends AbstractMasterComponent implements OnInit {
+export abstract class PageMasterComponent extends AbstractMasterComponent implements OnInit {
 
     @Input()protected _pageSize: number = 20;
     protected _pageIndex: number;

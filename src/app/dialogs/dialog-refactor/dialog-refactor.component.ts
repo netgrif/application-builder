@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {ModelService} from '../../modeler/services/model/model.service';
@@ -14,7 +14,7 @@ export interface DialogRefactorData {
     templateUrl: './dialog-refactor.component.html',
     styleUrls: ['./dialog-refactor.component.scss']
 })
-export class DialogRefactorComponent implements OnInit {
+export class DialogRefactorComponent {
 
     formControl: FormControl;
     result: string;
@@ -29,9 +29,6 @@ export class DialogRefactorComponent implements OnInit {
             Validators.pattern('^[a-zA-Z0-9-_]+$'),
             this.validUnique()
         ]);
-    }
-
-    ngOnInit(): void {
     }
 
     refactor() {

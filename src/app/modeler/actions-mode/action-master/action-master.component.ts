@@ -1,5 +1,5 @@
 import {Component, Injector, OnInit} from '@angular/core';
-import {PageMaster} from '../../components/master-detail/page-master';
+import {PageMasterComponent} from '../../components/master-detail/page-master.component';
 import {ActionsModeService} from '../actions-mode.service';
 import {Sort} from '@angular/material/sort';
 import {DataActionsTool} from '../tools/data-actions-tool';
@@ -19,7 +19,7 @@ import {MasterItem} from '../action-editor/classes/master-item';
   templateUrl: './action-master.component.html',
   styleUrl: './action-master.component.scss'
 })
-export class ActionMasterComponent extends PageMaster implements OnInit {
+export class ActionMasterComponent extends PageMasterComponent implements OnInit {
 
     constructor(private _parentInjector: Injector,
                 private _actionsModeService: ActionsModeService,
