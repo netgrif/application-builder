@@ -1,61 +1,67 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {I18nString, I18nTranslations} from '@netgrif/petriflow';
+import {MaterialModule} from '@netgrif/components-core';
+import {CommonModule} from '@angular/common';
+import {I18nModeService} from '../../i18n-mode.service';
 
 @Component({
-  selector: 'nab-i18n-field',
-  templateUrl: './i18n-field.component.html',
-  styleUrls: ['./i18n-field.component.scss'],
+    selector: 'nab-i18n-field',
+    templateUrl: './i18n-field.component.html',
+    styleUrls: ['./i18n-field.component.scss'],
+    standalone: true,
+    imports: [MaterialModule, CommonModule]
 })
 export class I18nFieldComponent implements OnInit {
 
-  constructor() {
-  }
+    private _name: string;
+    private _field: I18nString;
+    private _translationField: I18nString;
+    private _translation: I18nTranslations;
 
-  private _name: string;
+    constructor(protected _i18nModeService: I18nModeService) {
+    }
 
-  get name(): string {
-    return this._name;
-  }
+    ngOnInit(): void {
+        this.updateTranslationField();
+    }
 
-  @Input()
-  set name(value: string) {
-    this._name = value;
-  }
+    updateTranslationField() {
+        this._translationField = this.translation?.getI18n(this._field?.name);
+    }
 
-  private _field: I18nString;
+    get translation(): I18nTranslations {
+        return this._translation;
+    }
 
-  get field(): I18nString {
-    return this._field;
-  }
+    @Input()
+    set translation(value: I18nTranslations) {
+        this._translation = value;
+        this.updateTranslationField();
+    }
 
-  @Input()
-  set field(value: I18nString) {
-    this._field = value;
-  }
+    get translationField(): I18nString {
+        return this._translationField;
+    }
 
-  private _translationField: I18nString;
+    get name(): string {
+        return this._name;
+    }
 
-  get translationField(): I18nString {
-    return this._translationField;
-  }
+    @Input()
+    set name(value: string) {
+        this._name = value;
+    }
 
-  private _translation: I18nTranslations;
+    get field(): I18nString {
+        return this._field;
+    }
 
-  get translation(): I18nTranslations {
-    return this._translation;
-  }
+    @Input()
+    set field(value: I18nString) {
+        this._field = value;
+    }
 
-  @Input()
-  set translation(value: I18nTranslations) {
-    this._translation = value;
-    this.updateTranslationField();
-  }
-
-  ngOnInit(): void {
-    this.updateTranslationField();
-  }
-
-  updateTranslationField() {
-    this._translationField = this.translation?.getI18n(this._field?.name);
-  }
+    changeTranslation() {
+        this._i18nModeService.translationsSave = true;
+    }
 }

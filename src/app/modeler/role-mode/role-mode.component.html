@@ -1,54 +1,10 @@
-<div class="nab-role-mode-wrapper">
-  <mat-card class="role-mode-card">
-    <div *ngIf="show">
-      <h1 *ngIf="dataSource.length === 0" fxLayoutAlign="center center">Roles aren't created yet!</h1>
-      <div (matSortChange)="sortData($event)" *ngIf="dataSource.length !== 0" matSort>
-        <div class="padding24px" fxLayout="row wrap" fxLayoutAlign="start center">
-          <p fxFlex="25" mat-sort-header="id"><strong>ID</strong></p>
-          <p class="padding15px" fxFlex mat-sort-header="title"><strong>Title</strong></p>
-        </div>
-        <mat-accordion>
-          <mat-expansion-panel *ngFor="let role of dataSource">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                {{ role.id }}
-              </mat-panel-title>
-              <mat-panel-description>
-                {{ role.title.value }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
+<nab-master-detail [defaultWidth]="35" fxFlex="grow"
+                   [masterItemComponent]="masterItemComponent"
+                   [masterService]="masterService"
+                   [detailComponent]="detailComponent"
+                   [firstColName]="'ID'"
+                   [secondColName]="'Name'"
+                   [buttonTooltip]="'Add role'"
+>
+</nab-master-detail>
 
-            <div fxLayout="row wrap" fxLayoutAlign="start center">
-              <div fxFlex="22.5">Set ID</div>
-
-              <mat-form-field fxFlex="25">
-                <input (change)="changeId(role, $event)" [ngModel]="role.id" matInput>
-              </mat-form-field>
-
-              <div fxFlex="2.5"></div>
-
-              <div fxFlex="22.5">Set Title</div>
-
-              <mat-form-field fxFlex="25">
-                <input (change)="changeTitle(role, $event)" [ngModel]="role.title.value" matInput>
-              </mat-form-field>
-
-              <div fxFlex="2.5"></div>
-            </div>
-
-            <mat-action-row>
-              <button (click)="openDialog(role)" color="warn" mat-button>Delete</button>
-            </mat-action-row>
-          </mat-expansion-panel>
-        </mat-accordion>
-
-        <mat-paginator (page)="onPageChanged($event)" [length]="length" [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions"
-                       [pageSize]="pageSize" class="margin-top10px" showFirstLastButtons>
-        </mat-paginator>
-      </div>
-    </div>
-    <div fxLayoutAlign="end end" mat-dialog-actions>
-      <button (click)="addRole()" mat-raised-button>Add Role</button>
-    </div>
-  </mat-card>
-</div>

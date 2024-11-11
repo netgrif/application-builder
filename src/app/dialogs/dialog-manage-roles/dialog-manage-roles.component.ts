@@ -1,240 +1,261 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
-import {DataVariable, ProcessRoleRef, ProcessUserRef, Role, RoleRef, UserRef} from '@netgrif/petriflow';
-import {ModelService} from '../../modeler/services/model.service';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatSort, MatSortable, Sort} from '@angular/material/sort';
+import {MatPaginator} from '@angular/material/paginator';
+import {DataVariable, ProcessPermissionRef, Role, TransitionPermissionRef} from '@netgrif/petriflow';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {ModelerConfig} from '../../modeler/modeler-config';
+import {HistoryService} from '../../modeler/services/history/history.service';
+import {MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions} from '@angular/material/checkbox';
 
 export enum RoleRefType {
-  TRANSITION = 'transition',
-  PROCESS = 'process'
+    TRANSITION = 'transition',
+    PROCESS = 'process'
 }
 
 export interface ManagePermissionData {
-  type: RoleRefType;
-  roles: Array<Role>;
-  userLists: Array<DataVariable>;
-  rolesRefs?: Array<RoleRef>;
-  processRolesRefs?: Array<ProcessRoleRef>;
-  userRefs?: Array<UserRef>;
-  processUserRefs?: Array<ProcessUserRef>;
+    type: RoleRefType;
+    roles: Array<Role>;
+    userLists: Array<DataVariable>;
+    rolesRefs?: Array<TransitionPermissionRef>;
+    processRolesRefs?: Array<ProcessPermissionRef>;
+    userRefs?: Array<TransitionPermissionRef>;
+    processUserRefs?: Array<ProcessPermissionRef>;
 }
 
 @Component({
-  selector: 'nab-dialog.manage-roles',
-  templateUrl: './dialog-manage-roles.component.html',
-  styleUrls: ['./dialog-manage-roles.component.scss'],
+    selector: 'nab-dialog.manage-roles',
+    templateUrl: './dialog-manage-roles.component.html',
+    styleUrls: ['./dialog-manage-roles.component.scss'],
+    providers: [
+        {provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: {clickAction: 'noop'} as MatCheckboxDefaultOptions}
+    ]
 })
-export class DialogManageRolesComponent implements OnInit {
-  pageSizes = [5, 10, 20];
-  defaultPageSize = 10;
-  displayedColumns: Array<string>;
-  usersDisplayedColumns: Array<string>;
-  dataSource: MatTableDataSource<RoleRef | ProcessRoleRef>;
-  usersDataSource: MatTableDataSource<UserRef | ProcessUserRef>;
-  @ViewChild('matPaginator', {static: true}) paginator: MatPaginator;
-  @ViewChild('matUserPaginator', {static: true}) userPaginator: MatPaginator;
-  @ViewChild('firstTableSort', {static: true}) sort: MatSort;
-  @ViewChild('secondTableSort', {static: true}) userSort: MatSort;
+export class DialogManageRolesComponent implements OnInit, OnDestroy {
+    pageSizes = [5, 10, 20];
+    defaultPageSize = 10;
+    displayedColumns: Array<string>;
+    usersDisplayedColumns: Array<string>;
+    dataSource: MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>;
+    usersDataSource: MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>;
+    @ViewChild('matPaginator', {static: true}) paginator: MatPaginator;
+    @ViewChild('matUserPaginator', {static: true}) userPaginator: MatPaginator;
+    @ViewChild('firstTableSort', {static: true}) sort: MatSort;
+    @ViewChild('secondTableSort', {static: true}) userSort: MatSort;
+    private historyChange: boolean;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ManagePermissionData, private modelService: ModelService) {
-    let arrayRoleRefs: Array<RoleRef> | Array<ProcessRoleRef>;
-    let arrayUserRefs: Array<UserRef> | Array<ProcessUserRef>;
-    if (this.data.type === RoleRefType.TRANSITION) {
-      arrayRoleRefs = [...this.data.rolesRefs];
-      this.addDefaultRoleRefs(arrayRoleRefs);
-      arrayUserRefs = [...this.data.userRefs];
-      this.displayedColumns = ['id', 'perform', 'delegate', 'cancel', 'assign', 'view'];
-      this.usersDisplayedColumns = ['id', 'perform', 'delegate', 'cancel', 'assign', 'view'];
-      this.data.roles.forEach(item => {
-        if (this.data.rolesRefs.find(itm => itm.id === item.id) === undefined) {
-          (arrayRoleRefs as Array<RoleRef>).push(new RoleRef(item.id));
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public data: ManagePermissionData,
+        private modelService: ModelService,
+        private historyService: HistoryService
+    ) {
+        if (this.data.type === RoleRefType.TRANSITION) {
+            const arrayRoleRefs = [...this.data.rolesRefs];
+            this.addDefaultRoleRefs(arrayRoleRefs);
+            const arrayUserRefs = [...this.data.userRefs];
+            this.displayedColumns = ['id', 'perform', 'delegate', 'cancel', 'assign', 'view'];
+            this.usersDisplayedColumns = ['id', 'perform', 'delegate', 'cancel', 'assign', 'view'];
+            this.data.roles.forEach(item => {
+                if (this.data.rolesRefs.find(itm => itm.id === item.id) === undefined) {
+                    (arrayRoleRefs as Array<TransitionPermissionRef>).push(new  TransitionPermissionRef(item.id));
+                }
+            });
+            this.data.userLists.forEach(item => {
+                if (this.data.userRefs.find(itm => itm.id === item.id) === undefined) {
+                    (arrayUserRefs as Array<TransitionPermissionRef>).push(new  TransitionPermissionRef(item.id));
+                }
+            });
+            this.dataSource = new MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>(arrayRoleRefs);
+            this.usersDataSource = new MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>(arrayUserRefs);
+        } else {
+            const arrayRoleRefs = [...this.data.processRolesRefs];
+            this.addDefaultProcessRoleRefs(arrayRoleRefs);
+            const arrayUserRefs = [...this.data.processUserRefs];
+            this.displayedColumns = ['id', 'create', 'delete', 'view'];
+            this.usersDisplayedColumns = ['id', 'create', 'delete', 'view'];
+            this.data.roles.forEach(item => {
+                if (this.data.processRolesRefs.find(itm => itm.id === item.id) === undefined) {
+                    (arrayRoleRefs as Array<ProcessPermissionRef>).push(new ProcessPermissionRef(item.id));
+                }
+            });
+            this.data.userLists.forEach(item => {
+                if (this.data.processUserRefs.find(itm => itm.id === item.id) === undefined) {
+                    (arrayUserRefs as Array<ProcessPermissionRef>).push(new ProcessPermissionRef(item.id));
+                }
+            });
+            this.dataSource = new MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>(arrayRoleRefs);
+            this.usersDataSource = new MatTableDataSource<TransitionPermissionRef | ProcessPermissionRef>(arrayUserRefs);
         }
-      });
-      this.data.userLists.forEach(item => {
-        if (this.data.userRefs.find(itm => itm.id === item.id) === undefined) {
-          (arrayUserRefs as Array<UserRef>).push(new UserRef(item.id));
+        this.dataSource.sortData = (data: (TransitionPermissionRef | ProcessPermissionRef)[], sort: MatSort): (TransitionPermissionRef | ProcessPermissionRef)[] => {
+            return this.sortRefs(sort, data) as (TransitionPermissionRef | ProcessPermissionRef)[];
+        };
+        this.usersDataSource.sortData = (data: (TransitionPermissionRef | ProcessPermissionRef)[], sort: MatSort): (TransitionPermissionRef | ProcessPermissionRef)[] => {
+            return this.sortRefs(sort, data) as (TransitionPermissionRef | ProcessPermissionRef)[];
         }
-      });
-      this.dataSource = new MatTableDataSource<RoleRef>(arrayRoleRefs);
-      this.usersDataSource = new MatTableDataSource<UserRef>(arrayUserRefs);
-    } else {
-      arrayRoleRefs = [...this.data.processRolesRefs];
-      this.addDefaultProcessRoleRefs(arrayRoleRefs);
-      arrayUserRefs = [...this.data.processUserRefs];
-      this.displayedColumns = ['id', 'create', 'delete', 'processView'];
-      this.usersDisplayedColumns = ['id', 'create', 'delete', 'processView'];
-      this.data.roles.forEach(item => {
-        if (this.data.processRolesRefs.find(itm => itm.id === item.id) === undefined) {
-          (arrayRoleRefs as Array<ProcessRoleRef>).push(new ProcessRoleRef(item.id));
+    }
+
+    private sortRefs(sort: MatSort, data: ((TransitionPermissionRef | ProcessPermissionRef)[])) {
+        if (sort.active === undefined) {
+            return data;
         }
-      });
-      this.data.userLists.forEach(item => {
-        if (this.data.processUserRefs.find(itm => itm.id === item.id) === undefined) {
-          (arrayUserRefs as Array<ProcessUserRef>).push(new ProcessUserRef(item.id));
+        const order = sort.direction === 'desc' ? -1 : (sort.direction === 'asc' ? 1 : 0);
+        return data.sort((a: TransitionPermissionRef | ProcessPermissionRef, b: TransitionPermissionRef | ProcessPermissionRef) => {
+            const refA = this.refStringValue(a, sort.active);
+            const refB = this.refStringValue(b, sort.active);
+            if (refA === refB || order === 0) {
+                return a.id.localeCompare(b.id);
+            }
+            return refA.localeCompare(refB) * order;
+        });
+    }
+
+    refStringValue(item: TransitionPermissionRef | ProcessPermissionRef, property: string): string {
+        const value: boolean | undefined = item.logic[property];
+        return value === undefined ? '' : `${value.toString()}`;
+    }
+
+    ngOnInit() {
+        this.dataSource.paginator = this.paginator;
+        this.usersDataSource.paginator = this.userPaginator;
+        this.dataSource.sort = this.sort;
+        this.usersDataSource.sort = this.userSort;
+        this.sort.sort(({
+            id: localStorage.getItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.ROLE_SORT),
+            start: localStorage.getItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.ROLE_DIRECTION)
+        }) as MatSortable);
+        this.userSort.sort(({
+            id: localStorage.getItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_SORT),
+            start: localStorage.getItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_DIRECTION)
+        }) as MatSortable);
+    }
+
+    setValue(id: string, change: string) {
+        if (this.data.type === RoleRefType.TRANSITION) {
+            this.setRoleRef(this.data.rolesRefs.find(item => item.id === id), id, change);
+        } else {
+            this.setProcessRoleRef(this.data.processRolesRefs.find(item => item.id === id), id, change);
         }
-      });
-      this.dataSource = new MatTableDataSource<ProcessRoleRef>(arrayRoleRefs);
-      this.usersDataSource = new MatTableDataSource<ProcessUserRef>(arrayUserRefs);
+        this.historyChange = true;
     }
-    this.dataSource.sortingDataAccessor = (item, property) => {
-      switch (property) {
-        case 'perform':
-          return (item as RoleRef).logic.perform.toString();
-        case 'delegate':
-          return (item as RoleRef).logic.delegate.toString();
-        case 'cancel':
-          return (item as RoleRef).logic.cancel.toString();
-        case 'assign':
-          return (item as RoleRef).logic.assign.toString();
-        case 'create':
-          return (item as ProcessRoleRef).caseLogic.create.toString();
-        case 'delete':
-          return (item as ProcessRoleRef).caseLogic.delete.toString();
-        case 'view':
-          return (item as RoleRef).logic.view.toString();
-        case 'processView':
-          return (item as ProcessRoleRef).caseLogic.view.toString();
-        default:
-          return item[property];
-      }
-    };
-  }
 
-  ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.usersDataSource.paginator = this.userPaginator;
-    this.dataSource.sort = this.sort;
-    this.usersDataSource.sort = this.userSort;
-  }
+    setUserValue(id: string, change: string) {
+        if (this.data.type === RoleRefType.TRANSITION) {
+            this.setUserRef(this.data.userRefs.find(item => item.id === id), id, change);
+        } else {
+            this.setProcessUserRef(this.data.processUserRefs.find(item => item.id === id), id, change);
+        }
+        this.historyChange = true;
+    }
 
-  setValue($event, id: string, change: string) {
-    if (this.data.type === RoleRefType.TRANSITION) {
-      this.setRoleRef(this.data.rolesRefs.find(item => item.id === id), id, change);
-    } else {
-      this.setProcessRoleRef(this.data.processRolesRefs.find(item => item.id === id), id, change);
+    private setRoleRef(roleRef: TransitionPermissionRef, id: string, change: string) {
+        if (roleRef === undefined) {
+            this.data.rolesRefs.push(new TransitionPermissionRef(id));
+            this.data.rolesRefs.find(item => item.id === id).logic[change] = true;
+            (this.dataSource.data.find(item => item.id === id) as TransitionPermissionRef).logic[change] = true;
+        } else {
+            const newValue = this.resolveNewValue(roleRef, change);
+            this.data.rolesRefs.find(item => item.id === id).logic[change] = newValue;
+            (this.dataSource.data.find(item => item.id === id) as TransitionPermissionRef).logic[change] = newValue;
+        }
     }
-  }
 
-  setUserValue($event, id: string, change: string) {
-    if (this.data.type === RoleRefType.TRANSITION) {
-      this.setUserRef(this.data.userRefs.find(item => item.id === id), id, change);
-    } else {
-      this.setProcessUserRef(this.data.processUserRefs.find(item => item.id === id), id, change);
+    private setProcessRoleRef(processRoleRef: ProcessPermissionRef, id: string, change: string) {
+        if (processRoleRef === undefined) {
+            const roleRef = new ProcessPermissionRef(id);
+            this.data.processRolesRefs.push(roleRef);
+            this.modelService.model.addRoleRef(roleRef);
+            this.data.processRolesRefs.find(item => item.id === id).logic[change] = true;
+            (this.dataSource.data.find(item => item.id === id) as ProcessPermissionRef).logic[change] = true;
+        } else {
+            const newValue = this.resolveNewValue(processRoleRef, change);
+            this.data.processRolesRefs.find(item => item.id === id).logic[change] = newValue;
+            (this.dataSource.data.find(item => item.id === id) as ProcessPermissionRef).logic[change] = newValue;
+        }
     }
-  }
 
-  stringValue(logic: boolean) {
-    if (logic === undefined) {
-      return ' ';
-    } else if (logic === true) {
-      return 'True';
-    } else {
-      return 'False';
+    private setUserRef(userRef: TransitionPermissionRef, id: string, change: string) {
+        if (userRef === undefined) {
+            this.data.userRefs.push(new TransitionPermissionRef(id));
+            this.data.userRefs.find(item => item.id === id).logic[change] = true;
+            (this.usersDataSource.data.find(item => item.id === id) as TransitionPermissionRef).logic[change] = true;
+        } else {
+            const newValue = this.resolveNewValue(userRef, change);
+            this.data.userRefs.find(item => item.id === id).logic[change] = newValue;
+            (this.usersDataSource.data.find(item => item.id === id) as TransitionPermissionRef).logic[change] = newValue;
+        }
     }
-  }
 
-  getChecked(logic: boolean) {
-    if (logic === undefined) {
-      return false;
-    } else if (logic === true) {
-      return true;
+    private setProcessUserRef(processUserRef: ProcessPermissionRef, id: string, change: string) {
+        if (processUserRef === undefined) {
+            const ref = new ProcessPermissionRef(id);
+            this.data.processUserRefs.push(ref);
+            this.modelService.model.addUserRef(ref);
+            this.data.processUserRefs.find(item => item.id === id).logic[change] = true;
+            (this.usersDataSource.data.find(item => item.id === id) as ProcessPermissionRef).logic[change] = true;
+        } else {
+            const newValue = this.resolveNewValue(processUserRef, change);
+            this.data.processUserRefs.find(item => item.id === id).logic[change] = newValue;
+            (this.usersDataSource.data.find(item => item.id === id) as ProcessPermissionRef).logic[change] = newValue;
+        }
     }
-    return undefined;
-  }
 
-  getIndeterminate(logic: boolean) {
-    return !(logic === undefined || logic === true);
-  }
+    protected resolveNewValue(roleRef: ProcessPermissionRef | TransitionPermissionRef, change: string) {
+        let newValue;
+        if (roleRef.logic[change] === undefined) {
+            newValue = true;
+        } else if (roleRef.logic[change] === true) {
+            newValue = false;
+        }
+        return newValue;
+    }
 
-  protected resolveNewValue(roleRef, change) {
-    let newValue;
-    if (roleRef.logic[change] === undefined) {
-      newValue = true;
-    } else if (roleRef.logic[change] === true) {
-      newValue = false;
+    stringValue(logic: boolean): string {
+        if (logic === undefined) {
+            return ' ';
+        }
+        return `${logic}`;
     }
-    return newValue;
-  }
 
-  protected resolveNewProcessValue(roleRef, change) {
-    let newValue;
-    if (roleRef.caseLogic[change] === undefined) {
-      newValue = true;
-    } else if (roleRef.caseLogic[change] === true) {
-      newValue = false;
+    getChecked(logic: boolean): boolean {
+        return logic === true;
     }
-    return newValue;
-  }
 
-  private setRoleRef(roleRef: RoleRef, id: string, change: string) {
-    if (roleRef === undefined) {
-      this.data.rolesRefs.push(new RoleRef(id));
-      this.data.rolesRefs.find(item => item.id === id).logic[change] = true;
-      (this.dataSource.data.find(item => item.id === id) as RoleRef).logic[change] = true;
-    } else {
-      const newValue = this.resolveNewValue(roleRef, change);
-      this.data.rolesRefs.find(item => item.id === id).logic[change] = newValue;
-      (this.dataSource.data.find(item => item.id === id) as RoleRef).logic[change] = newValue;
+    getIndeterminate(logic: boolean): boolean {
+        return logic === false;
     }
-  }
 
-  private setProcessRoleRef(processRoleRef: ProcessRoleRef, id: string, change: string) {
-    if (processRoleRef === undefined) {
-      const roleRef = new ProcessRoleRef(id);
-      this.data.processRolesRefs.push(roleRef);
-      this.modelService.model.addRoleRef(roleRef);
-      this.data.processRolesRefs.find(item => item.id === id).caseLogic[change] = true;
-      (this.dataSource.data.find(item => item.id === id) as ProcessRoleRef).caseLogic[change] = true;
-    } else {
-      const newValue = this.resolveNewProcessValue(processRoleRef, change);
-      this.data.processRolesRefs.find(item => item.id === id).caseLogic[change] = newValue;
-      (this.dataSource.data.find(item => item.id === id) as ProcessRoleRef).caseLogic[change] = newValue;
+    private addDefaultRoleRefs(arrayRoleRefs: Array<TransitionPermissionRef>) {
+        if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.DEFAULT)) {
+            arrayRoleRefs.push(new TransitionPermissionRef(Role.DEFAULT));
+        }
+        if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.ANONYMOUS)) {
+            arrayRoleRefs.push(new TransitionPermissionRef(Role.ANONYMOUS));
+        }
     }
-  }
 
-  private setUserRef(userRef: UserRef, id: string, change: string) {
-    if (userRef === undefined) {
-      this.data.userRefs.push(new UserRef(id));
-      this.data.userRefs.find(item => item.id === id).logic[change] = true;
-      (this.usersDataSource.data.find(item => item.id === id) as UserRef).logic[change] = true;
-    } else {
-      const newValue = this.resolveNewValue(userRef, change);
-      this.data.userRefs.find(item => item.id === id).logic[change] = newValue;
-      (this.usersDataSource.data.find(item => item.id === id) as UserRef).logic[change] = newValue;
+    private addDefaultProcessRoleRefs(arrayRoleRefs: Array<ProcessPermissionRef>) {
+        if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.DEFAULT)) {
+            arrayRoleRefs.push(new ProcessPermissionRef(Role.DEFAULT));
+        }
+        if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.ANONYMOUS)) {
+            arrayRoleRefs.push(new ProcessPermissionRef(Role.ANONYMOUS));
+        }
     }
-  }
 
-  private setProcessUserRef(processUserRef: ProcessUserRef, id: string, change: string) {
-    if (processUserRef === undefined) {
-      const ref = new ProcessUserRef(id);
-      this.data.processUserRefs.push(ref);
-      this.modelService.model.addUserRef(ref);
-      this.data.processUserRefs.find(item => item.id === id).caseLogic[change] = true;
-      (this.usersDataSource.data.find(item => item.id === id) as ProcessUserRef).caseLogic[change] = true;
-    } else {
-      const newValue = this.resolveNewProcessValue(processUserRef, change);
-      this.data.processUserRefs.find(item => item.id === id).caseLogic[change] = newValue;
-      (this.usersDataSource.data.find(item => item.id === id) as ProcessUserRef).caseLogic[change] = newValue;
+    sortRoleRefs(sort: Sort): void {
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.ROLE_SORT, sort.active);
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.ROLE_DIRECTION, sort.direction);
     }
-  }
 
-  private addDefaultRoleRefs(arrayRoleRefs: Array<RoleRef>) {
-    if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.DEFAULT)) {
-      arrayRoleRefs.push(new RoleRef(Role.DEFAULT));
+    sortUserRefs(sort: Sort): void {
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_SORT, sort.active);
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.PERMISSION_DIALOG.USER_REF_DIRECTION, sort.direction);
     }
-    if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.ANONYMOUS)) {
-      arrayRoleRefs.push(new RoleRef(Role.ANONYMOUS));
-    }
-  }
 
-  private addDefaultProcessRoleRefs(arrayRoleRefs: Array<ProcessRoleRef>) {
-    if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.DEFAULT)) {
-      arrayRoleRefs.push(new ProcessRoleRef(Role.DEFAULT));
+    ngOnDestroy(): void {
+        if (this.historyChange) {
+            this.historyService.save("Role assignments has been changed.");
+        }
     }
-    if (!arrayRoleRefs.find(roleRef => roleRef.id === Role.ANONYMOUS)) {
-      arrayRoleRefs.push(new ProcessRoleRef(Role.ANONYMOUS));
-    }
-  }
 }

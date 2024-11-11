@@ -1,19 +1,8 @@
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg height="110px" style="enable-background:new 0 0 110 110;" version="1.1" viewBox="0 0 110 110"
-     width="110px" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
-id="reset_arc" style="width: 110px; height: 110px;">
-
-
-	<rect fill="none" height="36" stroke="black" stroke-width="6" width="36" x="71" y="3"/>
-  <text font-family="verdana" font-size="12" x="89" y="54"></text>
-  <text font-family="verdana" font-size="12" x="21" y="122"></text>
-  <polyline fill="none" points="34.2754123838658,76.84420195798307 62.26204004107798,48.284993837948704"
-            stroke="white" stroke-width="4"/>
-  <polyline fill="none" points="34.2754123838658,76.84420195798307 62.26204004107798,48.284993837948704"
-            stroke="black" stroke-width="6"/>
-  <polygon
-    fill="black"
-    points="71.36088004567497,39 66.2189457161104,54.96278520028523 60.86221850190922,49.71345442840235 55.72028417234464,65.67623962868758 45.00682974394228,55.17757808492182 60.86221850190922,49.71345442840235 55.50549128770804,44.46412365651947 " stroke="black"/>
-  <text font-family="verdana" font-size="12" x="56.62711583370528" y="69.92120867483537"></text>
-  <circle cx="21" cy="89" fill="none" r="18" stroke="black" stroke-width="6"/>
-  <text font-family="verdana" font-size="12" x="21" y="95"></text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="110px" height="110px" viewBox="0 0 110 110">
+    <path fill="none" stroke-width="6" d="M71 3h36v36H71Z"/>
+    <path fill="none" stroke-width="4" d="M34.2754 76.8442L62.262 48.285"/>
+    <path fill="none" stroke-width="6" d="M34.2754 76.8442L62.262 48.285"/>
+    <path fill="solid"
+          d="M71.3609 39L66.2189 54.9628L60.8622 49.7135L55.7203 65.6762L45.0068 55.1776L60.8622 49.7135L55.5055 44.4641z"/>
+    <path fill="none" stroke-width="6" d="M3 89a18 18 0 1 0 36 0a18 18 0 1 0 -36 0"/>
+</svg>

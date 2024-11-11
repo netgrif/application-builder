@@ -1,6 +1,5 @@
 <div class="nab-i18n-mode-wrapper">
-  <div class="background">
-    <nab-languages *ngIf="languagesSelected()"></nab-languages>
-    <nab-translations *ngIf="translationsSelected()"></nab-translations>
-  </div>
+    <div class="background">
+        <ng-template [cdkPortalOutlet]="selectedToolPortal"></ng-template>
+    </div>
 </div>

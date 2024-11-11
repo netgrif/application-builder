@@ -1,18 +1,6 @@
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg height="110px" style="enable-background:new 0 0 110 110;" version="1.1" viewBox="0 0 110 110"
-     width="110px" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
-id="read_arc" style="width: 110px; height: 110px;">
-
-
-	<rect fill="none" height="36" stroke="black" stroke-width="6" width="36" x="71" y="3"/>
-  <text font-family="verdana" font-size="12" x="89" y="54"/>
-  <text font-family="verdana" font-size="12" x="21" y="122"/>
-  <polyline fill="none" points="33.72792206135786,76.27207793864214 61.80761184457488,48.19238815542512"
-            stroke="white" stroke-width="4"/>
-  <polyline fill="none" points="33.72792206135786,76.27207793864214 71.80761184457488,38.19238815542512"
-            stroke="black" stroke-width="6"/>
-  <circle cx="65.6966991411009" cy="44.30330085889911" fill="solid" r="7.5" stroke="black" stroke-width="6"/>
-  <text font-family="verdana" font-size="12" x="56.10169550921107" y="69.70710678118655"/>
-  <circle cx="21" cy="89" fill="none" r="18" stroke="black" stroke-width="6"/>
-  <text font-family="verdana" font-size="12" x="21" y="95"/>
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="110px" height="110px" viewBox="0 0 110 110">
+    <path fill="none" stroke-width="6" d="M71 3h36v36H71Z"/>
+    <path fill="none" stroke-width="6" d="M33.7279 76.2721L71.8076 38.1924"/>
+    <path fill="solid" stroke-width="6" d="M58.1967 44.3033a7.5 7.5 0 1 0 15 0a7.5 7.5 0 1 0 -15 0"/>
+    <path fill="none" stroke-width="6" d="M3 89a18 18 0 1 0 36 0a18 18 0 1 0 -36 0"/>
 </svg>

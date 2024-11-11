@@ -1,68 +1,68 @@
 <div class="description" id="description">
-  <nab-action-editor-menu-description #descriptionComponent
-                                      id="description-content"></nab-action-editor-menu-description>
+    <nab-action-editor-menu-description id="description-content"
+                                        #descriptionComponent></nab-action-editor-menu-description>
 </div>
 <mat-sidenav-container autosize>
-  <mat-sidenav #drawer [resizeCursorPrecision]="10"
-               [resizeEdges]="{ left: true }"
-               mode="side"
-               mwlResizable>
-    <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
-                            [editor]="editor"></nab-action-editor-menu>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <div fxLayout="row">
-      <div fxFlex fxLayoutAlign="start center" fxLayoutGap="3em">
-        <button (click)="openDrawer()" mat-button type="button">
-          <mat-icon *ngIf="drawer.opened; else closed">
-            keyboard_arrow_left
-          </mat-icon>
-          <ng-template #closed>
-            <mat-icon>
-              keyboard_arrow_right
-            </mat-icon>
-          </ng-template>
-          <mat-icon>
-            functions
-          </mat-icon>
-          Functions
-        </button>
-      </div>
+    <mat-sidenav mode="side" #drawer
+                 mwlResizable mwlResizeHandle
+                 [resizeEdges]="{ left: true }">
 
-      <div fxFlex="50" fxLayoutAlign="end center" fxLayoutGap="3em">
-        <mat-menu #referencesMenu="matMenu">
-          <ng-container *ngFor="let configuration of editorConfigurations">
-            <nab-action-editor-menu-item #referenceItem="menuInOtherComponent"
-                                         [configuration]="configuration"
-                                         [hidden]="!referencesOpened"
-                                         [trigger]="referenceItemTrigger"></nab-action-editor-menu-item>
-            <button #referenceItemTrigger="matMenuTrigger" [matMenuTriggerFor]="referenceItem.menu"
-                    mat-menu-item>
-              {{ configuration.title }}
-            </button>
-          </ng-container>
-        </mat-menu>
-        <button #matButton #referencesTrigger="matMenuTrigger" [matMenuTriggerFor]="referencesMenu" fxFlexAlign="end center"
-                mat-button
-                type="button">
-          <mat-icon>
-            link
-          </mat-icon>
-          References
-          <mat-icon *ngIf="referencesTrigger.menuOpen; else closedMenu">
-            keyboard_arrow_up
-          </mat-icon>
-          <ng-template #closedMenu>
-            <mat-icon>
-              keyboard_arrow_down
-            </mat-icon>
-          </ng-template>
-        </button>
-      </div>
-    </div>
-    <div fxLayout="column" fxLayoutAlign="start stretch" id="_div'}}">
-      <ngx-monaco-editor (onInit)="onInit($event)" [formControl]="formControl" [options]="editorOptions"
-                         class="full-size-editor" id="_editor'}}"></ngx-monaco-editor>
-    </div>
-  </mat-sidenav-content>
+        <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
+                                [editor]="editor"></nab-action-editor-menu>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div fxLayout="row">
+            <div fxFlex fxLayoutGap="3em" fxLayoutAlign="start center">
+                <button type="button" mat-button (click)="openDrawer()">
+                    <mat-icon *ngIf="drawer.opened; else closed">
+                        keyboard_arrow_left
+                    </mat-icon>
+                    <ng-template #closed>
+                        <mat-icon>
+                            keyboard_arrow_right
+                        </mat-icon>
+                    </ng-template>
+                    <mat-icon>
+                        functions
+                    </mat-icon>
+                    Functions
+                </button>
+            </div>
+
+            <div fxFlex="50" fxLayoutGap="3em" fxLayoutAlign="end center">
+                <mat-menu #referencesMenu="matMenu">
+                    <ng-container *ngFor="let configuration of editorConfigurations">
+                        <nab-action-editor-menu-item [trigger]="referenceItemTrigger"
+                                                     #referenceItem="menuInOtherComponent"
+                                                     [configuration]="configuration"
+                                                     [hidden]="!referencesOpened"></nab-action-editor-menu-item>
+                        <button mat-menu-item #referenceItemTrigger="matMenuTrigger"
+                                [matMenuTriggerFor]="referenceItem.menu">
+                            {{configuration.title}}
+                        </button>
+                    </ng-container>
+                </mat-menu>
+                <button #matButton fxFlexAlign="end center" type="button" mat-button
+                        #referencesTrigger="matMenuTrigger"
+                        [matMenuTriggerFor]="referencesMenu">
+                    <mat-icon>
+                        link
+                    </mat-icon>
+                    References
+                    <mat-icon *ngIf="referencesTrigger.menuOpen; else closedMenu">
+                        keyboard_arrow_up
+                    </mat-icon>
+                    <ng-template #closedMenu>
+                        <mat-icon>
+                            keyboard_arrow_down
+                        </mat-icon>
+                    </ng-template>
+                </button>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start stretch" id="_div'}}">
+            <ngx-monaco-editor class="full-size-editor" id="_editor'}}" [options]="editorOptions"
+                               [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>
+        </div>
+    </mat-sidenav-content>
 </mat-sidenav-container>

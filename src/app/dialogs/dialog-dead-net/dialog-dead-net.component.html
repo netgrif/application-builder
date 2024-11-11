@@ -1,11 +1,8 @@
-<h2 mat-dialog-title>
-  <mat-icon>warning_amber</mat-icon>
-  <span>No executable task</span>
-</h2>
+<h2 mat-dialog-title>No executable task</h2>
 <mat-dialog-content class="mat-typography">
-  <h3>There are no executable tasks. Are you sure you want to download the model ?</h3>
+    <span>There are no executable tasks. Are you sure you want to download the model ?</span>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button [mat-dialog-close]="false" mat-button>Cancel</button>
-  <button [mat-dialog-close]="true" cdkFocusInitial mat-button>Download</button>
+    <button mat-button [mat-dialog-close]="false">Cancel</button>
+    <button mat-button [mat-dialog-close]="true">Download</button>
 </mat-dialog-actions>

@@ -1,69 +1,90 @@
 .app-mat-sidenav-container {
-  height: 100%;
+    height: 100%;
+}
+
+.main-toolbar-logo {
+    width: 35px;
+    height: 41px;
 }
 
 .app-mat-viewnav {
-  //background-color: map-get($netgrif-blue, 600); GLOBAL STYLE
+    display: flex;
+    flex-direction: column;
 
-  mat-action-list {
-    overflow: hidden;
-  }
+    .logo {
+        display: flex;
+        justify-content: center;
+        padding-top: 0;
+    }
 
-  .selected {
-    //border-left: map-get($netgrif-blue, A200); GLOBAL STYLE
-    border-left-style: solid;
-    //background-color: map-get($netgrif-blue, 700); GLOBAL STYLE
+    mat-action-list {
+        overflow: hidden;
+    }
+
+    .selected {
+        //border-left: map-get($netgrif-blue, A200); GLOBAL STYLE
+        border-left-style: solid;
+        //background-color: map-get($netgrif-blue, 700); GLOBAL STYLE
+
+        mat-icon {
+            color: white;
+            margin-left: -3px;
+        }
+    }
 
     mat-icon {
-      color: white;
-      margin-left: -3px;
+        //color: map-get($netgrif-blue, 200); GLOBAL STYLE
     }
-  }
-
-  mat-icon {
-    //color: map-get($netgrif-blue, 200); GLOBAL STYLE
-  }
 }
 
 .app-container {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-.app-mat-icon {
-  margin: 10px;
-}
-
-.app-mat-toolbar {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  z-index: 10;
-}
-
-.mat-icon-button {
-  input[type="file"] {
+    display: flex;
+    flex-direction: column;
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-  }
+}
+
+.app-mat-icon {
+    margin: 10px;
+}
+
+.app-mat-toolbar {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.mat-icon-button {
+    input[type="file"] {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+    }
 }
 
 .app-viewnaw-bottom-list {
-  position: absolute;
-  bottom: 0;
+    position: absolute;
+    bottom: 0;
 }
 
 .main-toolbar-logo img {
-  margin-top: 8px;
-  width: 40px;
-  border-radius: 20%;
+    margin-top: 8px;
+    width: 42px;
+    border-radius: 20%;
+}
+
+.menu-items {
+    padding-top: 0;
+    .mdc-list-item {
+        padding-left: 9px;
+        padding-right: 9px;
+        height: 42px;
+    }
 }

@@ -1,0 +1,37 @@
+<div *ngIf="item !== undefined; else elseBlock" fxFlex fxLayout="column" class="height-fix netgrif-input">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="margin-top32px">
+        <div fxFlex="2.5"></div>
+
+        <mat-form-field fxFlex="45">
+            <mat-label>Id</mat-label>
+            <input matInput [(ngModel)]="role.role.id" (change)="changeId($event)" [formControl]="form">
+            <mat-error *ngIf="form.errors && form.errors.required">Id is required</mat-error>
+            <mat-error *ngIf="form.errors && form.errors.validUnique">Transition with given id already exists</mat-error>
+        </mat-form-field>
+
+        <div fxFlex="2.5"></div>
+
+        <mat-form-field fxFlex="45">
+            <mat-label>Title</mat-label>
+            <input matInput [ngModel]="role.role.title.value" (change)="changeTitle($event)">
+        </mat-form-field>
+
+        <div fxFlex="2.5"></div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutAlign="start center">
+        <div fxFlex="2.5"></div>
+
+        <button mat-stroked-button color="primary" (click)="openActions()" mat-dialog-close>
+            <mat-icon>code</mat-icon>
+            <span>Edit Actions ({{numberOfActions()}})</span>
+        </button>
+
+        <div fxFlex></div>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <div fxLayoutAlign="center center" class="height-fix full-width">
+        <span>No role selected</span>
+    </div>
+</ng-template>

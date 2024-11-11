@@ -1,54 +1,68 @@
 <div class="app-container">
-  <mat-sidenav-container class="app-mat-sidenav-container">
-    <mat-sidenav class="app-mat-viewnav" color="primary" disableClose="true" mode="side" opened>
-
-      <a class="main-toolbar-logo" fxLayoutAlign="center center" [href]="config.services.urls.netgrif">
-        <img alt="Netgrif logo" src="../assets/netgrif_logo.svg">
-      </a>
-
-      <mat-action-list>
-        <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.demo.step}}"
-                       stepPosition="{{tutorial.demo.position}}" text="{{tutorial.demo.text}}"
-                       title="{{tutorial.demo.title}}">
-          <a [href]="config.services.urls.engine" matTooltip="Netgrif Demo" target="_blank">
-            <mat-icon>play_arrow</mat-icon>
-          </a>
-        </mat-list-item>
-        <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.youtube.step}}"
-                       stepPosition="{{tutorial.youtube.position}}" text="{{tutorial.youtube.text}}"
-                       title="{{tutorial.youtube.title}}">
-          <a [href]="config.services.urls.youtube" matTooltip="Youtube Channel"
-             target="_blank">
-            <mat-icon svgIcon="youtube"></mat-icon>
-          </a>
-        </mat-list-item>
-        <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.github.step}}"
-                       stepPosition="{{tutorial.github.position}}" text="{{tutorial.github.text}}"
-                       title="{{tutorial.github.title}}">
-          <a [href]="config.services.urls.github" matTooltip="Github"
-             target="_blank">
-            <mat-icon svgIcon="github">device_hub</mat-icon>
-          </a>
-        </mat-list-item>
-        <mat-list-item class="field-list-mat-list-item" joyrideStep="{{tutorial.mortgage.step}}"
-                       stepPosition="{{tutorial.mortgage.position}}" text="{{tutorial.mortgage.text}}"
-                       title="{{tutorial.mortgage.title}}">
-          <a (click)="addMortgage()" matTooltip="Mortgage demo">
-            <mat-icon>device_hub</mat-icon>
-          </a>
-        </mat-list-item>
-      </mat-action-list>
-      <mat-action-list class="app-viewnaw-bottom-list ">
-        <mat-list-item class="field-list-mat-list-item">
-          <a (click)="help()" matTooltip="Help">
-            <mat-icon>help</mat-icon>
-          </a>
-        </mat-list-item>
-      </mat-action-list>
-    </mat-sidenav>
-    <joyrideStep (next)="tutorial.welcome.onNext()" joyrideStep="{{tutorial.welcome.step}}"
-                 stepPosition="{{tutorial.welcome.position}}" text="{{tutorial.welcome.text}}"
-                 title="{{tutorial.welcome.title}}"></joyrideStep>
-    <router-outlet></router-outlet>
-  </mat-sidenav-container>
+    <mat-sidenav-container class="app-mat-sidenav-container">
+        <mat-sidenav class="app-mat-viewnav" mode="side" disableClose="true" opened>
+            <a [href]="config.services.urls.netgrif" target="_blank" class="logo">
+                <img src="../assets/netgrif_logo.svg" alt="Netgrif logo" class="main-toolbar-logo">
+            </a>
+            <mat-action-list class="menu-items">
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.demo.step}}"
+                               title="{{tutorial.demo.title}}"
+                               text="{{tutorial.demo.text}}"
+                               stepPosition="{{tutorial.demo.position}}"
+                               (click)="openInTab(config.services.urls.engine)"
+                               matTooltip="Netgrif Demo" matTooltipPosition="right">
+                    <mat-icon>play_arrow</mat-icon>
+                </mat-list-item>
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.youtube.step}}"
+                               title="{{tutorial.youtube.title}}"
+                               text="{{tutorial.youtube.text}}"
+                               stepPosition="{{tutorial.youtube.position}}"
+                               (click)="openInTab(config.services.urls.youtube)"
+                               matTooltip="Youtube Channel" matTooltipPosition="right">
+                    <mat-icon svgIcon="youtube"></mat-icon>
+                </mat-list-item>
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.github.step}}"
+                               title="{{tutorial.github.title}}"
+                               text="{{tutorial.github.text}}"
+                               stepPosition="{{tutorial.github.position}}"
+                               (click)="openInTab(config.services.urls.github)"
+                               matTooltip="Github" matTooltipPosition="right">
+                    <mat-icon svgIcon="github">device_hub</mat-icon>
+                </mat-list-item>
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.mortgage.step}}"
+                               title="{{tutorial.mortgage.title}}"
+                               text="{{tutorial.mortgage.text}}"
+                               stepPosition="{{tutorial.mortgage.position}}"
+                               (click)="addMortgage()"
+                               matTooltip="Mortgage demo" matTooltipPosition="right">
+                    <mat-icon>device_hub</mat-icon>
+                </mat-list-item>
+            </mat-action-list>
+            <mat-action-list class="app-viewnaw-bottom-list menu-items">
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.bug.step}}"
+                               title="{{tutorial.bug.title}}"
+                               text="{{tutorial.bug.text}}"
+                               stepPosition="{{tutorial.bug.position}}"
+                               (done)="tutorial.onClose()"
+                               (click)="openInTab(config.services.urls.issues)"
+                               matTooltip="Report a bug" matTooltipPosition="right">
+                    <mat-icon>bug_report</mat-icon>
+                </mat-list-item>
+                <mat-list-item class="field-list-mat-list-item"
+                               (click)="help()"
+                               matTooltip="Help" matTooltipPosition="right">
+                    <mat-icon>help</mat-icon>
+                </mat-list-item>
+            </mat-action-list>
+        </mat-sidenav>
+        <joyrideStep joyrideStep="{{tutorial.welcome.step}}" stepPosition="{{tutorial.welcome.position}}"
+                     title="{{tutorial.welcome.title}}" text="{{tutorial.welcome.text}}"
+                     (next)="tutorial.welcome.onNext()"></joyrideStep>
+        <router-outlet></router-outlet>
+    </mat-sidenav-container>
 </div>

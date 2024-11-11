@@ -1,57 +1,9 @@
-<div class="canvas-wrapper" id="canvas-wrapper">
-  <ngx-dropzone (change)="onDropZone($event)" accept=".xml" disableClick="true" multiple="false">
-    <svg #canvas (contextmenu)="contextModelMenu($event)"
-         (mousedown)="doMouseDown($event)"
-         (mousemove)="doMouseMove($event)"
-         class="canvas"
-         id="canvas">
-      <defs>
-        <pattern [attr.height]="size()" [attr.width]="size()" id="canvas-grid" patternUnits="userSpaceOnUse">
-          <rect [attr.height]="size()" [attr.width]="size()" fill="white"/>
-          <path [attr.d]="'M '+size()+' 0 L 0 0 0 '+size()" [attr.stroke]="gridStroke()" fill="none"
-                id="canvas-grid-path"
-                stroke-width="1"/>
-        </pattern>
-      </defs>
-      <rect fill="url(#canvas-grid)" height="100%" width="100%"/>
-    </svg>
-  </ngx-dropzone>
-</div>
-
-<div #ctxMenu id="ctxMenu">
-  <div class="menuContent">
-    <button (click)="openTaskConfigDialog()" class="menuItem" mat-menu-item>
-      <mat-icon>settings</mat-icon>
-      <span>Configure Transition</span>
-    </button>
-    <button (click)="openFormBuilder()" *ngIf="isEdit()" class="menuItem" mat-menu-item>
-      <mat-icon>edit</mat-icon>
-      <span>Edit form</span>
-    </button>
-    <button (click)="openFormBuilder()" *ngIf="!isEdit()" class="menuItem" mat-menu-item>
-      <mat-icon>add</mat-icon>
-      <span>Create form</span>
-    </button>
-    <button (click)="manageRoles()" class="menuItem" mat-menu-item>
-      <mat-icon>people</mat-icon>
-      <span>Manage Permissions</span>
-    </button>
-    <button (click)="manageActions()" class="menuItem" mat-menu-item>
-      <mat-icon>code</mat-icon>
-      <span>Edit actions</span>
-    </button>
-  </div>
-</div>
-<div #modelCtxMenu id="modelCtxMenu">
-  <div class="menuContent">
-    <button (click)="openSideNav()" class="menuItem" mat-menu-item>
-      <mat-icon>settings</mat-icon>
-      <span>Configure Model</span>
-    </button>
-    <button (click)="manageProcessPermissions()" class="menuItem" mat-menu-item>
-      <mat-icon>people</mat-icon>
-      <span>Manage Process Permissions</span>
-    </button>
-  </div>
-</div>
-<nab-fast-mode-context #fastPnContextMenu></nab-fast-mode-context>
+<ngx-dropzone (change)="onDropZone($event)" multiple="false" accept=".xml" disableClick="true" class="outer">
+    <div class="outer">
+        <petriflow-svg-canvas
+            [panzoomConfiguration]="editModeService.panzoomConfiguration"
+            [gridConfiguration]="editModeService.canvasService.gridConfiguration">
+        </petriflow-svg-canvas>
+    </div>
+</ngx-dropzone>
+<nab-context-menu #contextMenu></nab-context-menu>

@@ -1,76 +1,69 @@
-import {editor} from 'monaco-editor';
+import {MenuItem} from './menu-item';
 import {ActionEditorComponent} from '../../action-editor/action-editor.component';
 import {FunctionEditorComponent} from '../../function-editor/function-editor.component';
-import {MenuItem} from './menu-item';
-import ICodeEditor = editor.ICodeEditor;
 
 export class MenuItemConfiguration {
-  constructor(title: string, itemType: string, keywords: Array<string>, editorObject: ICodeEditor, actionEditor: ActionEditorComponent | FunctionEditorComponent, items: Array<MenuItem>) {
-    this._title = title;
-    this._itemType = itemType;
-    this._keywords = keywords;
-    this._editor = editorObject;
-    this._actionEditor = actionEditor;
-    this._items = items;
-  }
+    private _title: string;
+    private _itemType: string;
+    private _keywords: Array<string>;
+    private _editor: any;
+    private _actionEditor: ActionEditorComponent | FunctionEditorComponent;
+    private _items: Array<MenuItem>;
 
-  private _title: string;
+    constructor(title: string, itemType: string, keywords: Array<string>, editorObject: any, actionEditor: ActionEditorComponent | FunctionEditorComponent, items: Array<MenuItem>) {
+        this._title = title;
+        this._itemType = itemType;
+        this._keywords = keywords;
+        this._editor = editorObject;
+        this._actionEditor = actionEditor;
+        this._items = items;
+    }
 
-  get title(): string {
-    return this._title;
-  }
+    get title(): string {
+        return this._title;
+    }
 
-  set title(value: string) {
-    this._title = value;
-  }
+    set title(value: string) {
+        this._title = value;
+    }
 
-  private _itemType: string;
+    get itemType(): string {
+        return this._itemType;
+    }
 
-  get itemType(): string {
-    return this._itemType;
-  }
+    set itemType(value: string) {
+        this._itemType = value;
+    }
 
-  set itemType(value: string) {
-    this._itemType = value;
-  }
+    get keywords(): Array<string> {
+        return this._keywords;
+    }
 
-  private _keywords: Array<string>;
+    set keywords(value: Array<string>) {
+        this._keywords = value;
+    }
 
-  get keywords(): Array<string> {
-    return this._keywords;
-  }
+    get editor(): any {
+        return this._editor;
+    }
 
-  set keywords(value: Array<string>) {
-    this._keywords = value;
-  }
+    set editor(value: any) {
+        this._editor = value;
+    }
 
-  private _editor: any;
+    get actionEditor(): ActionEditorComponent | FunctionEditorComponent {
+        return this._actionEditor;
+    }
 
-  get editor(): ICodeEditor {
-    return this._editor;
-  }
+    set actionEditor(value: ActionEditorComponent | FunctionEditorComponent) {
+        this._actionEditor = value;
+    }
 
-  set editor(value: ICodeEditor) {
-    this._editor = value;
-  }
+    get items(): Array<MenuItem> {
+        return this._items;
+    }
 
-  private _actionEditor: ActionEditorComponent | FunctionEditorComponent;
-
-  get actionEditor(): ActionEditorComponent | FunctionEditorComponent {
-    return this._actionEditor;
-  }
-
-  set actionEditor(value: ActionEditorComponent | FunctionEditorComponent) {
-    this._actionEditor = value;
-  }
-
-  private _items: Array<MenuItem>;
-
-  get items(): Array<MenuItem> {
-    return this._items;
-  }
-
-  set items(value: Array<MenuItem>) {
-    this._items = value;
-  }
+    set items(value: Array<MenuItem>) {
+        this._items = value;
+    }
 }

@@ -1,28 +1,28 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Arc} from '@netgrif/petriflow';
-import {Place} from '../../modeler/classes/place/place';
+import {CanvasPlace} from '../../modeler/edit-mode/domain/canvas-place';
 
 export interface PlaceRefDeleteData {
-  place: Place;
-  arcs: Array<Arc>;
+    place: CanvasPlace;
+    arcs: Array<Arc<any, any>>;
 }
 
 @Component({
-  selector: 'nab-dialog-place-ref-delete',
-  templateUrl: './dialog-place-ref-delete.component.html',
-  styleUrls: ['./dialog-place-ref-delete.component.scss'],
+    selector: 'nab-dialog-place-ref-delete',
+    templateUrl: './dialog-place-ref-delete.component.html',
+    styleUrls: ['./dialog-place-ref-delete.component.scss']
 })
 export class DialogPlaceRefDeleteComponent {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: PlaceRefDeleteData) {
-  }
+    constructor(@Inject(MAT_DIALOG_DATA) public data: Array<PlaceRefDeleteData>) {
+    }
 
-  public placeLabel(): string {
-    return this.data.place.getLabelOrId();
-  }
+    public placeLabel(data: PlaceRefDeleteData): string {
+        return data.place.modelPlace.label.value;
+    }
 
-  public arcs(): string {
-    return this.data.arcs.map(arc => arc.id).join(', ');
-  }
+    public arcs(data: PlaceRefDeleteData): string {
+        return data.arcs.map(arc => arc.id).join(', ');
+    }
 }
