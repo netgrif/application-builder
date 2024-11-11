@@ -5,27 +5,27 @@ import {MaterialImportModule} from '../../material-import/material-import.module
 import {RouterTestingModule} from '@angular/router/testing';
 
 describe('InfoLabelComponent', () => {
-    let component: InfoLabelComponent;
-    let fixture: ComponentFixture<InfoLabelComponent>;
+  let component: InfoLabelComponent;
+  let fixture: ComponentFixture<InfoLabelComponent>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [InfoLabelComponent],
-            imports: [
-                MaterialImportModule,
-                RouterTestingModule.withRoutes([])
-            ]
-        })
-            .compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [InfoLabelComponent],
+      imports: [
+        MaterialImportModule,
+        RouterTestingModule.withRoutes([]),
+      ],
+    })
+      .compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(InfoLabelComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(InfoLabelComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

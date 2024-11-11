@@ -13,35 +13,35 @@ import {ResizableModule} from 'angular-resizable-element';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('EditPanelComponent', () => {
-    let component: EditPanelComponent;
-    let fixture: ComponentFixture<EditPanelComponent>;
+  let component: EditPanelComponent;
+  let fixture: ComponentFixture<EditPanelComponent>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [EditPanelComponent],
-            imports: [
-                CommonModule,
-                DragDropModule,
-                GridsterModule,
-                FormsModule,
-                HttpClientModule,
-                MaterialImportModule,
-                FlexLayoutModule,
-                AngularResizedEventModule,
-                ResizableModule,
-                BrowserAnimationsModule
-            ]
-        })
-            .compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [EditPanelComponent],
+      imports: [
+        CommonModule,
+        DragDropModule,
+        GridsterModule,
+        FormsModule,
+        HttpClientModule,
+        MaterialImportModule,
+        FlexLayoutModule,
+        AngularResizedEventModule,
+        ResizableModule,
+        BrowserAnimationsModule,
+      ],
+    })
+      .compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(EditPanelComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(EditPanelComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

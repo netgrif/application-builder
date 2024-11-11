@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ActionEditorMenuDescriptionComponent } from './action-editor-menu-description.component';
+import {ActionEditorMenuDescriptionComponent} from './action-editor-menu-description.component';
 
 describe('ActionEditorMenuDescriptionComponent', () => {
   let component: ActionEditorMenuDescriptionComponent;
@@ -8,9 +8,9 @@ describe('ActionEditorMenuDescriptionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ActionEditorMenuDescriptionComponent ]
+      declarations: [ActionEditorMenuDescriptionComponent],
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

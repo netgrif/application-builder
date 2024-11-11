@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: builder
+  name: netgrif-application-builder-prod-dpl
+  labels:
+    company: netgrif
+    project: nab
+    app: builder
+    layer: deployment
+    env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      company: netgrif
+      project: nab
+      app: builder
+      layer: frontend
+      env: prod
+  template:
+    metadata:
+      namespace: builder
+      labels:
+        company: netgrif
+        project: nab
+        app: builder
+        layer: frontend
+        env: prod
+    spec:
+      containers:
+        - name: netgrif-application-builder-prod-pod
+          image: netgrif/application-builder:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: builder
+  name: netgrif-application-builder-prod-svc
+  labels:
+    company: netgrif
+    project: nab
+    app: builder
+    layer: service
+    env: prod
+spec:
+  externalIPs: [ ]
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    company: netgrif
+    project: nab
+    app: builder
+    layer: frontend
+    env: prod
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: builder
+  name: netgrif-application-builder-prod-ingress
+  labels:
+    company: netgrif
+    project: nab
+    app: builder
+    layer: ingress
+    env: prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - builder.netgrif.cloud
+      secretName: netgrif-application-builder-prod-secret-tls
+  rules:
+    - host: builder.netgrif.cloud
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: netgrif-application-builder-prod-svc
+                port:
+                  number: 80

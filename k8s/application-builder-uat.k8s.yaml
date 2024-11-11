@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: builder
+  name: netgrif-application-builder-uat-dpl
+  labels:
+    company: netgrif
+    project: nab
+    app: builder
+    layer: deployment
+    env: uat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      company: netgrif
+      project: nab
+      app: builder
+      layer: frontend
+      env: uat
+  template:
+    metadata:
+      namespace: builder
+      labels:
+        company: netgrif
+        project: nab
+        app: builder
+        layer: frontend
+        env: uat
+    spec:
+      containers:
+        - name: netgrif-application-builder-uat-pod
+          image: netgrif/application-builder:next
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: builder
+  name: netgrif-application-builder-uat-svc
+  labels:
+    company: netgrif
+    project: nab
+    app: builder
+    layer: service
+    env: uat
+spec:
+  externalIPs: [ ]
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    company: netgrif
+    project: nab
+    app: builder
+    layer: frontend
+    env: uat
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: builder
+  name: netgrif-application-builder-uat-ingress
+  labels:
+    company: netgrif
+    project: nab
+    app: builder
+    layer: ingress
+    env: uat
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - next.builder.netgrif.cloud
+      secretName: netgrif-application-builder-uat-secret-tls
+  rules:
+    - host: next.builder.netgrif.cloud
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: netgrif-application-builder-uat-svc
+                port:
+                  number: 80

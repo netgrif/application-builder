@@ -1,11 +1,11 @@
-<mat-accordion multi="true" class="panel-area-padding">
-    <ng-template ngFor let-action [ngForOf]="leafNode.actions" let-i="index">
-        <nab-action-editor [action]="action"
-                           [index]="i"
-                           [name]="action.event + '_' + action.phase + '_' + i"
-                           [leafNode]="leafNode"
-                           (actionChanged)="actionChangedListener($event)"
-                           (drawerOpened)="drawerChanged($event)"
-        ></nab-action-editor>
-    </ng-template>
+<mat-accordion class="panel-area-padding" multi="true">
+  <ng-template [ngForOf]="leafNode.actions" let-action let-i="index" ngFor>
+    <nab-action-editor (actionChanged)="actionChangedListener($event)"
+                       (drawerOpened)="drawerChanged($event)"
+                       [action]="action"
+                       [index]="i"
+                       [leafNode]="leafNode"
+                       [name]="action.event + '_' + action.phase + '_' + i"
+    ></nab-action-editor>
+  </ng-template>
 </mat-accordion>

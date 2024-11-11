@@ -1,6 +1,6 @@
                         NETGRIF Community License
                         Version 1.0, January 2022
-                    https://netgrif.com/license
+                       https://netgrif.com/license
 
     This NETGRIF Community License (“Agreement”) sets forth the terms
     and conditions on which NETGRIF, s.r.o., with the registered office
@@ -130,3 +130,8 @@
         (IPR) and the UN Convention on Contracts for the International Sale
         of Goods (CISG). All disputes arising from or in connection with
         this Agreement shall be finally resolved by the courts of Slovak Republic.
+
+    END OF THE LICENSE AGREEMENT
+
+    Annex 1: File third-party-licenses.txt in this repository.
+             (https://github.com/netgrif/application-builder/blob/master/third-party-licenses.txt)

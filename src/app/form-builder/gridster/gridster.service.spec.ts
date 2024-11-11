@@ -7,21 +7,21 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 
 describe('GridsterService', () => {
-    let service: GridsterService;
+  let service: GridsterService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                HttpClientModule,
-                MatSnackBarModule,
-                MaterialImportModule,
-                MatDialogModule
-            ]
-        });
-        service = TestBed.inject(GridsterService);
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientModule,
+        MatSnackBarModule,
+        MaterialImportModule,
+        MatDialogModule,
+      ],
     });
+    service = TestBed.inject(GridsterService);
+  });
 
-    it('should be created', () => {
-        expect(service).toBeTruthy();
-    });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 });

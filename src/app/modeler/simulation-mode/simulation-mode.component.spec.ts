@@ -16,38 +16,38 @@ import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
 
 describe('SimulationModeComponent', () => {
-    let component: SimulationModeComponent;
-    let fixture: ComponentFixture<SimulationModeComponent>;
+  let component: SimulationModeComponent;
+  let fixture: ComponentFixture<SimulationModeComponent>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [SimulationModeComponent],
-            imports: [
-                HttpClientModule,
-                MaterialImportModule,
-                CommonModule,
-                CdkImportModule,
-                FlexLayoutModule,
-                FormsModule,
-                MatCheckboxModule,
-                MatTabsModule,
-                RouterModule,
-                MonacoEditorModule.forRoot(),
-                HotkeyModule.forRoot(),
-                MatSortModule,
-                ResizableModule
-            ]
-        })
-            .compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SimulationModeComponent],
+      imports: [
+        HttpClientModule,
+        MaterialImportModule,
+        CommonModule,
+        CdkImportModule,
+        FlexLayoutModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatTabsModule,
+        RouterModule,
+        MonacoEditorModule.forRoot(),
+        HotkeyModule.forRoot(),
+        MatSortModule,
+        ResizableModule,
+      ],
+    })
+      .compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(SimulationModeComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SimulationModeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

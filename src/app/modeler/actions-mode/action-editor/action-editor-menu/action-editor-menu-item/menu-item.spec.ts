@@ -1,4 +1,4 @@
-import { MenuItem } from './menu-item';
+import {MenuItem} from './menu-item';
 
 describe('MenuItem', () => {
   it('should create an instance', () => {

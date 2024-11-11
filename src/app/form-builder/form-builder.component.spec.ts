@@ -16,38 +16,38 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 
 describe('FormBuilderComponent', () => {
-    let component: FormBuilderComponent;
-    let fixture: ComponentFixture<FormBuilderComponent>;
+  let component: FormBuilderComponent;
+  let fixture: ComponentFixture<FormBuilderComponent>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            declarations: [],
-            imports: [
-                CommonModule,
-                DragDropModule,
-                GridsterModule,
-                FormsModule,
-                HttpClientModule,
-                MaterialImportModule,
-                FlexLayoutModule,
-                AngularResizedEventModule,
-                ResizableModule,
-                FormBuilderModule,
-                NoopAnimationsModule,
-                RouterTestingModule.withRoutes([{path: 'modeler', redirectTo: ''}])
-            ],
-            schemas: [NO_ERRORS_SCHEMA]
-        })
-            .compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [],
+      imports: [
+        CommonModule,
+        DragDropModule,
+        GridsterModule,
+        FormsModule,
+        HttpClientModule,
+        MaterialImportModule,
+        FlexLayoutModule,
+        AngularResizedEventModule,
+        ResizableModule,
+        FormBuilderModule,
+        NoopAnimationsModule,
+        RouterTestingModule.withRoutes([{path: 'modeler', redirectTo: ''}]),
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
+    })
+      .compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(FormBuilderComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FormBuilderComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
