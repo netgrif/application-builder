@@ -83,12 +83,11 @@
                 <mat-label>Title</mat-label>
                 <input matInput type="text" [(ngModel)]="dataVariable.title.value" (change)="notifyGridster()">
             </mat-form-field>
-            <mat-form-field *ngIf="!isListOptionsDisplay()" class="full-width margin-html">
+            <mat-form-field class="full-width margin-html">
                 <mat-label>Placeholder</mat-label>
                 <input matInput type="text" [(ngModel)]="dataVariable.placeholder.value" (change)="notifyGridster()">
             </mat-form-field>
-            <mat-form-field *ngIf="!isBoolean() && !isButton() && !isListOptionsDisplay() && !isFile() && !isFileList()"
-                            class="full-width margin-html">
+            <mat-form-field class="full-width margin-html">
                 <mat-label>Description</mat-label>
                 <textarea matInput [(ngModel)]="dataVariable.desc.value" (change)="notifyGridster()"></textarea>
             </mat-form-field>
