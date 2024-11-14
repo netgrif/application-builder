@@ -1,7 +1,9 @@
 <div fxLayout="row" fxLayoutAlign="start center" class="gridster-item-content min-row-height netgrif-input" *ngIf="!isHidden()">
     <span *ngIf="dataField.dataVariable.type === DataType.CASE_REF ||
-                 dataField.dataVariable.type === DataType.TASK_REF ||
                  dataField.dataVariable.type === DataType.FILTER" class="placeholder-text">Placeholder for {{dataField.dataVariable.type}} with id '{{dataField.dataVariable?.id}}'</span>
+
+    <nab-gridster-task-ref *ngIf="dataField.dataVariable.type === DataType.TASK_REF"
+        [dataField]="dataField"></nab-gridster-task-ref>
 
     <nc-data-field-template *ngIf="dataField.dataVariable.type !== DataType.CASE_REF &&
                  dataField.dataVariable.type !== DataType.TASK_REF &&

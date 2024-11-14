@@ -1,0 +1,6 @@
+<div class="placeholder-text">
+    <span>Placeholder for TaskRef with id '{{ dataField.dataVariable?.id }}'</span>
+    <div *ngIf="dataField.dataVariable.init.value?.length > 0">
+        <span>{{dataField.dataVariable.init.value}}</span><mat-icon>open_in_new</mat-icon>
+    </div>
+</div>

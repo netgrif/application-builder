@@ -15,6 +15,7 @@ import {InfoLabelComponent} from './info-label/info-label.component';
 import {DataFieldsComponentModule} from '@netgrif/components';
 import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 import {ResizableModule} from 'angular-resizable-element';
+import {GridsterTaskRefComponent} from './gridster/gridster-task-ref/gridster-task-ref.component';
 
 @NgModule({
     declarations: [
@@ -23,6 +24,7 @@ import {ResizableModule} from 'angular-resizable-element';
         FormBuilderComponent,
         GridsterComponent,
         GridsterDataFieldComponent,
+        GridsterTaskRefComponent,
         InfoLabelComponent,
         PaperComponent,
     ],
