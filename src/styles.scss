@@ -229,3 +229,31 @@ nab-simulation-mode {
         height: 40px;
     }
 }
+
+.app-loading {
+    @keyframes fadeInFromNone {
+        0% {
+            display: none;
+            opacity: 0;
+        }
+
+        1% {
+            display: block;
+            opacity: 0;
+        }
+
+        100% {
+            display: block;
+            opacity: 1;
+        }
+    }
+
+    .logo {
+        width: 100px;
+        height: 100px;
+        animation: 1s ease-out 0s 1 fadeInFromNone;
+        // this way asset gets processed by webpack
+        background: url(assets/netgrif_logo.svg) center center no-repeat;
+        background-size: contain;
+    }
+}
