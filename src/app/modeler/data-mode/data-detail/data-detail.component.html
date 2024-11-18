@@ -142,45 +142,129 @@
 
         <div fxFlex="2.5"></div>
 
-        <mat-form-field fxFlex="45" *ngIf="!isOptionField() && item.type !== 'taskRef'">
+        <mat-form-field fxFlex="45" *ngIf="isItemInitDynamic();else static_init">
             <mat-label>Initial value</mat-label>
-            <input matInput [ngModel]="item?.init?.value"
-                   (change)="setValue($event, 'init')">
+            <input matInput [ngModel]="item?.init?.value" (change)="setValue($event, 'init')">
         </mat-form-field>
 
-        <mat-form-field fxFlex="45" *ngIf="isOptionField()" class="full-width">
-            <mat-label>Initial value</mat-label>
-            <mat-select *ngIf="!hasInits(); else hasInitsItems" [(ngModel)]="item.init.value">
-                <mat-option>None</mat-option>
-                <mat-option *ngFor="let opt of item.options" [value]="opt.key">
-                    {{ opt.value?.value }}
-                </mat-option>
-            </mat-select>
-            <ng-template #hasInitsItems>
-                <mat-select (valueChange)="changeInitsValue($event)"
-                            [value]="getInitsValue()" multiple>
-                    <mat-option *ngFor="let opt of item.options" [value]="opt.key">
-                        {{ opt.value?.value }}
-                    </mat-option>
-                </mat-select>
-            </ng-template>
-        </mat-form-field>
+        <ng-template #static_init>
+            @switch (item.type) {
+                @case (DataType.BOOLEAN) {
+                    <div fxFlex="45" class="full-width">
+                        <span>Initial value </span>
+                        <mat-slide-toggle [checked]="item.init.value === 'true'" (change)="setBooleanValue($event)">
+                            {{item.init.value}}
+                        </mat-slide-toggle>
+                    </div>
+                }
+                @case (DataType.NUMBER) {
+                    <mat-form-field fxFlex="45" class="full-width">
+                        <mat-label>Initial value</mat-label>
+                        <input matInput type="number" [(ngModel)]="item.init.value" (change)="setNumberValue($event)">
+                    </mat-form-field>
+                }
+                @case (DataType.DATE) {
+                    <mat-form-field fxFlex="45" class="full-width">
+                        <mat-label>Initial value</mat-label>
+                        <mat-datepicker-toggle matPrefix [for]="datepicker"></mat-datepicker-toggle>
+                        <input matInput (dateChange)="formatDate($event);"
+                               [matDatepicker]="datepicker"
+                               [(ngModel)]="item.init.value"
+                               (click)="datepicker.open()"
+                               (keydown.enter)="datepicker.close()">
+                        <mat-datepicker #datepicker>
+                        </mat-datepicker>
+                    </mat-form-field>
+                }
+                @case (DataType.DATETIME) {
+                    <mat-form-field fxFlex="45" class="full-width">
+                        <mat-label>Initial value</mat-label>
+                        <input matInput
+                               [ngxMatDatetimePicker]="picker"
+                               [(ngModel)]="item.init.value"
+                               (dateChange)="formatDateTime($event)">
+                        <mat-datepicker-toggle matPrefix [for]="picker"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #picker
+                                                 [showSpinners]="true"
+                                                 [showSeconds]="false"
+                                                 [stepHour]="1"
+                                                 [stepMinute]="5"
+                                                 [color]="'primary'"
+                                                 [enableMeridian]="false"
+                                                 class="full-width">
+                        </ngx-mat-datetime-picker>
+                    </mat-form-field>
+                }
+                @case (DataType.TASK_REF) {
+                    <!-- TODO: NAB-359 autocomplete -->
+<!--                    <mat-form-field fxFlex="45" class="full-width">-->
+<!--                        <mat-label>Initial value</mat-label>-->
+<!--                        <mat-select (valueChange)="changeInitsValue($event)"-->
+<!--                                    [value]="getInitsValue()" multiple>-->
+<!--                            <mat-option *ngFor="let task of tasks" [value]="task.id">-->
+<!--                                {{task.label?.value}} [{{task.id}}]-->
+<!--                            </mat-option>-->
+<!--                        </mat-select>-->
+<!--                    </mat-form-field>-->
+                    <mat-form-field fxFlex="45" class="full-width">
+                        <mat-label>Initial value</mat-label>
+                        <mat-chip-grid #chipGrid>
+                            @for (init of item.inits; track $index) {
+                                <mat-chip-row (removed)="removeInit($index)">
+                                    {{init?.value}}
+                                    <button matChipRemove>
+                                        <mat-icon>cancel</mat-icon>
+                                    </button>
+                                </mat-chip-row>
+                            }
+                        </mat-chip-grid>
+                        <input
+                            #taskRefInput
+                            name="Inits"
+                            [formControl]="taskRefFormControl"
+                            [matChipInputFor]="chipGrid"
+                            [matAutocomplete]="auto"
+                            (matChipInputTokenEnd)="addInit($event)"
+                        />
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectInit($event)">
+                            @for (task of tasks; track task) {
+                                <mat-option [value]="task.id">{{task.label?.value}} [{{task.id}}]</mat-option>
+                            }
+                        </mat-autocomplete>
+                    </mat-form-field>
+                }
+                @case ((item.type === DataType.ENUMERATION || item.type === DataType.ENUMERATION_MAP) ? item.type : '') {
+                    <mat-form-field fxFlex="45" class="full-width">
+                        <mat-label>Initial value</mat-label>
+                        <mat-select [(ngModel)]="item.init.value">
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let opt of item.options" [value]="opt.key">
+                                {{ opt.value?.value }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                }
+                @case ((item.type === DataType.MULTICHOICE || item.type === DataType.MULTICHOICE_MAP) ? item.type : '') {
+                    <mat-form-field fxFlex="45" class="full-width">
+                        <mat-label>Initial value</mat-label>
+                        <mat-select (valueChange)="changeInitsValue($event)"
+                                    [value]="getInitsValue()" multiple>
+                            <mat-option *ngFor="let opt of item.options" [value]="opt.key">
+                                {{ opt.value?.value }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                }
+                @default {
+                    <mat-form-field fxFlex="45">
+                        <mat-label>Initial value</mat-label>
+                        <input matInput [ngModel]="item?.init?.value"
+                               (change)="setValue($event, 'init')">
+                    </mat-form-field>
+                }
+            }
 
-        <mat-form-field fxFlex="45" *ngIf="item.type === 'taskRef'">
-            <mat-label>Initial value</mat-label>
-            <input type="text"
-                   aria-label="Autocomplete"
-                   matInput
-                   [formControl]="formControlRef">
-            <!--                           [matAutocomplete]="auto">-->
-            <!--                    <mat-autocomplete [displayWith]="renderSelection" autoActiveFirstOption #auto="matAutocomplete">-->
-            <!--                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.key"-->
-            <!--                                    (click)="clickOption(item, option.key)" [disabled]="isDisabled(option.key)">-->
-            <!--                            {{option.key}} - {{option.value}}-->
-            <!--                        </mat-option>-->
-            <!--                    </mat-autocomplete>-->
-        </mat-form-field>
-
+        </ng-template>
 
         <div fxFlex="2.5"></div>
 
@@ -310,18 +394,9 @@
 
         <div fxFlex="20">Options Init</div>
 
-        <mat-form-field fxFlex="25">
+        <mat-form-field fxFlex="75">
             <input matInput [ngModel]="getItemOptionsInitExpression()"
                    (change)="setValue($event,'options-init')">
-        </mat-form-field>
-
-        <div fxFlex="2.5"></div>
-
-        <div fxFlex="20">Is Options Init dynamic?</div>
-
-        <mat-form-field fxFlex="25">
-            <input matInput [ngModel]="getItemOptionsInitDynamic()"
-                   (change)="setValue($event,'options-init-dynamic')">
         </mat-form-field>
 
         <div fxFlex="2.5"></div>
