@@ -47,8 +47,6 @@ export class DataDetailComponent implements OnDestroy {
 
     counterEnumMap = 0;
     formControlRef: FormControl;
-    taskRefFormControl: FormControl;
-    @ViewChild('taskRefInput') taskRefInput: ElementRef<HTMLInputElement>;
     transitionOptions: Array<EnumerationFieldValue>;
     filteredOptions: Observable<Array<EnumerationFieldValue>>;
     typeArray: Array<TypeArray> = [
@@ -84,7 +82,6 @@ export class DataDetailComponent implements OnDestroy {
         private _historyService: HistoryService
     ) {
         this.formControlRef = new FormControl();
-        this.taskRefFormControl = new FormControl('');
         this.transitionOptions = this.createTransOptions();
         this._masterService.getSelected$().subscribe(obj => {
             if (this.historyDataSave?.save) {
@@ -256,28 +253,6 @@ export class DataDetailComponent implements OnDestroy {
         }
     }
 
-    removeInit(index: number): void {
-        if (index >= 0) {
-            this.item.inits.splice(index, 1);
-        }
-    }
-
-    addInit($event: MatChipInputEvent): void {
-        console.log($event.value);
-        this.item.inits.push(new I18nWithDynamic($event.value));
-
-        $event.chipInput!.clear();
-        this.taskRefFormControl.setValue(null);
-    }
-
-    selectInit($event: MatAutocompleteSelectedEvent): void {
-        console.log($event.option.value);
-        console.log($event.option.viewValue);
-        this.item.inits.push(new I18nWithDynamic($event.option.value));
-        this.taskRefInput.nativeElement.value = '';
-        this.taskRefFormControl.setValue(null);
-    }
-
     removeSpecificAttributeOnChange() {
         this.item.inits = [];
         this.item.init.value = '';
@@ -410,13 +385,6 @@ export class DataDetailComponent implements OnDestroy {
 
     trackByFn(index: any, item: any) {
         return index;
-    }
-
-    get tasks() {
-        // TODO: NAB-359 filter selected
-        return this._modelService.model.getTransitions().filter(t => {
-            return !this.item.inits.some(init => init.value === t.id);
-        });
     }
 
     protected readonly DataType = DataType;
