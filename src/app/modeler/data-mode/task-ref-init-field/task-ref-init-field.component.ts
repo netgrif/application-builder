@@ -46,6 +46,14 @@ export class TaskRefInitFieldComponent {
     get tasks() {
         return this._modelService.model.getTransitions().filter(t => {
             return !this.taskRef.inits.some(init => init.value === t.id);
+        }).sort((t1, t2) => {
+            if (t1.label.value === undefined || t1.label.value.length === 0) {
+                return 1;
+            }
+            if (t2.label.value === undefined || t2.label.value.length === 0) {
+                return -1;
+            }
+            return t1.label.value.localeCompare(t2.label.value);
         });
     }
 
