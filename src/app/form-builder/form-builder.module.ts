@@ -15,6 +15,7 @@ import {InfoLabelComponent} from './info-label/info-label.component';
 import {DataFieldsComponentModule} from '@netgrif/components';
 import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 import {ResizableModule} from 'angular-resizable-element';
+import {ModelerModule} from '../modeler/modeler.module';
 
 @NgModule({
     declarations: [
@@ -39,7 +40,8 @@ import {ResizableModule} from 'angular-resizable-element';
         HttpClientModule,
         MaterialImportModule,
         ReactiveFormsModule,
-        ResizableModule
+        ResizableModule,
+        ModelerModule
     ]
 })
 export class FormBuilderModule {

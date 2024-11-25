@@ -152,20 +152,9 @@
                                          class="full-width">
                 </ngx-mat-datetime-picker>
             </mat-form-field>
-            <mat-form-field *ngIf="isTaskRef()" class="full-width margin-html">
-                <mat-label>Initial value</mat-label>
-                <input type="text"
-                       aria-label="Autocomplete"
-                       matInput
-                       [formControl]="formControlRef"
-                       [matAutocomplete]="auto">
-                <mat-autocomplete [displayWith]="renderSelection" autoActiveFirstOption #auto="matAutocomplete">
-                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option.key"
-                                (click)="selectAuto(option.key);notifyGridster()" [disabled]="isDisabled(option.key)">
-                        {{ taskRefTitle(option) }}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
+            <div class="margin-html" *ngIf="isTaskRef()">
+                <nab-task-ref-init-field [taskRef]="dataVariable"></nab-task-ref-init-field>
+            </div>
             <!--  OPTIONS MANAGEMENT IF APPLICABLE  -->
             <div *ngIf="hasOptions()">
                 <mat-divider></mat-divider>

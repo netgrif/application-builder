@@ -123,7 +123,8 @@ import {TaskRefInitFieldComponent} from './data-mode/task-ref-init-field/task-re
     ],
     exports: [
         ActionEditorModule,
-        TriggerTreeComponent
+        TriggerTreeComponent,
+        TaskRefInitFieldComponent
     ],
     imports: [
         ActionEditorModule,
@@ -131,7 +132,6 @@ import {TaskRefInitFieldComponent} from './data-mode/task-ref-init-field/task-re
         CommonModule,
         DataFieldsComponentModule,
         FlexLayoutModule,
-        FormBuilderModule,
         FormsModule,
         GridsterModule,
         JoyrideModule,
