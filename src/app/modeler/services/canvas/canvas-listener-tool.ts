@@ -339,8 +339,14 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     onClick(): void {
     }
 
-    openDialog(dialog: ComponentType<any>, config: any, afterClose: (value: any) => void): void {
-        this.dialog.open(dialog, config).afterClosed().subscribe(afterClose);
+    openDialog(dialog: ComponentType<any>, config: any, afterClose?: (value: any) => void): void {
+        this.unbindKeys();
+        this.dialog.open(dialog, config).afterClosed().subscribe(value => {
+            if (afterClose) {
+                afterClose(value);
+            }
+            this.bindKeys();
+        });
     }
 
     isLeftButton(event: PointerEvent): boolean {
