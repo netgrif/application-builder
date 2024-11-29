@@ -58,7 +58,7 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
                 if (this.data.has(a.modelArc.reference)) {
                     multiplicity = this.data.get(a.modelArc.reference);
                 } else {
-                    multiplicity = this.modelService.getReferenceValue(a.modelArc.reference);
+                    multiplicity = this.modelService.getReferenceValue(a.modelArc.reference, this.model);
                 }
                 return `${a.modelArc.reference} (${multiplicity})`;
             }
