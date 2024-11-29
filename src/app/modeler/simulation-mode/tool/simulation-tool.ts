@@ -85,6 +85,9 @@ export abstract class SimulationTool extends CanvasListenerTool {
             return;
         }
         const value = this.simulationModeService.data.get(reference);
+        if (value === undefined) {
+            return;
+        }
         const dataSet = new Map<string, number>([[reference, value]]);
         this.openDialog(DialogChangeDataComponent, {
             width: '50%',
