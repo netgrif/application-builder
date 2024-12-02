@@ -1,7 +1,7 @@
 import {SimulationModeService} from '../simulation-mode.service';
 import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
 import {CanvasElementCollection} from '../../edit-mode/domain/canvas-element-collection';
-import {BasicSimulation} from '@netgrif/petriflow';
+import {BasicSimulation, Place} from '@netgrif/petriflow';
 import {CanvasListenerTool} from '../../services/canvas/canvas-listener-tool';
 import {ControlPanelButton} from '../../control-panel/control-panel-button';
 import {ModelService} from '../../services/model/model.service';
@@ -57,19 +57,7 @@ export abstract class SimulationTool extends CanvasListenerTool {
 
     onPlaceUp(event: PointerEvent, place: CanvasPlace) {
         super.onPlaceUp(event, place);
-        this.openDialog(DialogMarkingChangeComponent, {
-            width: '50%',
-            panelClass: "dialog-width-50",
-            data: {
-                placeId: place.id
-            } as PlaceEditData
-        }, (data: number) => {
-            if (data !== undefined) {
-                place.modelPlace.marking = data;
-                this.simulation.updatePlaceReferences();
-                this.simulationModeService.renderModel(this.simulation.simulationModel);
-            }
-        });
+        this.openMarkingPlaceDialog(place.modelPlace);
     }
 
     onPlaceEnter(event: MouseEvent, place: CanvasPlace) {
@@ -86,9 +74,33 @@ export abstract class SimulationTool extends CanvasListenerTool {
         }
         const value = this.simulationModeService.data.get(reference);
         if (value === undefined) {
-            return;
+            const place = this.simulationModeService.model.getPlace(reference);
+            if (place) {
+                this.openMarkingPlaceDialog(place);
+            }
+        } else {
+            this.openDataDialog(reference, value);
         }
-        const dataSet = new Map<string, number>([[reference, value]]);
+    }
+
+    openMarkingPlaceDialog(place: Place): void {
+        this.openDialog(DialogMarkingChangeComponent, {
+            width: '50%',
+            panelClass: "dialog-width-50",
+            data: {
+                placeId: place.id
+            } as PlaceEditData
+        }, (data: number) => {
+            if (data !== undefined) {
+                place.marking = data;
+                this.simulation.updatePlaceReferences();
+                this.simulationModeService.renderModel(this.simulation.simulationModel);
+            }
+        });
+    }
+
+    openDataDialog(id: string, value: number): void {
+        const dataSet = new Map<string, number>([[id, value]]);
         this.openDialog(DialogChangeDataComponent, {
             width: '50%',
             panelClass: "dialog-width-50",
