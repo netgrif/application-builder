@@ -196,7 +196,7 @@ export class GridsterService {
         return dataVariable;
     }
 
-    public addDataRef(dataVariable: DataVariable, componentRows: number, componentCols: number, componentName: string, item: GridsterItem) {
+    public addDataRef(dataVariable: DataVariable, componentRows: number, componentCols: number, componentName: string, item: GridsterItem): DataRef {
         const dataRef = new DataRef(dataVariable.id);
         dataRef.layout.x = item.x;
         dataRef.layout.y = item.y;

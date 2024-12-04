@@ -3,8 +3,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {ModelService} from '../../modeler/services/model/model.service';
 import {GridsterService} from '../gridster/gridster.service';
 import {Router} from '@angular/router';
-import {FieldListService} from './field-list.service';
-import {DataType, DataVariable} from '@netgrif/petriflow';
+import {ComponentDef, FieldListService} from './field-list.service';
+import {DataType, DataVariable, Property} from '@netgrif/petriflow';
 import {timer} from 'rxjs';
 import {MatExpansionPanel} from '@angular/material/expansion';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -104,10 +104,10 @@ export class FieldListComponent implements OnInit, AfterViewInit {
         if (datafield.component?.name) {
             const meta = this.fieldListService.fieldListArray.find(type => type.type === datafield.type).components.find(c => c?.name === datafield.component.name);
             if (meta?.rows) {
-                $event.dataTransfer.setData('rows', meta.rows);
+                $event.dataTransfer.setData('rows', `${meta.rows}`);
             }
             if (meta?.cols) {
-                $event.dataTransfer.setData('cols', meta.cols);
+                $event.dataTransfer.setData('cols', `${meta.cols}`);
             }
         }
         this.dragStartHandler($event, true);
@@ -141,13 +141,18 @@ export class FieldListComponent implements OnInit, AfterViewInit {
         this.addDataRef(field, meta);
     }
 
-    private addDataRef(data: DataVariable, meta: any) {
-        this.gridsterService.addDataRef(data, meta.rows, meta.cols, meta.name, {
+    private addDataRef(data: DataVariable, meta: ComponentDef) {
+        const dataRef = this.gridsterService.addDataRef(data, meta.rows, meta.cols, meta.name, {
             x: 0,
             y: 0,
             rows: meta.rows,
             cols: meta.cols
         } as GridsterItem);
+        if (meta.name && meta.properties) {
+            for (const property of meta.properties) {
+                dataRef.component.properties.push(new Property(property.name, property.defaultValue));
+            }
+        }
         this.gridsterService.options.api.optionsChanged();
     }
 

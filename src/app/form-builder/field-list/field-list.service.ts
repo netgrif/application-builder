@@ -1,7 +1,25 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
-import {DataType} from '@netgrif/petriflow';
+import {DataType, Property} from '@netgrif/petriflow';
 import {GridsterDataField} from '../gridster/classes/gridster-data-field';
+
+export interface PropertyDef {
+    name: string;
+    defaultValue: any;
+}
+
+export interface ComponentDef {
+    title: string;
+    name?: string;
+    rows?: number;
+    cols?: number;
+    properties?: Array<PropertyDef>;
+}
+
+export interface DataRefDef {
+    type: DataType;
+    components: Array<ComponentDef>;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +29,7 @@ export class FieldListService {
     static DEFAULT_FIELD_COLS = 2;
     static DEFAULT_FIELD_ROWS = 1;
 
-    fieldListArray: any = [
+    fieldListArray: Array<DataRefDef> = [
         {
             type: DataType.TEXT,
             components: [
@@ -19,14 +37,31 @@ export class FieldListService {
                 {title: 'Area', name: 'textarea', rows: 2, cols: 4},
                 {title: 'Markdown Editor', name: 'richtextarea', rows: 2, cols: 4},
                 {title: 'HTML Editor', name: 'htmltextarea', rows: 2, cols: 4},
-                {title: 'Password', name: 'password'}
+                {title: 'Password', name: 'password'},
+                {title: 'Signature', name: 'signature'}
             ]
         },
         {
             type: DataType.NUMBER,
             components: [
                 {title: 'Simple'},
-                {title: 'Currency', name: 'currency'}
+                {title: 'Decimal', name: 'decimal'},
+                {
+                    title: 'Currency', name: 'currency', properties: [
+                        {
+                            name: 'code',
+                            defaultValue: 'EUR'
+                        },
+                        {
+                            name: 'fractionSize',
+                            defaultValue: 2
+                        },
+                        {
+                            name: 'locale',
+                            defaultValue: 'sk'
+                        },
+                    ]
+                }
             ]
         },
         {
@@ -44,7 +79,8 @@ export class FieldListService {
                 {title: 'Stepper', name: 'stepper'},
                 {title: 'Autocomplete', name: 'autocomplete'},
                 {title: 'Dynamic Autocomplete', name: 'autocomplete_dynamic'},
-                {title: 'Icon', name: 'icon'}
+                {title: 'Icon', name: 'icon'},
+                {title: 'Case ref', name: 'caseref'}
             ]
         },
         {
@@ -59,7 +95,8 @@ export class FieldListService {
             components: [
                 {title: 'Select'},
                 {title: 'List', name: 'list'},
-                {title: 'Autocomplete', name: 'autocomplete'}
+                {title: 'Autocomplete', name: 'autocomplete'},
+                {title: 'Case ref', name: 'caseref'}
             ]
         },
         {
@@ -120,7 +157,8 @@ export class FieldListService {
         {
             type: DataType.FILTER,
             components: [
-                {title: 'Simple'}
+                {title: 'Simple'},
+                {title: 'Tab view', name: 'filter-tab-view'}
             ]
         },
         {
@@ -133,7 +171,8 @@ export class FieldListService {
         {
             type: DataType.TASK_REF,
             components: [
-                {title: 'Simple', cols: 4}
+                {title: 'Simple', cols: 4},
+                {title: 'Dashboard', name: 'dashboard', cols: 4}
             ]
         },
         {
@@ -143,7 +182,7 @@ export class FieldListService {
             ]
         },
         {
-            type: 'stringCollection',
+            type: 'stringCollection' as DataType,
             components: [
                 {title: 'Simple'}
             ]
@@ -156,12 +195,12 @@ export class FieldListService {
         this.draggedObjectsStream = new Subject();
     }
 
-    public getComponentMeta(type: DataType, componentName: string) {
+    public getComponentMeta(type: DataType, componentName: string): ComponentDef {
         const meta = {
             rows: FieldListService.DEFAULT_FIELD_ROWS,
             cols: FieldListService.DEFAULT_FIELD_COLS,
             name: componentName
-        };
+        } as ComponentDef;
         if (type === undefined || componentName === undefined) {
             return meta;
         }
