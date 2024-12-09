@@ -3,7 +3,9 @@ import {DataMasterDetailService} from '../data-master-detail.service';
 import {
     Component as PetriflowComponent,
     DataType,
-    DataVariable, Expression, I18nString,
+    DataVariable,
+    Expression,
+    I18nString,
     I18nWithDynamic,
     Option,
     Property,
@@ -23,6 +25,7 @@ import {HistoryService} from '../../services/history/history.service';
 import {Observable} from 'rxjs';
 import {map, startWith, tap} from 'rxjs/operators';
 import {ModelerUtils} from '../../modeler-utils';
+import {ComponentDef, DataRefDef, FieldListService} from '../../../form-builder/field-list/field-list.service';
 
 export interface TypeArray {
     viewValue: string;
@@ -43,6 +46,7 @@ export class DataDetailComponent implements OnDestroy {
 
     counterEnumMap = 0;
     formControlRef: FormControl;
+    componentNameFormCtrl: FormControl;
     transitionOptions: Array<EnumerationFieldValue>;
     filteredOptions: Observable<Array<EnumerationFieldValue>>;
     typeArray: Array<TypeArray> = [
@@ -71,6 +75,7 @@ export class DataDetailComponent implements OnDestroy {
     public constructor(
         private _masterService: DataMasterDetailService,
         private _modelService: ModelService,
+        private _fieldListService: FieldListService,
         private dialog: MatDialog,
         private _router: Router,
         private _actionMode: ActionsModeService,
@@ -78,6 +83,7 @@ export class DataDetailComponent implements OnDestroy {
         private _historyService: HistoryService
     ) {
         this.formControlRef = new FormControl();
+        this.componentNameFormCtrl = new FormControl();
         this.transitionOptions = this.createTransOptions();
         this._masterService.getSelected$().subscribe(obj => {
             if (this.historyDataSave?.save) {
@@ -363,5 +369,13 @@ export class DataDetailComponent implements OnDestroy {
 
     trackByFn(index: any, item: any) {
         return index;
+    }
+
+    get filteredComponents(): Array<ComponentDef> {
+        const componentDefs: DataRefDef =  this._fieldListService.fieldListArray.find(type => type.type === this.item.type);
+        if (!componentDefs) {
+            return [];
+        }
+        return componentDefs.components.filter(def => def.name !== undefined && def.title.toLowerCase().includes(this.item.component.name));
     }
 }

@@ -98,8 +98,13 @@
 
         <mat-form-field fxFlex="45">
             <mat-label>Component Name</mat-label>
-            <input matInput [(ngModel)]="item.component.name"
-                   (change)="setValue($event,'component-name')">
+            <input matInput [(ngModel)]="item.component.name" (change)="setValue($event,'component-name')"
+                    [formControl]="componentNameFormCtrl" [matAutocomplete]="componentAutocomplete">
+            <mat-autocomplete #componentAutocomplete="matAutocomplete">
+                <mat-option *ngFor="let componentDef of filteredComponents" [value]="componentDef.name">
+                    {{componentDef.title}}
+                </mat-option>
+            </mat-autocomplete>
         </mat-form-field>
 
         <div fxFlex="2.5"></div>
