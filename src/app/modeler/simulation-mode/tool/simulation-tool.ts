@@ -126,6 +126,10 @@ export abstract class SimulationTool extends CanvasListenerTool {
         this.simulation?.reset();
     }
 
+    protected afterDialog() {
+        this.bindKeys();
+    }
+
     get canvasService(): PetriflowCanvasService {
         return this._simulationModeService.canvasService;
     }
