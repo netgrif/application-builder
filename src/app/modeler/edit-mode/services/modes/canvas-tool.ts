@@ -125,6 +125,7 @@ export abstract class CanvasTool extends CanvasListenerTool {
                 afterClose(value);
             }
             this.bindKeys();
+            this.reset();
         });
     }
 
