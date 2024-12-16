@@ -346,6 +346,7 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
                 afterClose(value);
             }
             this.bindKeys();
+            this.reset();
         });
     }
 
