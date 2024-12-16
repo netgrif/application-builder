@@ -210,7 +210,13 @@
             <div *ngIf="dataVariable.component !== undefined" class="full-width">
                 <mat-form-field class="full-width margin-html">
                     <mat-label>Component Name</mat-label>
-                    <input matInput [(ngModel)]="dataVariable.component.name" (change)="setComponent($event);notifyGridster()">
+                    <input matInput [(ngModel)]="dataVariable.component.name" (change)="setComponent($event);notifyGridster()"
+                           [formControl]="componentNameFormCtrl" [matAutocomplete]="componentAutocomplete">
+                    <mat-autocomplete #componentAutocomplete="matAutocomplete">
+                        <mat-option *ngFor="let componentDef of filteredComponents(dataVariable.component)" [value]="componentDef.name">
+                            {{componentDef.title}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
                 <div>
                     <div *ngIf="dataVariable.component.properties.length > 0">
@@ -283,8 +289,13 @@
             <div *ngIf="dataRef.component !== undefined" class="full-width">
                 <mat-form-field class="full-width">
                     <mat-label>Component Name</mat-label>
-                    <input matInput [(ngModel)]="dataRef.component.name"
-                           (change)="setDataRefComponent($event);notifyGridster()">
+                    <input matInput [(ngModel)]="dataRef.component.name" (change)="setDataRefComponent($event);notifyGridster()"
+                           [formControl]="dataRefComponentNameFormCtrl" [matAutocomplete]="dataRefComponentAutocomplete">
+                    <mat-autocomplete #dataRefComponentAutocomplete="matAutocomplete">
+                        <mat-option *ngFor="let componentDef of filteredComponents(dataRef.component)" [value]="componentDef.name">
+                            {{componentDef.title}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
                 <div>
                     <div *ngIf="dataRef.component.properties.length > 0">

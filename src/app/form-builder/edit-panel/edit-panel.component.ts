@@ -35,6 +35,7 @@ import {DATE_FORMAT, DATE_TIME_FORMAT, EnumerationFieldValue} from '@netgrif/com
 import {Router} from '@angular/router';
 import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../../modeler/actions-mode/actions-master-detail.setvice';
+import {ComponentDef, DataRefDef, FieldListService} from '../field-list/field-list.service';
 
 @Component({
     selector: 'nab-edit-panel',
@@ -72,8 +73,10 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     filteredOptions: Observable<Array<EnumerationFieldValue>>;
     formControlRef: FormControl;
     transitionOptions: Array<EnumerationFieldValue>;
-
     behaviorOptions;
+
+    componentNameFormCtrl: FormControl;
+    dataRefComponentNameFormCtrl: FormControl;
 
     constructor(public gridsterService: GridsterService,
                 public modelService: ModelService,
@@ -81,6 +84,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
                 private transitionService: SelectedTransitionService,
                 private _router: Router,
                 private _actionMode: ActionsModeService,
+                private _fieldListService: FieldListService,
                 private _actionsMasterDetail: ActionsMasterDetailService) {
         // this.transitionOptions = [];
         this.formControlRef = new FormControl();
@@ -92,6 +96,8 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        this.componentNameFormCtrl = new FormControl();
+        this.dataRefComponentNameFormCtrl = new FormControl();
         this.transId = this.transitionService.id;
         if (this.transId === null) {
             this.numOfCols = ModelerConfig.LAYOUT_DEFAULT_COLS;
@@ -514,5 +520,13 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
 
     numberOfActions(): number {
         return this.modelService.numberOfTransitionActions(this.transition);
+    }
+
+    filteredComponents(component: PetriflowComponent): Array<ComponentDef> {
+        const componentDefs: DataRefDef =  this._fieldListService.fieldListArray.find(type => type.type === this.dataVariable.type);
+        if (!componentDefs) {
+            return [];
+        }
+        return componentDefs.components.filter(def => def.name !== undefined && def.title.toLowerCase().includes(component.name));
     }
 }
