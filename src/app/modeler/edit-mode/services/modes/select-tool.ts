@@ -91,6 +91,7 @@ export class SelectTool extends CanvasTool {
     reset() {
         super.reset();
         this.restart();
+        this.selectedElements.clear();
         this.clipboardElements.clear();
         this.deselectAll();
     }
