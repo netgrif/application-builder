@@ -1,6 +1,6 @@
 import {Injectable, Injector} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {BasicSimulation, PetriNet, Transition} from '@netgrif/petriflow';
+import {Arc, BasicSimulation, PetriNet, Place, Transition} from '@netgrif/petriflow';
 import {TutorialService} from '../../tutorial/tutorial-service';
 import {ModelService} from '../services/model/model.service';
 import {EventSimulationTool} from './tool/event-simulation.tool';
@@ -21,6 +21,7 @@ import {SwitchLabelTool} from './tool/switch-label-tool';
 import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../selected-transition.service';
 import {SimulationMode} from './simulation-mode';
+import {CanvasPlace} from '../edit-mode/domain/canvas-place';
 
 @Injectable({
     providedIn: 'root'
@@ -113,6 +114,18 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
         this.activeTool.bindTransition(canvasTransition);
         this._onTransitionDraw(canvasTransition);
         return canvasTransition;
+    }
+
+    newSvgPlace(modelPlace: Place): CanvasPlace {
+        const place = super.newSvgPlace(modelPlace);
+        this.activeTool.bindPlace(place);
+        return place;
+    }
+
+    public newSvgArc(modelArc: Arc<any, any>): CanvasArc {
+        const arc = super.newSvgArc(modelArc);
+        this.activeTool.bindArc(arc);
+        return arc;
     }
 
     set onTransitionDraw(value: (t: CanvasTransition) => void) {
