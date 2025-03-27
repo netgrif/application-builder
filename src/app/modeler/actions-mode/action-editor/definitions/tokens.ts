@@ -1,142 +1,272 @@
-export function tokenProvider() {
-  return {
-    defaultToken: '',
-    tokenPostfix: '.java',
-
-    keywords: [
-      'abstract', 'as', 'continue', 'for', 'new', 'switch', 'assert', 'default',
-      'goto', 'package', 'synchronized', 'do', 'if', 'private', 'def', 'in',
-      'this', 'break', 'implements', 'protected', 'throw', 'null',
-      'else', 'import', 'public', 'throws', 'case', 'enum', 'instanceof', 'return',
-      'transient', 'catch', 'extends', 'try', 'final', 'threadsafe',
-      'interface', 'static', 'void', 'class', 'finally', 'strictfp',
-      'volatile', 'const', 'native', 'super', 'while', 'true', 'false',
-      'DEFAULTLANG', 'MILLISECONDS', 'SECONDS', 'MINUTES', 'HOURS', 'DAYS',
-      'WEEKS', 'MONTHS', 'YEARS', 'DATEFORMAT_DEFAULT',
-    ],
-    typeKeywords: [
-      'boolean', 'double', 'byte', 'int', 'short', 'char', 'void', 'long', 'float', 'String', 'f.', 't.',
-    ],
-    actionsKeywords: [
-      'log', 'UNCHANGED_VALUE', 'ALWAYS_GENERATE', 'ONCE_GENERATE', 'fieldFactory', 'taskService',
-      'dataService', 'workflowService', 'userService', 'petriNetService', 'async', 'groupService',
-      'memberService', 'pdfGenerator', 'mailService', 'nextGroupService', 'registrationService',
-      'mailAttemptService', 'useCase', 'task', 'map', 'action', 'actionsRunner', 'changedFieldsTree',
-    ],
-    functions: [
-      'init', 'copyBehavior', 'make', 'saveChangedValue', 'saveChangedChoices', 'saveChangedAllowedNets',
-      'saveChangedOptions', 'putIntoChangedFields', 'addAttributeToChangedField', 'execute', 'executeTasks',
-      'executeTask', 'searchCases', 'change', 'changeFieldValue', 'generate', 'changeCaseProperty', 'cache',
-      'cacheFree', 'pcs', 'orsr', 'findCases', 'findCase', 'createCase', 'assignTask', 'assignTasks',
-      'cancelTask', 'cancelTasks', 'finishTask', 'finishTasks', 'findTasks', 'findTask', 'getTaskId',
-      'assignRole', 'setData', 'setDataWithPropagation', 'makeDataSetIntoChangedFields', 'getData',
-      'mapData', 'findOrganisation', 'createOrganisation', 'deleteOrganisation', 'saveOrganisation',
-      'removeMember', 'addMember', 'findMember', 'loggedUser', 'generatePDF', 'generatePdfWithTemplate',
-      'generatePdfWithLocale', 'sendMail', 'changeUser', 'inviteUser', 'deleteUser',
-    ],
-
-    operators: [
-      '=', '>', '<', '!', '~', '?', ':',
-      '==', '<=', '>=', '!=', '&&', '||', '++', '--',
-      '+', '-', '*', '/', '&', '|', '^', '%', '<<',
-      '>>', '>>>', '+=', '-=', '*=', '/=', '&=', '|=',
-      '^=', '%=', '<<=', '>>=', '>>>=',
-    ],
-
-    // we include these common regular expressions
-    symbols: /[=><!~?:&|+\-*\/\^%]+/,
-    escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
-    digits: /\d+(_+\d+)*/,
-    octaldigits: /[0-7]+(_+[0-7]+)*/,
-    binarydigits: /[0-1]+(_+[0-1]+)*/,
-    hexdigits: /[[0-9a-fA-F]+(_+[0-9a-fA-F]+)*/,
-    tokenizer: {
-      root: [
-        // identifiers and keywords
-        [/[a-zA-Z_$][\w$]*/, {
-          cases: {
-            '@keywords': {token: 'keyword.$0'},
-            '@actionsKeywords': {token: 'keyword.$0'},
-            '@typeKeywords': 'type.identifier',
-            '@functions': 'type.identifier',
-            '@default': 'identifier',
-          },
-        }],
-        [/<[a-z][a-zA-Z_$]*[\w$]*>/, 'errorSyntax'],
-        // whitespace
-        {include: '@whitespace'},
-
-        // delimiters and operators
-        [/[{}()\[\]]/, '@brackets'],
-        [/[<>](?!@symbols)/, '@brackets'],
-        [/@symbols/, {
-          cases: {
-            '@operators': 'delimiter',
-            '@default': '',
-          },
-        }],
-
-        // @ annotations.
-        [/@\s*[a-zA-Z_\$][\w\$]*/, 'annotation'],
-
-        // numbers
-        [/(@digits)[eE]([\-+]?(@digits))?[fFdD]?/, 'number.float'],
-        [/(@digits)\.(@digits)([eE][\-+]?(@digits))?[fFdD]?/, 'number.float'],
-        [/0[xX](@hexdigits)[Ll]?/, 'number.hex'],
-        [/0(@octaldigits)[Ll]?/, 'number.octal'],
-        [/0[bB](@binarydigits)[Ll]?/, 'number.binary'],
-        [/(@digits)[fFdD]/, 'number.float'],
-        [/(@digits)[lL]?/, 'number'],
-
-        // delimiter: after number because of .\d floats
-        [/[;,.]/, 'delimiter'],
-
-        // strings
-        [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
-        [/"/, 'string', '@string'],
-
-        // characters
-        [/'[^\\']'/, 'string'],
-        [/(')(@escapes)(')/, ['string', 'string.escape', 'string']],
-        [/'/, 'string.invalid'],
-      ],
-
-      whitespace: [
-        [/[ \t\r\n]+/, ''],
-        [/\/\*\*(?!\/)/, 'comment.doc', '@javadoc'],
-        [/\/\*/, 'comment', '@comment'],
-        [/\/\/.*$/, 'comment'],
-        [/<!--/, 'comment', '@comment2'],
-      ],
-
-      comment: [
-        [/[^\/*]+/, 'comment'],
-        // [/\/\*/, 'comment', '@push' ],    // nested comment not allowed :-(
-        // [/\/\*/,    'comment.invalid' ],    // this breaks block comments in the shape of /* //*/
-        [/\*\//, 'comment', '@pop'],
-        [/[\/*]/, 'comment'],
-      ],
-      comment2: [
-        [/-->/, 'comment', '@pop'],
-        [/[^-]+/, 'comment.content'],
-        [/./, 'comment.content'],
-
-      ],
-      // Identical copy of comment above, except for the addition of .doc
-      javadoc: [
-        [/[^\/*]+/, 'comment.doc'],
-        // [/\/\*/, 'comment.doc', '@push' ],    // nested comment not allowed :-(
-        [/\/\*/, 'comment.doc.invalid'],
-        [/\*\//, 'comment.doc', '@pop'],
-        [/[\/*]/, 'comment.doc'],
-      ],
-
-      string: [
-        [/[^\\"]+/, 'string'],
-        [/@escapes/, 'string.escape'],
-        [/\\./, 'string.escape.invalid'],
-        [/"/, 'string', '@pop'],
-      ],
+const bracketTokens = [
+    {
+        open: "[",
+        close: "]",
+        token: "delimiter.square",
     },
-  };
+    {
+        open: "(",
+        close: ")",
+        token: "delimiter.parenthesis",
+    },
+    {
+        open: "{",
+        close: "}",
+        token: "delimiter.curly",
+    },
+];
+
+function getTokens(tokens: string, divider = "|"): string[] {
+    return tokens.split(divider);
+}
+
+export function tokenProvider() {
+    return {
+        brackets: bracketTokens,
+        tokenPostfix: ".groovy",
+        keywords: getTokens(
+            "assert|with|abstract|continue|for|new|switch|assert|default|goto|package|synchronized|boolean|do|if|private|this|break|double|implements|protected|throw|byte|else|import|public|throws|case|enum|instanceof|return|transient|catch|extends|int|short|try|char|final|interface|static|void|class|finally|long|strictfp|volatile|def|float|native|super|while|in|as"
+        ),
+        typeKeywords: getTokens(
+            "def|Long|Integer|Short|Byte|Double|Number|Float|Character|Boolean|StackTraceElement|Appendable|StringBuffer|Iterable|ThreadGroup|Runnable|Thread|IllegalMonitorStateException|StackOverflowError|OutOfMemoryError|VirtualMachineError|ArrayStoreException|ClassCastException|LinkageError|NoClassDefFoundError|ClassNotFoundException|RuntimeException|Exception|ThreadDeath|Error|Throwable|System|ClassLoader|Cloneable|Class|CharSequence|Comparable|String|Object"
+        ),
+        constants: getTokens("null|Infinity|NaN|undefined|true|false"),
+        builtinFunctions: getTokens(
+            "AbstractMethodError|AssertionError|ClassCircularityError|ClassFormatError|Deprecated|EnumConstantNotPresentException|ExceptionInInitializerError|IllegalAccessError|IllegalThreadStateException|InstantiationError|InternalError|NegativeArraySizeException|NoSuchFieldError|Override|Process|ProcessBuilder|SecurityManager|StringIndexOutOfBoundsException|SuppressWarnings|TypeNotPresentException|UnknownError|UnsatisfiedLinkError|UnsupportedClassVersionError|VerifyError|InstantiationException|IndexOutOfBoundsException|ArrayIndexOutOfBoundsException|CloneNotSupportedException|NoSuchFieldException|IllegalArgumentException|NumberFormatException|SecurityException|Void|InheritableThreadLocal|IllegalStateException|InterruptedException|NoSuchMethodException|IllegalAccessException|UnsupportedOperationException|Enum|StrictMath|Package|Compiler|Readable|Runtime|StringBuilder|Math|IncompatibleClassChangeError|NoSuchMethodError|ThreadLocal|RuntimePermission|ArithmeticException|NullPointerException"
+        ),
+        operators: [
+            ".",
+            ".&",
+            ".@",
+            "?.",
+            "*",
+            "*.",
+            "*:",
+            "~",
+            "!",
+            "++",
+            "--",
+            "**",
+            "+",
+            "-",
+            "*",
+            "/",
+            "%",
+            "<<",
+            ">>",
+            ">>>",
+            "..",
+            "..<",
+            "<",
+            "<=",
+            ">",
+            ">",
+            "==",
+            "!=",
+            "<=>",
+            "===",
+            "!==",
+            "=~",
+            "==~",
+            "^",
+            "|",
+            "&&",
+            "||",
+            "?",
+            ":",
+            "?:",
+            "=",
+            "**=",
+            "*=",
+            "/=",
+            "%=",
+            "+=",
+            "-=",
+            "<<=",
+            ">>=",
+            ">>>=",
+            "&=",
+            "^=",
+            "|=",
+            "?=",
+        ],
+        symbols: /[=><!~?:&|+\-*/^%]+/,
+        escapes: /\\(?:[abfnrtv\\"'`]|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+
+        regexpctl: /[(){}[\]$^|\-*+?.]/,
+        regexpesc: /\\(?:[bBdDfnrstvwWn0\\/]|@regexpctl|c[A-Z]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})/,
+
+        tokenizer: {
+            root: [
+                {include: "@whitespace"},
+                // NAB-362 - regex breaks line comments like: /* comment */
+                // [
+                //     /\/(?=([^\\/]|\\.)+\/([dgimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/,
+                //     {token: "regexp", bracket: "@open", next: "@regexp"},
+                // ],
+                {include: "@comments"},
+                {include: "@numbers"},
+                {include: "common"},
+                [/[;,.]/, "delimiter"],
+                [/[(){}[\]]/, "@brackets"],
+                [
+                    /[a-zA-Z_$]\w*/,
+                    {
+                        cases: {
+                            "@keywords": "keyword",
+                            "@typeKeywords": "type",
+                            "@constants": "constant.groovy",
+                            "@builtinFunctions": "constant.other.color",
+                            "@default": "identifier",
+                        },
+                    },
+                ],
+                // @ annotations.
+                [/@\s*[a-zA-Z_\$][\w\$]*/, 'annotation'],
+                [
+                    /@symbols/,
+                    {
+                        cases: {
+                            "@operators": "operator",
+                            "@default": "",
+                        },
+                    },
+                ],
+            ],
+            common: [
+                // delimiters and operators
+                [/[()[\]]/, "@brackets"],
+                // NAB-362 - breaks generic methods like: def <T> T instanceMethod
+                // [/[<>](?!@symbols)/, "@brackets"],
+                [
+                    /@symbols/,
+                    {
+                        cases: {
+                            "@operators": "delimiter",
+                            "@default": "",
+                        },
+                    },
+                ],
+                // NAB-362 - regex breaks line comments like: /* comment */
+                // [
+                //     /\/(?=([^\\/]|\\.)+\/([gimsuy]*)(\s*)(\.|;|\/|,|\)|\]|\}|$))/,
+                //     {token: "regexp", bracket: "@open", next: "@regexp"},
+                // ],
+
+                // delimiter: after number because of .\d floats
+                [/[;,.]/, "delimiter"],
+
+                // strings
+                [/"([^"\\]|\\.)*$/, "string.invalid"],
+                [/'([^'\\]|\\.)*$/, "string.invalid"],
+                [/"/, "string", "@string_double"],
+                [/'/, "string", "@string_single"],
+            ],
+            whitespace: [[/\s+/, "white"]],
+            comments: [
+                [/\/\/.*/, "comment"],
+                [
+                    /\/\*/,
+                    {
+                        token: "comment.quote",
+                        next: "@comment",
+                    },
+                ],
+            ],
+            comment: [
+                [/[^*/]+/, "comment"],
+                [
+                    /\*\//,
+                    {
+                        token: "comment.quote",
+                        next: "@pop",
+                    },
+                ],
+                [/./, "comment"],
+            ],
+            commentAnsi: [
+                [
+                    /\/\*/,
+                    {
+                        token: "comment.quote",
+                        next: "@comment",
+                    },
+                ],
+                [/[^*/]+/, "comment"],
+                [
+                    /\*\//,
+                    {
+                        token: "comment.quote",
+                        next: "@pop",
+                    },
+                ],
+                [/./, "comment"],
+            ],
+            numbers: [
+                [/[+-]?\d+(?:(?:\.\d*)?(?:[eE][+-]?\d+)?)?f?\b/, "number.float"],
+                [/[+-]?(?:0[obx])?\d+(?:u?[lst]?)?\b/, "number"],
+            ],
+            // NAB-362 - regex breaks line comments like: /* comment */
+            /*
+            regexp: [
+                [/(\{)(\d+(?:,\d*)?)(\})/, ["regexp.escape.control", "regexp.escape.control", "regexp.escape.control"]],
+                [
+                    /(\[)(\^?)(?=(?:[^\]\\/]|\\.)+)/,
+                    // @ts-ignore
+                    ["regexp.escape.control", {token: "regexp.escape.control", next: "@regexrange"}],
+                ],
+                [/(\()(\?:|\?=|\?!)/, ["regexp.escape.control", "regexp.escape.control"]],
+                [/[()]/, "regexp.escape.control"],
+                [/@regexpctl/, "regexp.escape.control"],
+                [/[^\\/]/, "regexp"],
+                [/@regexpesc/, "regexp.escape"],
+                [/\\\./, "regexp.invalid"],
+                // @ts-ignore
+                [/(\/)([gimsuy]*)/, [{token: "regexp", bracket: "@close", next: "@pop"}, "keyword.other"]],
+            ],
+            regexrange: [
+                [/-/, "regexp.escape.control"],
+                [/\^/, "regexp.invalid"],
+                [/@regexpesc/, "regexp.escape"],
+                [/[^\]]/, "regexp"],
+                [/\]/, {token: "regexp.escape.control", next: "@pop", bracket: "@close"}],
+            ],*/
+            embedded: [
+                [
+                    /([^@]|^)([@]{4})*[@]{2}([@]([^@]|$)|[^@]|$)/,
+                    {
+                        token: "@rematch",
+                        next: "@pop",
+                        nextEmbedded: "@pop",
+                    },
+                ],
+            ],
+            string_double: [
+                [/\$\{/, {token: "delimiter.bracket", next: "@bracketCounting"}],
+                [/[^\\"$]+/, "string"],
+                [/[^\\"]+/, "string"],
+                [/@escapes/, "string.escape"],
+                [/\\./, "string.escape.invalid"],
+                [/"/, "string", "@pop"],
+            ],
+            string_single: [
+                [/[^\\']+/, "string"],
+                [/@escapes/, "string.escape"],
+                [/\\./, "string.escape.invalid"],
+                [/'/, "string", "@pop"],
+            ],
+            string_backtick: [
+                [/\$\{/, {token: "delimiter.bracket", next: "@bracketCounting"}],
+                [/[^\\"$]+/, "string"],
+                [/@escapes/, "string.escape"],
+                [/\\./, "string.escape.invalid"],
+                [/"/, "string", "@pop"],
+            ],
+            bracketCounting: [
+                [/\{/, "delimiter.bracket", "@bracketCounting"],
+                [/\}/, "delimiter.bracket", "@pop"],
+                {include: "common"},
+            ],
+        },
+    };
 }

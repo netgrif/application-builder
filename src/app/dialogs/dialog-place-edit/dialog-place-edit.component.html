@@ -13,7 +13,7 @@
     <mat-form-field fxFlex>
         <mat-label>Tokens</mat-label>
         <input type="number" min="0" step="1" matInput [(ngModel)]="place.place.marking" [formControl]="markingCtrl">
-        <mat-error *ngIf="markingCtrl.errors && markingCtrl.errors.required">Id is required</mat-error>
+        <mat-error *ngIf="markingCtrl.errors && markingCtrl.errors.required">Number of tokens is required</mat-error>
         <mat-error *ngIf="markingCtrl.errors && markingCtrl.errors.validMarking">
             Number of tokens must be a non-negative integer
         </mat-error>

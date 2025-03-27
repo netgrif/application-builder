@@ -478,9 +478,9 @@ export class ModelService {
         return newPosition;
     }
 
-    public getReferenceValue(id: string): number {
+    public getReferenceValue(id: string, model: PetriNet = this.model): number {
         // TODO: NAB-326 probably move to petriflow.js
-        const referencedData = this.model.getData(id);
+        const referencedData = model.getData(id);
         if (referencedData) {
             if (referencedData.init.value) {
                 return Number(referencedData.init.value);
@@ -488,7 +488,7 @@ export class ModelService {
             }
             return 0;
         }
-        const referencedPlace = this.model.getPlace(id);
+        const referencedPlace = model.getPlace(id);
         if (referencedPlace) {
             return referencedPlace.marking;
         }

@@ -118,16 +118,6 @@ export abstract class CanvasTool extends CanvasListenerTool {
         this.closeContextMenu();
     }
 
-    openDialog(dialog: ComponentType<any>, config: any, afterClose?: (value: any) => void): void {
-        this.unbindKeys();
-        this.dialog.open(dialog, config).afterClosed().subscribe(value => {
-            if (afterClose) {
-                afterClose(value);
-            }
-            this.bindKeys();
-        });
-    }
-
     closeContextMenuOnClick(): void {
         if (this.isContextMenuOpen()) {
             this.closeContextMenu();

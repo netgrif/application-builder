@@ -37,13 +37,13 @@ export class ChangeDataTool extends SimulationTool {
 
     onClick() {
         super.onClick();
-        this.dialog.open(DialogChangeDataComponent, {
+        this.openDialog(DialogChangeDataComponent, {
             width: '50%',
             panelClass: "dialog-width-50",
             data: {
                 dataSet: this.simulationModeService.data
             } as DataSet
-        }).afterClosed().subscribe((data: Array<Data>) => {
+        }, (data: Array<Data>) => {
             if (data) {
                 const dataSet = new Map<string, number>(data.map(d => [d.id, d.value]));
                 this.simulationModeService.data = dataSet;
