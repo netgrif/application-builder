@@ -116,7 +116,12 @@
                         <mat-form-field fxFlex="50" class="margin-right8px">
                             <mat-label>Key</mat-label>
                             <input matInput (change)="setValue($event,'property_key', i)" type="text"
-                                   [value]="property.key">
+                                   [value]="property.key" [matAutocomplete]="propertyAutocomplete">
+                            <mat-autocomplete #propertyAutocomplete="matAutocomplete" (optionSelected)="setValue($event, 'property_key', i)">
+                                <mat-option *ngFor="let propertyDef of filteredProperties(item, property.key)" [value]="propertyDef.name">
+                                    {{propertyDef.name}}
+                                </mat-option>
+                            </mat-autocomplete>
                         </mat-form-field>
                         <mat-form-field fxFlex="50" class="margin-right8px">
                             <mat-label>Value</mat-label>

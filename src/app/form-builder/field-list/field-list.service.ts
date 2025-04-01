@@ -19,6 +19,7 @@ export interface ComponentDef {
 export interface DataRefDef {
     type: DataType;
     components: Array<ComponentDef>;
+    properties?: Array<PropertyDef>;
 }
 
 @Injectable({
@@ -45,16 +46,31 @@ export class FieldListService {
             type: DataType.NUMBER,
             components: [
                 {title: 'Simple'},
-                {title: 'Decimal', name: 'decimal'},
                 {
-                    title: 'Currency', name: 'currency', properties: [
+                    title: 'Decimal',
+                    name: 'decimal',
+                    properties: [
+                        {
+                            name: 'digitsInfo',
+                            defaultValue: '1.0-3'
+                        },
+                        {
+                            name: 'locale',
+                            defaultValue: 'sk'
+                        },
+                    ]
+                },
+                {
+                    title: 'Currency',
+                    name: 'currency',
+                    properties: [
                         {
                             name: 'code',
                             defaultValue: 'EUR'
                         },
                         {
                             name: 'fractionSize',
-                            defaultValue: 2
+                            defaultValue: '2'
                         },
                         {
                             name: 'locale',
@@ -76,11 +92,75 @@ export class FieldListService {
             components: [
                 {title: 'Select'},
                 {title: 'List', name: 'list'},
-                {title: 'Stepper', name: 'stepper'},
-                {title: 'Autocomplete', name: 'autocomplete'},
+                {
+                    title: 'Stepper',
+                    name: 'stepper',
+                    properties: [
+                        {
+                            name: 'arrowStepper',
+                            defaultValue: 'true'
+                        }
+                    ]
+                },
+                {
+                    title: 'Autocomplete',
+                    name: 'autocomplete',
+                    properties: [
+                        {
+                            name: 'filter',
+                            defaultValue: 'prefix'
+                        }
+                    ]
+                },
                 {title: 'Dynamic Autocomplete', name: 'autocomplete_dynamic'},
-                {title: 'Icon', name: 'icon'},
-                {title: 'Case ref', name: 'caseref'}
+                {
+                    title: 'Icon',
+                    name: 'icon',
+                    properties: [
+                        {
+                            name: 'horizontal',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'arrow',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'divider',
+                            defaultValue: 'true'
+                        }
+                    ]
+                },
+                {
+                    title: 'Case ref',
+                    name: 'caseref',
+                    properties: [
+                        {
+                            name: 'filter',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'filterQuery',
+                            defaultValue: ''
+                        },
+                        {
+                            name: 'headers',
+                            defaultValue: 'meta-visualID,meta-mongoID,meta-title,meta-author,meta-creationDate'
+                        },
+                        {
+                            name: 'createCase',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'search',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'filter',
+                            defaultValue: 'true'
+                        },
+                    ]
+                }
             ]
         },
         {
@@ -95,8 +175,46 @@ export class FieldListService {
             components: [
                 {title: 'Select'},
                 {title: 'List', name: 'list'},
-                {title: 'Autocomplete', name: 'autocomplete'},
-                {title: 'Case ref', name: 'caseref'}
+                {
+                    title: 'Autocomplete',
+                    name: 'autocomplete',
+                    properties: [
+                        {
+                            name: 'filter',
+                            defaultValue: 'prefix'
+                        }
+                    ]
+                },
+                {
+                    title: 'Case ref',
+                    name: 'caseref',
+                    properties: [
+                        {
+                            name: 'filter',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'filterQuery',
+                            defaultValue: ''
+                        },
+                        {
+                            name: 'headers',
+                            defaultValue: 'meta-visualID,meta-mongoID,meta-title,meta-author,meta-creationDate'
+                        },
+                        {
+                            name: 'createCase',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'search',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'filter',
+                            defaultValue: 'true'
+                        },
+                    ]
+                }
             ]
         },
         {
@@ -115,6 +233,24 @@ export class FieldListService {
                 {title: 'Icon', name: 'icon'},
                 {title: 'FAB', name: 'fab'},
                 {title: 'MiniFAB', name: 'minifab'}
+            ],
+            properties: [
+                {
+                    name: 'dialogText',
+                    defaultValue: ''
+                },
+                {
+                    name: 'dialogTitle',
+                    defaultValue: ''
+                },
+                {
+                    name: 'align',
+                    defaultValue: ''
+                },
+                {
+                    name: 'stretch',
+                    defaultValue: 'true'
+                }
             ]
         },
         {
@@ -133,7 +269,28 @@ export class FieldListService {
             type: DataType.FILE,
             components: [
                 {title: 'Simple'},
-                {title: 'Preview', name: 'preview'}
+                {
+                    title: 'Preview',
+                    name: 'preview',
+                    properties: [
+                        {
+                            name: 'borderWidth',
+                            defaultValue: '0'
+                        },
+                        {
+                            name: 'borderStyle',
+                            defaultValue: 'none'
+                        },
+                        {
+                            name: 'borderColor',
+                            defaultValue: 'black'
+                        },
+                        {
+                            name: 'borderEnabled',
+                            defaultValue: 'true'
+                        }
+                    ]
+                }
             ]
         },
         {
@@ -164,8 +321,42 @@ export class FieldListService {
         {
             type: DataType.I18N,
             components: [
-                {title: 'Simple'},
-                {title: 'Divider', name: 'divider', cols: 4}
+                {
+                    title: 'Simple',
+                    properties: [
+                        {
+                            name: 'plainText',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'boldText',
+                            defaultValue: 'true'
+                        },
+                        {
+                            name: 'textColor',
+                            defaultValue: 'black'
+                        },
+                        {
+                            name: 'fontSize',
+                            defaultValue: '12px'
+                        }
+                    ]
+                },
+                {
+                    title: 'Divider',
+                    name: 'divider',
+                    cols: 4,
+                    properties: [
+                        {
+                            name: 'dividerColor',
+                            defaultValue: 'black'
+                        },
+                        {
+                            name: 'fontSize',
+                            defaultValue: '12px'
+                        }
+                    ]
+                }
             ]
         },
         {
@@ -179,12 +370,48 @@ export class FieldListService {
             type: DataType.CASE_REF,
             components: [
                 {title: 'Simple'}
+            ],
+            properties: [
+                {
+                    name: 'filter',
+                    defaultValue: 'true'
+                },
+                {
+                    name: 'filterQuery',
+                    defaultValue: ''
+                },
+                {
+                    name: 'headers',
+                    defaultValue: 'meta-visualID,meta-mongoID,meta-title,meta-author,meta-creationDate'
+                },
+                {
+                    name: 'createCase',
+                    defaultValue: 'true'
+                },
+                {
+                    name: 'search',
+                    defaultValue: 'true'
+                },
+                {
+                    name: 'filter',
+                    defaultValue: 'true'
+                },
             ]
         },
         {
             type: 'stringCollection' as DataType,
             components: [
                 {title: 'Simple'}
+            ],
+            properties: [
+                {
+                    name: 'semicolon',
+                    defaultValue: 'true'
+                },
+                {
+                    name: 'comma',
+                    defaultValue: 'true'
+                }
             ]
         }
     ];
