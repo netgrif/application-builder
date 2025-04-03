@@ -79,10 +79,14 @@ export abstract class SimulationTool extends CanvasListenerTool {
         if (value === undefined) {
             const place = this.simulationModeService.model.getPlace(reference);
             if (place) {
-                this.openMarkingPlaceDialog(place);
+                setTimeout(() => {
+                    this.openMarkingPlaceDialog(place);
+                }, 0);
             }
         } else {
-            this.openDataDialog(reference, value);
+            setTimeout(() => {
+                this.openDataDialog(reference, value);
+            }, 0);
         }
     }
 
