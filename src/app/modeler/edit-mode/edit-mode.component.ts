@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {NgxDropzoneChangeEvent} from 'ngx-dropzone';
 import {ModelImportService} from '../model-import-service';
@@ -26,6 +26,12 @@ export class EditModeComponent implements AfterViewInit, OnDestroy {
         private historyService: HistoryService,
         public dialog: MatDialog
     ) {
+    }
+
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     ngAfterViewInit() {
