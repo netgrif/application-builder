@@ -483,8 +483,10 @@ export class ModelService {
         const referencedData = model.getData(id);
         if (referencedData) {
             if (referencedData.init.value) {
-                return Number(referencedData.init.value);
-                // TODO: NAB-326 check if isFinite and >= 0
+                if (/^[1-9]\d*$/.test(referencedData.init.value.trim())) {
+                    return Number(referencedData.init.value);
+                }
+                return 0;
             }
             return 0;
         }
