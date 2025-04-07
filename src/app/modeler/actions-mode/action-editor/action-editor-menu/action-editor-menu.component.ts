@@ -37,7 +37,7 @@ export class ActionEditorMenuComponent implements OnInit {
     }
 
     addTextToEditor(text: string): void {
-        this.actionItemProviderService.insertText(this.editor, `${text}\n`, 'command');
+        this.actionItemProviderService.insertText(this.editor, !!text ? `${text}\n` : text, 'command');
     }
 
     handleClick(item: CommandAction): void {
