@@ -72,6 +72,7 @@ import {HistoryMasterItemComponent} from './history-mode/history-master-item/his
 import {HistoryDetailComponent} from './history-mode/history-detail/history-detail.component';
 import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
 import {FileToolComponent} from './control-panel/tools/file-tool-component/file-tool.component';
+import {TaskRefInitFieldComponent} from './data-mode/task-ref-init-field/task-ref-init-field.component';
 
 @NgModule({
     declarations: [
@@ -117,11 +118,13 @@ import {FileToolComponent} from './control-panel/tools/file-tool-component/file-
         FunctionMasterItemComponent,
         ActionDetailComponent,
         HistoryMasterItemComponent,
-        HistoryDetailComponent
+        HistoryDetailComponent,
+        TaskRefInitFieldComponent
     ],
     exports: [
         ActionEditorModule,
-        TriggerTreeComponent
+        TriggerTreeComponent,
+        TaskRefInitFieldComponent
     ],
     imports: [
         ActionEditorModule,
@@ -129,7 +132,6 @@ import {FileToolComponent} from './control-panel/tools/file-tool-component/file-
         CommonModule,
         DataFieldsComponentModule,
         FlexLayoutModule,
-        FormBuilderModule,
         FormsModule,
         GridsterModule,
         JoyrideModule,

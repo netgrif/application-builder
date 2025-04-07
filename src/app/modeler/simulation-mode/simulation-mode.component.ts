@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
 import {SimulationModeService} from './simulation-mode.service';
 import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
 import {ModelService} from '../services/model/model.service';
@@ -18,6 +18,12 @@ export class SimulationModeComponent implements AfterViewInit, OnDestroy {
         private simulationService: SimulationModeService,
         private modelService: ModelService
     ) {
+    }
+
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     ngAfterViewInit() {

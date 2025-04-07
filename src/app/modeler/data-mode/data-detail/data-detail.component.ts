@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {DataMasterDetailService} from '../data-master-detail.service';
 import {
     Component as PetriflowComponent,
@@ -32,6 +32,7 @@ import {
     PropertyDef
 } from '../../../form-builder/field-list/field-list.service';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MatChipInputEvent} from '@angular/material/chips';
 
 export interface TypeArray {
     viewValue: string;
@@ -186,21 +187,14 @@ export class DataDetailComponent implements OnDestroy {
                 this.item.placeholder.value = $event.target.value;
                 break;
             }
-            case 'init': {
-                const value = $event.target.value;
-                if (this.item.init === undefined) {
-                    this.item.init = new I18nWithDynamic(value);
-                } else {
-                    this.item.init.value = value;
-                }
-                break;
-            }
             case 'dynamic-init': {
                 const value = $event.source.checked;
                 if (this.item.init === undefined) {
-                    this.item.init = new I18nWithDynamic(value);
-                } else {
-                    this.item.init.dynamic = value;
+                    this.item.init = new I18nWithDynamic('');
+                }
+                this.item.init.dynamic = value;
+                if (value === true) {
+                    this.item.inits = new Array<I18nWithDynamic>();
                 }
                 break;
             }
@@ -246,6 +240,31 @@ export class DataDetailComponent implements OnDestroy {
             }
         }
         this.historyDataSave.save = true;
+    }
+
+    setBooleanValue(event) {
+        this.item.init.value = event.checked.toString();
+    }
+
+    setNumberValue(event) {
+        this.item.init.value = event.target.value.toString();
+    }
+
+    formatDate(event) {
+        // TODO: NAB-326 better solution? date picker setting to store only date?
+        if (event.target.value) {
+            this.item.init.value = event.target.value.toISOString();
+        } else {
+            this.item.init.value = '';
+        }
+    }
+
+    formatDateTime(event) {
+        if (event.target.value) {
+            this.item.init.value = event.target.value.toISOString();
+        } else {
+            this.item.init.value = '';
+        }
     }
 
     removeSpecificAttributeOnChange() {
@@ -411,4 +430,8 @@ export class DataDetailComponent implements OnDestroy {
             .find(compDef => (!dataVariable.component.name && !compDef.name) || (!!dataVariable.component.name && !!compDef.name && dataVariable.component.name === compDef.name))?.properties
             .find(propDef => propDef.name === $event.option.value).defaultValue;
     }
+
+    protected readonly DataType = DataType;
+    protected readonly Boolean = Boolean;
+    protected readonly DataFieldUtils = DataFieldUtils;
 }
