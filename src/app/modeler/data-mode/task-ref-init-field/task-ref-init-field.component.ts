@@ -5,7 +5,7 @@ import {MatFormField, MatLabel, MatPrefix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {ModelService} from '../../services/model/model.service';
-import {DataVariable, I18nWithDynamic} from '@netgrif/petriflow';
+import {DataVariable, I18nWithDynamic, Transition} from '@netgrif/petriflow';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 
@@ -43,7 +43,7 @@ export class TaskRefInitFieldComponent {
         this.taskRefFormControl.setValue(null);
     }
 
-    get tasks() {
+    get tasks(): Transition[] {
         return this._modelService.model.getTransitions().filter(t => {
             return !this.taskRef.inits.some(init => init.value === t.id);
         }).sort((t1, t2) => {
@@ -67,5 +67,9 @@ export class TaskRefInitFieldComponent {
         }
         const taskTitle = task.label.value ? `${task.label.value} ` : '';
         return `${taskTitle} [${taskId}]`;
+    }
+
+    isReferenced(task: Transition): boolean {
+        return task.dataGroups.some(group => !!group.getDataRef(this.taskRef.id));
     }
 }

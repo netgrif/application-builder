@@ -20,7 +20,7 @@
     />
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectInit($event)">
         @for (task of tasks; track task) {
-            <mat-option [value]="task.id">{{ task.label?.value }} [{{ task.id }}]</mat-option>
+            <mat-option [value]="task.id" [disabled]="isReferenced(task)">{{ task.label?.value }} [{{ task.id }}]</mat-option>
         }
     </mat-autocomplete>
 </mat-form-field>
