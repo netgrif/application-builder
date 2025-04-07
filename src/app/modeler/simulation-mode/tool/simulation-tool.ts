@@ -57,7 +57,10 @@ export abstract class SimulationTool extends CanvasListenerTool {
 
     onPlaceUp(event: PointerEvent, place: CanvasPlace) {
         super.onPlaceUp(event, place);
-        this.openMarkingPlaceDialog(place.modelPlace);
+        // do not remove this setTimout - Windows user will not be happy (context menu problem)
+        setTimeout(() => {
+            this.openMarkingPlaceDialog(place.modelPlace);
+        }, 0);
     }
 
     onPlaceEnter(event: MouseEvent, place: CanvasPlace) {
@@ -76,10 +79,14 @@ export abstract class SimulationTool extends CanvasListenerTool {
         if (value === undefined) {
             const place = this.simulationModeService.model.getPlace(reference);
             if (place) {
-                this.openMarkingPlaceDialog(place);
+                setTimeout(() => {
+                    this.openMarkingPlaceDialog(place);
+                }, 0);
             }
         } else {
-            this.openDataDialog(reference, value);
+            setTimeout(() => {
+                this.openDataDialog(reference, value);
+            }, 0);
         }
     }
 
