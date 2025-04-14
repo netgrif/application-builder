@@ -95,6 +95,9 @@ export class FieldListComponent implements OnInit, AfterViewInit {
         if (meta.cols) {
             $event.dataTransfer.setData('cols', meta.cols);
         }
+        if (meta.properties) {
+            $event.dataTransfer.setData('properties', JSON.stringify(meta.properties));
+        }
         this.dragStartHandler($event, false);
     }
 
@@ -108,6 +111,9 @@ export class FieldListComponent implements OnInit, AfterViewInit {
             }
             if (meta?.cols) {
                 $event.dataTransfer.setData('cols', `${meta.cols}`);
+            }
+            if (meta?.properties) {
+                $event.dataTransfer.setData('properties', JSON.stringify(meta.properties));
             }
         }
         this.dragStartHandler($event, true);

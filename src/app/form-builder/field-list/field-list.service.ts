@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
-import {DataType, Property} from '@netgrif/petriflow';
+import {DataType, DataVariable, Property} from '@netgrif/petriflow';
 import {GridsterDataField} from '../gridster/classes/gridster-data-field';
 
 export interface PropertyDef {
@@ -14,12 +14,14 @@ export interface ComponentDef {
     rows?: number;
     cols?: number;
     properties?: Array<PropertyDef>;
+    showPlaceholder?: boolean;
 }
 
 export interface DataRefDef {
     type: DataType;
     components: Array<ComponentDef>;
     properties?: Array<PropertyDef>;
+    showPlaceholder?: boolean;
 }
 
 @Injectable({
@@ -134,6 +136,7 @@ export class FieldListService {
                 {
                     title: 'Case ref',
                     name: 'caseref',
+                    showPlaceholder: true,
                     properties: [
                         {
                             name: 'filter',
@@ -141,7 +144,7 @@ export class FieldListService {
                         },
                         {
                             name: 'filterQuery',
-                            defaultValue: ''
+                            defaultValue: '{}'
                         },
                         {
                             name: 'headers',
@@ -188,6 +191,7 @@ export class FieldListService {
                 {
                     title: 'Case ref',
                     name: 'caseref',
+                    showPlaceholder: true,
                     properties: [
                         {
                             name: 'filter',
@@ -195,7 +199,7 @@ export class FieldListService {
                         },
                         {
                             name: 'filterQuery',
-                            defaultValue: ''
+                            defaultValue: '{}'
                         },
                         {
                             name: 'headers',
@@ -313,6 +317,7 @@ export class FieldListService {
         },
         {
             type: DataType.FILTER,
+            showPlaceholder: true,
             components: [
                 {title: 'Simple'},
                 {title: 'Tab view', name: 'filter-tab-view'}
@@ -322,7 +327,8 @@ export class FieldListService {
             type: DataType.I18N,
             components: [
                 {
-                    title: 'Simple',
+                    title: 'Text',
+                    name: 'text',
                     properties: [
                         {
                             name: 'plainText',
@@ -338,7 +344,7 @@ export class FieldListService {
                         },
                         {
                             name: 'fontSize',
-                            defaultValue: '12px'
+                            defaultValue: '12'
                         }
                     ]
                 },
@@ -353,7 +359,7 @@ export class FieldListService {
                         },
                         {
                             name: 'fontSize',
-                            defaultValue: '12px'
+                            defaultValue: '12'
                         }
                     ]
                 }
@@ -361,6 +367,7 @@ export class FieldListService {
         },
         {
             type: DataType.TASK_REF,
+            showPlaceholder: true,
             components: [
                 {title: 'Simple', cols: 4},
                 {title: 'Dashboard', name: 'dashboard', cols: 4}
@@ -368,6 +375,7 @@ export class FieldListService {
         },
         {
             type: DataType.CASE_REF,
+            showPlaceholder: true,
             components: [
                 {title: 'Simple'}
             ],
@@ -378,7 +386,7 @@ export class FieldListService {
                 },
                 {
                     name: 'filterQuery',
-                    defaultValue: ''
+                    defaultValue: '{}'
                 },
                 {
                     name: 'headers',
@@ -446,5 +454,25 @@ export class FieldListService {
             meta.cols = componentObject.cols;
         }
         return meta;
+    }
+
+    public isPlaceholderField(dataField: GridsterDataField): boolean {
+        if (!dataField.dataVariable.type) {
+            return true;
+        }
+        const component = !!dataField.dataRef.component ? dataField.dataRef.component : dataField.dataVariable.component;
+        const dataDef = this.fieldListArray.find(it => it.type === dataField.dataVariable.type);
+        const simpleComponent = dataDef.components.find(it => !it.name);
+        if (!component || !component.name) {
+            if (!!simpleComponent && 'showPlaceholder' in simpleComponent) {
+                return simpleComponent.showPlaceholder;
+            }
+            return !!dataDef.showPlaceholder;
+        }
+        const compDef = dataDef.components.find(it => it.name === component.name);
+        if (!compDef || !('showPlaceholder' in compDef)) {
+            return !!dataDef.showPlaceholder;
+        }
+        return !!compDef.showPlaceholder;
     }
 }

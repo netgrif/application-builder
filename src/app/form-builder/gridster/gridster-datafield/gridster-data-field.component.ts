@@ -6,6 +6,7 @@ import {GridsterFieldToEngineFieldService} from '../../../modeler/gridster-field
 import {Subscription} from 'rxjs';
 import moment from 'moment';
 import {DataField, EnumerationField, MultichoiceField} from '@netgrif/components-core';
+import {FieldListService} from '../../field-list/field-list.service';
 
 @Component({
     selector: 'nab-gridster-datafield',
@@ -20,7 +21,9 @@ export class GridsterDataFieldComponent implements OnInit, OnDestroy {
     engineField: DataField<unknown>;
     private _gridsterSubscription: Subscription;
 
-    constructor(private _gridsterService: GridsterService, private _transformService: GridsterFieldToEngineFieldService) {
+    constructor(private _gridsterService: GridsterService,
+                private _transformService: GridsterFieldToEngineFieldService,
+                public fieldListService: FieldListService) {
     }
 
     ngOnDestroy(): void {
