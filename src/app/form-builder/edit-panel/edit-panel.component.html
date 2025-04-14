@@ -53,7 +53,7 @@
     <div *ngIf="isSomeGridsterFieldSelected()">
         <h4 class="full-width margin-html">
             Id: {{ dataVariable.id }}
-            <button *ngIf="isSomeGridsterFieldSelected()" mat-icon-button matTooltip="Refactor field ID"
+            <button mat-icon-button matTooltip="Refactor field ID"
                     (click)="openRefactorDialog($event, dataVariable)">
                 <mat-icon>edit</mat-icon>
             </button>
@@ -78,7 +78,7 @@
             </mat-form-field>
         </div>
 
-        <div *ngIf="isSomeGridsterFieldSelected()">
+        <div>
             <mat-form-field class="full-width margin-html">
                 <mat-label>Title</mat-label>
                 <input matInput type="text" [(ngModel)]="dataVariable.title.value" (change)="notifyGridster()">
@@ -199,14 +199,25 @@
             <div *ngIf="dataVariable.component !== undefined" class="full-width">
                 <mat-form-field class="full-width margin-html">
                     <mat-label>Component Name</mat-label>
-                    <input matInput [(ngModel)]="dataVariable.component.name" (change)="setComponent($event);notifyGridster()">
+                    <input matInput [(ngModel)]="dataVariable.component.name" (change)="setComponent($event);notifyGridster()"
+                           [formControl]="componentNameFormCtrl" [matAutocomplete]="componentAutocomplete">
+                    <mat-autocomplete #componentAutocomplete="matAutocomplete" (optionSelected)="setComponent($event);notifyGridster()">
+                        <mat-option *ngFor="let componentDef of filteredComponents(dataVariable.component)" [value]="componentDef.name">
+                            {{componentDef.title}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
                 <div>
                     <div *ngIf="dataVariable.component.properties.length > 0">
                         <div *ngFor="let property of dataVariable.component.properties; let i = index" class="margin-html properties">
                             <mat-form-field class="margin-right8px">
-                                <input matInput type="text" placeholder="Key" [value]="property.key"
+                                <input matInput type="text" placeholder="Key" [value]="property.key" [matAutocomplete]="propertyAutocomplete"
                                        (change)="setPropertyKey($event, i, dataVariable.component) ;notifyGridster()">
+                                <mat-autocomplete #propertyAutocomplete="matAutocomplete" (optionSelected)="setPropertyKey($event, i, dataVariable.component);notifyGridster()">
+                                    <mat-option *ngFor="let propertyDef of filteredProperties(dataVariable.component, property.key)" [value]="propertyDef.name">
+                                        {{propertyDef.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
                             </mat-form-field>
                             <mat-form-field class="margin-right8px">
                                 <input matInput type="text" placeholder="Value" [value]="property.value"
@@ -227,6 +238,11 @@
                         (click)="addProperty(dataVariable.component); notifyGridster()">
                     <mat-icon>add</mat-icon>
                     Add property
+                </button>
+                <button mat-stroked-button color="primary" class="button-text save-button"
+                        (click)="cloneProperty(dataVariable, dataRef, 'component')">
+                    <mat-icon>move_down</mat-icon>
+                    Copy to DataRef
                 </button>
                 <div *ngIf="isIconEnumeration(dataVariable.type, dataVariable?.component)">
                     <div *ngIf="dataVariable.component.icons.length > 0; else noIcons">
@@ -272,15 +288,25 @@
             <div *ngIf="dataRef.component !== undefined" class="full-width">
                 <mat-form-field class="full-width">
                     <mat-label>Component Name</mat-label>
-                    <input matInput [(ngModel)]="dataRef.component.name"
-                           (change)="setDataRefComponent($event);notifyGridster()">
+                    <input matInput [(ngModel)]="dataRef.component.name" (change)="setDataRefComponent($event);notifyGridster()"
+                           [formControl]="dataRefComponentNameFormCtrl" [matAutocomplete]="dataRefComponentAutocomplete">
+                    <mat-autocomplete #dataRefComponentAutocomplete="matAutocomplete" (optionSelected)="setComponent($event);notifyGridster()">
+                        <mat-option *ngFor="let componentDef of filteredComponents(dataRef.component)" [value]="componentDef.name">
+                            {{componentDef.title}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
                 <div>
                     <div *ngIf="dataRef.component.properties.length > 0">
                         <div *ngFor="let property of dataRef.component.properties; let i = index" class="margin-html properties">
                             <mat-form-field class="margin-right8px">
-                                <input matInput type="text" placeholder="Key" [value]="property.key"
+                                <input matInput type="text" placeholder="Key" [value]="property.key" [matAutocomplete]="dataRefPropertyAutocomplete"
                                        (change)="setPropertyKey($event, i, dataRef.component) ;notifyGridster()">
+                                <mat-autocomplete #dataRefPropertyAutocomplete="matAutocomplete" (optionSelected)="setPropertyKey($event, i, dataRef.component);notifyGridster()">
+                                    <mat-option *ngFor="let propertyDef of filteredProperties(dataRef.component, property.key)" [value]="propertyDef.name">
+                                        {{propertyDef.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
                             </mat-form-field>
                             <mat-form-field class="margin-right8px">
                                 <input matInput type="text" placeholder="Value" [value]="property.value"
@@ -302,6 +328,11 @@
                         (click)="addProperty(gridsterService.selectedDataField.dataRef.component); notifyGridster()">
                     <mat-icon>add</mat-icon>
                     Add property
+                </button>
+                <button mat-stroked-button color="primary" class="button-text save-button"
+                        (click)="cloneProperty(dataRef, dataVariable, 'component')">
+                    <mat-icon>move_up</mat-icon>
+                    Copy to DataField
                 </button>
                 <div *ngIf="isIconEnumeration(dataVariable.type, dataRef.component)" >
                     <div *ngIf="dataRef.component.icons.length > 0; else noIcons">

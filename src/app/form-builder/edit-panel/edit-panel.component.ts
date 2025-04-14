@@ -35,6 +35,8 @@ import {DATE_FORMAT, DATE_TIME_FORMAT, EnumerationFieldValue} from '@netgrif/com
 import {Router} from '@angular/router';
 import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../../modeler/actions-mode/actions-master-detail.setvice';
+import {ComponentDef, DataRefDef, FieldListService, PropertyDef} from '../field-list/field-list.service';
+import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 
 @Component({
     selector: 'nab-edit-panel',
@@ -72,8 +74,10 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     filteredOptions: Observable<Array<EnumerationFieldValue>>;
     formControlRef: FormControl;
     transitionOptions: Array<EnumerationFieldValue>;
-
     behaviorOptions;
+
+    componentNameFormCtrl: FormControl;
+    dataRefComponentNameFormCtrl: FormControl;
 
     constructor(public gridsterService: GridsterService,
                 public modelService: ModelService,
@@ -81,6 +85,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
                 private transitionService: SelectedTransitionService,
                 private _router: Router,
                 private _actionMode: ActionsModeService,
+                private _fieldListService: FieldListService,
                 private _actionsMasterDetail: ActionsMasterDetailService) {
         // this.transitionOptions = [];
         this.formControlRef = new FormControl();
@@ -92,6 +97,8 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        this.componentNameFormCtrl = new FormControl();
+        this.dataRefComponentNameFormCtrl = new FormControl();
         this.transId = this.transitionService.id;
         if (this.transId === null) {
             this.numOfCols = ModelerConfig.LAYOUT_DEFAULT_COLS;
@@ -408,8 +415,13 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         return false;
     }
 
-    setPropertyKey($event, index: number, component: PetriflowComponent) {
-        component.properties[index].key = $event.target.value;
+    public setPropertyKey($event, index: number, component: PetriflowComponent): void {
+        if ($event instanceof MatAutocompleteSelectedEvent) {
+            component.properties[index].key = $event.option.value;
+            this.setPropertyDefaultValue($event, index, component);
+        } else {
+            component.properties[index].key = $event.target.value;
+        }
     }
 
     setPropertyValue($event, index: number, component: PetriflowComponent) {
@@ -440,18 +452,26 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         }
     }
 
-    setComponent($event) {
+    public setComponent($event): void {
         if (!this.gridsterService.selectedDataField.dataVariable.component) {
             this.gridsterService.selectedDataField.dataVariable.component = new PetriflowComponent('');
         }
-        this.gridsterService.selectedDataField.dataVariable.component.name = $event.target.value;
+        if ($event instanceof MatAutocompleteSelectedEvent) {
+            this.gridsterService.selectedDataField.dataVariable.component.name = $event.option.value;
+        } else {
+            this.gridsterService.selectedDataField.dataVariable.component.name = $event.target.value;
+        }
     }
 
-    setDataRefComponent($event) {
+    public setDataRefComponent($event): void {
         if (!this.gridsterService.selectedDataField.dataRef.component) {
             this.gridsterService.selectedDataField.dataRef.component = new PetriflowComponent('');
         }
-        this.gridsterService.selectedDataField.dataRef.component.name = $event.target.value;
+        if ($event instanceof MatAutocompleteSelectedEvent) {
+            this.gridsterService.selectedDataField.dataRef.component.name = $event.option.value;
+        } else {
+            this.gridsterService.selectedDataField.dataRef.component.name = $event.target.value;
+        }
     }
 
     taskRefTitle(option: EnumerationFieldValue) {
@@ -514,5 +534,42 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
 
     numberOfActions(): number {
         return this.modelService.numberOfTransitionActions(this.transition);
+    }
+
+    filteredComponents(component: PetriflowComponent): Array<ComponentDef> {
+        const componentDefs: DataRefDef =  this._fieldListService.fieldListArray.find(type => type.type === this.dataVariable.type);
+        if (!componentDefs) {
+            return [];
+        }
+        return componentDefs.components.filter(def => def.name !== undefined && def.title.toLowerCase().includes(component.name));
+    }
+
+    public filteredProperties(component: PetriflowComponent, propertyName: string): Array<PropertyDef> {
+        const componentDefs: DataRefDef =  this._fieldListService.fieldListArray.find(type => type.type === this.dataVariable.type);
+        if (!componentDefs) {
+            return [];
+        }
+        const propertyDefs: ComponentDef = componentDefs.components.find(compDef => {
+            return (!component.name && !compDef.name) || (!!component.name && !!compDef.name && component.name === compDef.name);
+        });
+        if (!propertyDefs || !propertyDefs.properties) {
+            return [];
+        }
+        const existingProperties = component.properties.map(compProperty => compProperty.key);
+        return propertyDefs.properties.filter(propDef => propDef.name.includes(propertyName) && !existingProperties.includes(propDef.name));
+    }
+
+    public setPropertyDefaultValue($event: MatAutocompleteSelectedEvent, index: number, component: PetriflowComponent): void {
+        component.properties[index].value = this._fieldListService.fieldListArray
+                                            .find(type => type.type === this.dataVariable.type)?.components
+                                            .find(compDef => (!component.name && !compDef.name) || (!!component.name && !!compDef.name && component.name === compDef.name))?.properties
+                                            .find(propDef => propDef.name === $event.option.value).defaultValue;
+    }
+
+    public cloneProperty(source: DataRef | DataVariable, target: DataRef | DataVariable, property: string): void {
+        if (!(property in source)) {
+            return;
+        }
+        target[property] = source[property].clone();
     }
 }

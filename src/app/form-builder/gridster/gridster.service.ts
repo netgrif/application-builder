@@ -18,7 +18,7 @@ import {
     DataType,
     DataVariable,
     Expression, I18nWithDynamic,
-    LayoutType,
+    LayoutType, Property,
     Template,
     Transition,
     TransitionLayout
@@ -26,7 +26,7 @@ import {
 import {BehaviorSubject, ReplaySubject, Subject} from 'rxjs';
 import {DataFieldUtils} from '../data-field-utils';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
-import {FieldListService} from '../field-list/field-list.service';
+import {ComponentDef, FieldListService, PropertyDef} from '../field-list/field-list.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
 import {debounceTime} from 'rxjs/operators';
 
@@ -196,7 +196,7 @@ export class GridsterService {
         return dataVariable;
     }
 
-    public addDataRef(dataVariable: DataVariable, componentRows: number, componentCols: number, componentName: string, item: GridsterItem) {
+    public addDataRef(dataVariable: DataVariable, componentRows: number, componentCols: number, componentName: string, item: GridsterItem): DataRef {
         const dataRef = new DataRef(dataVariable.id);
         dataRef.layout.x = item.x;
         dataRef.layout.y = item.y;
@@ -241,12 +241,20 @@ export class GridsterService {
     }
 
     private addNewDataRef(data: DataVariable, event: DragEvent, item: GridsterItem): DataRef {
-        return this.addDataRef(
+        const newDataRef =  this.addDataRef(
             data,
             +event.dataTransfer.getData('rows'),
             +event.dataTransfer.getData('cols'),
             event.dataTransfer.getData('ref_component'),
             item);
+        const properties: Array<PropertyDef> = JSON.parse(event.dataTransfer.getData('properties'));
+        if (!!properties) {
+            for (const property of properties) {
+                newDataRef.component.properties.push(new Property(property.name, property.defaultValue));
+            }
+        }
+        this.options.api.optionsChanged();
+        return newDataRef;
     }
 
     private createId(type: string) {

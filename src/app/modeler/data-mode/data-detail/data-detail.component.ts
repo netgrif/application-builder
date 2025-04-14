@@ -25,6 +25,12 @@ import {HistoryService} from '../../services/history/history.service';
 import {Observable} from 'rxjs';
 import {map, startWith, tap} from 'rxjs/operators';
 import {ModelerUtils} from '../../modeler-utils';
+import {
+    ComponentDef,
+    DataRefDef,
+    FieldListService,
+    PropertyDef
+} from '../../../form-builder/field-list/field-list.service';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 
@@ -47,6 +53,7 @@ export class DataDetailComponent implements OnDestroy {
 
     counterEnumMap = 0;
     formControlRef: FormControl;
+    componentNameFormCtrl: FormControl;
     transitionOptions: Array<EnumerationFieldValue>;
     filteredOptions: Observable<Array<EnumerationFieldValue>>;
     typeArray: Array<TypeArray> = [
@@ -75,6 +82,7 @@ export class DataDetailComponent implements OnDestroy {
     public constructor(
         private _masterService: DataMasterDetailService,
         private _modelService: ModelService,
+        private _fieldListService: FieldListService,
         private dialog: MatDialog,
         private _router: Router,
         private _actionMode: ActionsModeService,
@@ -82,6 +90,7 @@ export class DataDetailComponent implements OnDestroy {
         private _historyService: HistoryService
     ) {
         this.formControlRef = new FormControl();
+        this.componentNameFormCtrl = new FormControl();
         this.transitionOptions = this.createTransOptions();
         this._masterService.getSelected$().subscribe(obj => {
             if (this.historyDataSave?.save) {
@@ -147,7 +156,7 @@ export class DataDetailComponent implements OnDestroy {
         });
     }
 
-    setValue($event, variable: string, index?: number): void {
+    public setValue($event, variable: string, index?: number): void {
         switch (variable) {
             case 'id': {
                 this.item.id = $event.target.value;
@@ -217,7 +226,12 @@ export class DataDetailComponent implements OnDestroy {
                 break;
             }
             case 'property_key': {
-                this.item.component.properties[index].key = $event.target.value as string;
+                if ($event instanceof MatAutocompleteSelectedEvent) {
+                    this.item.component.properties[index].key = $event.option.value as string;
+                    this.setPropertyDefaultValue($event, index, this.item);
+                } else {
+                    this.item.component.properties[index].key = $event.target.value as string;
+                }
                 break;
             }
             case 'property_value': {
@@ -385,6 +399,36 @@ export class DataDetailComponent implements OnDestroy {
 
     trackByFn(index: any, item: any) {
         return index;
+    }
+
+    get filteredComponents(): Array<ComponentDef> {
+        const componentDefs: DataRefDef =  this._fieldListService.fieldListArray.find(type => type.type === this.item.type);
+        if (!componentDefs) {
+            return [];
+        }
+        return componentDefs.components.filter(def => def.name !== undefined && def.title.toLowerCase().includes(this.item.component.name));
+    }
+
+    public filteredProperties(dataVariable: DataVariable, propertyName: string): Array<PropertyDef> {
+        const componentDefs: DataRefDef =  this._fieldListService.fieldListArray.find(type => type.type === dataVariable.type);
+        if (!componentDefs) {
+            return [];
+        }
+        const propertyDefs: ComponentDef = componentDefs.components.find(compDef => {
+            return (!dataVariable.component.name && !compDef.name) || (!!dataVariable.component.name && !!compDef.name && dataVariable.component.name === compDef.name);
+        });
+        if (!propertyDefs || !propertyDefs.properties) {
+            return [];
+        }
+        const existingProperties = dataVariable.component.properties.map(compProperty => compProperty.key);
+        return propertyDefs.properties.filter(propDef => propDef.name.includes(propertyName) && !existingProperties.includes(propDef.name));
+    }
+
+    public setPropertyDefaultValue($event: MatAutocompleteSelectedEvent, index: number, dataVariable: DataVariable): void {
+        dataVariable.component.properties[index].value = this._fieldListService.fieldListArray
+            .find(type => type.type === dataVariable.type)?.components
+            .find(compDef => (!dataVariable.component.name && !compDef.name) || (!!dataVariable.component.name && !!compDef.name && dataVariable.component.name === compDef.name))?.properties
+            .find(propDef => propDef.name === $event.option.value).defaultValue;
     }
 
     protected readonly DataType = DataType;
