@@ -51,7 +51,7 @@ export class EditModeComponent implements AfterViewInit, OnDestroy {
         });
         setTimeout(() => {
             if (this._modelService.model === undefined) {
-                this._modelService.model = this._modelService.newModel();
+                this._modelService.model = this._modelService.newModel(); // TODO toto vytvori novy model aj keď ho nie je treba
                 this.historyService.save(`New model has been created.`);
             } else {
                 this._editModeService.renderModel();

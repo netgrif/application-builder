@@ -1,0 +1,68 @@
+<h2 mat-dialog-title>Welcome to Netgrif Application Builder</h2>
+<mat-dialog-content>
+    <p>
+        Netgrif Application Builder (NAB) is the tool for building process driven applications using Petriflow language.
+        NAB is composed of several modules that help you in different stages of application development.
+    </p>
+    <p>
+        You can start where you left of or start with a fresh new application.
+    </p>
+    @if (apps && apps.length != 0) {
+        <div fxLayout="column">
+            @for (app of apps; track app.name) {
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{ app.name }}</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <span>{{ app.description }} </span>
+                        <span>{{ app.version }} </span>
+                        <span>{{ app.author }}</span>
+                        <mat-chip-set>
+                            @for (tag of app.tags; track tag) {
+                                <mat-chip>{{ tag }}</mat-chip>
+                            }
+                        </mat-chip-set>
+                        <!--                        TODO tu zobraziť aké procesy tá appka vôbec má-->
+                        <!--                        <div fxLayout="row">-->
+                        <!--                            @for (process of app.processes; track process.id) {-->
+                        <!--                                <p>{{ process.title }}</p>-->
+                        <!--                            }-->
+                        <!--                        </div>-->
+                    </mat-card-content>
+                    <mat-card-actions align="end">
+                        <button mat-button>
+                            <mat-icon>delete</mat-icon>
+                            Delete
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            }
+        </div>
+    } @else {
+        <mat-card fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon>orders</mat-icon>
+            <p>You have no saved application.</p>
+        </mat-card>
+    }
+</mat-dialog-content>
+<mat-dialog-actions>
+    @if (!fileInputLoading) {
+        <button mat-button (click)="appPkgFileInput.click()">
+            <input #appPkgFileInput
+                   type="file" accept="application/zip"
+                   (change)="openApplicationPackage($event)"
+                   style="display: none">
+            <mat-icon>folder</mat-icon>
+            OPEN
+        </button>
+    } @else {
+        <button mat-button disabled>
+            <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+        </button>
+    }
+    <button mat-flat-button color="primary" (click)="createNewApplication()" mat-dialog-close>
+        <mat-icon>add</mat-icon>
+        CREATE NEW APPLICATION
+    </button>
+</mat-dialog-actions>

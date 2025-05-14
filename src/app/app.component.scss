@@ -1,3 +1,5 @@
+@use "../netgif-theme";
+
 .app-mat-sidenav-container {
     height: 100%;
 }
@@ -82,9 +84,14 @@
 
 .menu-items {
     padding-top: 0;
+
     .mdc-list-item {
-        padding-left: 9px;
-        padding-right: 9px;
+        //padding-left: 9px;
+        //padding-right: 9px;
         height: 42px;
     }
+}
+
+.active-process {
+    background-color: map-get(netgif-theme.$netgrif-blue, 900);
 }

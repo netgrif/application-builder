@@ -2,6 +2,8 @@ import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {DialogApplicationEditComponent} from './dialogs/dialog-application-edit/dialog-application-edit.component';
+import {DialogIntroComponent} from './dialogs/dialog-intro/dialog-intro.component';
 import {MaterialImportModule} from './material-import/material-import.module';
 import {FormBuilderModule} from './form-builder/form-builder.module';
 import {RouterModule, Routes} from '@angular/router';
@@ -78,7 +80,9 @@ const appRoutes: Routes = [
         DialogModelEditComponent,
         MaterialIconPickerComponent,
         DialogLocalStorageModelComponent,
-        DialogMarkingChangeComponent
+        DialogMarkingChangeComponent,
+        DialogApplicationEditComponent,
+        DialogIntroComponent,
     ],
     imports: [
         BrowserModule,

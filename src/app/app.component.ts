@@ -2,17 +2,17 @@ import {AfterViewInit, Component, HostListener} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {NetgrifApplicationEngine} from '@netgrif/components-core/';
+import {JoyrideService} from 'ngx-joyride';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
+import {DialogApplicationEditComponent} from './dialogs/dialog-application-edit/dialog-application-edit.component';
 import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
-import {
-    DialogLocalStorageModelComponent,
-} from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
+import {DialogIntroComponent} from './dialogs/dialog-intro/dialog-intro.component';
 import {ModelImportService} from './modeler/model-import-service';
-import {ModelerConfig} from './modeler/modeler-config';
 import {MortgageService} from './modeler/mortgage.service';
 import {ModelService} from './modeler/services/model/model.service';
+import {ApplicationService} from './project-builder/application.service';
+import {DatabaseStorageService} from './project-builder/database-storage.service';
 import {TutorialService} from './tutorial/tutorial-service';
-import {JoyrideService} from 'ngx-joyride';
 
 @Component({
     selector: 'nab-root',
@@ -35,15 +35,24 @@ export class AppComponent implements AfterViewInit {
         private readonly joyrideService: JoyrideService,
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
-        private modelService: ModelService,
         private importService: ModelImportService,
+        private db: DatabaseStorageService,
+        public modelService: ModelService,
+        public applicationService: ApplicationService,
     ) {
         this.config = config.get();
     }
 
     ngAfterViewInit(): void {
         // TODO: NAB-326 https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API
-        const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
+        this.matDialog.open(DialogIntroComponent, {
+            width: '40%',
+            panelClass: 'dialog-width-40',
+            disableClose: true,
+            data: this.db.getAllApplications(),
+        });
+
+        /*const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
         if (!oldModel) {
             return;
         }
@@ -60,6 +69,13 @@ export class AppComponent implements AfterViewInit {
             } else if (result === false) {
                 localStorage.clear();
             }
+        });*/
+    }
+
+    openApplicationDialog() {
+        this.matDialog.open(DialogApplicationEditComponent, {
+            width: '50%',
+            panelClass: 'dialog-width-50',
         });
     }
 
@@ -88,4 +104,9 @@ export class AppComponent implements AfterViewInit {
     openInTab(url: string) {
         window.open(url, '_blank');
     }
+
+    switchToProcess(processId: string) {
+        this.applicationService.switchActiveModel(processId);
+    }
+
 }

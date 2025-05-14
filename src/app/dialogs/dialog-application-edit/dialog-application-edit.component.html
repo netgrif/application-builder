@@ -1,0 +1,93 @@
+<h2 mat-dialog-title>Application</h2>
+<mat-dialog-content>
+    <div class="netgrif-input" fxLayout="column">
+        <div fxLayout="row">
+            <mat-form-field fxFlex>
+                <mat-label>Id</mat-label>
+                <input type="text" matInput [(ngModel)]="applicationService.application.id">
+            </mat-form-field>
+            <div fxFlex="1"></div>
+            <mat-form-field fxFlex>
+                <mat-label>Version</mat-label>
+                <input type="text" matInput [(ngModel)]="applicationService.application.version">
+            </mat-form-field>
+        </div>
+        <mat-form-field fxFlex>
+            <mat-label>Name</mat-label>
+            <input type="text" matInput [(ngModel)]="applicationService.application.name">
+        </mat-form-field>
+        <mat-form-field fxFlex>
+            <mat-label>Description</mat-label>
+            <input type="text" matInput [(ngModel)]="applicationService.application.description">
+        </mat-form-field>
+        <mat-form-field fxFlex>
+<!--            TODO spraviť to ako authors a spraviť z toho chips-->
+            <mat-label>Author</mat-label>
+            <input type="text" matInput [(ngModel)]="applicationService.application.author">
+        </mat-form-field>
+        <mat-form-field fxFlex>
+            <mat-label>Tags</mat-label>
+            <mat-chip-grid #tagsChipGrid aria-label="Tags">
+                @for (tag of applicationService.application.tags; track tag) {
+                    <mat-chip-row
+                        [editable]="false"
+                        [attr.aria-label]="'press enter to add tag'"
+                        (removed)="removeTag(tag)">
+                        {{ tag }}
+                        <button matChipRemove [attr.aria-label]="'remove ' + tag">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                }
+                <input placeholder="New tag..."
+                       [matChipInputFor]="tagsChipGrid"
+                       [matChipInputSeparatorKeyCodes]="chipSeparators"
+                       [matChipInputAddOnBlur]="true"
+                       (matChipInputTokenEnd)="addTag($event)"/>
+            </mat-chip-grid>
+        </mat-form-field>
+        <h4>Processes</h4>
+        <mat-list>
+            @for (process of applicationService.models; track process[0]) {
+                <mat-list-item [disableRipple]="false" [attr.aria-label]="'process ' + process[0] + ' list item'">
+                    <mat-icon matListItemIcon>{{ process[1].icon }}</mat-icon>
+                    <h3 matListItemTitle>{{ process[1].title.value }}</h3>
+                    <p matListItemLine>
+                        <span>Id: {{ process[0] }}, &nbsp;</span>
+                        <span>Initials: {{ process[1].initials }}, &nbsp;</span>
+                        <span>Version: {{ process[1].version }} </span>
+                    </p>
+                    <div matListItemMeta>
+                        <button mat-icon-button (click)="editProcess(process[0])">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="applicationService.removeModel(process[0])">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </mat-list-item>
+                <mat-divider inset="true"></mat-divider>
+            }
+        </mat-list>
+        <div fxLayout="row" fxLayoutAlign="end center">
+            <button mat-stroked-button color="primary" (click)="applicationService.addNewEmptyModel()">
+                <mat-icon>add</mat-icon>
+                Add process
+            </button>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-stroked-button color="primary" (click)="importApplication()">
+        <mat-icon>upload</mat-icon>
+        <span>Open</span>
+    </button>
+    <button mat-stroked-button color="primary" (click)="exportApplication()">
+        <mat-icon>download</mat-icon>
+        <span>Download</span>
+    </button>
+    <button mat-flat-button color="primary" (click)="importApplication()" mat-dialog-close>
+        <mat-icon>done</mat-icon>
+        <span>Save</span>
+    </button>
+</mat-dialog-actions>

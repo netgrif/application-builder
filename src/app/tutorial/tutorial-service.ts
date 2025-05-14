@@ -236,7 +236,7 @@ export class TutorialService {
         this.onClose = () => {
             this.router.navigate(['/modeler']);
             if (this.mortgageLoaded) {
-                this.modelService.model = this.modelService.newModel();
+                this.modelService.model = this.modelService.newModel(); // TODO toto vytvorí nový model ktorý asi nie je treba
             }
         };
     }

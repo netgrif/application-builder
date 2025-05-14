@@ -24,7 +24,7 @@ import {SimulationMode} from './simulation-mode';
 import {CanvasPlace} from '../edit-mode/domain/canvas-place';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SimulationModeService extends CanvasModeService<SimulationTool> {
 
@@ -74,7 +74,7 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
             new ChangeDataTool(modelService, dialog, this, router, transitionService),
             new ResetPositionAndZoomTool(modelService, dialog, this, router, transitionService),
             new GridTool(modelService, dialog, this, router, transitionService),
-            new SwitchLabelTool(modelService, dialog, this, router, transitionService)
+            new SwitchLabelTool(modelService, dialog, this, router, transitionService),
         );
         this.switchTools.tools.forEach(t => t.bind());
         this.tools = [
@@ -82,10 +82,11 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
                 this.defaultTool,
                 new EventSimulationTool(modelService, dialog, this, router, transitionService),
             ),
-            this.switchTools
+            this.switchTools,
         ];
-        this.originalModel = new BehaviorSubject<PetriNet>(this.modelService.model.clone());
+        this.originalModel = new BehaviorSubject<PetriNet>(this.modelService.model?.clone());
         this.originalModel.subscribe(model => {
+            if (!model) return;
             this.data = new Map(model.getArcs().filter(a => !!a.reference && !!model.getData(a.reference))
                 .map(a => [a.reference, Number.parseInt(model.getData(a.reference).init?.value, 10) || 0]));
             this.simulation = new BasicSimulation(model, this.data);

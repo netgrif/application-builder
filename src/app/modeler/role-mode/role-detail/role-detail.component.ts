@@ -75,6 +75,11 @@ export class RoleDetailComponent implements OnDestroy {
         this.shouldSave = true;
     }
 
+    changeGlobalFlag($event): void {
+        this.role.role.global = $event.target.checked;
+        this.shouldSave = true;
+    }
+
     get item(): Role {
         return this.service.getSelected();
     }

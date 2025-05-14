@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {
     Arc,
     ArcType,
@@ -11,7 +11,7 @@ import {
     Place,
     Role,
     Transition,
-    XmlArcType
+    XmlArcType,
 } from '@netgrif/petriflow';
 import {ModelConfig} from './model-config';
 import {CanvasConfiguration} from '@netgrif/petri.svg';
@@ -27,9 +27,10 @@ import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
 import {ModelChange} from '../../history-mode/model/model/model-change';
 import {ChangedRole} from '../../role-mode/role-detail/changed-role';
 import {ModelerUtils} from '../../modeler-utils';
+import {ApplicationService} from 'src/app/project-builder/application.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ModelService {
     private readonly _model: BehaviorSubject<PetriNet>;
@@ -58,13 +59,23 @@ export class ModelService {
         [ArcType.INHIBITOR, XmlArcType.INHIBITOR],
     ]);
 
+    private applicationService: ApplicationService;
+
     constructor(
-        private arcFactory: ArcFactory
+        private arcFactory: ArcFactory,
+        private injector: Injector,
     ) {
         this._model = new BehaviorSubject<PetriNet>(undefined);
         this._placeChange = new Subject<PlaceChange>();
         this._transitionChange = new Subject<ChangedTransition>();
         this._arcChange = new Subject<ChangedArc>();
+    }
+
+    get appService(): ApplicationService {
+        if (!this.applicationService) {
+            this.applicationService = this.injector.get(ApplicationService);
+        }
+        return this.applicationService;
     }
 
     set model(newModel: PetriNet) {
@@ -87,7 +98,7 @@ export class ModelService {
 
     public newModel(): PetriNet {
         const model = new PetriNet();
-        model.id = ModelConfig.IDENTIFIER;
+        model.id = ModelConfig.IDENTIFIER + '-' + this.appService.getAndIncrementModelSequence();
         model.version = ModelConfig.VERSION;
         model.title = new I18nString(ModelConfig.TITLE);
         model.initials = ModelConfig.INITIALS;
@@ -96,7 +107,10 @@ export class ModelService {
     }
 
     public updateModel(changedModel: ModelChange): void {
-        this.model.id = changedModel.model.id;
+        if (this.model.id !== changedModel.model.id) {
+            this.appService.updateModelId(this.model.id, changedModel.model.id);
+            this.model.id = changedModel.model.id;
+        }
         this.model.title = changedModel.model.title;
         this.model.initials = changedModel.model.initials;
         this.model.icon = changedModel.model.icon;
@@ -113,7 +127,7 @@ export class ModelService {
             this.alignPositionCoordinate(x, CanvasConfiguration.WIDTH),
             this.alignPositionCoordinate(y, CanvasConfiguration.HEIGHT),
             false,
-            this.nextPlaceId()
+            this.nextPlaceId(),
         );
         if (this.model.getPlaces().length === 0) {
             place.marking = 1;
@@ -177,7 +191,7 @@ export class ModelService {
         const transition = new Transition(
             this.alignPositionCoordinate(x, CanvasConfiguration.WIDTH),
             this.alignPositionCoordinate(y, CanvasConfiguration.HEIGHT),
-            this.nextTransitionId()
+            this.nextTransitionId(),
         );
         this.addTransition(transition);
         return transition;
@@ -272,10 +286,10 @@ export class ModelService {
         return arc;
     }
 
-    public newArcBreakpoint(arc: Arc<NodeElement, NodeElement>, position: DOMPoint, index: number,): void {
+    public newArcBreakpoint(arc: Arc<NodeElement, NodeElement>, position: DOMPoint, index: number): void {
         const breakPoint = new Breakpoint(
             this.alignPositionX(position.x),
-            this.alignPositionY(position.y)
+            this.alignPositionY(position.y),
         );
         arc.breakpoints.splice(index, 0, breakPoint);
         this.model.lastChanged = Date.now();
@@ -455,7 +469,7 @@ export class ModelService {
     public alignPosition(position: DOMPoint): DOMPoint {
         return new DOMPoint(
             this.alignPositionX(position.x),
-            this.alignPositionY(position.y)
+            this.alignPositionY(position.y),
         );
     }
 
@@ -531,8 +545,8 @@ export class ModelService {
             .map(dg =>
                 dg.getDataRefs()
                     .map(ref =>
-                        ModelerUtils.numberOfEventActions(ref.getEvents())
-                    ).reduce((sum, current) => sum + current, 0)
+                        ModelerUtils.numberOfEventActions(ref.getEvents()),
+                    ).reduce((sum, current) => sum + current, 0),
             ).reduce((sum, current) => sum + current, 0);
         return eventActions + dataRefActions;
     }
