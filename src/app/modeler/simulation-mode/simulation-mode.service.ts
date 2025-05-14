@@ -1,6 +1,6 @@
 import {Injectable, Injector} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {Arc, BasicSimulation, PetriNet, Place, Transition} from '@netgrif/petriflow';
+import {Arc, BasicSimulation, ImportUtils, PetriNet, Place, Transition} from '@netgrif/petriflow';
 import {TutorialService} from '../../tutorial/tutorial-service';
 import {ModelService} from '../services/model/model.service';
 import {EventSimulationTool} from './tool/event-simulation.tool';
@@ -24,7 +24,7 @@ import {SimulationMode} from './simulation-mode';
 import {CanvasPlace} from '../edit-mode/domain/canvas-place';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SimulationModeService extends CanvasModeService<SimulationTool> {
 
@@ -74,7 +74,7 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
             new ChangeDataTool(modelService, dialog, this, router, transitionService),
             new ResetPositionAndZoomTool(modelService, dialog, this, router, transitionService),
             new GridTool(modelService, dialog, this, router, transitionService),
-            new SwitchLabelTool(modelService, dialog, this, router, transitionService)
+            new SwitchLabelTool(modelService, dialog, this, router, transitionService),
         );
         this.switchTools.tools.forEach(t => t.bind());
         this.tools = [
@@ -82,12 +82,18 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
                 this.defaultTool,
                 new EventSimulationTool(modelService, dialog, this, router, transitionService),
             ),
-            this.switchTools
+            this.switchTools,
         ];
         this.originalModel = new BehaviorSubject<PetriNet>(this.modelService.model.clone());
         this.originalModel.subscribe(model => {
             this.data = new Map(model.getArcs().filter(a => !!a.reference && !!model.getData(a.reference))
-                .map(a => [a.reference, Number.parseInt(model.getData(a.reference).init?.value, 10) || 0]));
+                .map(a => {
+                    const data = model.getData(a.reference);
+                    if (ImportUtils.isInitValueNumber(data.init)) {
+                        return [a.reference, Number.parseInt(data.init.value, 10)];
+                    }
+                    return [a.reference, 0];
+                }));
             this.simulation = new BasicSimulation(model, this.data);
             this.renderModel(model);
         });

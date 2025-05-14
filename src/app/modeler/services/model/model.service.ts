@@ -6,12 +6,13 @@ import {
     DataType,
     DataVariable,
     I18nString,
+    ImportUtils,
     NodeElement,
     PetriNet,
     Place,
     Role,
     Transition,
-    XmlArcType
+    XmlArcType,
 } from '@netgrif/petriflow';
 import {ModelConfig} from './model-config';
 import {CanvasConfiguration} from '@netgrif/petri.svg';
@@ -29,7 +30,7 @@ import {ChangedRole} from '../../role-mode/role-detail/changed-role';
 import {ModelerUtils} from '../../modeler-utils';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ModelService {
     private readonly _model: BehaviorSubject<PetriNet>;
@@ -59,7 +60,7 @@ export class ModelService {
     ]);
 
     constructor(
-        private arcFactory: ArcFactory
+        private arcFactory: ArcFactory,
     ) {
         this._model = new BehaviorSubject<PetriNet>(undefined);
         this._placeChange = new Subject<PlaceChange>();
@@ -113,7 +114,7 @@ export class ModelService {
             this.alignPositionCoordinate(x, CanvasConfiguration.WIDTH),
             this.alignPositionCoordinate(y, CanvasConfiguration.HEIGHT),
             false,
-            this.nextPlaceId()
+            this.nextPlaceId(),
         );
         if (this.model.getPlaces().length === 0) {
             place.marking = 1;
@@ -177,7 +178,7 @@ export class ModelService {
         const transition = new Transition(
             this.alignPositionCoordinate(x, CanvasConfiguration.WIDTH),
             this.alignPositionCoordinate(y, CanvasConfiguration.HEIGHT),
-            this.nextTransitionId()
+            this.nextTransitionId(),
         );
         this.addTransition(transition);
         return transition;
@@ -272,10 +273,10 @@ export class ModelService {
         return arc;
     }
 
-    public newArcBreakpoint(arc: Arc<NodeElement, NodeElement>, position: DOMPoint, index: number,): void {
+    public newArcBreakpoint(arc: Arc<NodeElement, NodeElement>, position: DOMPoint, index: number): void {
         const breakPoint = new Breakpoint(
             this.alignPositionX(position.x),
-            this.alignPositionY(position.y)
+            this.alignPositionY(position.y),
         );
         arc.breakpoints.splice(index, 0, breakPoint);
         this.model.lastChanged = Date.now();
@@ -455,7 +456,7 @@ export class ModelService {
     public alignPosition(position: DOMPoint): DOMPoint {
         return new DOMPoint(
             this.alignPositionX(position.x),
-            this.alignPositionY(position.y)
+            this.alignPositionY(position.y),
         );
     }
 
@@ -483,8 +484,10 @@ export class ModelService {
         const referencedData = model.getData(id);
         if (referencedData) {
             if (referencedData.init.value) {
-                return Number(referencedData.init.value);
-                // TODO: NAB-326 check if isFinite and >= 0
+                if (ImportUtils.isInitValueNumber(referencedData.init)) {
+                    return Number(referencedData.init.value);
+                }
+                return 0;
             }
             return 0;
         }
@@ -531,8 +534,8 @@ export class ModelService {
             .map(dg =>
                 dg.getDataRefs()
                     .map(ref =>
-                        ModelerUtils.numberOfEventActions(ref.getEvents())
-                    ).reduce((sum, current) => sum + current, 0)
+                        ModelerUtils.numberOfEventActions(ref.getEvents()),
+                    ).reduce((sum, current) => sum + current, 0),
             ).reduce((sum, current) => sum + current, 0);
         return eventActions + dataRefActions;
     }
