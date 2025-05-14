@@ -365,6 +365,7 @@ export class ModelService {
         const role = this.model.getRole(newRole.id);
         role.id = newRole.role.id;
         role.title = newRole.role.title;
+        role.global = newRole.role.global;
         this.model.removeRole(newRole.id);
         this.model.addRole(role);
 
