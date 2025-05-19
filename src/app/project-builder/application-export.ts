@@ -27,11 +27,11 @@ export class ApplicationExport {
         const doc = this.xmlConstructor.createElement('cases');
         doc.setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         doc.setAttribute('xsi:noNamespaceSchemaLocation', ApplicationExport.PETRIFLOW_CASE_SCHEMA_URL);
-        this.exportApplicationElement(doc, application);
+        this.exportCaseElement(doc, application);
         return doc;
     }
 
-    private exportApplicationElement(doc: Element, application: Application): void {
+    private exportCaseElement(doc: Element, application: Application): void {
         const caseElement = this.xmlConstructor.createElement('case');
         this.exportUtils.exportTag(caseElement, 'title', application.name);
         this.exportData(caseElement, {id: 'app_id', type: DataType.TEXT, value: application.id});
