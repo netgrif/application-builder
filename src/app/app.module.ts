@@ -19,7 +19,7 @@ import {environment} from '../environments/environment';
 import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
 import {DialogRefactorComponent} from './dialogs/dialog-refactor/dialog-refactor.component';
 import {DialogErrorsComponent} from './dialogs/dialog-errors/dialog-errors.component';
-import {ExportService, ImportService} from '@netgrif/petriflow';
+import {ExportService, ExportUtils, ImportService} from '@netgrif/petriflow';
 import {SelectedTransitionService} from './modeler/selected-transition.service';
 import {I18nModeComponent} from './modeler/i18n-mode/i18n-mode.component';
 import {DialogDeadNetComponent} from './dialogs/dialog-dead-net/dialog-dead-net.component';
@@ -101,6 +101,7 @@ const appRoutes: Routes = [
     providers: [
         ImportService,
         ExportService,
+        ExportUtils,
         {provide: MatPaginatorIntl, useClass: BuilderPaginatorIntl},
         {provide: AuthenticationMethodService, useValue: NullAuthenticationService},
         {provide: ConfigurationService, useClass: AppBuilderConfigurationService},

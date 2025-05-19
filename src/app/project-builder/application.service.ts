@@ -85,6 +85,7 @@ export class ApplicationService implements OnDestroy {
             }
         }
         this._models.delete(processId);
+        this.updateProcesses();
         console.log('Process removed', processId);
     }
 
@@ -105,6 +106,7 @@ export class ApplicationService implements OnDestroy {
 
     addModel(net: PetriNet): void {
         this._models.set(net.id, net);
+        this.updateProcesses();
         this.historyService.save(`New model has been created.`);
         console.log('New process added', net.id);
     }
@@ -112,6 +114,7 @@ export class ApplicationService implements OnDestroy {
     addNewEmptyModel() {
         const newModel = this.modelService.newModel();
         this._models.set(newModel.id, newModel);
+        this.updateProcesses();
         // this.modelService.model = this.modelService.newModel();
         this.historyService.save(`New model has been created.`);
         console.log('New process added', newModel.id);
@@ -121,6 +124,7 @@ export class ApplicationService implements OnDestroy {
         if (!this._models.get(oldId)) return;
         this._models.set(newId, this._models.get(oldId));
         this._models.delete(oldId);
+        this.updateProcesses();
         console.log('Process id updated', oldId, '->', newId);
     }
 
@@ -131,5 +135,7 @@ export class ApplicationService implements OnDestroy {
         console.log('Current process switched', processId);
     }
 
-
+    updateProcesses(): void {
+        this._application.processes = [...this._models.keys()];
+    }
 }

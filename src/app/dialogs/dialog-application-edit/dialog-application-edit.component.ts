@@ -3,13 +3,15 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatDialog} from '@angular/material/dialog';
-import {ImportService} from '@netgrif/petriflow';
+import {ExportService, ExportUtils, ImportService} from '@netgrif/petriflow';
 import {ModelChange} from '../../modeler/history-mode/model/model/model-change';
 import {HistoryService} from '../../modeler/services/history/history.service';
 import Application from '../../project-builder/application';
 import ApplicationPackageImport from '../../project-builder/application-package-import';
 import {ApplicationService} from '../../project-builder/application.service';
 import {DialogModelEditComponent} from '../dialog-model-edit/dialog-model-edit.component';
+import {ApplicationPackageExport} from "../../project-builder/application-package-export";
+import {ModelExportService} from "../../modeler/services/model/model-export.service";
 
 @Component({
     selector: 'nab-dialog-application-edit',
@@ -23,25 +25,39 @@ export class DialogApplicationEditComponent implements OnInit {
     @ViewChild('appPkgFileInput') fileInput: ElementRef;
     public form: FormControl;
     public fileInputLoading: boolean;
+    public exportLoading: boolean;
     private packageImporter: ApplicationPackageImport;
+    private packageExporter: ApplicationPackageExport;
 
     constructor(
         public applicationService: ApplicationService,
         private importService: ImportService,
+        private exportService: ModelExportService,
         private dialog: MatDialog,
         private historyService: HistoryService,
+        private exportUtils: ExportUtils,
     ) {
         this.form = new FormControl('', [
             Validators.required,
         ]);
         this.fileInputLoading = false;
+        this.exportLoading = false;
         this.packageImporter = new ApplicationPackageImport(this.importService);
+        this.packageExporter = new ApplicationPackageExport(this.exportUtils, this.exportService);
     }
 
     ngOnInit(): void {
     }
 
-    exportApplication() {
+    exportApplication($event: Event) {
+        $event.stopPropagation();
+        this.exportLoading = true;
+        this.packageExporter.generatePackageFile(this.applicationService.application, this.applicationService.models)
+            .catch(err => {
+                console.error(err);
+            }).finally(() => {
+                this.exportLoading = false;
+            });
     }
 
     importApplication($event: Event) {

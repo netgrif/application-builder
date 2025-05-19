@@ -92,10 +92,16 @@
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
         </button>
     }
-    <button mat-stroked-button color="primary" (click)="exportApplication()">
-        <mat-icon>download</mat-icon>
-        <span>Download</span>
-    </button>
+    @if (!exportLoading) {
+        <button mat-stroked-button color="primary" (click)="exportApplication($event)">
+            <mat-icon>download</mat-icon>
+            <span>Download</span>
+        </button>
+    } @else {
+        <button mat-button disabled>
+            <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+        </button>
+    }
     <button mat-flat-button color="primary" (click)="importApplication($event)" mat-dialog-close>
         <mat-icon>done</mat-icon>
         <span>Save</span>
