@@ -1,10 +1,13 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatDialog} from '@angular/material/dialog';
+import {ImportService} from '@netgrif/petriflow';
 import {ModelChange} from '../../modeler/history-mode/model/model/model-change';
 import {HistoryService} from '../../modeler/services/history/history.service';
+import Application from '../../project-builder/application';
+import ApplicationPackageImport from '../../project-builder/application-package-import';
 import {ApplicationService} from '../../project-builder/application.service';
 import {DialogModelEditComponent} from '../dialog-model-edit/dialog-model-edit.component';
 
@@ -17,16 +20,22 @@ export class DialogApplicationEditComponent implements OnInit {
 
     readonly chipSeparators = [ENTER, COMMA] as const;
 
+    @ViewChild('appPkgFileInput') fileInput: ElementRef;
     public form: FormControl;
+    public fileInputLoading: boolean;
+    private packageImporter: ApplicationPackageImport;
 
     constructor(
         public applicationService: ApplicationService,
+        private importService: ImportService,
         private dialog: MatDialog,
         private historyService: HistoryService,
     ) {
         this.form = new FormControl('', [
             Validators.required,
         ]);
+        this.fileInputLoading = false;
+        this.packageImporter = new ApplicationPackageImport(this.importService);
     }
 
     ngOnInit(): void {
@@ -35,7 +44,24 @@ export class DialogApplicationEditComponent implements OnInit {
     exportApplication() {
     }
 
-    importApplication() {
+    importApplication($event: Event) {
+        $event.stopPropagation();
+        const file = ($event.target as HTMLInputElement).files[0];
+        this.fileInputLoading = true;
+        this.packageImporter.processPackageFile(file).then(result => {
+            console.log(result);
+            this.applicationService.application = result.application ? result.application : Application.getEmpty();
+            result.models.forEach(model => {
+                this.applicationService.addModel(model.model);
+            });
+            // TODO ukázať dialog s tím akú aplikáciu to načítalo
+        }).catch(error => {
+            console.error(error);
+            // TODO show error dialog
+        }).finally(() => {
+            this.fileInputLoading = false;
+        });
+        this.fileInput.nativeElement.value = '';
     }
 
     addTag(event: MatChipInputEvent): void {
