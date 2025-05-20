@@ -98,7 +98,7 @@ export class ApplicationService implements OnDestroy {
                 if (result === true) {
                     const oldId = this.modelService.model.id;
                     this.deleteModel(oldId);
-                    this.historyService.save(`Model ${oldId} has been deleted.`);
+                    this.historyService.save(`Model ${oldId} has been deleted.`, this.modelService.model);
                 }
             });
         }
@@ -107,7 +107,7 @@ export class ApplicationService implements OnDestroy {
     addModel(net: PetriNet): void {
         this._models.set(net.id, net);
         this.updateProcesses();
-        this.historyService.save(`New model has been created.`);
+        this.historyService.save(`New model has been created.`, net);
         console.log('New process added', net.id);
     }
 
@@ -116,7 +116,7 @@ export class ApplicationService implements OnDestroy {
         this._models.set(newModel.id, newModel);
         this.updateProcesses();
         // this.modelService.model = this.modelService.newModel();
-        this.historyService.save(`New model has been created.`);
+        this.historyService.save(`New model has been created.`, newModel);
         console.log('New process added', newModel.id);
     }
 
@@ -131,8 +131,14 @@ export class ApplicationService implements OnDestroy {
     switchActiveModel(processId: string) {
         if (!this._models.get(processId)) return;
         this.modelService.model = this._models.get(processId);
-        this.historyService.save(`Model ${this.modelService.model.id} has been changed.`);
+        this.historyService.save(`Model ${this.modelService.model.id} has been changed.`, this._models.get(processId));
         console.log('Current process switched', processId);
+    }
+
+    switchToFirst() {
+        if (this._application.processes.length > 0) {
+            this.modelService.model = this._models.get(this._application.processes[0]);
+        }
     }
 
     updateProcesses(): void {

@@ -51,15 +51,13 @@ export class DialogIntroComponent {
         this.fileInputLoading = true;
         this.packageImporter.processPackageFile(file).then(result => {
             console.log(result);
+            this.applicationService.models.clear();
             this.applicationService.application = result.application ? result.application : Application.getEmpty();
-
-            if (result.models.length > 0) {
-                this.modelService.model = result.models[0].model;
-            }
 
             result.models.forEach(model => {
                 this.applicationService.addModel(model.model);
             });
+            this.applicationService.switchToFirst();
 
             this.dialog.closeAll();
             if (result.models.some(netResult => netResult.errors.length !== 0 || netResult.warnings.length !== 0)) {

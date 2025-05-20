@@ -24,9 +24,10 @@ export class HistoryService {
         this._historyChange = new Subject();
     }
 
-    public save(message: string): void {
-        this.modelService.model.lastChanged = Date.now();
-        this.push(this.modelService.model.clone(), message);
+    public save(message: string, model?: PetriNet): void {
+        model = model ?? this.modelService.model;
+        model.lastChanged = Date.now();
+        this.push(model.clone(), message);
     }
 
     public undo(): void {

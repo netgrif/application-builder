@@ -78,13 +78,10 @@ export class DialogApplicationEditComponent implements OnInit {
             this.applicationService.models.clear();
             this.applicationService.application = result.application ? result.application : Application.getEmpty();
 
-            if (result.models.length > 0) {
-                this.modelService.model = result.models[0].model;
-            }
-
             result.models.forEach(model => {
                 this.applicationService.addModel(model.model);
             });
+            this.applicationService.switchToFirst();
 
             if (result.models.some(netResult => netResult.errors.length !== 0 || netResult.warnings.length !== 0)) {
                 this.dialog.open(DialogErrorsComponent, {
