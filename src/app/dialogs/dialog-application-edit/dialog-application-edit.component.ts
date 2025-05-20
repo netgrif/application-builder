@@ -3,7 +3,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatDialog} from '@angular/material/dialog';
-import {ExportService, ExportUtils, ImportService} from '@netgrif/petriflow';
+import {ExportUtils, ImportService} from '@netgrif/petriflow';
 import {ModelChange} from '../../modeler/history-mode/model/model/model-change';
 import {HistoryService} from '../../modeler/services/history/history.service';
 import Application from '../../project-builder/application';
@@ -12,6 +12,13 @@ import {ApplicationService} from '../../project-builder/application.service';
 import {DialogModelEditComponent} from '../dialog-model-edit/dialog-model-edit.component';
 import {ApplicationPackageExport} from "../../project-builder/application-package-export";
 import {ModelExportService} from "../../modeler/services/model/model-export.service";
+import {DialogErrorsComponent} from "../dialog-errors/dialog-errors.component";
+import {ModelService} from "../../modeler/services/model/model.service";
+import {
+    SnackBarHorizontalPosition,
+    SnackBarService,
+    SnackBarVerticalPosition
+} from "@netgrif/components-core";
 
 @Component({
     selector: 'nab-dialog-application-edit',
@@ -36,6 +43,8 @@ export class DialogApplicationEditComponent implements OnInit {
         private dialog: MatDialog,
         private historyService: HistoryService,
         private exportUtils: ExportUtils,
+        private snackBarService: SnackBarService,
+        private modelService: ModelService
     ) {
         this.form = new FormControl('', [
             Validators.required,
@@ -66,14 +75,32 @@ export class DialogApplicationEditComponent implements OnInit {
         this.fileInputLoading = true;
         this.packageImporter.processPackageFile(file).then(result => {
             console.log(result);
+            this.applicationService.models.clear();
             this.applicationService.application = result.application ? result.application : Application.getEmpty();
+
+            if (result.models.length > 0) {
+                this.modelService.model = result.models[0].model;
+            }
+
             result.models.forEach(model => {
                 this.applicationService.addModel(model.model);
             });
-            // TODO ukázať dialog s tím akú aplikáciu to načítalo
+
+            if (result.models.some(netResult => netResult.errors.length !== 0 || netResult.warnings.length !== 0)) {
+                this.dialog.open(DialogErrorsComponent, {
+                    width: '60%',
+                    panelClass: "dialog-width-60",
+                    data: {
+                        models: result.models
+                    }
+                });
+            } else {
+                this.snackBarService.openSuccessSnackBar("Application " + result.application.name + " imported successfully.", SnackBarVerticalPosition.BOTTOM, SnackBarHorizontalPosition.CENTER, 5000);
+            }
         }).catch(error => {
             console.error(error);
-            // TODO show error dialog
+            this.snackBarService.openErrorSnackBar(error.message, SnackBarVerticalPosition.BOTTOM, SnackBarHorizontalPosition.CENTER);
+            this.modelService.model = undefined;
         }).finally(() => {
             this.fileInputLoading = false;
         });

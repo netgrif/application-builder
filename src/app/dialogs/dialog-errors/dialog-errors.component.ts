@@ -1,10 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {PetriNetResult} from "@netgrif/petriflow";
 
 export interface DialogErrorsData {
-    errors: Array<string>;
-    warnings: Array<string>;
-    info: Array<string>;
+    models: PetriNetResult[];
 }
 
 @Component({

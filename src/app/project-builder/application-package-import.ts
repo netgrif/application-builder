@@ -1,6 +1,7 @@
 import {ImportService} from '@netgrif/petriflow';
 import JSZip, {JSZipObject} from 'jszip';
 import ApplicationImport, {ApplicationImportResult} from './application-import';
+import {DialogErrorsComponent} from "../dialogs/dialog-errors/dialog-errors.component";
 
 export default class ApplicationPackageImport {
 
@@ -45,8 +46,10 @@ export default class ApplicationPackageImport {
             const processXml = await process.async('text');
             const netResult = this.modelImporter.parseFromXml(processXml);
             result.models.push(netResult);
-            if (netResult.errors.length !== 0) console.error(netResult.errors);
-            // TODO ošetriť errory, vypísanie do dialogu
+            if (netResult.errors.length !== 0) {
+                console.log('Petri net import errors:');
+                console.error(netResult.errors);
+            }
         }
         if (result.errors.length !== 0) return Promise.reject(result.errors);
         return result;

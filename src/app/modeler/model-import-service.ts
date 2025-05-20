@@ -34,9 +34,7 @@ export class ModelImportService {
                 width: '60%',
                 panelClass: "dialog-width-60",
                 data: {
-                    errors: petriNetResult.errors,
-                    warnings: petriNetResult.warnings,
-                    info: petriNetResult.info
+                    models: [petriNetResult]
                 }
             });
         } else {

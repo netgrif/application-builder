@@ -5,6 +5,14 @@ import Application from '../../project-builder/application';
 import ApplicationPackageImport from '../../project-builder/application-package-import';
 import {ApplicationService} from '../../project-builder/application.service';
 import {DialogApplicationEditComponent} from '../dialog-application-edit/dialog-application-edit.component';
+import {ModelService} from "../../modeler/services/model/model.service";
+import {DialogErrorsComponent} from "../dialog-errors/dialog-errors.component";
+import {
+    ErrorSnackBarComponent,
+    SnackBarHorizontalPosition,
+    SnackBarService,
+    SnackBarVerticalPosition
+} from "@netgrif/components-core";
 
 @Component({
     selector: 'nab-dialog-intro',
@@ -23,6 +31,8 @@ export class DialogIntroComponent {
         public applicationService: ApplicationService,
         private dialog: MatDialog,
         private importService: ImportService,
+        private modelService: ModelService,
+        private snackBarService: SnackBarService,
     ) {
         this.packageImporter = new ApplicationPackageImport(this.importService);
     }
@@ -42,14 +52,31 @@ export class DialogIntroComponent {
         this.packageImporter.processPackageFile(file).then(result => {
             console.log(result);
             this.applicationService.application = result.application ? result.application : Application.getEmpty();
+
+            if (result.models.length > 0) {
+                this.modelService.model = result.models[0].model;
+            }
+
             result.models.forEach(model => {
                 this.applicationService.addModel(model.model);
             });
+
             this.dialog.closeAll();
-            // TODO ukázať dialog s tím akú aplikáciu to načítalo
+            if (result.models.some(netResult => netResult.errors.length !== 0 || netResult.warnings.length !== 0)) {
+                this.dialog.open(DialogErrorsComponent, {
+                    width: '60%',
+                    panelClass: "dialog-width-60",
+                    data: {
+                        models: result.models
+                    }
+                });
+            } else {
+                this.snackBarService.openSuccessSnackBar("Application " + result.application.name + " imported successfully.", SnackBarVerticalPosition.BOTTOM, SnackBarHorizontalPosition.CENTER, 5000);
+            }
         }).catch(error => {
             console.error(error);
-            // TODO show error dialog
+            this.snackBarService.openErrorSnackBar(error.message, SnackBarVerticalPosition.BOTTOM, SnackBarHorizontalPosition.CENTER);
+            this.modelService.model = undefined;
         }).finally(() => {
             this.fileInputLoading = false;
         });
