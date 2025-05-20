@@ -10,5 +10,5 @@ export function normalize(str: string): string {
      * Marks Unicode block.
      *
      * */
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(" ", "_");
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\W]+/g,"_");
 }

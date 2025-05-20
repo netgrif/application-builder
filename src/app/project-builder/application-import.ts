@@ -42,7 +42,7 @@ export default class ApplicationImport {
             const id = dataField.getElementsByTagName('id').item(0)?.textContent;
             switch (id) {
                 case 'app_id':
-                    app.id = normalize(dataField.getElementsByTagName('value').item(0)?.textContent, app);
+                    app.id = normalize(dataField.getElementsByTagName('value').item(0)?.textContent);
                     break;
                 case 'name':
                     if (!app.name) {
