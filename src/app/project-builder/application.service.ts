@@ -7,6 +7,7 @@ import {DialogDeleteModelComponent} from '../dialogs/dialog-delete-model/dialog-
 import {HistoryService} from '../modeler/services/history/history.service';
 import {ModelService} from '../modeler/services/model/model.service';
 import Application from './application';
+import {SimulationModeService} from "../modeler/simulation-mode/simulation-mode.service";
 
 @Injectable({
     providedIn: 'root',
@@ -23,6 +24,7 @@ export class ApplicationService implements OnDestroy {
         private modelService: ModelService,
         private historyService: HistoryService,
         private dialog: MatDialog,
+        private simulationModeService: SimulationModeService
     ) {
         this._models = new Map<string, PetriNet>();
         this._modelSubscription = modelService.modelSubject.pipe(
@@ -131,6 +133,7 @@ export class ApplicationService implements OnDestroy {
     switchActiveModel(processId: string) {
         if (!this._models.get(processId)) return;
         this.modelService.model = this._models.get(processId);
+        this.simulationModeService.originalModel.next(this._models.get(processId));
         this.historyService.save(`Model ${this.modelService.model.id} has been changed.`, this._models.get(processId));
         console.log('Current process switched', processId);
     }

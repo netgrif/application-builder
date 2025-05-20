@@ -26,7 +26,7 @@ export class ApplicationPackageExport {
         const zip = this.createApplicationZip(manifestXml, modelXmlMap);
         return zip.generateAsync({ type:"blob" })
             .then(content => {
-                this.startDownload(content, application.name + '.zip');
+                this.startDownload(content, application.id + '.zip');
             });
     }
 

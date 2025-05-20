@@ -1,5 +1,7 @@
 import {PetriNetResult} from '@netgrif/petriflow';
 import Application from './application';
+import {sanitizeIdentifier} from "@angular/compiler";
+import {normalize} from "./normalizer";
 
 export interface ApplicationImportResult {
     application?: Application;
@@ -40,7 +42,7 @@ export default class ApplicationImport {
             const id = dataField.getElementsByTagName('id').item(0)?.textContent;
             switch (id) {
                 case 'app_id':
-                    app.id = dataField.getElementsByTagName('value').item(0)?.textContent;
+                    app.id = normalize(dataField.getElementsByTagName('value').item(0)?.textContent, app);
                     break;
                 case 'name':
                     if (!app.name) {
