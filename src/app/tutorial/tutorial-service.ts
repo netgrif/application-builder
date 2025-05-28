@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
-import {MortgageService} from '../modeler/mortgage.service';
 import {Router} from '@angular/router';
 import {TutorialStep} from './tutorial-step';
-import {ModelService} from '../modeler/services/model/model.service';
 
 @Injectable({
     providedIn: 'root'
@@ -27,24 +25,16 @@ export class TutorialService {
     bug: TutorialStep;
     steps: Array<string>;
     onClose: () => void;
-    mortgageLoaded: boolean;
 
     constructor(
-        private mortgageService: MortgageService,
         private router: Router,
-        private modelService: ModelService
     ) {
         this.welcome = TutorialStep.of(
             'welcome',
             'Welcome to the Netgrif Application Builder',
             'Netgrif Application Builder (NAB) is the tool for building process driven applications using Petriflow language. NAB is composed of several modules that help you in different stages of application development.',
             () => {
-                this.mortgageLoaded = false;
-                if (modelService.model.getTransitions().length === 0 && modelService.model.getPlaces().length === 0 && modelService.model.getArcs().length === 0 &&
-                    modelService.model.getDataSet().length === 0 && modelService.model.getTransactions().length === 0 && modelService.model.getRoles().length === 0) {
-                    this.mortgageService.loadModel();
-                    this.mortgageLoaded = true;
-                }
+                // TODO: release/3.0 - load mortgage - cyclic dependency through MortgageService
                 this.router.navigate(['/modeler']);
             },
             () => {
@@ -235,9 +225,6 @@ export class TutorialService {
         ];
         this.onClose = () => {
             this.router.navigate(['/modeler']);
-            if (this.mortgageLoaded) {
-                this.modelService.model = this.modelService.newModel(); // TODO toto vytvorí nový model ktorý asi nie je treba
-            }
         };
     }
 }

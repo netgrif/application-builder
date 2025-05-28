@@ -16,7 +16,6 @@ import {RoleModeComponent} from './modeler/role-mode/role-mode.component';
 import {ActionsModeComponent} from './modeler/actions-mode/actions-mode.component';
 import {MatIconRegistry} from '@angular/material/icon';
 import {environment} from '../environments/environment';
-import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
 import {DialogRefactorComponent} from './dialogs/dialog-refactor/dialog-refactor.component';
 import {DialogErrorsComponent} from './dialogs/dialog-errors/dialog-errors.component';
 import {ExportService, ExportUtils, ImportService} from '@netgrif/petriflow';
@@ -67,7 +66,6 @@ const appRoutes: Routes = [
 @NgModule({
     declarations: [
         AppComponent,
-        DialogConfirmComponent,
         DialogRefactorComponent,
         DialogErrorsComponent,
         DialogDeadNetComponent,

@@ -5,7 +5,6 @@ import {NetgrifApplicationEngine} from '@netgrif/components-core/';
 import {JoyrideService} from 'ngx-joyride';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 import {DialogApplicationEditComponent} from './dialogs/dialog-application-edit/dialog-application-edit.component';
-import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
 import {DialogIntroComponent} from './dialogs/dialog-intro/dialog-intro.component';
 import {ModelImportService} from './modeler/model-import-service';
 import {MortgageService} from './modeler/mortgage.service';
@@ -30,12 +29,10 @@ export class AppComponent implements AfterViewInit {
 
     constructor(
         config: AppBuilderConfigurationService,
-        private router: Router,
         private matDialog: MatDialog,
         private readonly joyrideService: JoyrideService,
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
-        private importService: ModelImportService,
         private db: DatabaseStorageService,
         public modelService: ModelService,
         public applicationService: ApplicationService,
@@ -80,14 +77,7 @@ export class AppComponent implements AfterViewInit {
     }
 
     addMortgage() {
-        const dialogRef = this.matDialog.open(DialogConfirmComponent);
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result === true) {
-                this._mortgageService.loadModel();
-                this.router.navigate(['/modeler']);
-            }
-        });
+        this._mortgageService.loadModel();
     }
 
     help() {
