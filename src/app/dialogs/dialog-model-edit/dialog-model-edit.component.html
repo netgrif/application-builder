@@ -1,9 +1,10 @@
-<h2 mat-dialog-title>Edit model</h2>
+<h2 mat-dialog-title>Edit process</h2>
 <mat-dialog-content class="netgrif-input">
     <mat-form-field fxFlex>
         <mat-label>Id</mat-label>
         <input type="text" matInput [(ngModel)]="model.model.id" [formControl]="idCtrl">
         <mat-error *ngIf="idCtrl.errors && idCtrl.errors.required">Id is required</mat-error>
+        <mat-error *ngIf="idCtrl.errors && idCtrl.errors.validUnique">Process with given id already exists in application</mat-error>
     </mat-form-field>
     <mat-form-field fxFlex>
         <mat-label>Version</mat-label>
