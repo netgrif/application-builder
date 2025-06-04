@@ -4,17 +4,20 @@
         <div fxLayout="row">
             <mat-form-field fxFlex>
                 <mat-label>Id</mat-label>
-                <input type="text" matInput [(ngModel)]="applicationService.application.id">
+                <input type="text" matInput [(ngModel)]="applicationService.application.id" [formControl]="idCtrl">
+                <mat-error *ngIf="idCtrl.errors && idCtrl.errors.required">Id is required</mat-error>
             </mat-form-field>
             <div fxFlex="1"></div>
             <mat-form-field fxFlex>
                 <mat-label>Version</mat-label>
-                <input type="text" matInput [(ngModel)]="applicationService.application.version">
+                <input type="text" matInput [(ngModel)]="applicationService.application.version" [formControl]="versionCtrl">
+                <mat-error *ngIf="versionCtrl.errors && versionCtrl.errors.required">Version is required</mat-error>
             </mat-form-field>
         </div>
         <mat-form-field fxFlex>
             <mat-label>Name</mat-label>
-            <input type="text" matInput [(ngModel)]="applicationService.application.name">
+            <input type="text" matInput [(ngModel)]="applicationService.application.name" [formControl]="nameCtrl">
+            <mat-error *ngIf="nameCtrl.errors && nameCtrl.errors.required">Name is required</mat-error>
         </mat-form-field>
         <mat-form-field fxFlex>
             <mat-label>Description</mat-label>
@@ -79,7 +82,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     @if (!fileInputLoading) {
-        <button mat-button (click)="appPkgFileInput.click()">
+        <button mat-stroked-button (click)="appPkgFileInput.click()" color="primary">
             <input #appPkgFileInput
                    type="file" accept="application/zip"
                    (change)="importApplication($event)"
@@ -93,7 +96,8 @@
         </button>
     }
     @if (!exportLoading) {
-        <button mat-stroked-button color="primary" (click)="exportApplication($event)">
+        <button mat-stroked-button color="primary" (click)="exportApplication($event)"
+                [disabled]="hasErrors()">
             <mat-icon>download</mat-icon>
             <span>Download</span>
         </button>
@@ -102,7 +106,8 @@
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
         </button>
     }
-    <button mat-flat-button color="primary" mat-dialog-close>
+    <button mat-flat-button color="primary" mat-dialog-close
+            [disabled]="hasErrors()">
         <mat-icon>done</mat-icon>
         <span>Save</span>
     </button>
