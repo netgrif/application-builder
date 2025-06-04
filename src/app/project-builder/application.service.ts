@@ -3,13 +3,12 @@ import {MatDialog} from '@angular/material/dialog';
 import {PetriNet} from '@netgrif/petriflow';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
-import {DialogDeleteModelComponent} from '../dialogs/dialog-delete-model/dialog-delete-model.component';
 import {HistoryService} from '../modeler/services/history/history.service';
 import {ModelService} from '../modeler/services/model/model.service';
 import Application from './application';
 import {SimulationModeService} from "../modeler/simulation-mode/simulation-mode.service";
 import {SequenceGenerator} from '../modeler/services/model/sequence-generator';
-import { ModelConfig } from '../modeler/services/model/model-config';
+import {ModelConfig} from '../modeler/services/model/model-config';
 
 @Injectable({
     providedIn: 'root',
@@ -59,6 +58,10 @@ export class ApplicationService implements OnDestroy {
         return this._models;
     }
 
+    get modelList(): Array<PetriNet> {
+        return Array.from(this._models.values());
+    }
+
     public nextModelId(): string {
         const id = this._modelIdSequence.next();
         if (this.models.has(id)) {
@@ -95,19 +98,10 @@ export class ApplicationService implements OnDestroy {
         console.log('Process removed', processId);
     }
 
-    removeModel(processId: string, confirmationDialog = true) { // TODO remove cez app edit dialog nefunguje, vymaze iný prvok
-        if (!confirmationDialog) {
-            this.deleteModel(processId);
-        } else {
-            const dialogRef = this.dialog.open(DialogDeleteModelComponent);
-            dialogRef.afterClosed().subscribe(result => {
-                if (result === true) {
-                    const oldId = this.modelService.model.id;
-                    this.deleteModel(oldId);
-                    this.historyService.save(`Model ${oldId} has been deleted.`, this.modelService.model);
-                }
-            });
-        }
+    removeModel(processId: string) {
+        const model = this.getModel(processId);
+        this.deleteModel(processId);
+        this.historyService.save(`Model ${processId} has been deleted.`, model);
     }
 
     addModel(net: PetriNet): void {

@@ -1,5 +1,5 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatDialog} from '@angular/material/dialog';
@@ -14,11 +14,8 @@ import {ApplicationPackageExport} from "../../project-builder/application-packag
 import {ModelExportService} from "../../modeler/services/model/model-export.service";
 import {DialogErrorsComponent} from "../dialog-errors/dialog-errors.component";
 import {ModelService} from "../../modeler/services/model/model.service";
-import {
-    SnackBarHorizontalPosition,
-    SnackBarService,
-    SnackBarVerticalPosition
-} from "@netgrif/components-core";
+import {SnackBarHorizontalPosition, SnackBarService, SnackBarVerticalPosition} from "@netgrif/components-core";
+import {DialogDeleteModelComponent} from '../dialog-delete-model/dialog-delete-model.component';
 
 @Component({
     selector: 'nab-dialog-application-edit',
@@ -71,8 +68,8 @@ export class DialogApplicationEditComponent {
             .catch(err => {
                 console.error(err);
             }).finally(() => {
-                this.exportLoading = false;
-            });
+            this.exportLoading = false;
+        });
     }
 
     importApplication($event: Event) {
@@ -136,8 +133,17 @@ export class DialogApplicationEditComponent {
                 }
                 this.applicationService.models.set(changedModel.model.id, changedModel.model);
                 if (changedModel) {
-                    this.historyService.save(`Model has been changed.`, changedModel.model); // TODO sprav historiu pre všetky procesy
+                    this.historyService.save(`Model has been changed.`, changedModel.model);
                 }
+            }
+        });
+    }
+
+    removeModel(processId: string) {
+        const dialogRef = this.dialog.open(DialogDeleteModelComponent);
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.applicationService.removeModel(processId);
             }
         });
     }
