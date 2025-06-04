@@ -6,6 +6,7 @@ import {
     DataType,
     DataVariable,
     I18nString,
+    ImportUtils,
     NodeElement,
     PetriNet,
     Place,
@@ -379,6 +380,7 @@ export class ModelService {
         const role = this.model.getRole(newRole.id);
         role.id = newRole.role.id;
         role.title = newRole.role.title;
+        role.global = newRole.role.global;
         this.model.removeRole(newRole.id);
         this.model.addRole(role);
 
@@ -497,8 +499,10 @@ export class ModelService {
         const referencedData = model.getData(id);
         if (referencedData) {
             if (referencedData.init.value) {
-                return Number(referencedData.init.value);
-                // TODO: NAB-326 check if isFinite and >= 0
+                if (ImportUtils.isInitValueNumber(referencedData.init)) {
+                    return Number(referencedData.init.value);
+                }
+                return 0;
             }
             return 0;
         }
