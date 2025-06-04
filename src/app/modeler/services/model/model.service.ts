@@ -484,7 +484,7 @@ export class ModelService {
         // TODO: NAB-326 probably move to petriflow.js
         const referencedData = model.getData(id);
         if (referencedData) {
-            if (referencedData.init.value) {
+            if (referencedData.init?.value) {
                 if (ImportUtils.isInitValueNumber(referencedData.init)) {
                     return Number(referencedData.init.value);
                 }
