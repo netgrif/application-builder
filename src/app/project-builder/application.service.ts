@@ -8,6 +8,8 @@ import {HistoryService} from '../modeler/services/history/history.service';
 import {ModelService} from '../modeler/services/model/model.service';
 import Application from './application';
 import {SimulationModeService} from "../modeler/simulation-mode/simulation-mode.service";
+import {SequenceGenerator} from '../modeler/services/model/sequence-generator';
+import { ModelConfig } from '../modeler/services/model/model-config';
 
 @Injectable({
     providedIn: 'root',
@@ -16,8 +18,7 @@ export class ApplicationService implements OnDestroy {
 
     private readonly _models: Map<string, PetriNet>;
     private _application: Application;
-    private _modelIdSequence = 0;
-
+    private _modelIdSequence = new SequenceGenerator(`${ModelConfig.IDENTIFIER}_`);
     private _modelSubscription: Subscription;
 
     constructor(
@@ -58,8 +59,12 @@ export class ApplicationService implements OnDestroy {
         return this._models;
     }
 
-    getAndIncrementModelSequence(): number {
-        return this._modelIdSequence++;
+    public nextModelId(): string {
+        const id = this._modelIdSequence.next();
+        if (this.models.has(id)) {
+            return this.nextModelId();
+        }
+        return id;
     }
 
     getModel(id: string): PetriNet {
@@ -74,17 +79,16 @@ export class ApplicationService implements OnDestroy {
         this._application = Application.getEmpty();
         this.addNewEmptyModel();
         console.log('New application created', this._application);
+        this._modelIdSequence.reset([]);
         return this._application;
     }
 
     private deleteModel(processId: string) {
         if (this.modelService.model.id === processId) {
-            if (this._models.size > 1) {
-                this.switchActiveModel(this._models.keys().next().value);
-            } else {
+            if (this._models.size <= 1) {
                 this.addNewEmptyModel(); // nemôže byť aplikácie bez procesu
-                this.switchActiveModel(this._models.keys().next().value);
             }
+            this.switchActiveModel(this._models.keys().next().value);
         }
         this._models.delete(processId);
         this.updateProcesses();
@@ -114,19 +118,17 @@ export class ApplicationService implements OnDestroy {
     }
 
     addNewEmptyModel() {
-        const newModel = this.modelService.newModel();
-        this._models.set(newModel.id, newModel);
-        this.updateProcesses();
-        // this.modelService.model = this.modelService.newModel();
-        this.historyService.save(`New model has been created.`, newModel);
-        console.log('New process added', newModel.id);
+        this.addModel(this.modelService.newModel());
     }
 
     updateModelId(oldId: string, newId: string) {
-        if (!this._models.get(oldId)) return;
+        if (!this._models.get(oldId)) {
+            return;
+        }
         this._models.set(newId, this._models.get(oldId));
         this._models.delete(oldId);
         this.updateProcesses();
+        this.historyService.changeId(oldId, newId);
         console.log('Process id updated', oldId, '->', newId);
     }
 

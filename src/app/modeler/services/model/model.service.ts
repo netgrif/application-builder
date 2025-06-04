@@ -98,7 +98,7 @@ export class ModelService {
 
     public newModel(): PetriNet {
         const model = new PetriNet();
-        model.id = ModelConfig.IDENTIFIER + '-' + this.appService.getAndIncrementModelSequence();
+        model.id = this.appService.nextModelId();
         model.version = ModelConfig.VERSION;
         model.title = new I18nString(ModelConfig.TITLE);
         model.initials = ModelConfig.INITIALS;

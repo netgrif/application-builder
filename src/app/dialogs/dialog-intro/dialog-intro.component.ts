@@ -38,7 +38,6 @@ export class DialogIntroComponent {
     }
 
     createNewApplication() {
-        this.applicationService.createApplication();
         this.dialog.open(DialogApplicationEditComponent, {
             width: '50%',
             panelClass: 'dialog-width-50',

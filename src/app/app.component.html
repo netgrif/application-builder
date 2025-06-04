@@ -19,8 +19,8 @@
                         <mat-action-list class="menu-items">
                             @for (process of applicationService.models; track process[0]) {
                                 <!--TODO trieda active-process nefunguje pri prvotnej inicializácii-->
+<!--                                    [class.active-process]="process[0] === modelService.model.id"-->
                                 <mat-list-item class="field-list-mat-list-item"
-                                               [class.active-process]="process[0] === modelService.model.id"
                                                (click)="switchToProcess(process[0])"
                                                [matTooltip]="'['+process[0]+'] '+process[1].title.value"
                                                matTooltipPosition="right">

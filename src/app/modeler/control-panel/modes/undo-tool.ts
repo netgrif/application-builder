@@ -22,7 +22,7 @@ export class UndoTool extends Tool {
             )
         );
         this.disabled.next(true);
-        history.historyChange.subscribe(change => {
+        history.historyChange().subscribe(change => {
             this.disabled.next(change.size === 0 || change.head === 0);
         });
     }

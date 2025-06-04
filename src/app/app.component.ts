@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, HostListener} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {NetgrifApplicationEngine} from '@netgrif/components-core/';
@@ -18,7 +18,7 @@ import {TutorialService} from './tutorial/tutorial-service';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
     title = 'Netgrif Application Builder';
     config: NetgrifApplicationEngine;
 
@@ -38,6 +38,11 @@ export class AppComponent implements AfterViewInit {
         public applicationService: ApplicationService,
     ) {
         this.config = config.get();
+    }
+
+    ngOnInit():void {
+        this.applicationService.createApplication();
+        this.applicationService.switchToFirst();
     }
 
     ngAfterViewInit(): void {

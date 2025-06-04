@@ -16,7 +16,7 @@ export class HistoryMasterDetailService extends AbstractMasterDetailService<Hist
     }
 
     public get allData(): Array<HistoryChange<PetriNet>> {
-        return this._historyService.history.memory;
+        return this._historyService.history().memory;
     }
 
     public create(): HistoryChange<PetriNet> {

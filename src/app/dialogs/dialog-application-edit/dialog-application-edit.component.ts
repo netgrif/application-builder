@@ -130,7 +130,7 @@ export class DialogApplicationEditComponent implements OnInit {
                 }
                 this.applicationService.models.set(changedModel.model.id, changedModel.model);
                 if (changedModel) {
-                    this.historyService.save(`Model has been changed.`); // TODO sprav historiu pre všetky procesy
+                    this.historyService.save(`Model has been changed.`, changedModel.model); // TODO sprav historiu pre všetky procesy
                 }
             }
         });
