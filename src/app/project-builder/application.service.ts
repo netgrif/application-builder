@@ -1,5 +1,4 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {PetriNet} from '@netgrif/petriflow';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
@@ -9,6 +8,8 @@ import Application from './application';
 import {SimulationModeService} from "../modeler/simulation-mode/simulation-mode.service";
 import {SequenceGenerator} from '../modeler/services/model/sequence-generator';
 import {ModelConfig} from '../modeler/services/model/model-config';
+import {Router} from '@angular/router';
+import {EditModeService} from '../modeler/edit-mode/edit-mode.service';
 
 @Injectable({
     providedIn: 'root',
@@ -23,8 +24,9 @@ export class ApplicationService implements OnDestroy {
     constructor(
         private modelService: ModelService,
         private historyService: HistoryService,
-        private dialog: MatDialog,
-        private simulationModeService: SimulationModeService
+        private simulationModeService: SimulationModeService,
+        private editModeService: EditModeService,
+        private router: Router,
     ) {
         this._models = new Map<string, PetriNet>();
         this._modelSubscription = modelService.modelSubject.pipe(
@@ -111,8 +113,10 @@ export class ApplicationService implements OnDestroy {
         console.log('New process added', net.id);
     }
 
-    addNewEmptyModel() {
-        this.addModel(this.modelService.newModel());
+    addNewEmptyModel(): PetriNet {
+        const newModel = this.modelService.newModel()
+        this.addModel(newModel);
+        return newModel;
     }
 
     updateModelId(oldId: string, newId: string) {
@@ -127,16 +131,19 @@ export class ApplicationService implements OnDestroy {
     }
 
     switchActiveModel(processId: string) {
-        if (!this._models.get(processId)) return;
+        if (!this._models.get(processId)) {
+            return;
+        }
         this.modelService.model = this._models.get(processId);
         this.simulationModeService.originalModel.next(this._models.get(processId));
-        this.historyService.save(`Model ${this.modelService.model.id} has been changed.`, this._models.get(processId));
+        this.router.navigate(['/modeler']);
+        this.editModeService.renderModel();
         console.log('Current process switched', processId);
     }
 
     switchToFirst() {
         if (this._application.processes.length > 0) {
-            this.modelService.model = this._models.get(this._application.processes[0]);
+            this.switchActiveModel(this._application.processes[0]);
         }
     }
 

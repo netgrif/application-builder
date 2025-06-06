@@ -1,12 +1,10 @@
 import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {Router} from '@angular/router';
 import {NetgrifApplicationEngine} from '@netgrif/components-core/';
 import {JoyrideService} from 'ngx-joyride';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 import {DialogApplicationEditComponent} from './dialogs/dialog-application-edit/dialog-application-edit.component';
 import {DialogIntroComponent} from './dialogs/dialog-intro/dialog-intro.component';
-import {ModelImportService} from './modeler/model-import-service';
 import {MortgageService} from './modeler/mortgage.service';
 import {ModelService} from './modeler/services/model/model.service';
 import {ApplicationService} from './project-builder/application.service';
@@ -40,7 +38,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.config = config.get();
     }
 
-    ngOnInit():void {
+    ngOnInit(): void {
         this.applicationService.createApplication();
         this.applicationService.switchToFirst();
     }
@@ -57,21 +55,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         /*const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
         if (!oldModel) {
             return;
-        }
-        const dialogRef = this.matDialog.open(DialogLocalStorageModelComponent, {
-            data: {
-                id: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.ID),
-                timestamp: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TIMESTAMP),
-                title: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TITLE),
-            },
-        });
-        dialogRef.afterClosed().subscribe(result => {
-            if (result === true) {
-                this.importService.importFromXml(oldModel);
-            } else if (result === false) {
-                localStorage.clear();
-            }
-        });*/
+        }*/
     }
 
     openApplicationDialog() {
@@ -100,8 +84,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         window.open(url, '_blank');
     }
 
-    switchToProcess(processId: string) {
+    switchToProcess(processId: string): void {
         this.applicationService.switchActiveModel(processId);
     }
 
+    addNewEmptyModel(): void {
+        const model = this.applicationService.addNewEmptyModel();
+        this.applicationService.switchActiveModel(model.id);
+    }
 }
