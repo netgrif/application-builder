@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {DataType, DataVariable} from '@netgrif/petriflow';
+import {DataType, DataVariable, I18nWithDynamic} from '@netgrif/petriflow';
 import {ModelService} from '../services/model/model.service';
 import {AbstractMasterDetailService} from '../components/master-detail/abstract-master-detail.service';
 import {Sort} from '@angular/material/sort';
@@ -22,6 +22,7 @@ export class DataMasterDetailService extends AbstractMasterDetailService<DataVar
 
     public create(): DataVariable {
         const data = new DataVariable(this._modelService.nextDataId(), DataType.TEXT);
+        data.init = new I18nWithDynamic('', '', false);
         this._modelService.model.addData(data);
         this._create.next(data);
         this._historyService.save(`DataVariable ${data.id} has been created.`)

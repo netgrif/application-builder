@@ -16,7 +16,7 @@
     .logo {
         display: flex;
         justify-content: center;
-        padding-top: 0;
+        padding-top: 1px;
     }
 
     mat-action-list {
@@ -86,12 +86,12 @@
     padding-top: 0;
 
     .mdc-list-item {
-        //padding-left: 9px;
-        //padding-right: 9px;
+        padding-left: 9px;
+        padding-right: 9px;
         height: 42px;
     }
 }
 
-.active-process {
-    background-color: map-get(netgif-theme.$netgrif-blue, 900);
+.tab-icon {
+    margin-right: 8px;
 }

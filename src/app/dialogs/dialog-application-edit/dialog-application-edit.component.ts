@@ -64,6 +64,7 @@ export class DialogApplicationEditComponent {
     exportApplication($event: Event) {
         $event.stopPropagation();
         this.exportLoading = true;
+        // TODO: NAB-380 - export tags?
         this.packageExporter.generatePackageFile(this.applicationService.application, this.applicationService.models)
             .catch(err => {
                 console.error(err);

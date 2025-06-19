@@ -10,6 +10,7 @@ import {ModelService} from './modeler/services/model/model.service';
 import {ApplicationService} from './project-builder/application.service';
 import {DatabaseStorageService} from './project-builder/database-storage.service';
 import {TutorialService} from './tutorial/tutorial-service';
+import {MatTabChangeEvent} from '@angular/material/tabs';
 
 @Component({
     selector: 'nab-root',
@@ -45,17 +46,15 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         // TODO: NAB-326 https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API
-        this.matDialog.open(DialogIntroComponent, {
-            width: '40%',
-            panelClass: 'dialog-width-40',
-            disableClose: true,
-            data: this.db.getAllApplications(),
-        });
-
-        /*const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
-        if (!oldModel) {
-            return;
-        }*/
+        const apps = this.db.getAllApplications();
+        if (apps && apps.length > 0) {
+            this.matDialog.open(DialogIntroComponent, {
+                width: '40%',
+                panelClass: 'dialog-width-40',
+                disableClose: true,
+                data: apps,
+            });
+        }
     }
 
     openApplicationDialog() {
@@ -88,8 +87,16 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.applicationService.switchActiveModel(processId);
     }
 
+    changeTab(tabEvent: MatTabChangeEvent): void {
+        this.switchToProcess(tabEvent.tab.textLabel);
+    }
+
     addNewEmptyModel(): void {
         const model = this.applicationService.addNewEmptyModel();
         this.applicationService.switchActiveModel(model.id);
+    }
+
+    activeProcessIndex(): number {
+        return this.applicationService.modelList.indexOf(this.applicationService.getActiveModel()) + 1;
     }
 }
