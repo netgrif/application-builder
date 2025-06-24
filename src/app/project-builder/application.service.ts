@@ -113,6 +113,21 @@ export class ApplicationService implements OnDestroy {
         console.log('New process added', net.id);
     }
 
+    updateModel(oldId: string, model: PetriNet): void {
+        // TODO: NAB-380 reload model undo/redo
+        const oldModel = this._models.get(oldId);
+        if (!oldModel) {
+            return
+        }
+        if (oldId === model.id) {
+            this._models.set(oldId, model);
+        } else {
+            this._models.delete(oldId);
+            this._models.set(oldId, model);
+        }
+        this.updateProcesses();
+    }
+
     addNewEmptyModel(): PetriNet {
         const newModel = this.modelService.newModel()
         this.addModel(newModel);

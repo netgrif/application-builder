@@ -28,12 +28,12 @@ export class HistoryService {
         this.push(model.clone(), message);
     }
 
-    public undo(id= this.getId()): void {
+    public undo(id = this.getId()): void {
         const history = this.findById(id);
         this.reloadModel(history.undo(), UndoTool.ID);
     }
 
-    public redo(id= this.getId()): void {
+    public redo(id = this.getId()): void {
         const history = this.findById(id);
         this.reloadModel(history.redo(), RedoTool.ID);
     }
@@ -57,7 +57,9 @@ export class HistoryService {
             return undefined;
         }
         this.historyChange(model.id).next(HistoryChange.of(this.history(model.id), message));
-        this.modelService.model = model.clone();
+        const newModel = model.clone();
+        this.modelService.appService.updateModel(this.modelService.model.id, newModel);
+        this.modelService.model = newModel;
         return model;
     }
 
@@ -86,15 +88,15 @@ export class HistoryService {
         localStorage.setItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TITLE, `${model.title.value}`);
     }
 
-    public historyChange(id= this.getId()): Subject<HistoryChange<PetriNet>> {
+    public historyChange(id = this.getId()): Subject<HistoryChange<PetriNet>> {
         return this.findById(id).change;
     }
 
-    public currentModel(id= this.getId()): PetriNet {
+    public currentModel(id = this.getId()): PetriNet {
         return this.findById(id).record;
     }
 
-    public history(id= this.getId()): History<PetriNet> {
+    public history(id = this.getId()): History<PetriNet> {
         return this.findById(id);
     }
 }
