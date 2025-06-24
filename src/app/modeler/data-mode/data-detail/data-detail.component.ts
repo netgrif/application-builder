@@ -187,6 +187,15 @@ export class DataDetailComponent implements OnDestroy {
                 this.item.placeholder.value = $event.target.value;
                 break;
             }
+            case 'init': {
+                const value = $event.target.value;
+                if (this.item.init === undefined) {
+                    this.item.init = new I18nWithDynamic(value);
+                } else {
+                    this.item.init.value = value;
+                }
+                break;
+            }
             case 'dynamic-init': {
                 const value = $event.source.checked;
                 if (this.item.init === undefined) {
