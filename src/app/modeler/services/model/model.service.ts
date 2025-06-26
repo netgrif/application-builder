@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {
+    Action,
     Arc,
     ArcType,
     Breakpoint,
@@ -44,6 +45,7 @@ export class ModelService {
     private _arcIdSequence = new SequenceGenerator('a');
     private _dataIdSequence = new SequenceGenerator('data');
     private _roleIdSequence = new SequenceGenerator('role');
+    private _actionIdSequence = new SequenceGenerator('action');
 
     private xmlArcTypeMapping: Map<XmlArcType, ArcType> = new Map([
         [XmlArcType.REGULAR, ArcType.REGULAR_PT],
@@ -76,6 +78,7 @@ export class ModelService {
         this._arcIdSequence.reset(newModel.getArcs());
         this._dataIdSequence.reset(newModel.getDataSet());
         this._roleIdSequence.reset(newModel.getRoles());
+        this._actionIdSequence.reset(this.collectActions(newModel));
     }
 
     get model(): PetriNet {
@@ -439,6 +442,45 @@ export class ModelService {
             return this.nextRoleId();
         }
         return id;
+    }
+
+    public nextActionId(): string {
+        return this._actionIdSequence.next();
+    }
+
+    private collectActions(newModel: PetriNet): Action[] {
+        const actions = new Array<Action>();
+        newModel.getCaseEvents().forEach(e => {
+            actions.push(...e.preActions);
+            actions.push(...e.postActions);
+        });
+        newModel.getProcessEvents().forEach(e => {
+            actions.push(...e.preActions);
+            actions.push(...e.postActions);
+        });
+        newModel.getRoles().forEach(r => {
+            r.getEvents().forEach(e => {
+                actions.push(...e.preActions);
+                actions.push(...e.postActions);
+            });
+        });
+        newModel.getTransitions().forEach(t => {
+            t.eventSource.getEvents().forEach(e => {
+                actions.push(...e.preActions);
+                actions.push(...e.postActions);
+            });
+            t.dataGroups.forEach(g => g.getDataRefs().forEach(d => d.getEvents().forEach(e => {
+                actions.push(...e.preActions);
+                actions.push(...e.postActions);
+            })));
+        });
+        newModel.getDataSet().forEach(d => {
+            d.getEvents().forEach(e => {
+                actions.push(...e.preActions);
+                actions.push(...e.postActions);
+            });
+        });
+        return actions;
     }
 
     public alignModel(model = this.model): void {
