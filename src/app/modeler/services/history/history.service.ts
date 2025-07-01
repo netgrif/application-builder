@@ -13,15 +13,13 @@ import {RedoTool} from '../../control-panel/modes/redo-tool';
 })
 export class HistoryService {
 
-    private readonly _history: History<PetriNet>;
-    private readonly _historyChange: Subject<HistoryChange<PetriNet>>;
+    private readonly _histories: Map<string, History<PetriNet>>;
 
     constructor(
         private modelService: ModelService,
         private exportService: ExportService,
     ) {
-        this._history = new History<PetriNet>();
-        this._historyChange = new Subject();
+        this._histories = new Map<string, History<PetriNet>>();
     }
 
     public save(message: string, model?: PetriNet): void {
@@ -30,37 +28,57 @@ export class HistoryService {
         this.push(model.clone(), message);
     }
 
-    public undo(): void {
-        this.reloadModel(this._history.undo(), UndoTool.ID);
+    public undo(id = this.getId()): void {
+        const history = this.findById(id);
+        this.reloadModel(history.undo(), UndoTool.ID);
     }
 
-    public redo(): void {
-        this.reloadModel(this._history.redo(), RedoTool.ID);
+    public redo(id = this.getId()): void {
+        const history = this.findById(id);
+        this.reloadModel(history.redo(), RedoTool.ID);
     }
 
     public reload(model: PetriNet): void {
-        this._history.head = this._history.memory.findIndex(value => value.record === model);
+        this.history(model.id).head = this.history(model.id).memory.findIndex(value => value.record === model);
         this.reloadModel(model, '');
+    }
+
+    public changeId(oldId: string, newId: string): void {
+        this._histories.set(newId, this._histories.get(oldId));
+        this._histories.delete(oldId);
+    }
+
+    private getId(): string {
+        return this.modelService.model.id;
     }
 
     private reloadModel(model: PetriNet, message: string): PetriNet {
         if (model === undefined) {
             return undefined;
         }
-        this.historyChange.next(HistoryChange.of(this._history, message));
-        this.modelService.model = model.clone();
+        this.historyChange(model.id).next(HistoryChange.of(this.history(model.id), message));
+        const newModel = model.clone();
+        this.modelService.appService.updateModel(this.modelService.model.id, newModel);
+        this.modelService.model = newModel;
         return model;
     }
 
     private push(model: PetriNet, message: string): void {
-        if (!model || model.lastChanged === this.currentModel?.lastChanged || this.history.memory.find(change =>
+        if (!model || model.lastChanged === this.currentModel(model.id)?.lastChanged || this.history(model.id).memory.find(change =>
             change.record.lastChanged === model.lastChanged)
         ) {
             return;
         }
-        const update = this._history.push(model, message);
-        this.historyChange.next(update);
+        const update = this.findById(model.id).push(model, message);
+        this.historyChange(model.id).next(update);
         this.saveToLocalStorage(model).then();
+    }
+
+    private findById(id: string): History<PetriNet> {
+        if (!this._histories.has(id)) {
+            this._histories.set(id, new History<PetriNet>())
+        }
+        return this._histories.get(id);
     }
 
     async saveToLocalStorage(model: PetriNet): Promise<void> {
@@ -70,15 +88,15 @@ export class HistoryService {
         localStorage.setItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TITLE, `${model.title.value}`);
     }
 
-    get historyChange(): Subject<HistoryChange<PetriNet>> {
-        return this._historyChange;
+    public historyChange(id = this.getId()): Subject<HistoryChange<PetriNet>> {
+        return this.findById(id).change;
     }
 
-    get currentModel(): PetriNet {
-        return this._history.record;
+    public currentModel(id = this.getId()): PetriNet {
+        return this.findById(id).record;
     }
 
-    get history(): History<PetriNet> {
-        return this._history;
+    public history(id = this.getId()): History<PetriNet> {
+        return this.findById(id);
     }
 }

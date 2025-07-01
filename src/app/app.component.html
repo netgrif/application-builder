@@ -1,105 +1,98 @@
 <div class="app-container">
-    <mat-sidenav-container class="app-mat-sidenav-container" fxLayout="column">
-        <mat-sidenav fxFlex class="app-mat-viewnav" mode="side" disableClose="true" opened>
-            <div fxFlex fxLayout="column">
-                <a [href]="config.services.urls.netgrif" target="_blank" class="logo">
-                    <img src="../assets/netgrif_logo.svg" alt="Netgrif logo" class="main-toolbar-logo">
-                </a>
-                <div fxLayout="column" fxLayoutAlign="start center" fxFlex="100"
-                     style="padding-top: 4px; padding-bottom: 4px; overflow-y: hidden;">
-                    <mat-action-list class="menu-items">
-                        <mat-list-item class="field-list-mat-list-item"
-                                       (click)="openApplicationDialog()"
-                                       matTooltip="Application" matTooltipPosition="right"
-                                       style="margin-bottom: 4px;">
-                            <mat-icon>app_registration</mat-icon>
-                        </mat-list-item>
-                    </mat-action-list>
-                    <div fxFlex style="overflow-y: auto;">
-                        <mat-action-list class="menu-items">
-                            @for (process of applicationService.models; track process[0]) {
-                                <!--TODO trieda active-process nefunguje pri prvotnej inicializácii-->
-                                <mat-list-item class="field-list-mat-list-item"
-                                               [class.active-process]="process[0] === modelService.model.id"
-                                               (click)="switchToProcess(process[0])"
-                                               [matTooltip]="'['+process[0]+'] '+process[1].title.value"
-                                               matTooltipPosition="right">
-                                    <mat-icon>{{ process[1].icon }}</mat-icon>
-                                </mat-list-item>
-                            }
-                            <mat-list-item class="field-list-mat-list-item"
-                                           (click)="applicationService.addNewEmptyModel()"
-                                           matTooltip="Add new process" matTooltipPosition="right"
-                                           style="margin: 4px 0;">
-                                <mat-icon>add</mat-icon>
-                            </mat-list-item>
-                        </mat-action-list>
-                    </div>
-                    <div style="overflow-y: hidden;">
-                        <mat-divider style="width: 80%;margin: auto;padding: 4px 0;"></mat-divider>
-                        <mat-action-list class="menu-items">
-                            <mat-list-item class="field-list-mat-list-item"
-                                           joyrideStep="{{tutorial.demo.step}}"
-                                           title="{{tutorial.demo.title}}"
-                                           text="{{tutorial.demo.text}}"
-                                           stepPosition="{{tutorial.demo.position}}"
-                                           (click)="openInTab(config.services.urls.engine)"
-                                           matTooltip="Netgrif Demo" matTooltipPosition="right">
-                                <mat-icon>play_arrow</mat-icon>
-                            </mat-list-item>
-                            <mat-list-item class="field-list-mat-list-item"
-                                           joyrideStep="{{tutorial.youtube.step}}"
-                                           title="{{tutorial.youtube.title}}"
-                                           text="{{tutorial.youtube.text}}"
-                                           stepPosition="{{tutorial.youtube.position}}"
-                                           (click)="openInTab(config.services.urls.youtube)"
-                                           matTooltip="Youtube Channel" matTooltipPosition="right">
-                                <mat-icon svgIcon="youtube"></mat-icon>
-                            </mat-list-item>
-                            <mat-list-item class="field-list-mat-list-item"
-                                           joyrideStep="{{tutorial.github.step}}"
-                                           title="{{tutorial.github.title}}"
-                                           text="{{tutorial.github.text}}"
-                                           stepPosition="{{tutorial.github.position}}"
-                                           (click)="openInTab(config.services.urls.github)"
-                                           matTooltip="Github" matTooltipPosition="right">
-                                <mat-icon svgIcon="github">device_hub</mat-icon>
-                            </mat-list-item>
-                            <mat-list-item class="field-list-mat-list-item"
-                                           joyrideStep="{{tutorial.mortgage.step}}"
-                                           title="{{tutorial.mortgage.title}}"
-                                           text="{{tutorial.mortgage.text}}"
-                                           stepPosition="{{tutorial.mortgage.position}}"
-                                           (click)="addMortgage()"
-                                           matTooltip="Mortgage demo" matTooltipPosition="right">
-                                <mat-icon>device_hub</mat-icon>
-                            </mat-list-item>
-                        </mat-action-list>
-                        <mat-divider style="width: 80%;margin: auto;padding: 4px 0;"></mat-divider>
-                        <mat-action-list class="menu-items">
-                            <mat-list-item class="field-list-mat-list-item"
-                                           joyrideStep="{{tutorial.bug.step}}"
-                                           title="{{tutorial.bug.title}}"
-                                           text="{{tutorial.bug.text}}"
-                                           stepPosition="{{tutorial.bug.position}}"
-                                           (done)="tutorial.onClose()"
-                                           (click)="openInTab(config.services.urls.issues)"
-                                           matTooltip="Report a bug" matTooltipPosition="right">
-                                <mat-icon>bug_report</mat-icon>
-                            </mat-list-item>
-                            <mat-list-item class="field-list-mat-list-item"
-                                           (click)="help()"
-                                           matTooltip="Help" matTooltipPosition="right">
-                                <mat-icon>help</mat-icon>
-                            </mat-list-item>
-                        </mat-action-list>
-                    </div>
-                </div>
-            </div>
+    <mat-sidenav-container class="app-mat-sidenav-container">
+        <mat-sidenav class="app-mat-viewnav" mode="side" disableClose="true" opened>
+            <a [href]="config.services.urls.netgrif" target="_blank" class="logo">
+                <img src="../assets/netgrif_logo.svg" alt="Netgrif logo" class="main-toolbar-logo">
+            </a>
+            <mat-action-list class="menu-items">
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.demo.step}}"
+                               title="{{tutorial.demo.title}}"
+                               text="{{tutorial.demo.text}}"
+                               stepPosition="{{tutorial.demo.position}}"
+                               (click)="openInTab(config.services.urls.engine)"
+                               matTooltip="Netgrif Demo" matTooltipPosition="right">
+                    <mat-icon>play_arrow</mat-icon>
+                </mat-list-item>
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.youtube.step}}"
+                               title="{{tutorial.youtube.title}}"
+                               text="{{tutorial.youtube.text}}"
+                               stepPosition="{{tutorial.youtube.position}}"
+                               (click)="openInTab(config.services.urls.youtube)"
+                               matTooltip="Youtube Channel" matTooltipPosition="right">
+                    <mat-icon svgIcon="youtube"></mat-icon>
+                </mat-list-item>
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.github.step}}"
+                               title="{{tutorial.github.title}}"
+                               text="{{tutorial.github.text}}"
+                               stepPosition="{{tutorial.github.position}}"
+                               (click)="openInTab(config.services.urls.github)"
+                               matTooltip="Github" matTooltipPosition="right">
+                    <mat-icon svgIcon="github">device_hub</mat-icon>
+                </mat-list-item>
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.mortgage.step}}"
+                               title="{{tutorial.mortgage.title}}"
+                               text="{{tutorial.mortgage.text}}"
+                               stepPosition="{{tutorial.mortgage.position}}"
+                               (click)="addMortgage()"
+                               matTooltip="Mortgage demo" matTooltipPosition="right">
+                    <mat-icon>device_hub</mat-icon>
+                </mat-list-item>
+            </mat-action-list>
+            <mat-action-list class="app-viewnaw-bottom-list menu-items">
+                <mat-list-item class="field-list-mat-list-item"
+                               joyrideStep="{{tutorial.bug.step}}"
+                               title="{{tutorial.bug.title}}"
+                               text="{{tutorial.bug.text}}"
+                               stepPosition="{{tutorial.bug.position}}"
+                               (done)="tutorial.onClose()"
+                               (click)="openInTab(config.services.urls.issues)"
+                               matTooltip="Report a bug" matTooltipPosition="right">
+                    <mat-icon>bug_report</mat-icon>
+                </mat-list-item>
+                <mat-list-item class="field-list-mat-list-item"
+                               (click)="help()"
+                               matTooltip="Help" matTooltipPosition="right">
+                    <mat-icon>help</mat-icon>
+                </mat-list-item>
+            </mat-action-list>
         </mat-sidenav>
         <joyrideStep joyrideStep="{{tutorial.welcome.step}}" stepPosition="{{tutorial.welcome.position}}"
                      title="{{tutorial.welcome.title}}" text="{{tutorial.welcome.text}}"
                      (next)="tutorial.welcome.onNext()"></joyrideStep>
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" animationDuration="0ms" class="app-tabs"
+                       [selectedIndex]="activeProcessIndex()"
+                       (selectedTabChange)="changeTab($event)">
+            <mat-tab disabled="true">
+                <ng-template mat-tab-label>
+                    <button mat-icon-button (click)="openApplicationDialog()">
+                        <mat-icon class="tab-icon" matTooltip="Application" style="color: rgba(0,0,0,0.6)!important;">
+                            app_registration
+                        </mat-icon>
+                    </button>
+                </ng-template>
+            </mat-tab>
+            @for (process of applicationService.models; track process[0]) {
+                <mat-tab label="{{process[0]}}">
+                    <ng-template mat-tab-label>
+                        @if (process[1].icon) {
+                            <mat-icon class="tab-icon">{{ process[1].icon }}</mat-icon>
+                        }
+                        {{ process[1].title.value }} [{{ process[1].id }}]
+                    </ng-template>
+                </mat-tab>
+            }
+            <mat-tab disabled="true">
+                <ng-template mat-tab-label>
+                    <button mat-icon-button (click)="addNewEmptyModel()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
         <router-outlet></router-outlet>
     </mat-sidenav-container>
 </div>

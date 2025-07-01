@@ -1,5 +1,5 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatDialog} from '@angular/material/dialog';
@@ -14,27 +14,26 @@ import {ApplicationPackageExport} from "../../project-builder/application-packag
 import {ModelExportService} from "../../modeler/services/model/model-export.service";
 import {DialogErrorsComponent} from "../dialog-errors/dialog-errors.component";
 import {ModelService} from "../../modeler/services/model/model.service";
-import {
-    SnackBarHorizontalPosition,
-    SnackBarService,
-    SnackBarVerticalPosition
-} from "@netgrif/components-core";
+import {SnackBarHorizontalPosition, SnackBarService, SnackBarVerticalPosition} from "@netgrif/components-core";
+import {DialogDeleteModelComponent} from '../dialog-delete-model/dialog-delete-model.component';
 
 @Component({
     selector: 'nab-dialog-application-edit',
     templateUrl: './dialog-application-edit.component.html',
     styleUrl: './dialog-application-edit.component.scss',
 })
-export class DialogApplicationEditComponent implements OnInit {
+export class DialogApplicationEditComponent {
 
     readonly chipSeparators = [ENTER, COMMA] as const;
 
     @ViewChild('appPkgFileInput') fileInput: ElementRef;
-    public form: FormControl;
     public fileInputLoading: boolean;
     public exportLoading: boolean;
     private packageImporter: ApplicationPackageImport;
     private packageExporter: ApplicationPackageExport;
+    public idCtrl: FormControl;
+    public nameCtrl: FormControl;
+    public versionCtrl: FormControl;
 
     constructor(
         public applicationService: ApplicationService,
@@ -46,7 +45,13 @@ export class DialogApplicationEditComponent implements OnInit {
         private snackBarService: SnackBarService,
         private modelService: ModelService
     ) {
-        this.form = new FormControl('', [
+        this.idCtrl = new FormControl('', [
+            Validators.required,
+        ]);
+        this.nameCtrl = new FormControl('', [
+            Validators.required,
+        ]);
+        this.versionCtrl = new FormControl('', [
             Validators.required,
         ]);
         this.fileInputLoading = false;
@@ -55,18 +60,17 @@ export class DialogApplicationEditComponent implements OnInit {
         this.packageExporter = new ApplicationPackageExport(this.exportUtils, this.exportService);
     }
 
-    ngOnInit(): void {
-    }
 
     exportApplication($event: Event) {
         $event.stopPropagation();
         this.exportLoading = true;
+        // TODO: NAB-380 - export tags?
         this.packageExporter.generatePackageFile(this.applicationService.application, this.applicationService.models)
             .catch(err => {
                 console.error(err);
             }).finally(() => {
-                this.exportLoading = false;
-            });
+            this.exportLoading = false;
+        });
     }
 
     importApplication($event: Event) {
@@ -130,10 +134,23 @@ export class DialogApplicationEditComponent implements OnInit {
                 }
                 this.applicationService.models.set(changedModel.model.id, changedModel.model);
                 if (changedModel) {
-                    this.historyService.save(`Model has been changed.`); // TODO sprav historiu pre všetky procesy
+                    this.historyService.save(`Model has been changed.`, changedModel.model);
                 }
             }
         });
+    }
+
+    removeModel(processId: string) {
+        const dialogRef = this.dialog.open(DialogDeleteModelComponent);
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.applicationService.removeModel(processId);
+            }
+        });
+    }
+
+    public hasErrors(): boolean {
+        return this.idCtrl.invalid || this.nameCtrl.invalid || this.versionCtrl.invalid;
     }
 
 }

@@ -1,13 +1,13 @@
 <h2 mat-dialog-title>Welcome to Netgrif Application Builder</h2>
 <mat-dialog-content>
     <p>
-        Netgrif Application Builder (NAB) is the tool for building process driven applications using Petriflow language.
+        Netgrif Application Builder (NAB) is a tool for building process driven applications using Petriflow language.
         NAB is composed of several modules that help you in different stages of application development.
     </p>
     <p>
         You can start where you left of or start with a fresh new application.
     </p>
-    @if (apps && apps.length != 0) {
+    @if (apps && apps.length !== 0) {
         <div fxLayout="column">
             @for (app of apps; track app.name) {
                 <mat-card>

@@ -1,14 +1,18 @@
 import {HistoryChange} from './history-change';
+import {Subject} from 'rxjs';
 
 export class History<T> {
+
     private _memory: Array<HistoryChange<T>>;
     private _head: number;
     private readonly limit: number;
+    private readonly _change: Subject<HistoryChange<T>>;
 
     constructor(limit: number = 100) {
         this._memory = new Array<HistoryChange<T>>();
-        this.limit = limit;
         this._head = -1;
+        this.limit = limit;
+        this._change = new Subject();
     }
 
     public get record(): T {
@@ -67,5 +71,9 @@ export class History<T> {
 
     get memory(): Array<HistoryChange<T>> {
         return this._memory;
+    }
+
+    get change(): Subject<HistoryChange<T>> {
+        return this._change;
     }
 }

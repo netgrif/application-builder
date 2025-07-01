@@ -1,13 +1,15 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {PetriNet} from '@netgrif/petriflow';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
-import {DialogDeleteModelComponent} from '../dialogs/dialog-delete-model/dialog-delete-model.component';
 import {HistoryService} from '../modeler/services/history/history.service';
 import {ModelService} from '../modeler/services/model/model.service';
 import Application from './application';
 import {SimulationModeService} from "../modeler/simulation-mode/simulation-mode.service";
+import {SequenceGenerator} from '../modeler/services/model/sequence-generator';
+import {ModelConfig} from '../modeler/services/model/model-config';
+import {Router} from '@angular/router';
+import {EditModeService} from '../modeler/edit-mode/edit-mode.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,15 +18,15 @@ export class ApplicationService implements OnDestroy {
 
     private readonly _models: Map<string, PetriNet>;
     private _application: Application;
-    private _modelIdSequence = 0;
-
+    private _modelIdSequence = new SequenceGenerator(`${ModelConfig.IDENTIFIER}_`);
     private _modelSubscription: Subscription;
 
     constructor(
         private modelService: ModelService,
         private historyService: HistoryService,
-        private dialog: MatDialog,
-        private simulationModeService: SimulationModeService
+        private simulationModeService: SimulationModeService,
+        private editModeService: EditModeService,
+        private router: Router,
     ) {
         this._models = new Map<string, PetriNet>();
         this._modelSubscription = modelService.modelSubject.pipe(
@@ -58,8 +60,16 @@ export class ApplicationService implements OnDestroy {
         return this._models;
     }
 
-    getAndIncrementModelSequence(): number {
-        return this._modelIdSequence++;
+    get modelList(): Array<PetriNet> {
+        return Array.from(this._models.values());
+    }
+
+    public nextModelId(): string {
+        const id = this._modelIdSequence.next();
+        if (this.models.has(id)) {
+            return this.nextModelId();
+        }
+        return id;
     }
 
     getModel(id: string): PetriNet {
@@ -74,36 +84,26 @@ export class ApplicationService implements OnDestroy {
         this._application = Application.getEmpty();
         this.addNewEmptyModel();
         console.log('New application created', this._application);
+        this._modelIdSequence.reset([]);
         return this._application;
     }
 
     private deleteModel(processId: string) {
         if (this.modelService.model.id === processId) {
-            if (this._models.size > 1) {
-                this.switchActiveModel(this._models.keys().next().value);
-            } else {
+            if (this._models.size <= 1) {
                 this.addNewEmptyModel(); // nemôže byť aplikácie bez procesu
-                this.switchActiveModel(this._models.keys().next().value);
             }
+            this.switchActiveModel(this._models.keys().next().value);
         }
         this._models.delete(processId);
         this.updateProcesses();
         console.log('Process removed', processId);
     }
 
-    removeModel(processId: string, confirmationDialog = true) { // TODO remove cez app edit dialog nefunguje, vymaze iný prvok
-        if (!confirmationDialog) {
-            this.deleteModel(processId);
-        } else {
-            const dialogRef = this.dialog.open(DialogDeleteModelComponent);
-            dialogRef.afterClosed().subscribe(result => {
-                if (result === true) {
-                    const oldId = this.modelService.model.id;
-                    this.deleteModel(oldId);
-                    this.historyService.save(`Model ${oldId} has been deleted.`, this.modelService.model);
-                }
-            });
-        }
+    removeModel(processId: string) {
+        const model = this.getModel(processId);
+        this.deleteModel(processId);
+        this.historyService.save(`Model ${processId} has been deleted.`, model);
     }
 
     addModel(net: PetriNet): void {
@@ -113,34 +113,52 @@ export class ApplicationService implements OnDestroy {
         console.log('New process added', net.id);
     }
 
-    addNewEmptyModel() {
-        const newModel = this.modelService.newModel();
-        this._models.set(newModel.id, newModel);
+    updateModel(oldId: string, model: PetriNet): void {
+        // TODO: NAB-380 reload model undo/redo
+        const oldModel = this._models.get(oldId);
+        if (!oldModel) {
+            return
+        }
+        if (oldId === model.id) {
+            this._models.set(oldId, model);
+        } else {
+            this._models.delete(oldId);
+            this._models.set(oldId, model);
+        }
         this.updateProcesses();
-        // this.modelService.model = this.modelService.newModel();
-        this.historyService.save(`New model has been created.`, newModel);
-        console.log('New process added', newModel.id);
+    }
+
+    addNewEmptyModel(): PetriNet {
+        const newModel = this.modelService.newModel()
+        this.addModel(newModel);
+        return newModel;
     }
 
     updateModelId(oldId: string, newId: string) {
-        if (!this._models.get(oldId)) return;
+        if (!this._models.get(oldId)) {
+            return;
+        }
         this._models.set(newId, this._models.get(oldId));
         this._models.delete(oldId);
         this.updateProcesses();
+        this.historyService.changeId(oldId, newId);
         console.log('Process id updated', oldId, '->', newId);
     }
 
     switchActiveModel(processId: string) {
-        if (!this._models.get(processId)) return;
+        if (!this._models.get(processId)) {
+            return;
+        }
         this.modelService.model = this._models.get(processId);
         this.simulationModeService.originalModel.next(this._models.get(processId));
-        this.historyService.save(`Model ${this.modelService.model.id} has been changed.`, this._models.get(processId));
+        this.router.navigate(['/modeler']);
+        this.editModeService.renderModel();
         console.log('Current process switched', processId);
     }
 
     switchToFirst() {
         if (this._application.processes.length > 0) {
-            this.modelService.model = this._models.get(this._application.processes[0]);
+            this.switchActiveModel(this._application.processes[0]);
         }
     }
 

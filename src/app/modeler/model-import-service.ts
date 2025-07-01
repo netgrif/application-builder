@@ -4,9 +4,8 @@ import {ImportSuccessfulComponent} from './control-panel/import-successful/impor
 import {ImportService} from '@netgrif/petriflow';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {ApplicationService} from '../project-builder/application.service';
 import {Router} from '@angular/router';
-import {ModelService} from './services/model/model.service';
-import {HistoryService} from './services/history/history.service';
 
 @Injectable({
     providedIn: 'root'
@@ -15,11 +14,10 @@ export class ModelImportService {
 
     constructor(
         private importService: ImportService,
-        private modelService: ModelService,
         private snackBar: MatSnackBar,
         private dialog: MatDialog,
+        private _appService: ApplicationService,
         private router: Router,
-        private historyService: HistoryService
     ) {
     }
 
@@ -42,9 +40,9 @@ export class ModelImportService {
         }
 
         if (petriNetResult.model !== undefined) {
-            this.modelService.model = petriNetResult.model;
-            this.historyService.save(`Model ${this.modelService.model.id} has been imported.`)
+            this._appService.addModel(petriNetResult.model);
+            this._appService.switchActiveModel(petriNetResult.model.id);
+            this.router.navigate(['/modeler']);
         }
-        this.router.navigate(['/modeler']);
     }
 }

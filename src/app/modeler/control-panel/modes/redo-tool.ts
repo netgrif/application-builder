@@ -22,7 +22,8 @@ export class RedoTool extends Tool {
             )
         );
         this.disabled.next(true);
-        history.historyChange.subscribe(change => {
+        // TODO: NAB-380
+        history.historyChange().subscribe(change => {
             this.disabled.next(change.size === 0 || change.head === change.size - 1);
         });
     }

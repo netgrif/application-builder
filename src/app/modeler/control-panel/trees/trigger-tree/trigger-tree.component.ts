@@ -22,7 +22,7 @@ interface TriggerNode {
         {provide: NGX_MAT_DATE_FORMATS, useValue: DATE_TIME_FORMAT}
     ]
 })
-export class TriggerTreeComponent {
+export class TriggerTreeComponent implements OnInit {
     @Input() triggers: Array<Trigger>;
 
     typeOptions = [{key: 'auto', value: 'Auto'}, {key: 'user', value: 'User'}, {key: 'time', value: 'Time'}];
@@ -39,6 +39,13 @@ export class TriggerTreeComponent {
         }];
         this.dataSource.data = this.treeData;
         this.counter = 0;
+    }
+
+    ngOnInit() {
+        if (this.triggers && this.triggers.length > 0) {
+            this.import();
+            this.import();
+        }
     }
 
     import(): void {

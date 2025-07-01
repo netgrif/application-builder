@@ -4,24 +4,28 @@
         <div fxLayout="row">
             <mat-form-field fxFlex>
                 <mat-label>Id</mat-label>
-                <input type="text" matInput [(ngModel)]="applicationService.application.id">
+                <input type="text" matInput [(ngModel)]="applicationService.application.id" [formControl]="idCtrl">
+                <mat-error *ngIf="idCtrl.errors && idCtrl.errors.required">Id is required</mat-error>
             </mat-form-field>
             <div fxFlex="1"></div>
             <mat-form-field fxFlex>
                 <mat-label>Version</mat-label>
-                <input type="text" matInput [(ngModel)]="applicationService.application.version">
+                <input type="text" matInput [(ngModel)]="applicationService.application.version"
+                       [formControl]="versionCtrl">
+                <mat-error *ngIf="versionCtrl.errors && versionCtrl.errors.required">Version is required</mat-error>
             </mat-form-field>
         </div>
         <mat-form-field fxFlex>
             <mat-label>Name</mat-label>
-            <input type="text" matInput [(ngModel)]="applicationService.application.name">
+            <input type="text" matInput [(ngModel)]="applicationService.application.name" [formControl]="nameCtrl">
+            <mat-error *ngIf="nameCtrl.errors && nameCtrl.errors.required">Name is required</mat-error>
         </mat-form-field>
         <mat-form-field fxFlex>
             <mat-label>Description</mat-label>
             <input type="text" matInput [(ngModel)]="applicationService.application.description">
         </mat-form-field>
         <mat-form-field fxFlex>
-<!--            TODO spraviť to ako authors a spraviť z toho chips-->
+            <!-- TODO release/3.0 spraviť to ako authors a spraviť z toho chips-->
             <mat-label>Author</mat-label>
             <input type="text" matInput [(ngModel)]="applicationService.application.author">
         </mat-form-field>
@@ -48,20 +52,20 @@
         </mat-form-field>
         <h4>Processes</h4>
         <mat-list>
-            @for (process of applicationService.models; track process[0]) {
-                <mat-list-item [disableRipple]="false" [attr.aria-label]="'process ' + process[0] + ' list item'">
-                    <mat-icon matListItemIcon>{{ process[1].icon }}</mat-icon>
-                    <h3 matListItemTitle>{{ process[1].title.value }}</h3>
+            @for (process of applicationService.modelList; track process) {
+                <mat-list-item [disableRipple]="false" [attr.aria-label]="'process ' + process.id + ' list item'">
+                    <mat-icon matListItemIcon>{{ process.icon }}</mat-icon>
+                    <h3 matListItemTitle>{{ process.title.value }}</h3>
                     <p matListItemLine>
-                        <span>Id: {{ process[0] }}, &nbsp;</span>
-                        <span>Initials: {{ process[1].initials }}, &nbsp;</span>
-                        <span>Version: {{ process[1].version }} </span>
+                        <span>Id: {{ process.id }}, &nbsp;</span>
+                        <span>Initials: {{ process.initials }}, &nbsp;</span>
+                        <span>Version: {{ process.version }} </span>
                     </p>
                     <div matListItemMeta>
-                        <button mat-icon-button (click)="editProcess(process[0])">
+                        <button mat-icon-button (click)="editProcess(process.id)">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button (click)="applicationService.removeModel(process[0])">
+                        <button mat-icon-button (click)="removeModel(process.id)">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </div>
@@ -79,7 +83,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     @if (!fileInputLoading) {
-        <button mat-button (click)="appPkgFileInput.click()">
+        <button mat-stroked-button (click)="appPkgFileInput.click()" color="primary">
             <input #appPkgFileInput
                    type="file" accept="application/zip"
                    (change)="importApplication($event)"
@@ -93,7 +97,8 @@
         </button>
     }
     @if (!exportLoading) {
-        <button mat-stroked-button color="primary" (click)="exportApplication($event)">
+        <button mat-stroked-button color="primary" (click)="exportApplication($event)"
+                [disabled]="hasErrors()">
             <mat-icon>download</mat-icon>
             <span>Download</span>
         </button>
@@ -102,7 +107,8 @@
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
         </button>
     }
-    <button mat-flat-button color="primary" mat-dialog-close>
+    <button mat-flat-button color="primary" mat-dialog-close
+            [disabled]="hasErrors()">
         <mat-icon>done</mat-icon>
         <span>Save</span>
     </button>

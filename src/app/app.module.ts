@@ -16,7 +16,6 @@ import {RoleModeComponent} from './modeler/role-mode/role-mode.component';
 import {ActionsModeComponent} from './modeler/actions-mode/actions-mode.component';
 import {MatIconRegistry} from '@angular/material/icon';
 import {environment} from '../environments/environment';
-import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
 import {DialogRefactorComponent} from './dialogs/dialog-refactor/dialog-refactor.component';
 import {DialogErrorsComponent} from './dialogs/dialog-errors/dialog-errors.component';
 import {ExportService, ExportUtils, ImportService} from '@netgrif/petriflow';
@@ -30,9 +29,6 @@ import {DialogDeleteModelComponent} from './dialogs/dialog-delete-model/dialog-d
 import {DialogArcEditComponent} from './dialogs/dialog-arc-edit/dialog-arc-edit.component';
 import {DialogTransitionEditComponent} from './dialogs/dialog-transition-edit/dialog-transition-edit.component';
 import {SimulationModeComponent} from './modeler/simulation-mode/simulation-mode.component';
-import {
-    DialogLocalStorageModelComponent
-} from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
 import {HistoryModeComponent} from './modeler/history-mode/history-mode.component';
 import {DialogChangeDataComponent} from './dialogs/dialog-change-data/dialog-change-data.component';
 import {DialogModelEditComponent} from './dialogs/dialog-model-edit/dialog-model-edit.component';
@@ -67,7 +63,6 @@ const appRoutes: Routes = [
 @NgModule({
     declarations: [
         AppComponent,
-        DialogConfirmComponent,
         DialogRefactorComponent,
         DialogErrorsComponent,
         DialogDeadNetComponent,
@@ -79,7 +74,6 @@ const appRoutes: Routes = [
         DialogChangeDataComponent,
         DialogModelEditComponent,
         MaterialIconPickerComponent,
-        DialogLocalStorageModelComponent,
         DialogMarkingChangeComponent,
         DialogApplicationEditComponent,
         DialogIntroComponent,

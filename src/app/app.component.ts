@@ -1,25 +1,23 @@
-import {AfterViewInit, Component, HostListener} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {Router} from '@angular/router';
 import {NetgrifApplicationEngine} from '@netgrif/components-core/';
 import {JoyrideService} from 'ngx-joyride';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 import {DialogApplicationEditComponent} from './dialogs/dialog-application-edit/dialog-application-edit.component';
-import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
 import {DialogIntroComponent} from './dialogs/dialog-intro/dialog-intro.component';
-import {ModelImportService} from './modeler/model-import-service';
 import {MortgageService} from './modeler/mortgage.service';
 import {ModelService} from './modeler/services/model/model.service';
 import {ApplicationService} from './project-builder/application.service';
 import {DatabaseStorageService} from './project-builder/database-storage.service';
 import {TutorialService} from './tutorial/tutorial-service';
+import {MatTabChangeEvent} from '@angular/material/tabs';
 
 @Component({
     selector: 'nab-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
     title = 'Netgrif Application Builder';
     config: NetgrifApplicationEngine;
 
@@ -30,12 +28,10 @@ export class AppComponent implements AfterViewInit {
 
     constructor(
         config: AppBuilderConfigurationService,
-        private router: Router,
         private matDialog: MatDialog,
         private readonly joyrideService: JoyrideService,
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
-        private importService: ModelImportService,
         private db: DatabaseStorageService,
         public modelService: ModelService,
         public applicationService: ApplicationService,
@@ -43,33 +39,22 @@ export class AppComponent implements AfterViewInit {
         this.config = config.get();
     }
 
+    ngOnInit(): void {
+        this.applicationService.createApplication();
+        this.applicationService.switchToFirst();
+    }
+
     ngAfterViewInit(): void {
         // TODO: NAB-326 https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API
-        this.matDialog.open(DialogIntroComponent, {
-            width: '40%',
-            panelClass: 'dialog-width-40',
-            disableClose: true,
-            data: this.db.getAllApplications(),
-        });
-
-        /*const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
-        if (!oldModel) {
-            return;
+        const apps = this.db.getAllApplications();
+        if (apps && apps.length > 0) {
+            this.matDialog.open(DialogIntroComponent, {
+                width: '40%',
+                panelClass: 'dialog-width-40',
+                disableClose: true,
+                data: apps,
+            });
         }
-        const dialogRef = this.matDialog.open(DialogLocalStorageModelComponent, {
-            data: {
-                id: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.ID),
-                timestamp: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TIMESTAMP),
-                title: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TITLE),
-            },
-        });
-        dialogRef.afterClosed().subscribe(result => {
-            if (result === true) {
-                this.importService.importFromXml(oldModel);
-            } else if (result === false) {
-                localStorage.clear();
-            }
-        });*/
     }
 
     openApplicationDialog() {
@@ -80,14 +65,7 @@ export class AppComponent implements AfterViewInit {
     }
 
     addMortgage() {
-        const dialogRef = this.matDialog.open(DialogConfirmComponent);
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result === true) {
-                this._mortgageService.loadModel();
-                this.router.navigate(['/modeler']);
-            }
-        });
+        this._mortgageService.loadModel();
     }
 
     help() {
@@ -105,8 +83,20 @@ export class AppComponent implements AfterViewInit {
         window.open(url, '_blank');
     }
 
-    switchToProcess(processId: string) {
+    switchToProcess(processId: string): void {
         this.applicationService.switchActiveModel(processId);
     }
 
+    changeTab(tabEvent: MatTabChangeEvent): void {
+        this.switchToProcess(tabEvent.tab.textLabel);
+    }
+
+    addNewEmptyModel(): void {
+        const model = this.applicationService.addNewEmptyModel();
+        this.applicationService.switchActiveModel(model.id);
+    }
+
+    activeProcessIndex(): number {
+        return this.applicationService.modelList.indexOf(this.applicationService.getActiveModel()) + 1;
+    }
 }

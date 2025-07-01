@@ -4,9 +4,9 @@
 
         <mat-form-field fxFlex="45">
             <mat-label>Id</mat-label>
-            <input matInput [(ngModel)]="role.role.id" (change)="changeId($event)" [formControl]="form">
-            <mat-error *ngIf="form.errors && form.errors.required">Id is required</mat-error>
-            <mat-error *ngIf="form.errors && form.errors.validUnique">
+            <input matInput [(ngModel)]="role.role.id" (change)="changeId($event)" [formControl]="roleIdForm">
+            <mat-error *ngIf="roleIdForm.errors && roleIdForm.errors.required">Id is required</mat-error>
+            <mat-error *ngIf="roleIdForm.errors && roleIdForm.errors.validUnique">
                 Transition with given id already exists
             </mat-error>
         </mat-form-field>
@@ -23,9 +23,11 @@
     <div fxLayout="row wrap" fxLayoutAlign="start center">
         <div fxFlex="2.5"></div>
 
-        <mat-form-field fxFlex="45">
-            <mat-checkbox [ngModel]="role.role.global" (change)="changeGlobalFlag($event)">Is Global</mat-checkbox>
-        </mat-form-field>
+        <div fxFlex="45">
+            <mat-checkbox [ngModel]="role.role.global" (change)="changeGlobalFlag($event)">
+                Is Global
+            </mat-checkbox>
+        </div>
 
         <div fxFlex="2.5"></div>
 

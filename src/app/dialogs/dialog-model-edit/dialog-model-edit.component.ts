@@ -32,9 +32,11 @@ export class DialogModelEditComponent {
         private _processTool: ProcessActionsTool
     ) {
         this.model = data;
-        this.idCtrl = new FormControl('', [Validators.required]);
+        this.idCtrl = new FormControl('', [
+            Validators.required,
+            this.validUnique()
+        ]);
         this.versionCtrl = new FormControl('', [
-            // Validators.required,
             this.validVersion()
         ]);
         this.titleCtrl = new FormControl('', [Validators.required]);
@@ -70,6 +72,16 @@ export class DialogModelEditComponent {
                 return null;
             }
             return ({format: true})
+        };
+    }
+
+    private validUnique(): ValidatorFn {
+        return (fc: FormControl): { [key: string]: any } | null => {
+            if (this.modelService.appService.getModel(fc.value) !== undefined && fc.value !== this.model.originalElement.id) {
+                return ({validUnique: true});
+            } else {
+                return null;
+            }
         };
     }
 
