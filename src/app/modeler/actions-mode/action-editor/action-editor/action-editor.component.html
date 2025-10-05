@@ -66,7 +66,12 @@
                 </div>
             </ng-template>
             <mat-action-row>
-                <button mat-icon-button (click)="openDialog(index)">
+                <button mat-stroked-button color="primary" (click)="openAiAssistantDialog()">
+                    <mat-icon>smart_toy</mat-icon>
+                    AI Assistant
+                </button>
+
+                <button mat-icon-button (click)="openDialog(index)" aria-label="Delete action">
                     <mat-icon>delete</mat-icon>
                 </button>
             </mat-action-row>

@@ -22,7 +22,7 @@ import { ModelImportService } from '../../modeler/model-import-service';
 import { OpenAiHttpService, OpenAiService, PETRIFLOW_MODELS } from './openai-http.service';
 import { PetriflowExamplesService } from './petriflow-examples.service';
 
-/** Other service interfaces */
+/** Integration stubs (replace with real app services when ready) */
 export abstract class BuilderApiService {
     abstract exportFromBuilder(): Promise<string>;
     abstract importToBuilder(xml: string): Promise<void>;
@@ -33,6 +33,20 @@ export abstract class XmlValidationService {
 
 /** Chat structures */
 type MsgKind = 'user' | 'plan' | 'xml' | 'thinking' | 'info';
+
+interface PetriflowPlan {
+    roles: string[];
+    data: { name: string; type: string }[];
+    workflow: {
+        places: string[];
+        transitions: string[];
+        arcs: { from: string; to: string }[];
+    };
+    forms: { transition: string; fields: string[] }[];
+    validations: string[];
+    events: string[];
+    summary: string;
+}
 
 interface ChatMessage {
     id: number;
@@ -45,14 +59,20 @@ interface ChatMessage {
     xml?: string;
     error?: string;
     summary?: string;
+    /** attached structured plan (for plan bubbles) */
+    plan?: PetriflowPlan;
 }
 
 interface AssistantState {
-    lastPlan?: string;       // the last structured plan we will generate XML from
-    lastXml?: string;        // last generated XML
+    lastPlan?: PetriflowPlan;  // last structured plan
+    lastXml?: string;          // last generated XML
 }
 
 const STORAGE_KEY = 'nab.dialog.assistant.v2';
+
+// Heuristics / tuning
+const MIN_REQUEST_LEN = 12;  // short prompts will trigger best-guess planning
+const XML_RETRY_STEPS = 2;   // attempts: normal → repair/extract
 
 @Component({
     selector: 'nab-dialog-assistant',
@@ -80,6 +100,8 @@ const STORAGE_KEY = 'nab.dialog.assistant.v2';
 })
 export class DialogAssistantComponent implements OnInit {
     @ViewChild('scrollArea') scrollArea?: ElementRef<HTMLDivElement>;
+    @ViewChild('promptArea') promptArea?: ElementRef<HTMLTextAreaElement>;
+
 
     // UI state
     prompt = '';
@@ -185,6 +207,9 @@ export class DialogAssistantComponent implements OnInit {
         // user message
         this.pushMsg({ role: 'user', kind: 'user', content });
 
+        // allow "yes / generate" to trigger direct XML
+        const wantsGenerate = /^\s*(yes|generate|generate xml|generate source|apply plan)\b/i.test(content);
+
         // "thinking" placeholder
         const thinking = this.pushMsg({ role: 'assistant', kind: 'thinking', content: 'Thinking…' });
 
@@ -195,39 +220,90 @@ export class DialogAssistantComponent implements OnInit {
 
         const t0 = performance.now();
         try {
+            // 1) primary plan
             const planPrompt = this.buildPlanPrompt(content);
-            const result = await this.openai.generate({
+            let result = await this.openai.generate({
                 system: this.systemPrompt(),
                 user: planPrompt,
                 model: this.selectedModel,
                 maxOutputTokens: 1200,
             });
 
-            // replace thinking with plan
+            let plan = this.tryParsePlan(result.text || '');
+
+            // 2) fallback: if not valid JSON plan, force convert to JSON plan
+            if (!plan) {
+                const forcePlanPrompt =
+                    `Convert the following content into the JSON plan by the schema. Return JSON only.\n\nCONTENT:\n` +
+                    (result.text || '(empty)');
+                result = await this.openai.generate({
+                    system: this.systemPrompt(),
+                    user: forcePlanPrompt,
+                    model: this.selectedModel,
+                    maxOutputTokens: 900,
+                });
+                plan = this.tryParsePlan(result.text || '');
+            }
+
             const latency = Math.round(performance.now() - t0);
-            const planText = this.normalizeText(result.text ?? ''); // keep plain text (no markdown bold)
             this.tokenUsage = { total: result.tokens ?? 0 };
             this.rateInfo = result.rateInfo ?? null;
 
-            this.mutateMsg(thinking.id, {
-                kind: 'plan',
-                content: this.formatPlan(planText),
-                latencyMs: latency,
-                tokens: result.tokens ?? undefined,
-            });
+            if (plan) {
+                this.mutateMsg(thinking.id, { kind: 'plan', plan, content: '', latencyMs: latency, tokens: result.tokens ?? undefined });
+                this.state.lastPlan = plan;
+                this.saveToStorage();
+                this.scrollToBottomSoon();
 
-            this.state.lastPlan = planText;
-            this.saveToStorage();
-            this.scrollToBottomSoon();
+                if (wantsGenerate) await this.generateXmlFromPlan({ ...thinking, plan });
+            } else {
+                this.mutateMsg(thinking.id, {
+                    kind: 'info',
+                    content: 'I could not build a structured plan from your request. Please add a bit more detail (roles, key steps), then try again.',
+                    latencyMs: latency,
+                    tokens: result.tokens ?? undefined
+                });
+            }
         } catch (e: any) {
-            this.mutateMsg(thinking.id, {
-                kind: 'info',
-                content: 'Error while planning.',
-                error: e?.message || String(e),
-            });
+            this.mutateMsg(thinking.id, { kind: 'info', content: 'Error while planning.', error: e?.message || String(e) });
         } finally {
             this.isLoading = false;
             this.saveToStorage();
+        }
+    }
+
+    refineFromPlan(planMsg: ChatMessage) {
+        // vezmeme JSON plán ak je, inak posledný
+        const plan = planMsg.plan || this.state.lastPlan;
+        const summary = plan?.summary || 'Refine the requirements:';
+        const hint =
+            `Refine:
+                - Add/rename roles
+                - Add fields (type: text/number/date/enum/file/boolean/user, etc.)
+                - Clarify transitions and forms
+                - Add validations and events`;
+
+        // predvyplní composer tak, aby používateľ prirodzene doplnil detaily
+        this.prompt = `${summary}\n\n${hint}\n\nAdd: `;
+        this.scrollToBottomSoon();
+        setTimeout(() => this.promptArea?.nativeElement?.focus(), 0);
+    }
+
+    async copyMsg(msg: ChatMessage) {
+        try {
+            let toCopy = '';
+            if (msg.kind === 'xml' && msg.xml) {
+                toCopy = msg.xml;
+            } else if (msg.kind === 'plan' && msg.plan) {
+                // máme už serializePlan v TS
+                toCopy = this.serializePlan(msg.plan);
+            } else {
+                toCopy = msg.content || '';
+            }
+            await navigator.clipboard.writeText(toCopy);
+            this.toast('Copied to clipboard.');
+        } catch (e) {
+            this.toast('Copy failed.');
         }
     }
 
@@ -235,8 +311,10 @@ export class DialogAssistantComponent implements OnInit {
     async generateXmlFromPlan(planMsg: ChatMessage) {
         if (this.isLoading) return;
 
-        // create a new "thinking…" bubble attached to this plan
-        const thinking = this.pushMsg({ role: 'assistant', kind: 'thinking', content: 'Generating XML…' });
+        const plan = planMsg.plan || this.state.lastPlan;
+        const planText = plan ? this.serializePlan(plan) : (planMsg.content || (this.state.lastPlan ? this.serializePlan(this.state.lastPlan!) : ''));
+
+        const thinking = this.pushMsg({ role: 'assistant', kind: 'thinking', content: 'Generating source code…' });
         this.isLoading = true;
         this.scrollToBottomSoon();
         const t0 = performance.now();
@@ -244,63 +322,82 @@ export class DialogAssistantComponent implements OnInit {
         try {
             const currentXml = this.currentXmlCache ?? this.safeExportXml();
             const attachmentsBlock = this.attachments.length
-                ? '\n' + this.attachments.map(a =>
-                `---ATTACHMENT:${a.name}---\n${a.text}\n---END_ATTACHMENT---`).join('\n')
+                ? '\n' + this.attachments.map(a => `---ATTACHMENT:${a.name}---\n${a.text}\n---END_ATTACHMENT---`).join('\n')
                 : '';
 
-            const xmlPrompt =
-                `Create a VALID Petriflow process XML using this PLAN and CURRENT MODEL.\n\n` +
-                `PLAN:\n${this.state.lastPlan || planMsg.content}\n\n` +
-                `CURRENT_MODEL_XML:\n---XML_START---\n${this.sliceMiddle(currentXml, 12000)}\n---XML_END---\n` +
-                `${attachmentsBlock}\n` +
-                `Rules:\n- DO NOT re-plan. Output ONLY XML.\n- Ensure unique ids for <place>, <transition>, <arc>.\n- Include <role>, <data>, <dataGroup>/<dataRef>, <roleRef> in transitions where relevant.\n- Include a minimal but connected net with tokens and arcs.\n- Validate against Petriflow structure as in the examples.\n`;
+            // Checklist hint (optional but recommended): makes the model include full Petriflow structure.
+            const checklist = [
+                '- <id>, <version>, <initials>, <title>, <icon>',
+                '- <role> elements for each role from the plan',
+                '- <data> elements for each data field; types aligned with examples (text, number, date, enum, file, boolean, user, etc.)',
+                '- <dataGroup> + <dataRef> to group fields for forms',
+                '- Transitions with <roleRef perform="true"> and appropriate <dataGroup>',
+                '- Petri net: connected <place> and <transition> nodes and <arc> with unique ids',
+                '- Basic guards/validations consistent with the plan (e.g., required fields, positive amounts)',
+                '- Preserve existing ids and apply minimal diffs if CURRENT_MODEL_XML is non-empty',
+            ].join('\n');
 
-            const result = await this.openai.generate({
-                system: this.systemPrompt(),
-                user: xmlPrompt,
-                model: this.selectedModel,
-                maxOutputTokens: 3000, // budget
-            });
+            // Step 1: ask for RAW XML only
+            const baseXmlPrompt =
+                `Create a VALID Petriflow process XML using this PLAN and CURRENT MODEL.\n\n` +
+                `PLAN(JSON):\n${planText}\n\n` +
+                `CURRENT_MODEL_XML:\n---XML_START---\n${this.sliceMiddle(currentXml, 12000)}\n---XML_END---\n` +
+                `${attachmentsBlock}\n\n` +
+                `STRICT RULES:\n` +
+                `- Output ONLY raw XML (no markdown, no comments, no explanations).\n` +
+                `- Include the following sections:\n${checklist}\n`;
+
+            const tryOnce = async (forceExtraction = false) => {
+                const res = await this.openai.generate({
+                    system: this.systemPrompt(),
+                    user: forceExtraction
+                        ? `Return ONLY the raw Petriflow XML from the following content. Remove any prose/markdown.\n\nCONTENT:\n${baseXmlPrompt}`
+                        : baseXmlPrompt,
+                    model: this.selectedModel,
+                    maxOutputTokens: 3200,
+                });
+                const raw = res.text ?? '';
+                const xml = this.extractXml(raw);
+                return { xml, res };
+            };
+
+            // attempt 1
+            let { xml, res } = await tryOnce(false);
+
+            // attempt 2 (repair/extract), if needed
+            if (!xml && XML_RETRY_STEPS > 1) {
+                ({ xml, res } = await tryOnce(true));
+            }
 
             const latency = Math.round(performance.now() - t0);
-            const raw = result.text ?? '';
-            const xml = this.extractXml(raw);
+            this.tokenUsage = { total: res.tokens ?? 0 };
+            this.rateInfo = res.rateInfo ?? null;
 
             if (!xml) {
                 this.mutateMsg(thinking.id, {
                     kind: 'info',
-                    content: 'Model did not return XML. Please try “Generate XML” again or refine the plan.',
+                    content: 'Model did not return XML. Try “Generate source code” again or click “Refine requirements” to add details.',
                     latencyMs: latency,
-                    tokens: result.tokens ?? undefined,
+                    tokens: res.tokens ?? undefined,
                 });
                 return;
             }
 
-            // optional light checks
-            const ok = this.lightXmlChecks(xml);
-            if (!ok) {
-                // still show for Apply (ModelImportService surfaces errors precisely)
-            }
-
-            // add as xml bubble with minimal text (only Apply)
+            // Show as XML bubble (Apply button is in the HTML)
             this.mutateMsg(thinking.id, {
                 kind: 'xml',
-                content: '', // no duplicate text
+                content: '',
                 xml,
                 summary: this.summarizeXml(xml) || 'Proposed XML',
                 latencyMs: latency,
-                tokens: result.tokens ?? undefined,
+                tokens: res.tokens ?? undefined,
             });
 
             this.state.lastXml = xml;
             this.saveToStorage();
             this.scrollToBottomSoon();
         } catch (e: any) {
-            this.mutateMsg(thinking.id, {
-                kind: 'info',
-                content: 'Error while generating XML.',
-                error: e?.message || String(e),
-            });
+            this.mutateMsg(thinking.id, { kind: 'info', content: 'Error while generating XML.', error: e?.message || String(e) });
         } finally {
             this.isLoading = false;
             this.saveToStorage();
@@ -311,9 +408,14 @@ export class DialogAssistantComponent implements OnInit {
     async applyXml(xml: string) {
         try {
             await this.xmlValidation.validate(xml);
-        } catch { /* show detailed errors via your Dialog component after import */ }
-        try { this.modelImport.importFromXml(xml); }
-        catch (e: any) { this.toast(`Import failed: ${e?.message || e}`); }
+        } catch { /* let your DialogErrorsComponent surface details after import */ }
+        try {
+            this.modelImport.importFromXml(xml);
+            // Leave the dialog so the user sees the model immediately
+            this.onClose();
+        } catch (e: any) {
+            this.toast(`Import failed: ${e?.message || e}`);
+        }
     }
 
     // ====== Prompt builders ======
@@ -322,37 +424,58 @@ export class DialogAssistantComponent implements OnInit {
         return [
             `You are a Petriflow process generator for Netgrif Builder.`,
             `Follow Petriflow structure exactly. Base yourself on the two examples below.`,
-            `Never output explanations or markdown. When asked to generate, output ONLY raw XML.`,
+            `When asked to generate, output ONLY raw XML (no markdown, no comments, no prose).`,
             this.fewShotCache ? `\nFEW-SHOT EXAMPLES:\n${this.fewShotCache}\n` : ``,
         ].join('\n');
     }
 
     private buildPlanPrompt(userRequest: string): string {
         const currentXml = this.currentXmlCache ?? '';
+        const normalized = userRequest.trim();
+
+        const schema = `
+Return JSON ONLY with this exact schema:
+{
+  "roles": string[],
+  "data":  { "name": string, "type": string }[],
+  "workflow": {
+    "places": string[],
+    "transitions": string[],
+    "arcs": [{ "from": string, "to": string }]
+  },
+  "forms": [{ "transition": string, "fields": string[] }],
+  "validations": string[],
+  "events": string[],
+  "summary": string
+}
+`.trim();
+
+        const vaguenessHint =
+            normalized.length < MIN_REQUEST_LEN
+                ? `The user request is short/ambiguous. Make reasonable assumptions based on examples and produce a concrete plan.`
+                : `If something is ambiguous, make reasonable defaults inspired by the examples.`;
+
         return [
-            `User request:\n${userRequest}`,
-            `Produce a concise PLAN (roles, data, tasks/transitions, places/arcs sketch, validations, automation/events).`,
-            `Do NOT generate XML here. Finish with one line: "Generate XML now?"`,
-            `Current model context may influence diffs:\n${this.currentXmlCache ? '(context present)' : '(no context)'}`
+            `User request:\n${normalized}`,
+            vaguenessHint,
+            `Produce a concise PLAN as JSON using the schema below. Do NOT generate XML. Do NOT ask questions.`,
+            `Align naming with current model if it exists.`,
+            schema,
+            `Current model context: ${currentXml ? '(present)' : '(none)'}`
         ].join('\n\n');
     }
 
     // ====== Utils ======
     onComposerKeydown(e: KeyboardEvent) {
-        const isMod = e.ctrlKey || e.metaKey;           // Ctrl on Win/Linux, Cmd on macOS
+        const isMod = e.ctrlKey || e.metaKey;  // let OS shortcuts pass
         const isEnter = e.key === 'Enter';
         const isShift = e.shiftKey;
-
-        // Let all OS shortcuts pass (copy/paste/cut/select-all/undo/redo…)
         if (isMod) return;
-
-        // Submit on Enter (but allow Shift+Enter for newline)
         if (isEnter && !isShift && !this.isLoading) {
             e.preventDefault();
             this.send();
         }
     }
-
 
     private pushMsg(init: Partial<ChatMessage>): ChatMessage {
         const msg: ChatMessage = {
@@ -366,6 +489,7 @@ export class DialogAssistantComponent implements OnInit {
             xml: init.xml,
             error: init.error,
             summary: init.summary,
+            plan: init.plan,
         };
         this.messages = [...this.messages, msg];
         this.saveToStorage();
@@ -379,7 +503,6 @@ export class DialogAssistantComponent implements OnInit {
     }
 
     private scrollToBottomSoon() {
-        // smooth “follow the typing/answer” behavior
         setTimeout(() => {
             const el = this.scrollArea?.nativeElement;
             if (el) el.scrollTop = el.scrollHeight;
@@ -394,18 +517,22 @@ export class DialogAssistantComponent implements OnInit {
     }
 
     private extractXml(text: string): string | null {
+        // 1) fenced ```xml ... ```
         const fenced = text.match(/```(?:xml)?\s*([\s\S]*?)```/i);
         const candidate = fenced ? fenced[1] : text;
         const trimmed = candidate.trim();
+        // 2) explicit <document>...</document>
+        const docMatch = trimmed.match(/<document\b[\s\S]*<\/document>/i);
+        if (docMatch) return docMatch[0].trim();
+        // 3) fallback sanity
         if (!trimmed.startsWith('<')) return null;
-        // quick sanity: must close > and contain <transition> and <place> and <arc>
         if (!/(<transition[\s>])/.test(trimmed)) return null;
         if (!/(<place[\s>])/.test(trimmed)) return null;
         if (!/(<arc[\s>])/.test(trimmed)) return null;
         return trimmed;
     }
 
-    /** Light sanity checks without using matchAll */
+    /** Light sanity checks without matchAll */
     private lightXmlChecks(xml: string): boolean {
         const hasMissingId = (tag: 'place' | 'transition' | 'arc') => {
             const re = new RegExp(`<${tag}\\b[^>]*>`, 'gi');
@@ -435,10 +562,7 @@ export class DialogAssistantComponent implements OnInit {
                 if (m && m[1]) title = m[1].trim();
             }
 
-            // Extract up to 3 transition "names":
-            // 1) <transition ...><label><text>NAME</text>...</label>...
-            // 2) or fallback: name="..." attribute
-            // 3) or fallback: id="..."
+            // Extract up to 3 transition labels / names
             const transitions: string[] = [];
             const blockRe = /<transition\b[^>]*>([\s\S]*?)<\/transition>/gi;
             let tb: RegExpExecArray | null;
@@ -477,14 +601,12 @@ export class DialogAssistantComponent implements OnInit {
     }
 
     private normalizeText(t: string): string {
-        // strip markdown **bold** and headlines so UI renders plain text plan
         return t.replace(/\*\*(.*?)\*\*/g, '$1')
             .replace(/^#{1,6}\s+/gm, '')
             .trim();
     }
 
     private formatPlan(t: string): string {
-        // keep plan readable; do not echo "Generate XML now?" twice
         return t.replace(/^\s*Generate XML now\?\s*$/mi, 'Generate XML now?').trim();
     }
 
@@ -492,6 +614,60 @@ export class DialogAssistantComponent implements OnInit {
         if (s.length <= maxChars) return s;
         const half = Math.floor(maxChars / 2);
         return s.slice(0, half) + '\n<!-- …snip… -->\n' + s.slice(s.length - half);
+    }
+
+    /** Strict JSON plan parsing */
+    private tryParsePlan(text: string): PetriflowPlan | undefined {
+        if (!text) return;
+        let jsonStr = text.trim();
+
+        // handle accidental code fence
+        const fenced = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/i);
+        if (fenced) jsonStr = fenced[1].trim();
+
+        // try to locate the first { ... } block if model wrapped it
+        const firstBrace = jsonStr.indexOf('{');
+        const lastBrace = jsonStr.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
+        }
+
+        try {
+            const obj = JSON.parse(jsonStr);
+            // quick shape check
+            if (!obj || typeof obj !== 'object') return;
+            if (!Array.isArray(obj.roles)) obj.roles = [];
+            if (!Array.isArray(obj.data)) obj.data = [];
+            if (!obj.workflow) obj.workflow = { places: [], transitions: [], arcs: [] };
+            if (!Array.isArray(obj.workflow.places)) obj.workflow.places = [];
+            if (!Array.isArray(obj.workflow.transitions)) obj.workflow.transitions = [];
+            if (!Array.isArray(obj.workflow.arcs)) obj.workflow.arcs = [];
+            if (!Array.isArray(obj.forms)) obj.forms = [];
+            if (!Array.isArray(obj.validations)) obj.validations = [];
+            if (!Array.isArray(obj.events)) obj.events = [];
+            if (typeof obj.summary !== 'string') obj.summary = '';
+            return obj as PetriflowPlan;
+        } catch {
+            return;
+        }
+    }
+
+    private serializePlan(plan: PetriflowPlan): string {
+        // stable order to make prompts deterministic
+        const ordered: PetriflowPlan = {
+            roles: [...(plan.roles || [])],
+            data: [...(plan.data || [])].map(d => ({ name: d.name, type: d.type })),
+            workflow: {
+                places: [...(plan.workflow?.places || [])],
+                transitions: [...(plan.workflow?.transitions || [])],
+                arcs: [...(plan.workflow?.arcs || [])].map(a => ({ from: a.from, to: a.to })),
+            },
+            forms: [...(plan.forms || [])].map(f => ({ transition: f.transition, fields: [...(f.fields || [])] })),
+            validations: [...(plan.validations || [])],
+            events: [...(plan.events || [])],
+            summary: plan.summary || '',
+        };
+        return JSON.stringify(ordered, null, 2);
     }
 
     /** Dev helper: download transcript */

@@ -4,7 +4,7 @@
     AI Assistant
     <span class="grow"></span>
 
-    <!-- Model picker (best → cheap) -->
+    <!-- Model picker -->
     <mat-form-field appearance="outline" class="model-field">
         <mat-select [(ngModel)]="selectedModel" matTooltip="Choose quality/cost">
             <mat-option *ngFor="let m of modelOptions" [value]="m.id">
@@ -22,9 +22,8 @@
     </button>
 </h2>
 
-<!-- One scroll area: content has no overflow; list does -->
 <mat-dialog-content class="mat-typography p-0">
-    <!-- Status row (tokens / rate) -->
+    <!-- Status row -->
     <div class="px-4 pt-3 pb-2 flex items-center gap-3 border-b">
         <span class="grow"></span>
         <mat-chip-set aria-label="Session info" class="text-xs">
@@ -45,6 +44,14 @@
 
                     <mat-card class="shadow-sm" [ngClass]="{ 'assistant-card': msg.role==='assistant', 'user-card': msg.role==='user' }">
                         <mat-card-content>
+
+                            <!-- top-right small copy button -->
+                            <div class="card-actions">
+                                <button mat-icon-button matTooltip="Copy" (click)="copyMsg(msg)">
+                                    <mat-icon>content_copy</mat-icon>
+                                </button>
+                            </div>
+
                             <!-- thinking bubble -->
                             <div *ngIf="msg.kind==='thinking'" class="text-[15px] leading-7">
                                 <span class="dot"></span><span class="dot"></span><span class="dot"></span>
@@ -52,19 +59,29 @@
                             </div>
 
                             <!-- plan bubble -->
-                            <div *ngIf="msg.kind==='plan'" class="text-[15px] leading-7 whitespace-pre-wrap">{{ msg.content }}</div>
+                            <div *ngIf="msg.kind==='plan'" class="text-[15px] leading-7 whitespace-pre-wrap">
+                                <!-- show pretty summary if available, else raw plan JSON was turned into a human text by TS -->
+                                {{ msg.content || (msg.plan?.summary || '') }}
+                            </div>
                             <div *ngIf="msg.kind==='plan'" class="mt-2 flex items-center gap-2">
                                 <span class="text-xs opacity-80">Plan ready.</span>
                                 <span class="grow"></span>
-                                <button mat-stroked-button color="primary" (click)="generateXmlFromPlan(msg)">Generate XML from this plan</button>
+                                <button mat-stroked-button color="primary" (click)="refineFromPlan(msg)" [disabled]="isLoading">
+                                    Refine requirements
+                                </button>
+                                <button mat-stroked-button color="primary" (click)="generateXmlFromPlan(msg)" [disabled]="isLoading">
+                                    Generate XML from this plan
+                                </button>
                             </div>
 
-                            <!-- xml bubble (no big duplicate text) -->
+                            <!-- xml bubble -->
                             <div *ngIf="msg.kind==='xml'">
                                 <div class="text-xs opacity-80 mb-1">{{ msg.summary || 'Proposed XML' }}</div>
                                 <div class="mt-2 flex items-center gap-2">
                                     <span class="grow"></span>
-                                    <button mat-stroked-button color="primary" (click)="applyXml(msg.xml!)">Apply</button>
+                                    <button mat-stroked-button color="primary" (click)="applyXml(msg.xml!)" [disabled]="isLoading">
+                                        Apply
+                                    </button>
                                 </div>
                                 <details class="mt-2">
                                     <summary class="cursor-pointer text-xs">Show XML</summary>
@@ -144,10 +161,18 @@
     .max-w-\[920px\] { max-width: 920px; }
     .max-w-\[85%\] { max-width: 85%; }
 
-    .assistant-card { background: #EFF6FF; }
-    .user-card { background: #FAFAFA; }
+    .assistant-card { background: #EFF6FF; position: relative; }
+    .user-card { background: #FAFAFA; position: relative; }
+
     .icon.assistant { color: #3B82F6; opacity: .7; }
     .icon.user { color: #6B7280; opacity: .7; }
+
+    .card-actions {
+        position: absolute;
+        top: .25rem;
+        right: .25rem;
+        opacity: .7;
+    }
 
     .border-b { border-bottom: 1px solid rgba(0,0,0,.06); }
     .shadow-sm { box-shadow: 0 1px 2px rgba(0,0,0,.06); }

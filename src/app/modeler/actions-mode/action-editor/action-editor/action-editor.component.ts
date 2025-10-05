@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angula
 import {ChangeType, EditableAction} from '../classes/editable-action';
 import {ActionEditorService} from '../action-editor.service';
 import {FormControl} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
 import {ActionChangedEvent} from '../action-editor-list/action-editor-list.component';
 import {LeafNode} from '../classes/leaf-node';
 import {MatSidenav} from '@angular/material/sidenav';
@@ -12,6 +11,12 @@ import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-it
 import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {ModelService} from '../../../services/model/model.service';
+import { MatDialog } from '@angular/material/dialog';
+import {
+    DialogActionsAssistantComponent,
+    AiAssistantDialogData,
+    AiAssistantDialogResult
+} from '../../../../dialogs/dialog-actions-assistant/dialog-actions-assistant.component';
 
 @Component({
     selector: 'nab-action-editor',
@@ -405,4 +410,49 @@ export class ActionEditorComponent implements OnInit {
 
     // monarch playground: https://microsoft.github.io/monaco-editor/monarch.html
     // monaco playground: https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-custom-languages
+
+    // Optional: local mirror of the dialog types if you prefer (keep in sync with the dialog file)
+
+    openAiAssistantDialog(): void {
+        // 1) capture current source from Monaco or formControl
+        const currentCode: string = this.editor?.getValue?.() ?? this.formControl.value ?? '';
+
+        // 2) safely probe possible identifiers on LeafNode without breaking TS
+        const leafNodeId =
+            (this.leafNode as any)?.id ??
+            (this.leafNode as any)?.identifier ??
+            (this.leafNode as any)?.visualId ??
+            undefined;
+
+        // 3) compose dialog data
+        const data: AiAssistantDialogData = {
+            code: currentCode,
+            action: this.action,
+            actionName: this.name,
+            index: this.index,
+            leafNodeId
+        };
+
+        // 4) open the standalone dialog
+        const dialogRef = this.deleteDialog.open<
+            DialogActionsAssistantComponent,
+            AiAssistantDialogData,
+            AiAssistantDialogResult
+        >(DialogActionsAssistantComponent, {
+            width: '960px',
+            maxHeight: '90vh',
+            disableClose: false,
+            data
+        });
+
+        // 5) apply result back to the editor (triggers your existing saveAction chain)
+        dialogRef.afterClosed().subscribe((result) => {
+            if (!result) return;
+            if (typeof result.updatedCode === 'string') {
+                this.formControl.setValue(result.updatedCode, { emitEvent: true });
+                // optional: keep Monaco in sync explicitly
+                setTimeout(() => this.editor?.setValue?.(result.updatedCode));
+            }
+        });
+    }
 }

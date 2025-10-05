@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>
+    AI Actions Assistant
+</h2>
+
+<mat-dialog-content class="mat-typography" style="display:flex; flex-direction: column; gap: 12px;">
+    <!-- Message stream -->
+    <div *ngFor="let m of messages">
+        <strong *ngIf="m.role==='user'">You:</strong>
+        <strong *ngIf="m.role==='assistant'">Assistant:</strong>
+        <strong *ngIf="m.role==='system'">System:</strong>
+        <pre style="white-space: pre-wrap; margin: 0;">{{ m.content }}</pre>
+        <mat-divider></mat-divider>
+    </div>
+
+    <!-- Proposed code -->
+    <div *ngIf="proposedCode">
+        <h3>Proposed Code</h3>
+        <pre style="max-height: 240px; overflow: auto; border: 1px solid #ddd; padding: 8px;">{{ proposedCode }}</pre>
+    </div>
+
+    <!-- Prompt -->
+    <mat-form-field appearance="outline">
+    <textarea
+        matInput
+        #prompt
+        rows="3"
+        placeholder="Describe the change (e.g., 'Make this field required after save', 'Add a condition to hide field X when Y is false')"
+    ></textarea>
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-stroked-button color="primary" (click)="onAsk(prompt.value)">Send to Assistant</button>
+    <button mat-raised-button color="accent" [disabled]="!proposedCode" (click)="confirm()">Apply</button>
+</mat-dialog-actions>
