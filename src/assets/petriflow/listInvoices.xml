@@ -1,0 +1,275 @@
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://petriflow.com/petriflow.schema.xsd">
+	<id>listInvoices</id>
+	<version>1.0.0</version>
+	<initials>LOI</initials>
+	<title>List of Invoices</title>
+	<icon>list_alt</icon>
+	<defaultRole>true</defaultRole>
+	<anonymousRole>true</anonymousRole>
+	<transitionRole>false</transitionRole>
+	<caseEvents>
+		<event type="create">
+			<id>new_model_create</id>
+			<actions phase="post">
+				<action id="2">
+					<![CDATA[
+					text_0: f.text_0;
+					
+					// --- locale (en/sk/de) ---
+					def lang = "en"
+					try { lang = (org.springframework.context.i18n.LocaleContextHolder.getLocale()?.getLanguage() ?: "en").toLowerCase() } catch(Throwable t){}
+					if(!(lang in ["en","sk","de"])) lang = "en"
+					
+					// --- labels ---
+					def LABELS = [
+					  "en":[title:"List of invoices", name:"Invoice name", action:"Open task", created:"Created", open:"Open"],
+					  "sk":[title:"Zoznam faktúr",   name:"Názov faktúry", action:"Otvoriť úlohu", created:"Vytvorené", open:"Otvoriť"],
+					  "de":[title:"Rechnungen",       name:"Rechnungsname", action:"Aufgabe öffnen", created:"Erstellt", open:"Öffnen"]
+					]
+					def L = LABELS[lang] ?: LABELS["en"]
+					
+					// --- helpers ---
+					def esc = { s -> (s==null) ? "" : s.toString().replace("&","&amp;").replace("<","&lt;").replace(">","&gt;") }
+					def makeButton = { txt, href ->
+					  "<a href='${href}' target='_blank' rel='noopener' " +
+					  "style='display:inline-block;padding:6px 10px;border-radius:8px;border:1px solid #888;text-decoration:none'>" +
+					  esc(txt) + "</a>"
+					}
+					
+					// --- ensure table exists ---
+					def html = (text_0.value ?: "").toString()
+					if(!html.contains('id="invoice_table"')){
+					def headBuilder = new java.lang.StringBuilder(512)
+					    headBuilder.append("<table id=\"invoice_table\" style=\"border-collapse:collapse;width:100%;font-family:system-ui,Segoe UI,Arial,sans-serif\">")
+					    .append("<thead><tr style=\"background:#f3f4f6\">")
+					    .append("<th style=\"text-align:left;padding:8px;border:1px solid #ddd\">").append(esc(L.name)).append("</th>")
+					    .append("<th style=\"text-align:left;padding:8px;border:1px solid #ddd\">").append(esc(L.action)).append("</th>")
+					    .append("<th style=\"text-align:left;padding:8px;border:1px solid #ddd\">").append(esc(L.created)).append("</th>")
+					    .append("</tr></thead><tbody></tbody></table>")
+					    html = headBuilder.toString()
+					}
+					
+					// write back
+					change text_0 value { html }
+					
+					]]>
+				</action>
+			</actions>
+		</event>
+	</caseEvents>
+	<data type="button">
+		<id>button_0</id>
+		<title/>
+		<placeholder>New invoice instance</placeholder>
+	</data>
+	<data type="i18n">
+		<id>i18n_0</id>
+		<title/>
+		<init>List of invoices</init>
+	</data>
+	<data type="i18n">
+		<id>i18n_1</id>
+		<title/>
+		<init>Do not press the Finish button below</init>
+	</data>
+	<data type="text">
+		<id>text_0</id>
+		<title/>
+	</data>
+	<transition>
+		<id>t1</id>
+		<x>304</x>
+		<y>112</y>
+		<label>List of invoices</label>
+		<icon>list_alt</icon>
+		<assignPolicy>auto</assignPolicy>
+		<roleRef>
+			<id>anonymous</id>
+			<logic>
+				<view>true</view>
+				<cancel>false</cancel>
+				<assign>true</assign>
+				<delegate>false</delegate>
+				<perform>true</perform>
+			</logic>
+		</roleRef>
+		<roleRef>
+			<id>default</id>
+			<logic>
+				<view>true</view>
+				<cancel>false</cancel>
+				<assign>true</assign>
+				<delegate>false</delegate>
+				<perform>true</perform>
+			</logic>
+		</roleRef>
+		<dataGroup>
+			<id>t1_0</id>
+			<cols>6</cols>
+			<layout>grid</layout>
+			<dataRef>
+				<id>i18n_0</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>4</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+				<component>
+					<name>divider</name>
+				</component>
+			</dataRef>
+			<dataRef>
+				<id>button_0</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>4</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+				<component>
+					<name>raised</name>
+				</component>
+				<event type="set">
+					<id>button_0_set</id>
+					<actions phase="post">
+						<action id="1">
+							<![CDATA[
+							text_0: f.text_0;
+							
+							// --- locale (en/sk/de) ---
+							def lang = "en"
+							try { lang = (org.springframework.context.i18n.LocaleContextHolder.getLocale()?.getLanguage() ?: "en").toLowerCase() } catch(Throwable t){}
+							if(!(lang in ["en","sk","de"])) lang = "en"
+							
+							// --- labels ---
+							def LABELS = [
+							  "en":[title:"List of invoices", name:"Invoice name", action:"Open task", created:"Created", open:"Open"],
+							  "sk":[title:"Zoznam faktúr",   name:"Názov faktúry", action:"Otvoriť úlohu", created:"Vytvorené", open:"Otvoriť"],
+							  "de":[title:"Rechnungen",       name:"Rechnungsname", action:"Aufgabe öffnen", created:"Erstellt", open:"Öffnen"]
+							]
+							def L = LABELS[lang] ?: LABELS["en"]
+							
+							// --- create case + URL to t5 ---
+							def now   = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date())
+							def title = "Invoice from " + now
+							def myCase = createCase("lubospetrovic1383/invoice", title,"", userService.loggedOrSystem)
+							
+							def myTask = findTask(myCase.tasks.find{it.transition == "t1"}.task);
+							assignTask(myTask, userService.loggedUser);
+							workflowService.save(myCase)
+							
+							
+							def caseId = myCase?.stringId ?: myCase?.id?.toString()
+							if(!caseId){
+							  // soft-fail: show an error note row instead of breaking the UI
+							  def err = (lang=="sk") ? "Nepodarilo sa vytvoriť prípad" : (lang=="de" ? "Fall konnte nicht erstellt werden" : "Could not create case")
+							  def htmlErr = "<div style='color:#b91c1c; padding:8px 0'>${err}</div>"
+							  change text_0 value { ((text_0.value?:'') + htmlErr) }
+							  return
+							}
+							def urlFromCase = "https://etask.netgrif.cloud/process/bHVib3NwZXRyb3ZpYzEzMTAwL2ludm9pY2U/" + caseId
+							
+							// --- helpers ---
+							def esc = { s -> (s==null) ? "" : s.toString().replace("&","&amp;").replace("<","&lt;").replace(">","&gt;") }
+							def makeButton = { txt, href ->
+							  "<a href='${href}' target='_blank' rel='noopener' " +
+							  "style='display:inline-block;padding:6px 10px;border-radius:8px;border:1px solid #888;text-decoration:none'>" +
+							  esc(txt) + "</a>"
+							}
+							
+							// --- ensure table exists ---
+							def html = (text_0.value ?: "").toString()
+							if(!html.contains('id="invoice_table"')){
+							  def head = """
+							  <div style='margin:8px 0;font-weight:600'>${esc(L.title)}</div>
+							  <table id="invoice_table" style="border-collapse:collapse;width:100%;font-family:system-ui,Segoe UI,Arial,sans-serif">
+							    <thead>
+							      <tr style="background:#f3f4f6">
+							        <th style="text-align:left;padding:8px;border:1px solid #ddd">${esc(L.name)}</th>
+							        <th style="text-align:left;padding:8px;border:1px solid #ddd">${esc(L.action)}</th>
+							        <th style="text-align:left;padding:8px;border:1px solid #ddd">${esc(L.created)}</th>
+							      </tr>
+							    </thead>
+							    <tbody>
+							    </tbody>
+							  </table>
+							  """.stripIndent()
+							  html = head
+							}
+							
+							// --- append one row before </tbody> ---
+							def row = new java.lang.StringBuilder()
+							row.append("<tr>")
+							row.append("<td style='padding:8px;border:1px solid #ddd'>").append(esc(title)).append("</td>")
+							row.append("<td style='padding:8px;border:1px solid #ddd'>").append(makeButton(L.open, urlFromCase)).append("</td>")
+							row.append("<td style='padding:8px;border:1px solid #ddd'>").append(esc(now)).append("</td>")
+							row.append("</tr>")
+							
+							int pos = html.indexOf("</tbody>")
+							if(pos > 0){
+							  html = html.substring(0, pos) + row.toString() + html.substring(pos)
+							} else {
+							  // fallback: no <tbody> found → just append after existing content
+							  html = html + row.toString()
+							}
+							
+							// --- write back to htmltextarea ---
+							change text_0 value { html }
+							]]>
+						</action>
+					</actions>
+				</event>
+			</dataRef>
+			<dataRef>
+				<id>text_0</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>4</rows>
+					<cols>6</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+				<component>
+					<name>htmltextarea</name>
+				</component>
+			</dataRef>
+			<dataRef>
+				<id>i18n_1</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>5</y>
+					<rows>1</rows>
+					<cols>6</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+				<component>
+					<name>divider</name>
+				</component>
+			</dataRef>
+		</dataGroup>
+		<event type="finish">
+			<id>t1_finish</id>
+			<title>
+			</title>
+		</event>
+	</transition>
+</document>

@@ -1,0 +1,416 @@
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://petriflow.com/petriflow.schema.xsd">
+	<id>insurance</id>
+	<initials>INS</initials>
+	<title>Travel insurance</title>
+	<icon>dataset</icon>
+	<defaultRole>true</defaultRole>
+	<anonymousRole>true</anonymousRole>
+	<transitionRole>false</transitionRole>
+	<role>
+		<id>system</id>
+		<title>system</title>
+	</role>
+	<data type="button">
+		<id>add</id>
+		<title/>
+		<placeholder>Add</placeholder>
+		<init>1</init>
+		<event type="set">
+			<id>button_0_set</id>
+			<actions phase="pre">
+				<action id="1">
+					<![CDATA[
+					objectsInsuredPersons: f.objectsInsuredPersons,
+					insuredPersons: f.insuredPersons,
+					insurancePrice: f.insurancePrice,
+					period: f.period;
+					def id_process_insured = workspace + "insured";
+					def new_insured = createCase(id_process_insured);
+					def new_insured_data = new_insured.tasks.find{it.transition=="t1"}?.task;
+					def task_data_insured = findTask({it._id.eq(new_insured_data)});
+					assignTask(task_data_insured);
+					setData("t1", new_insured, ["id_parent": ["value": useCase.stringId, "type": "text"]]);
+					change objectsInsuredPersons value { objectsInsuredPersons.value + new_insured.stringId }
+					change insuredPersons value { insuredPersons.value + new_insured_data };
+					change insurancePrice value { period.value * insuredPersons.value.size() }
+					]]>
+				</action>
+			</actions>
+		</event>
+	</data>
+	<data type="button">
+		<id>delete</id>
+		<title/>
+		<placeholder>Delete selected</placeholder>
+		<init>1</init>
+		<event type="set">
+			<id>button_1_set</id>
+			<actions phase="pre">
+				<action id="2">
+					<![CDATA[
+					objectsInsuredPersons: f.objectsInsuredPersons,
+					insuredPersons: f.insuredPersons,
+					insurancePrice: f.insurancePrice,
+					period: f.period;
+					insuredPersons.value.each{ riadok -> 
+					    def info_user_row = findTask({it._id.eq(riadok)});
+					    def case_row = findCase {it._id.eq(info_user_row.caseId)};
+					    if (case_row.getFieldValue("deleteat") == true) {
+					        change insuredPersons value { insuredPersons.value - riadok };
+					        change objectsInsuredPersons value { objectsInsuredPersons.value - case_row.stringId }
+					        workflowService.deleteCase(case_row.stringId);
+					    }
+					}
+					change insurancePrice value { period.value * insuredPersons.value.size() }
+					]]>
+				</action>
+			</actions>
+		</event>
+	</data>
+	<data type="i18n">
+		<id>divider</id>
+		<title>Insured persons</title>
+		<init>Insured persons</init>
+	</data>
+	<data type="taskRef">
+		<id>finalInsuredPersons</id>
+		<title/>
+	</data>
+	<data type="i18n">
+		<id>i18n_0</id>
+		<title/>
+		<init>Insured persons</init>
+	</data>
+	<data type="text">
+		<id>insuranceId</id>
+		<title>ID of insurance contract</title>
+	</data>
+	<data type="number">
+		<id>insurancePrice</id>
+		<title>Insurance price</title>
+		<component>
+			<name>currency</name>
+			<property key="fractionSize">2</property>
+		</component>
+	</data>
+	<data type="taskRef">
+		<id>insuredPersons</id>
+		<title>TaskRefInsured</title>
+	</data>
+	<data type="caseRef">
+		<id>objectsInsuredPersons</id>
+		<title/>
+		<allowedNets>
+			<allowedNet>YOUR_SPACE_NAME/insured</allowedNet>
+		</allowedNets>
+	</data>
+	<data type="number">
+		<id>period</id>
+		<title>Period of insurance in days</title>
+		<validations>
+			<validation>
+				<expression>inrange 1,365</expression>
+				<message>Incorrectly determined period.</message>
+			</validation>
+		</validations>
+		<event type="set">
+			<id>number_0_set</id>
+			<actions phase="post">
+				<action id="4">
+					<![CDATA[
+					insuredPersons: f.insuredPersons,
+					insurancePrice: f.insurancePrice,
+					period: f.period;
+					change insurancePrice value { period.value * insuredPersons.value.size() }
+					]]>
+				</action>
+			</actions>
+		</event>
+	</data>
+	<data type="date">
+		<id>start</id>
+		<title>Start of insurance</title>
+	</data>
+	<transition>
+		<id>t2</id>
+		<x>432</x>
+		<y>144</y>
+		<label>Creation of the insurance</label>
+		<assignPolicy>auto</assignPolicy>
+		<dataGroup>
+			<id>t1_0</id>
+			<cols>7</cols>
+			<layout>grid</layout>
+			<dataRef>
+				<id>period</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>start</id>
+				<logic>
+					<behavior>editable</behavior>
+					<behavior>required</behavior>
+				</logic>
+				<layout>
+					<x>2</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>3</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>insurancePrice</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>5</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>2</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+				<component>
+					<name>currency</name>
+					<property key="fractionSize">2</property>
+				</component>
+			</dataRef>
+			<dataRef>
+				<id>divider</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>5</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+				<component>
+					<name>divider</name>
+				</component>
+			</dataRef>
+			<dataRef>
+				<id>add</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>5</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>delete</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>6</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>1</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>insuredPersons</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>7</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+		<event type="finish">
+			<id>t2_finish</id>
+			<title>Poistiť</title>
+			<actions phase="pre">
+				<action id="6">
+					<![CDATA[
+					finalInsuredPersons: f.finalInsuredPersons,
+					text_0: f.insuranceId,
+					insuredPersons: f.insuredPersons;
+					insuredPersons.value.each{ riadok -> 
+					    def udaje_poistenca = findTask({it._id.eq(riadok)});
+					    finishTask(udaje_poistenca)
+					}
+					]]>
+				</action>
+			</actions>
+			<actions phase="post">
+				<action id="10">
+					<![CDATA[
+					insuranceId: f.insuranceId,
+					finalInsuredPersons: f.finalInsuredPersons,
+					objectsInsuredPersons: f.objectsInsuredPersons;
+					change finalInsuredPersons value { 
+					    findTasks{(it.caseId.in(objectsInsuredPersons.value)).and(it.transitionId.eq("t2"))}?.collect{it.stringId}
+					}
+					change insuranceId value { useCase.stringId }
+					]]>
+				</action>
+			</actions>
+		</event>
+	</transition>
+	<transition>
+		<id>t3</id>
+		<x>656</x>
+		<y>144</y>
+		<label>Summary of the insurance</label>
+		<dataGroup>
+			<id>t3_0</id>
+			<cols>12</cols>
+			<layout>grid</layout>
+			<dataRef>
+				<id>insuranceId</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>3</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>start</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>3</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>3</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>period</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>6</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>3</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>insurancePrice</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>9</x>
+					<y>0</y>
+					<rows>1</rows>
+					<cols>3</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+			<dataRef>
+				<id>i18n_0</id>
+				<logic>
+					<behavior>editable</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>1</y>
+					<rows>1</rows>
+					<cols>12</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+				<component>
+					<name>divider</name>
+				</component>
+			</dataRef>
+			<dataRef>
+				<id>finalInsuredPersons</id>
+				<logic>
+					<behavior>visible</behavior>
+				</logic>
+				<layout>
+					<x>0</x>
+					<y>2</y>
+					<rows>1</rows>
+					<cols>12</cols>
+					<template>material</template>
+					<appearance>outline</appearance>
+				</layout>
+			</dataRef>
+		</dataGroup>
+	</transition>
+	<place>
+		<id>p1</id>
+		<x>304</x>
+		<y>144</y>
+		<tokens>1</tokens>
+		<static>false</static>
+	</place>
+	<place>
+		<id>p2</id>
+		<x>528</x>
+		<y>144</y>
+		<tokens>0</tokens>
+		<static>false</static>
+	</place>
+	<arc>
+		<id>a1</id>
+		<type>regular</type>
+		<sourceId>p1</sourceId>
+		<destinationId>t2</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>a2</id>
+		<type>regular</type>
+		<sourceId>t2</sourceId>
+		<destinationId>p2</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+	<arc>
+		<id>a4</id>
+		<type>read</type>
+		<sourceId>p2</sourceId>
+		<destinationId>t3</destinationId>
+		<multiplicity>1</multiplicity>
+	</arc>
+</document>

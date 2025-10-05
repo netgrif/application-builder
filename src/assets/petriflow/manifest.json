@@ -1,0 +1,12 @@
+{
+    "examples": [
+        "request.xml",
+        "itZiadost.xml",
+        "listInvoices.xml",
+        "insurance.xml",
+        "insured.xml",
+        "mortgage.xml"
+
+    ],
+    "schema": "petriflow.schema.xsd"
+}

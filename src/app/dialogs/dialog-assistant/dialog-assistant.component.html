@@ -1,0 +1,180 @@
+<!-- src/app/dialogs/dialog-assistant/dialog-assistant.component.html -->
+<h2 mat-dialog-title class="flex items-center gap-3">
+    <mat-icon aria-hidden="true">smart_toy</mat-icon>
+    AI Assistant
+    <span class="grow"></span>
+
+    <!-- Model picker (best → cheap) -->
+    <mat-form-field appearance="outline" class="model-field">
+        <mat-select [(ngModel)]="selectedModel" matTooltip="Choose quality/cost">
+            <mat-option *ngFor="let m of modelOptions" [value]="m.id">
+                {{ m.label }} — {{ m.note }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <button mat-icon-button matTooltip="Download transcript" (click)="downloadTranscript()">
+        <mat-icon>download</mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Close" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+    </button>
+</h2>
+
+<!-- One scroll area: content has no overflow; list does -->
+<mat-dialog-content class="mat-typography p-0">
+    <!-- Status row (tokens / rate) -->
+    <div class="px-4 pt-3 pb-2 flex items-center gap-3 border-b">
+        <span class="grow"></span>
+        <mat-chip-set aria-label="Session info" class="text-xs">
+            <mat-chip *ngIf="tokenUsage" appearance="outlined">{{ tokenUsage.total }} tok</mat-chip>
+            <mat-chip *ngIf="rateInfo" appearance="outlined">{{ rateInfo }}</mat-chip>
+        </mat-chip-set>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-scroll px-4 py-3" #scrollArea>
+        <ng-container *ngIf="messages?.length; else emptyState">
+            <div *ngFor="let msg of messages; trackBy: trackByMsgFn" class="mb-3 flex" [class.justify-end]="msg.role === 'user'">
+                <div class="flex max-w-[85%] items-start gap-2" [class.flex-row-reverse]="msg.role === 'user'">
+
+                    <mat-icon class="mt-1 icon" [ngClass]="{ 'assistant': msg.role==='assistant', 'user': msg.role!=='assistant' }">
+                        {{ msg.role === 'assistant' ? 'smart_toy' : 'person' }}
+                    </mat-icon>
+
+                    <mat-card class="shadow-sm" [ngClass]="{ 'assistant-card': msg.role==='assistant', 'user-card': msg.role==='user' }">
+                        <mat-card-content>
+                            <!-- thinking bubble -->
+                            <div *ngIf="msg.kind==='thinking'" class="text-[15px] leading-7">
+                                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                                <span class="ml-2">Assistant is thinking…</span>
+                            </div>
+
+                            <!-- plan bubble -->
+                            <div *ngIf="msg.kind==='plan'" class="text-[15px] leading-7 whitespace-pre-wrap">{{ msg.content }}</div>
+                            <div *ngIf="msg.kind==='plan'" class="mt-2 flex items-center gap-2">
+                                <span class="text-xs opacity-80">Plan ready.</span>
+                                <span class="grow"></span>
+                                <button mat-stroked-button color="primary" (click)="generateXmlFromPlan(msg)">Generate XML from this plan</button>
+                            </div>
+
+                            <!-- xml bubble (no big duplicate text) -->
+                            <div *ngIf="msg.kind==='xml'">
+                                <div class="text-xs opacity-80 mb-1">{{ msg.summary || 'Proposed XML' }}</div>
+                                <div class="mt-2 flex items-center gap-2">
+                                    <span class="grow"></span>
+                                    <button mat-stroked-button color="primary" (click)="applyXml(msg.xml!)">Apply</button>
+                                </div>
+                                <details class="mt-2">
+                                    <summary class="cursor-pointer text-xs">Show XML</summary>
+                                    <pre class="xml-pre"><code>{{ msg.xml }}</code></pre>
+                                </details>
+                            </div>
+
+                            <!-- regular info/user -->
+                            <div *ngIf="msg.kind!=='thinking' && msg.kind!=='plan' && msg.kind!=='xml'" class="text-[15px] leading-7 whitespace-pre-wrap">
+                                {{ msg.content }}
+                            </div>
+
+                            <!-- meta -->
+                            <div class="mt-1 text-[11px] opacity-60 flex items-center gap-2">
+                                <span>{{ msg.timestamp | date:'shortTime' }}</span>
+                                <span *ngIf="msg.latencyMs">· {{ msg.latencyMs }} ms</span>
+                                <span *ngIf="msg.tokens">· {{ msg.tokens }} tok</span>
+                            </div>
+
+                            <div *ngIf="msg.error" class="mt-2 text-red-600 text-xs">{{ msg.error }}</div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-template #emptyState>
+            <div class="px-2 py-8 text-center opacity-75">
+                <mat-icon>chat_bubble</mat-icon>
+                <div class="mt-2">Describe what you want to build (e.g. “New finance app processing”).</div>
+            </div>
+        </ng-template>
+    </div>
+
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+</mat-dialog-content>
+
+<mat-dialog-actions align="start" class="flex items-center gap-2">
+    <!-- Attach context (text files) -->
+    <button mat-icon-button matTooltip="Attach context" (click)="onAttachContext()">
+        <mat-icon>attach_file</mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Clear chat" (click)="onClear()">
+        <mat-icon>delete_sweep</mat-icon>
+    </button>
+
+    <span class="grow"></span>
+
+    <!-- Composer -->
+    <mat-form-field appearance="outline" class="w-full max-w-[920px]">
+    <textarea
+        matInput
+        #promptArea
+        cdkTextareaAutosize
+        [cdkAutosizeMinRows]="3"
+        [cdkAutosizeMaxRows]="14"
+        placeholder="Type your request…"
+        [(ngModel)]="prompt"
+        (keydown)="onComposerKeydown($event)"
+        (keydown.enter)="!($event.shiftKey) && send(); $event.preventDefault()"
+        class="text-[15px] leading-7 py-3"
+    ></textarea>
+
+        <button matSuffix mat-icon-button matTooltip="Send" (click)="send()" [disabled]="!prompt?.trim() || isLoading">
+            <mat-icon>send</mat-icon>
+        </button>
+    </mat-form-field>
+</mat-dialog-actions>
+
+<style>
+    mat-dialog-content { overflow: hidden; }
+    .chat-scroll { max-height: 60vh; overflow: auto; }
+
+    .model-field { width: 260px; margin-right: .25rem; }
+    .w-full { width: 100%; }
+    .max-w-\[920px\] { max-width: 920px; }
+    .max-w-\[85%\] { max-width: 85%; }
+
+    .assistant-card { background: #EFF6FF; }
+    .user-card { background: #FAFAFA; }
+    .icon.assistant { color: #3B82F6; opacity: .7; }
+    .icon.user { color: #6B7280; opacity: .7; }
+
+    .border-b { border-bottom: 1px solid rgba(0,0,0,.06); }
+    .shadow-sm { box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+    .cursor-pointer { cursor: pointer; }
+
+    .xml-pre {
+        padding: .5rem;
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 6px;
+        overflow: auto;
+        max-height: 56vh;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    /* thinking dots */
+    .dot {
+        display: inline-block;
+        width: .4rem; height: .4rem;
+        background: #9CA3AF;
+        border-radius: 50%;
+        margin-right: .2rem;
+        animation: bounce 1.2s infinite ease-in-out;
+    }
+    .dot:nth-child(1){ animation-delay: 0s; }
+    .dot:nth-child(2){ animation-delay: 0.15s; }
+    .dot:nth-child(3){ animation-delay: 0.3s; }
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+</style>
