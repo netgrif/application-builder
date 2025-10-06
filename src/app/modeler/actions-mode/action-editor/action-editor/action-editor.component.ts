@@ -1,16 +1,16 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {ChangeType, EditableAction} from '../classes/editable-action';
-import {ActionEditorService} from '../action-editor.service';
-import {FormControl} from '@angular/forms';
-import {ActionChangedEvent} from '../action-editor-list/action-editor-list.component';
-import {LeafNode} from '../classes/leaf-node';
-import {MatSidenav} from '@angular/material/sidenav';
-import {MatButton} from '@angular/material/button';
-import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-delete.component';
-import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
-import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
-import {MatMenuTrigger} from '@angular/material/menu';
-import {ModelService} from '../../../services/model/model.service';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeType, EditableAction } from '../classes/editable-action';
+import { ActionEditorService } from '../action-editor.service';
+import { FormControl } from '@angular/forms';
+import { ActionChangedEvent } from '../action-editor-list/action-editor-list.component';
+import { LeafNode } from '../classes/leaf-node';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MatButton } from '@angular/material/button';
+import { DialogDeleteComponent } from '../../../../dialogs/dialog-delete/dialog-delete.component';
+import { MenuItemConfiguration } from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
+import { MenuItem } from '../action-editor-menu/action-editor-menu-item/menu-item';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { ModelService } from '../../../services/model/model.service';
 import { MatDialog } from '@angular/material/dialog';
 import {
     DialogActionsAssistantComponent,
@@ -32,7 +32,6 @@ export class ActionEditorComponent implements OnInit {
     @ViewChild('matButton') private button: MatButton;
     @ViewChild('referencesTrigger') trigger: MatMenuTrigger;
     @Input() name: string;
-    // covalent code editor component source: https://github.com/Teradata/covalent/blob/develop/src/platform/code-editor/code-editor.component.ts
 
     @Input() public action: EditableAction;
     @Input() public index: number;
@@ -43,6 +42,7 @@ export class ActionEditorComponent implements OnInit {
     public editor: any;
     public formControl: FormControl;
     public referencesOpened = true;
+
     public transitionItemsConfiguration: MenuItemConfiguration;
     public dataFieldItemsConfiguration: MenuItemConfiguration;
     public behaviourItemsConfiguration: MenuItemConfiguration;
@@ -66,12 +66,12 @@ export class ActionEditorComponent implements OnInit {
         private modelService: ModelService,
         private deleteDialog: MatDialog
     ) {
-        this.formControl = new FormControl(undefined, {updateOn: 'blur'});
+        this.formControl = new FormControl(undefined, { updateOn: 'blur' });
         this.actionChanged = new EventEmitter<ActionChangedEvent>();
         this.drawerOpened = new EventEmitter<boolean>();
     }
 
-    // options: https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
+    // Monaco options
     editorOptions = {
         language: 'petriflow',
         scrollBeyondLastLine: false,
@@ -80,9 +80,9 @@ export class ActionEditorComponent implements OnInit {
         colorDecorators: true
     };
 
-    onInit(editorObject) {
+    onInit(editorObject: any) {
         this.editor = editorObject;
-        this.editor.onDidChangeModelContent(e => {
+        this.editor.onDidChangeModelContent((e: any) => {
             this.saveAction(this.editor.getModel().getLinesContent().join('\n'));
         });
         this.transitionItemsConfiguration.editor = editorObject;
@@ -99,11 +99,11 @@ export class ActionEditorComponent implements OnInit {
         this.initialiseEditorVersioning(editorObject);
     }
 
-    private initialiseEditorVersioning(editorObject) {
+    private initialiseEditorVersioning(editorObject: any) {
         let initialVersion = editorObject.getModel().getAlternativeVersionId();
         let currentVersion = initialVersion;
         let lastVersion = initialVersion;
-        this.editor.onDidChangeModelContent(e => {
+        this.editor.onDidChangeModelContent((e: any) => {
             const versionId = editorObject.getModel().getAlternativeVersionId();
             if (!e.isUndoing && !e.isRedoing && this.editor.getValue() === '' &&
                 e.changes[0].text === '' && e.changes[0].rangeLength === 0) {
@@ -139,6 +139,7 @@ export class ActionEditorComponent implements OnInit {
         this.formControl.valueChanges.subscribe(value => {
             this.saveAction(value);
         });
+
         this.transitionItemsConfiguration = new MenuItemConfiguration(
             'Transitions',
             'transition',
@@ -147,15 +148,16 @@ export class ActionEditorComponent implements OnInit {
             this,
             this.modelService.model.getTransitions().map(t => new MenuItem(t.id, `${t.label?.value} [${t.id}]`))
         );
+
         this.dataFieldItemsConfiguration = new MenuItemConfiguration(
             'Data fields',
             'datafield',
-            // TODO: NAB-326 choicefield, optionfield = different menu items
             ['<datafield>', '<datafieldId>'],
             this.editor,
             this,
             this.modelService.model.getDataSet().map(f => new MenuItem(f.id, `${f.title?.value} [${f.id}]`))
         );
+
         this.behaviourItemsConfiguration = new MenuItemConfiguration(
             'Behaviours',
             'behaviour',
@@ -170,6 +172,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem('optional', 'optional')
             ]
         );
+
         this.conditionItemsConfiguration = new MenuItemConfiguration(
             'Conditions',
             'condition',
@@ -193,6 +196,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem('<datafield>.value <= <value>', '&lt;datafield&gt;.value <b>&lt;=</b> &lt;value&gt;'),
             ]
         );
+
         this.propertyItemsConfiguration = new MenuItemConfiguration(
             'Properties',
             'property',
@@ -205,6 +209,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem('"icon"', 'icon'),
             ]
         );
+
         this.valueItemsConfiguration = new MenuItemConfiguration(
             'Values',
             'value',
@@ -225,6 +230,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem('["a":"a","b":"b"]', 'Map of strings')
             ]
         );
+
         this.typeItemsConfiguration = new MenuItemConfiguration(
             'Types',
             'types',
@@ -252,6 +258,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem('"i18n"', 'i18n')
             ]
         );
+
         this.dataSetItemsConfiguration = new MenuItemConfiguration(
             'DataSet',
             'dataSet',
@@ -263,6 +270,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem('[<datafieldId>: ["value": <value>,"type": <type>],\n \t\t\t   <datafieldId>: ["value": <value>,"type": <type>]]', 'Two data in set'),
             ]
         );
+
         this.processInstanceIdItemsConfiguration = new MenuItemConfiguration(
             'Process Instance Id',
             'processInstanceId',
@@ -273,6 +281,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem(' //Process instance ID can be found in your NAE app', 'Process Instance Id'),
             ]
         );
+
         this.casePredicateItemsConfiguration = new MenuItemConfiguration(
             'Case predicates',
             'casePredicate',
@@ -291,6 +300,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem('{it.author.fullName.eq(<value>)}', 'Authors full name equals value'),
             ]
         );
+
         this.taskPredicateItemsConfiguration = new MenuItemConfiguration(
             'Task predicates',
             'taskPredicate',
@@ -306,6 +316,7 @@ export class ActionEditorComponent implements OnInit {
                 new MenuItem('{it.caseTitle.eq(<value>)}', 'Case title equals value'),
             ]
         );
+
         this.editorConfigurations = [
             this.transitionItemsConfiguration,
             this.dataFieldItemsConfiguration,
@@ -330,9 +341,7 @@ export class ActionEditorComponent implements OnInit {
     deleteAction(index: number): void {
         const action = this.leafNode.removeAction(index);
         action.changeType = ChangeType.REMOVED;
-        this.actionChanged.emit({
-            action
-        });
+        this.actionChanged.emit({ action });
     }
 
     actionTransitionEventsChanged(index: number): void {
@@ -360,11 +369,11 @@ export class ActionEditorComponent implements OnInit {
 
     onResizeEvent(event: any, name: string): void {
         const newHeight = event.rectangle.height < 370 ? 370 : event.rectangle.height;
-        const element = document.getElementById(name);
+        const element = document.getElementById(name) as HTMLElement;
         const headerSize = (element.childNodes[0] as HTMLElement).offsetHeight;
         const bottomSize = (element.childNodes[1].childNodes[1] as HTMLElement).offsetHeight;
-        const div = document.getElementById(name + '_div');
-        const editorObject = document.getElementById(name + '_editor');
+        const div = document.getElementById(name + '_div') as HTMLElement;
+        const editorObject = document.getElementById(name + '_editor') as HTMLElement;
         element.style.height = newHeight + 'px';
         const innerSize = newHeight - headerSize - bottomSize - 45;
         div.style.height = innerSize + 'px';
@@ -373,7 +382,6 @@ export class ActionEditorComponent implements OnInit {
 
     openDialog(index: number): void {
         const dialogRef = this.deleteDialog.open(DialogDeleteComponent);
-
         dialogRef.afterClosed().subscribe(result => {
             if (result === true) {
                 this.deleteAction(index);
@@ -383,6 +391,11 @@ export class ActionEditorComponent implements OnInit {
 
     closeDrawer() {
         this.drawer.close();
+        this.drawerOpened.emit(this.drawer.opened);
+    }
+
+    openDrawer() {
+        this.drawer.toggle();
         this.drawerOpened.emit(this.drawer.opened);
     }
 
@@ -403,37 +416,81 @@ export class ActionEditorComponent implements OnInit {
         this.referencesOpened = false;
     }
 
-    openDrawer() {
-        this.drawer.toggle();
-        this.drawerOpened.emit(this.drawer.opened);
+    private buildAssistantContext(): string {
+        try {
+            const model = this.modelService?.model;
+
+            const list = (label: string, rows: string[]) =>
+                rows?.length ? `## ${label}\n- ${rows.join('\n- ')}\n` : '';
+
+            const transitions = (model?.getTransitions?.() ?? [])
+                .map((t: any) => `${t.id}${t?.label?.value ? ` (${t.label.value})` : ''}`);
+
+            const dataFields = (model?.getDataSet?.() ?? [])
+                .map((f: any) => {
+                    const typ = (f as any)?.type ?? (f as any)?.component ?? '';
+                    const title = f?.title?.value ? ` (${f.title.value})` : '';
+                    return `${f.id}${title}${typ ? ` : ${typ}` : ''}`;
+                });
+
+            const takeValues = (cfg?: any) => (cfg?.items ?? []).map((i: any) => i.value || i.id).filter(Boolean);
+
+            const behaviours = takeValues(this.behaviourItemsConfiguration);
+            const conditions  = takeValues(this.conditionItemsConfiguration);
+            const properties  = takeValues(this.propertyItemsConfiguration);
+            const values      = takeValues(this.valueItemsConfiguration);
+            const types       = takeValues(this.typeItemsConfiguration);
+            const datasetSnips= takeValues(this.dataSetItemsConfiguration);
+            const casePred    = takeValues(this.casePredicateItemsConfiguration);
+            const taskPred    = takeValues(this.taskPredicateItemsConfiguration);
+
+            const meta = (() => {
+                const a = this.action as any;
+                const parts: string[] = [];
+                if (a?.id) parts.push(`id=${a.id}`);
+                if (a?.event) parts.push(`event=${a.event}`);
+                if (a?.phase) parts.push(`phase=${a.phase}`);
+                if (a?.type) parts.push(`type=${a.type}`);
+                return parts.length ? `Action meta: ${parts.join(', ')}` : '';
+            })();
+
+            return [
+                meta,
+                list('Transitions', transitions),
+                list('Data Fields', dataFields),
+                list('Behaviour Templates', behaviours),
+                list('Condition Templates', conditions),
+                list('Property Keys', properties),
+                list('Value Snippets', values),
+                list('Data Types', types),
+                list('DataSet Snippets', datasetSnips),
+                list('Case Predicates', casePred),
+                list('Task Predicates', taskPred),
+            ].filter(Boolean).join('\n');
+        } catch {
+            return '(no context)';
+        }
     }
 
-    // monarch playground: https://microsoft.github.io/monaco-editor/monarch.html
-    // monaco playground: https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-custom-languages
-
-    // Optional: local mirror of the dialog types if you prefer (keep in sync with the dialog file)
-
+    /** Opens the AI dialog with current code + rich model context. */
     openAiAssistantDialog(): void {
-        // 1) capture current source from Monaco or formControl
         const currentCode: string = this.editor?.getValue?.() ?? this.formControl.value ?? '';
 
-        // 2) safely probe possible identifiers on LeafNode without breaking TS
         const leafNodeId =
             (this.leafNode as any)?.id ??
             (this.leafNode as any)?.identifier ??
             (this.leafNode as any)?.visualId ??
             undefined;
 
-        // 3) compose dialog data
         const data: AiAssistantDialogData = {
             code: currentCode,
             action: this.action,
             actionName: this.name,
             index: this.index,
-            leafNodeId
+            leafNodeId,
+            context: this.buildAssistantContext(),  // <-- NEW
         };
 
-        // 4) open the standalone dialog
         const dialogRef = this.deleteDialog.open<
             DialogActionsAssistantComponent,
             AiAssistantDialogData,
@@ -445,14 +502,15 @@ export class ActionEditorComponent implements OnInit {
             data
         });
 
-        // 5) apply result back to the editor (triggers your existing saveAction chain)
         dialogRef.afterClosed().subscribe((result) => {
             if (!result) return;
             if (typeof result.updatedCode === 'string') {
                 this.formControl.setValue(result.updatedCode, { emitEvent: true });
-                // optional: keep Monaco in sync explicitly
                 setTimeout(() => this.editor?.setValue?.(result.updatedCode));
             }
         });
     }
+
+    // monarch playground: https://microsoft.github.io/monaco-editor/monarch.html
+    // monaco playground: https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-custom-languages
 }
