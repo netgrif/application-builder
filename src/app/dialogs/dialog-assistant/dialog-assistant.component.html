@@ -13,10 +13,6 @@
         </mat-select>
     </mat-form-field>
 
-    <button mat-icon-button matTooltip="Download transcript" (click)="downloadTranscript()">
-        <mat-icon>download</mat-icon>
-    </button>
-
     <button mat-icon-button matTooltip="Close" (click)="onClose()">
         <mat-icon>close</mat-icon>
     </button>
@@ -35,8 +31,11 @@
     <!-- Messages -->
     <div class="chat-scroll px-4 py-3" #scrollArea>
         <ng-container *ngIf="messages?.length; else emptyState">
-            <div *ngFor="let msg of messages; trackBy: trackByMsgFn" class="mb-3 flex" [class.justify-end]="msg.role === 'user'">
-                <div class="flex max-w-[85%] items-start gap-2" [class.flex-row-reverse]="msg.role === 'user'">
+            <div
+                *ngFor="let msg of messages; trackBy: trackByMsgFn"
+                class="mb-3 flex"
+                [class.justify-end]="msg.role === 'user'">
+                <div class="flex max-w-[85%] items-start gap-2" [ngClass]="{ 'flex-row-reverse': msg.role === 'user' }">
 
                     <mat-icon class="mt-1 icon" [ngClass]="{ 'assistant': msg.role==='assistant', 'user': msg.role!=='assistant' }">
                         {{ msg.role === 'assistant' ? 'smart_toy' : 'person' }}
@@ -58,23 +57,86 @@
                                 <span class="ml-2">Assistant is thinking…</span>
                             </div>
 
-                            <!-- plan bubble -->
-                            <div *ngIf="msg.kind==='plan'" class="text-[15px] leading-7 whitespace-pre-wrap">
-                                <!-- show pretty summary if available, else raw plan JSON was turned into a human text by TS -->
-                                {{ msg.content || (msg.plan?.summary || '') }}
-                            </div>
-                            <div *ngIf="msg.kind==='plan'" class="mt-2 flex items-center gap-2">
-                                <span class="text-xs opacity-80">Plan ready.</span>
-                                <span class="grow"></span>
-                                <button mat-stroked-button color="primary" (click)="refineFromPlan(msg)" [disabled]="isLoading">
-                                    Refine requirements
-                                </button>
-                                <button mat-stroked-button color="primary" (click)="generateXmlFromPlan(msg)" [disabled]="isLoading">
-                                    Generate XML from this plan
-                                </button>
+                            <!-- BRD bubble -->
+                            <div *ngIf="msg.kind==='brd'">
+                                <div class="text-xs opacity-80 mb-1">Business Requirements</div>
+
+                                <div class="text-[15px] leading-7 whitespace-pre-wrap">
+                                    {{ msg.content }}
+                                </div>
+
+                                <!-- BRD actions -->
+                                <div class="mt-3 flex flex-wrap items-center gap-2">
+                                    <button mat-stroked-button (click)="prompt = makeBrdEditSeed(msg.brd!); promptArea?.nativeElement?.focus()" [disabled]="isLoading">
+                                        Upraviť BRD (seed)
+                                    </button>
+                                    <button mat-stroked-button color="primary" (click)="refine('brd')" [disabled]="isLoading || !state?.draft">
+                                        Refine BRD
+                                    </button>
+                                    <button mat-stroked-button color="primary" (click)="refine('both')" [disabled]="isLoading || !state?.draft">
+                                        Refine (Both)
+                                    </button>
+                                    <span class="grow"></span>
+                                    <span class="text-xs opacity-80" *ngIf="state?.draft">v{{ state?.draft?.version }}</span>
+                                </div>
+
+                                <!-- change log if present -->
+                                <div *ngIf="msg.changeLog?.length" class="mt-2 text-xs">
+                                    <div class="opacity-70 mb-1">Zmeny:</div>
+                                    <ul class="pl-4 list-disc">
+                                        <li *ngFor="let it of msg.changeLog">{{ it }}</li>
+                                    </ul>
+                                </div>
+
+                                <!-- meta -->
+                                <div class="mt-2 text-[11px] opacity-60 flex items-center gap-2">
+                                    <span>{{ msg.timestamp | date:'shortTime' }}</span>
+                                    <span *ngIf="msg.latencyMs">· {{ msg.latencyMs }} ms</span>
+                                    <span *ngIf="msg.tokens">· {{ msg.tokens }} tok</span>
+                                </div>
+
+                                <div *ngIf="msg.error" class="mt-2 text-red-600 text-xs">{{ msg.error }}</div>
                             </div>
 
-                            <!-- xml bubble -->
+                            <!-- TECH bubble (collapsible with caret) -->
+                            <div *ngIf="msg.kind==='tech'">
+                                <div class="flex items-center gap-2 cursor-pointer" (click)="toggleTechCollapsed(msg.id)">
+                                    <mat-icon class="caret" [ngClass]="{ 'rotated': !showTechCollapsedById[msg.id] }">expand_more</mat-icon>
+                                    <div class="text-xs opacity-80">Technical Design (Petriflow)</div>
+                                    <span class="grow"></span>
+                                    <button mat-stroked-button (click)="prompt = makeTechEditSeed(msg.tech!); promptArea?.nativeElement?.focus(); $event.stopPropagation()" [disabled]="isLoading">
+                                        Upraviť TECH (seed)
+                                    </button>
+                                    <button mat-stroked-button color="primary" (click)="refine('tech'); $event.stopPropagation()" [disabled]="isLoading || !state?.draft">
+                                        Refine TECH
+                                    </button>
+                                    <button mat-flat-button color="primary" (click)="generateXmlFromDraft(); $event.stopPropagation()" [disabled]="isLoading || !state?.draft?.tech">
+                                        Generovať XML
+                                    </button>
+                                </div>
+
+                                <div class="mt-2" [ngClass]="{ 'hidden': showTechCollapsedById[msg.id] }">
+                                    <div class="text-[15px] leading-7 whitespace-pre-wrap">
+                                        {{ msg.content }}
+                                    </div>
+
+                                    <!-- change log if present -->
+                                    <div *ngIf="msg.changeLog?.length" class="mt-2 text-xs">
+                                        <div class="opacity-70 mb-1">Zmeny:</div>
+                                        <ul class="pl-4 list-disc">
+                                            <li *ngFor="let it of msg.changeLog">{{ it }}</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="mt-2 text-[11px] opacity-60 flex items-center gap-2">
+                                        <span>{{ msg.timestamp | date:'shortTime' }}</span>
+                                        <span *ngIf="msg.latencyMs">· {{ msg.latencyMs }} ms</span>
+                                        <span *ngIf="msg.tokens">· {{ msg.tokens }} tok</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- XML bubble -->
                             <div *ngIf="msg.kind==='xml'">
                                 <div class="text-xs opacity-80 mb-1">{{ msg.summary || 'Proposed XML' }}</div>
                                 <div class="mt-2 flex items-center gap-2">
@@ -87,15 +149,23 @@
                                     <summary class="cursor-pointer text-xs">Show XML</summary>
                                     <pre class="xml-pre"><code>{{ msg.xml }}</code></pre>
                                 </details>
+
+                                <div class="mt-2 text-[11px] opacity-60 flex items-center gap-2">
+                                    <span>{{ msg.timestamp | date:'shortTime' }}</span>
+                                    <span *ngIf="msg.latencyMs">· {{ msg.latencyMs }} ms</span>
+                                    <span *ngIf="msg.tokens">· {{ msg.tokens }} tok</span>
+                                </div>
                             </div>
 
-                            <!-- regular info/user -->
-                            <div *ngIf="msg.kind!=='thinking' && msg.kind!=='plan' && msg.kind!=='xml'" class="text-[15px] leading-7 whitespace-pre-wrap">
+                            <!-- Regular info/user (fallback) -->
+                            <div *ngIf="msg.kind!=='thinking' && msg.kind!=='xml' && msg.kind!=='brd' && msg.kind!=='tech'"
+                                 class="text-[15px] leading-7 whitespace-pre-wrap">
                                 {{ msg.content }}
                             </div>
 
-                            <!-- meta -->
-                            <div class="mt-1 text-[11px] opacity-60 flex items-center gap-2">
+                            <!-- meta for info/user -->
+                            <div *ngIf="msg.kind!=='thinking' && msg.kind!=='xml' && msg.kind!=='brd' && msg.kind!=='tech'"
+                                 class="mt-1 text-[11px] opacity-60 flex items-center gap-2">
                                 <span>{{ msg.timestamp | date:'shortTime' }}</span>
                                 <span *ngIf="msg.latencyMs">· {{ msg.latencyMs }} ms</span>
                                 <span *ngIf="msg.tokens">· {{ msg.tokens }} tok</span>
@@ -139,7 +209,7 @@
         cdkTextareaAutosize
         [cdkAutosizeMinRows]="3"
         [cdkAutosizeMaxRows]="14"
-        placeholder="Type your request…"
+        placeholder="Type your request or a refine instruction…"
         [(ngModel)]="prompt"
         (keydown)="onComposerKeydown($event)"
         (keydown.enter)="!($event.shiftKey) && send(); $event.preventDefault()"
@@ -177,6 +247,7 @@
     .border-b { border-bottom: 1px solid rgba(0,0,0,.06); }
     .shadow-sm { box-shadow: 0 1px 2px rgba(0,0,0,.06); }
     .cursor-pointer { cursor: pointer; }
+    .hidden { display: none; }
 
     .xml-pre {
         padding: .5rem;
@@ -188,6 +259,10 @@
         white-space: pre-wrap;
         word-break: break-word;
     }
+
+    /* caret */
+    .caret { transition: transform .18s ease; font-size: 18px; opacity: .7; }
+    .caret.rotated { transform: rotate(180deg); }
 
     /* thinking dots */
     .dot {
