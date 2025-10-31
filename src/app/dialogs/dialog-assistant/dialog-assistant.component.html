@@ -68,7 +68,7 @@
                                 <!-- BRD actions -->
                                 <div class="mt-3 flex flex-wrap items-center gap-2">
                                     <button mat-stroked-button (click)="prompt = makeBrdEditSeed(msg.brd!); promptArea?.nativeElement?.focus()" [disabled]="isLoading">
-                                        Upraviť BRD (seed)
+                                        Edit BRD
                                     </button>
                                     <button mat-stroked-button color="primary" (click)="refine('brd')" [disabled]="isLoading || !state?.draft">
                                         Refine BRD
@@ -105,13 +105,13 @@
                                     <div class="text-xs opacity-80">Technical Design (Petriflow)</div>
                                     <span class="grow"></span>
                                     <button mat-stroked-button (click)="prompt = makeTechEditSeed(msg.tech!); promptArea?.nativeElement?.focus(); $event.stopPropagation()" [disabled]="isLoading">
-                                        Upraviť TECH (seed)
+                                        Edit TECH (seed)
                                     </button>
                                     <button mat-stroked-button color="primary" (click)="refine('tech'); $event.stopPropagation()" [disabled]="isLoading || !state?.draft">
                                         Refine TECH
                                     </button>
                                     <button mat-flat-button color="primary" (click)="generateXmlFromDraft(); $event.stopPropagation()" [disabled]="isLoading || !state?.draft?.tech">
-                                        Generovať XML
+                                        Generate Source Code
                                     </button>
                                 </div>
 
