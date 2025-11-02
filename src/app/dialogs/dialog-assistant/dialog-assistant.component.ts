@@ -20,8 +20,11 @@ import { DatePipe, NgForOf, NgIf, NgClass } from '@angular/common';
 import { ModelExportService } from '../../modeler/services/model/model-export.service';
 import { ModelImportService } from '../../modeler/model-import-service';
 
-import { OpenAiHttpService, OpenAiService, PETRIFLOW_MODELS } from './openai-http.service';
+// IMPORTANT: ponechávame typ OpenAiService, ale provider je OpenAiProxyService (volá 4200)
+import { OpenAiService, PETRIFLOW_MODELS } from './openai-http.service';
+import { OpenAiProxyService } from './openai-proxy.service';
 import { PetriflowExamplesService } from './petriflow-examples.service';
+import {AiRelayService} from "../../services/ai-relay.service";
 
 /** Integration stubs (replace with real app services when ready) */
 export abstract class BuilderApiService {
@@ -109,8 +112,6 @@ interface AssistantState {
     lastXml?: string;     // last generated XML (one-shot or wizard)
 }
 
-const STORAGE_KEY = 'nab.dialog.assistant.v3';
-
 // Heuristics / tuning
 const MIN_REQUEST_LEN = 12;
 
@@ -154,8 +155,9 @@ interface XmlParts {
         MatTooltip,
     ],
     providers: [
-        { provide: OpenAiService, useClass: OpenAiHttpService },
-        // Replace when real services are ready
+        // ⬇⬇ (KROK 1.3) PROXY → volá parent (4200) cez postMessage
+        { provide: OpenAiService, useClass: OpenAiProxyService },
+        // Dočasné stuby — nechávam bez zmeny
         { provide: BuilderApiService, useValue: { exportFromBuilder: async () => '<document/>', importToBuilder: async (_: string) => {} } },
         { provide: XmlValidationService, useValue: { validate: async (_: string) => {} } },
     ],
@@ -199,6 +201,7 @@ export class DialogAssistantComponent implements OnInit {
         private openai: OpenAiService,
         private builder: BuilderApiService,
         private xmlValidation: XmlValidationService,
+        private relay: AiRelayService,
         private modelExport: ModelExportService,
         private modelImport: ModelImportService,
         private examples: PetriflowExamplesService,
@@ -211,14 +214,14 @@ export class DialogAssistantComponent implements OnInit {
         this.scrollToBottomSoon();
     }
 
-    // ====== Persistence ======
+    // ====== Persistence (lokálne uloženie histórie) ======
     private saveToStorage() {
         const payload = { messages: this.messages, state: this.state, selectedModel: this.selectedModel };
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch {}
+        try { localStorage.setItem('nab.dialog.assistant.v3', JSON.stringify(payload)); } catch {}
     }
     private loadFromStorage() {
         try {
-            const raw = localStorage.getItem(STORAGE_KEY);
+            const raw = localStorage.getItem('nab.dialog.assistant.v3');
             if (raw) {
                 const parsed = JSON.parse(raw);
                 this.messages = (parsed.messages ?? []).map((m: ChatMessage) => ({ ...m }));
@@ -350,7 +353,7 @@ export class DialogAssistantComponent implements OnInit {
 
             this.saveToStorage(); this.scrollToBottomSoon();
         } catch (e: any) {
-            this.mutateMsg(thinking.id, { kind: 'info', content: 'Error while generating the draft.', error: e?.message || String(e) });
+            this.mutateMsg(thinking.id, { kind: 'info', content: '  Error while generating the draft.', error: e?.message || String(e) });
         } finally {
             this.isLoading = false; this.saveToStorage();
         }
@@ -368,7 +371,7 @@ export class DialogAssistantComponent implements OnInit {
         try {
             await this.handleRefineInternal(content, thinking, t0, editTarget);
         } catch (e: any) {
-            this.mutateMsg(thinking.id, { kind: 'info', content: 'Error while refining.', error: e?.message || String(e) });
+            this.mutateMsg(thinking.id, { kind: 'info', content: 'Error while refining.', error: e?.message || e });
         } finally {
             this.isLoading = false; this.saveToStorage();
         }
@@ -885,9 +888,10 @@ TechSpec = ${this.inlineShape('TechSpec')}`;
             const skeleton = this.renderXmlTemplate(this.xmlParts);
 
             const prompt = this.buildSectionPrompt(step, tech, skeleton);
-            const res = await this.openai.generate({
-                system: this.systemPromptForFragments(),
-                user: prompt,
+            const res = await this.openai.generateXmlStep({
+                step,
+                tech,
+                skeleton,
                 model: this.selectedModel,
                 maxOutputTokens: 2000,
             });

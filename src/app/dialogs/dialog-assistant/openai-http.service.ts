@@ -9,6 +9,14 @@ export abstract class OpenAiService {
         model?: string;
         maxOutputTokens?: number;
     }): Promise<{ text: string; tokens?: number; rateInfo?: string }>;
+
+    abstract generateXmlStep(args: {
+        step: string;
+        tech: unknown;
+        skeleton: string;
+        model?: string;
+        maxOutputTokens?: number;
+    }): Promise<{ text: string; tokens?: number; rateInfo?: string }>;
 }
 
 /** Public list for your model picker (best → cheapest). */
@@ -181,5 +189,15 @@ export class OpenAiHttpService implements OpenAiService {
             const tokens = json?.usage?.total_tokens;
             return { text: String(text ?? ''), tokens, rateInfo };
         }
+    }
+
+    async generateXmlStep(_args: {
+        step: string;
+        tech: unknown;
+        skeleton: string;
+        model?: string;
+        maxOutputTokens?: number;
+    }): Promise<{ text: string; tokens?: number; rateInfo?: string }> {
+        throw new Error('generateXmlStep is not supported in 4201 OpenAiHttpService. Use OpenAiProxyService.');
     }
 }
