@@ -61,6 +61,47 @@ export class AppComponent implements AfterViewInit {
         window.parent?.postMessage({ type, payload }, this.PARENT_ORIGIN);
     }
 
+    private async createEmptyModel(): Promise<void> {
+        // Prefer the model service if it exposes an API for a brand-new model.
+        try {
+            const modelSvc = await this.waitForService<ModelService>(ModelService);
+
+            // Common patterns you might have in your codebase; try one that exists:
+            if (typeof (modelSvc as any).createNewModel === 'function') {
+                (modelSvc as any).createNewModel({ title: 'New process' });
+                return;
+            }
+            if (typeof (modelSvc as any).newModel === 'function') {
+                (modelSvc as any).newModel({ title: 'New process' });
+                return;
+            }
+            if (typeof (modelSvc as any).reset === 'function') {
+                (modelSvc as any).reset();
+                return;
+            }
+        } catch {
+            // fall through to XML import fallback
+        }
+
+        // Fallback: import a minimal empty XML so the editor has a valid model.
+        const importSvc = await this.waitForService<ModelImportService>(ModelImportService);
+
+        // Keep this as small as your importer permits. If your importer requires a title/id,
+        // include them. Adjust to your PNML/schema if needed.
+        const EMPTY_XML = `<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://petriflow.com/petriflow.schema.xsd">
+                            <id>new_model</id>
+                            <version>1.0.0</version>
+                            <initials>NEW</initials>
+                            <title>New Model</title>
+                            <icon>device_hub</icon>
+                            <defaultRole>true</defaultRole>
+                            <anonymousRole>true</anonymousRole>
+                            <transitionRole>false</transitionRole>
+                            </document>`;
+        importSvc.importFromXml(EMPTY_XML);
+    }
+
+
     private async waitForService<T>(type: new (...args: any[]) => T, tries = 20, delay = 150): Promise<T> {
         for (let i = 0; i < tries; i++) {
             try {
@@ -151,6 +192,21 @@ export class AppComponent implements AfterViewInit {
 
                 if (type === 'LOAD_XML' && typeof payload === 'string') {
                     await applyXml(payload);
+                    return;
+                }
+
+                if (type === 'CREATE_EMPTY') {
+                    try {
+                        if (this.isEmbedded) this.clearDraftStorage();
+                        await this.ensureModelerReady();
+                        await this.createEmptyModel();
+                        // let Angular stabilize & paint
+                        await firstValueFrom(this.appRef.isStable.pipe(filter(v => v), first()));
+                        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+                        this.send('MODEL_READY');
+                    } catch (e: any) {
+                        this.send('IMPORT_RESULT', { ok: false, error: e?.message || String(e) });
+                    }
                     return;
                 }
 
