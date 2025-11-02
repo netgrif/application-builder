@@ -1,23 +1,4 @@
 <!-- src/app/dialogs/dialog-assistant/dialog-assistant.component.html -->
-<h2 mat-dialog-title class="flex items-center gap-3">
-    <mat-icon aria-hidden="true">smart_toy</mat-icon>
-    AI Assistant
-    <span class="grow"></span>
-
-    <!-- Model picker -->
-    <mat-form-field appearance="outline" class="model-field">
-        <mat-select [(ngModel)]="selectedModel" matTooltip="Choose quality/cost">
-            <mat-option *ngFor="let m of modelOptions" [value]="m.id">
-                {{ m.label }} — {{ m.note }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <button mat-icon-button matTooltip="Close" (click)="onClose()">
-        <mat-icon>close</mat-icon>
-    </button>
-</h2>
-
 <mat-dialog-content class="mat-typography p-0">
     <!-- Status row -->
     <div class="px-4 pt-3 pb-2 flex items-center gap-3 border-b">

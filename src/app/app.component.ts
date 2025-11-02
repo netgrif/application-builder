@@ -16,6 +16,18 @@ import { ModelImportService } from './modeler/model-import-service';
 import { ModelExportService } from './modeler/services/model/model-export.service';
 import { ModelService } from './modeler/services/model/model.service';
 
+function resolveParentOrigin(): string {
+    const w = window as any;
+    if (typeof w.__PARENT_ORIGIN__ === 'string' && w.__PARENT_ORIGIN__) return w.__PARENT_ORIGIN__;
+    try {
+        if (document.referrer) {
+            const u = new URL(document.referrer);
+            return u.origin;
+        }
+    } catch { /* ignore */ }
+    return window.location.origin; // single-open fallback
+}
+
 @Component({
     selector: 'nab-root',
     templateUrl: './app.component.html',
@@ -26,7 +38,7 @@ export class AppComponent implements AfterViewInit {
     config: NetgrifApplicationEngine;
 
     private readonly isEmbedded = window.self !== window.top;
-    private readonly PARENT_ORIGIN = 'http://localhost:4200';
+    private readonly PARENT_ORIGIN = window.location.origin;
     private messageHandlerBound = false;
 
     // Keď je editor skutočne pripravený (navigovaný, iniciovaný, stabilný)
@@ -48,6 +60,21 @@ export class AppComponent implements AfterViewInit {
         private injector: Injector,
     ) {
         this.config = config.get();
+
+        // Po štarte 4201 vymaž pamäť asistenta (dočasné správanie)
+        this.wipeAssistantState();
+    }
+
+    /** Vymaže uložený kontext asistenta (jednoduchý prefix-match v localStorage). */
+    private wipeAssistantState(): void {
+        try {
+            const toRemove: string[] = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i) || '';
+                if (k.startsWith('nab.dialog.assistant.v3')) toRemove.push(k);
+            }
+            toRemove.forEach(k => localStorage.removeItem(k));
+        } catch { /* ignore */ }
     }
 
     private clearDraftStorage() {
@@ -58,36 +85,25 @@ export class AppComponent implements AfterViewInit {
     }
 
     private send(type: string, payload?: any) {
-        window.parent?.postMessage({ type, payload }, this.PARENT_ORIGIN);
+        try {
+            // ak parent nie je dostupný alebo sme otvorení samostatne:
+            if (window.parent === window) return;
+            window.parent?.postMessage({ type, payload }, this.PARENT_ORIGIN);
+        } catch {
+            // posledná záchrana (ak proxy mení origin a nevieme ho vyrátať)
+            window.parent?.postMessage({ type, payload }, '*');
+        }
     }
 
     private async createEmptyModel(): Promise<void> {
-        // Prefer the model service if it exposes an API for a brand-new model.
         try {
             const modelSvc = await this.waitForService<ModelService>(ModelService);
+            if (typeof (modelSvc as any).createNewModel === 'function') { (modelSvc as any).createNewModel({ title: 'New process' }); return; }
+            if (typeof (modelSvc as any).newModel === 'function') { (modelSvc as any).newModel({ title: 'New process' }); return; }
+            if (typeof (modelSvc as any).reset === 'function') { (modelSvc as any).reset(); return; }
+        } catch { /* fallback */ }
 
-            // Common patterns you might have in your codebase; try one that exists:
-            if (typeof (modelSvc as any).createNewModel === 'function') {
-                (modelSvc as any).createNewModel({ title: 'New process' });
-                return;
-            }
-            if (typeof (modelSvc as any).newModel === 'function') {
-                (modelSvc as any).newModel({ title: 'New process' });
-                return;
-            }
-            if (typeof (modelSvc as any).reset === 'function') {
-                (modelSvc as any).reset();
-                return;
-            }
-        } catch {
-            // fall through to XML import fallback
-        }
-
-        // Fallback: import a minimal empty XML so the editor has a valid model.
         const importSvc = await this.waitForService<ModelImportService>(ModelImportService);
-
-        // Keep this as small as your importer permits. If your importer requires a title/id,
-        // include them. Adjust to your PNML/schema if needed.
         const EMPTY_XML = `<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://petriflow.com/petriflow.schema.xsd">
                             <id>new_model</id>
                             <version>1.0.0</version>
@@ -97,24 +113,19 @@ export class AppComponent implements AfterViewInit {
                             <defaultRole>true</defaultRole>
                             <anonymousRole>true</anonymousRole>
                             <transitionRole>false</transitionRole>
-                            </document>`;
+                           </document>`;
         importSvc.importFromXml(EMPTY_XML);
     }
 
-
     private async waitForService<T>(type: new (...args: any[]) => T, tries = 20, delay = 150): Promise<T> {
         for (let i = 0; i < tries; i++) {
-            try {
-                return this.injector.get<T>(type);
-            } catch {
-                await new Promise(r => setTimeout(r, delay));
-            }
+            try { return this.injector.get<T>(type); }
+            catch { await new Promise(r => setTimeout(r, delay)); }
         }
         throw new Error(`Service ${type.name} not ready after ${tries} tries`);
     }
 
     async ngAfterViewInit(): Promise<void> {
-        // Obnova draftu len mimo embedded
         const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
         if (oldModel && !this.isEmbedded) {
             const dialogRef = this.matDialog.open(DialogLocalStorageModelComponent, {
@@ -135,11 +146,10 @@ export class AppComponent implements AfterViewInit {
                 }
             });
         } else if (this.isEmbedded) {
-            // Embedded: nechceme “continue previous work” popup
             this.clearDraftStorage();
         }
 
-        /** ───────── IMPORT ───────── */
+        /** IMPORT */
         let importBusy = false;
         const applyXml = async (xml: string) => {
             try {
@@ -152,7 +162,6 @@ export class AppComponent implements AfterViewInit {
                 const importSvc = await this.waitForService<ModelImportService>(ModelImportService);
                 importSvc.importFromXml(xml);
 
-                // nech sa domaluje UI
                 await firstValueFrom(this.appRef.isStable.pipe(filter(v => v), first()));
                 await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
@@ -165,10 +174,9 @@ export class AppComponent implements AfterViewInit {
             }
         };
 
-        /** ───────── EXPORT ───────── */
+        /** EXPORT */
         let exportBusy = false;
         const exportXml = async (): Promise<string> => {
-            // čakaj na “editorReady”
             await firstValueFrom(this.editorReady$);
 
             const exportSvc = await this.waitForService<ModelExportService>(ModelExportService);
@@ -184,10 +192,12 @@ export class AppComponent implements AfterViewInit {
             return xml;
         };
 
-        /** ───────── MESSAGE BRIDGE ───────── */
+        /** MESSAGE BRIDGE */
         if (!this.messageHandlerBound) {
             window.addEventListener('message', async (event: MessageEvent) => {
-                if (event.origin !== this.PARENT_ORIGIN) return;
+                // ak sme single-open (parent===self), nepodmieňuj origin
+                if (window.parent !== window && event.origin !== this.PARENT_ORIGIN) return;
+
                 const { type, payload } = (event.data || {}) as { type?: string; payload?: any };
 
                 if (type === 'LOAD_XML' && typeof payload === 'string') {
@@ -200,7 +210,6 @@ export class AppComponent implements AfterViewInit {
                         if (this.isEmbedded) this.clearDraftStorage();
                         await this.ensureModelerReady();
                         await this.createEmptyModel();
-                        // let Angular stabilize & paint
                         await firstValueFrom(this.appRef.isStable.pipe(filter(v => v), first()));
                         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
                         this.send('MODEL_READY');
@@ -213,7 +222,6 @@ export class AppComponent implements AfterViewInit {
                 if (type === 'REQUEST_EXPORT_XML') {
                     if (exportBusy) return;
                     exportBusy = true;
-                    // okamžité potvrdenie pre rodiča (ukáže spinner)
                     this.send('EXPORT_PENDING');
                     try {
                         const xml = await exportXml();
@@ -229,7 +237,6 @@ export class AppComponent implements AfterViewInit {
             this.messageHandlerBound = true;
         }
 
-        // pripravený
         this.send('IFRAME_READY');
     }
 
@@ -253,15 +260,12 @@ export class AppComponent implements AfterViewInit {
             await goModeler();
         }
 
-        // čakaj na lazy služby
         await this.waitForService<ModelImportService>(ModelImportService);
         await this.waitForService<ModelExportService>(ModelExportService);
 
-        // stabilita & render
         await firstValueFrom(this.appRef.isStable.pipe(filter(v => v), first()));
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-        // voliteľne skontroluj interný model
         try {
             const modelSvc = this.injector.get<ModelService>(ModelService);
             if (!modelSvc || !(modelSvc as any).model) {
@@ -273,7 +277,6 @@ export class AppComponent implements AfterViewInit {
             }
         } catch {}
 
-        // editor ready — odteraz exporty pôjdu deterministicky
         this.editorReady$.next(true);
     }
 

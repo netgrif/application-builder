@@ -1,6 +1,7 @@
 {
     "$schema": "./node_modules/@netgrif/application-engine/src/schema/nae-schema.json",
     "extends": "nae-default",
+    "autoResolveBackendUrl": true,
     "providers": {
         "auth": {
             "address": "http://localhost:8080/api/",
@@ -18,36 +19,14 @@
             "sessionBearer": "X-Auth-Token"
         },
         "resources": [
-            {
-                "name": "case",
-                "address": "http://localhost:8080/api/",
-                "format": "hal",
-                "openApi": "https://swagger.io"
-            },
-            {
-                "name": "task",
-                "address": "http://localhost:8080/api/",
-                "format": "json"
-            },
-            {
-                "name": "petrinet",
-                "address": "http://localhost:8080/api/",
-                "format": "json"
-            },
-            {
-                "name": "user",
-                "address": "http://localhost:8080/api/",
-                "format": "json"
-            },
-            {
-                "name": "dashboard",
-                "address": "http://localhost:8080/api/",
-                "format": "json"
-            }
+            { "name": "case",     "address": "/api/", "format": "hal",  "openApi": "https://swagger.io" },
+            { "name": "task",     "address": "/api/", "format": "json" },
+            { "name": "petrinet", "address": "/api/", "format": "json" },
+            { "name": "user",     "address": "/api/", "format": "json" },
+            { "name": "dashboard","address": "/api/", "format": "json" }
         ]
     },
-    "views": {
-    },
+    "views": {},
     "theme": {
         "name": "nab",
         "pallets": {
@@ -68,20 +47,8 @@
                     "A400": "#ff9100",
                     "A700": "#ff6d00",
                     "contrast": {
-                        "light": [
-                            "300",
-                            "400",
-                            "500",
-                            "600",
-                            "700",
-                            "800",
-                            "900"
-                        ],
-                        "dark": [
-                            "50",
-                            "100",
-                            "200"
-                        ]
+                        "light": ["300","400","500","600","700","800","900"],
+                        "dark": ["50","100","200"]
                     }
                 }
             }
@@ -93,10 +60,7 @@
             "logWithDate": true,
             "serializeExtraParams": true,
             "includeLogLevel": true,
-            "publishers": [
-                "console",
-                "localStorage"
-            ]
+            "publishers": ["console","localStorage"]
         },
         "dataFields": {
             "template": "material",
