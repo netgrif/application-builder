@@ -61,17 +61,21 @@ export class AppComponent implements AfterViewInit {
     ) {
         this.config = config.get();
 
-        // Po štarte 4201 vymaž pamäť asistenta (dočasné správanie)
-        this.wipeAssistantState();
+        // ⚠️ Do NOT wipe assistant state on every child boot anymore.
+        // State should persist across dialog closes and only be cleared on deploy/refresh via parent signal.
+        // this.wipeAssistantState();  <-- removed
     }
 
-    /** Vymaže uložený kontext asistenta (jednoduchý prefix-match v localStorage). */
-    private wipeAssistantState(): void {
+    /** Precízne vymazanie uloženého kontextu asistenta na požiadanie (z parenta). */
+    private clearAssistantState(): void {
         try {
             const toRemove: string[] = [];
             for (let i = 0; i < localStorage.length; i++) {
                 const k = localStorage.key(i) || '';
-                if (k.startsWith('nab.dialog.assistant.v3')) toRemove.push(k);
+                // Support both historical and current key schemes
+                if (k.startsWith('nab.dialog.assistant.')) toRemove.push(k);      // old dot form (v3…)
+                if (k.startsWith('nab:dialog-assistant:')) toRemove.push(k);      // current colon form (v1…)
+                if (k === 'nab:dialog-assistant:v1') toRemove.push(k);            // explicit current storage key
             }
             toRemove.forEach(k => localStorage.removeItem(k));
         } catch { /* ignore */ }
@@ -229,6 +233,13 @@ export class AppComponent implements AfterViewInit {
                     } finally {
                         exportBusy = false;
                     }
+                    return;
+                }
+
+                // ✅ Newly handled: clear assistant state only when the parent explicitly requests it
+                if (type === 'RESET_ASSISTANT') {
+                    this.clearAssistantState();
+                    this.send('RESET_ASSISTANT_ACK');
                     return;
                 }
             });
