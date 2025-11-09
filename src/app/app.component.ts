@@ -38,7 +38,7 @@ export class AppComponent implements AfterViewInit {
     config: NetgrifApplicationEngine;
 
     private readonly isEmbedded = window.self !== window.top;
-    private readonly PARENT_ORIGIN = window.location.origin;
+    private readonly PARENT_ORIGIN = resolveParentOrigin();
     private messageHandlerBound = false;
 
     // Keď je editor skutočne pripravený (navigovaný, iniciovaný, stabilný)
@@ -86,11 +86,9 @@ export class AppComponent implements AfterViewInit {
 
     private send(type: string, payload?: any) {
         try {
-            // ak parent nie je dostupný alebo sme otvorení samostatne:
-            if (window.parent === window) return;
+            if (window.parent === window) return; // nie sme v ifrime
             window.parent?.postMessage({ type, payload }, this.PARENT_ORIGIN);
         } catch {
-            // posledná záchrana (ak proxy mení origin a nevieme ho vyrátať)
             window.parent?.postMessage({ type, payload }, '*');
         }
     }

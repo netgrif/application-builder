@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 /** Matches the abstract OpenAiService used by the dialog. */
 export abstract class OpenAiService {
@@ -18,13 +18,6 @@ export abstract class OpenAiService {
         maxOutputTokens?: number;
     }): Promise<{ text: string; tokens?: number; rateInfo?: string }>;
 }
-
-/** Public list for your model picker (best → cheapest). */
-export const PETRIFLOW_MODELS = [
-    { id: 'gpt-4.1',      label: 'GPT-4.1 (best)',          note: 'highest quality, higher cost' },
-    { id: 'gpt-4.1-mini', label: 'GPT-4.1-mini (balanced)', note: 'good quality, cheaper' },
-    { id: 'gpt-4o-mini',  label: 'GPT-4o-mini (cheap/fast)', note: 'lean context, POC' },
-];
 
 @Injectable({ providedIn: 'root' })
 export class OpenAiHttpService implements OpenAiService {

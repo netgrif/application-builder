@@ -45,6 +45,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatPaginatorIntl} from '@angular/material/paginator';
 import {BuilderPaginatorIntl} from './modeler/components/master-detail/main-master/builder-paginator-inpl';
 import {DialogMarkingChangeComponent} from './dialogs/dialog-marking-change/dialog-marking-change.component';
+import {DialogAssistantComponent} from "./dialogs/dialog-assistant/dialog-assistant.component";
 
 const appRoutes: Routes = [
     {
@@ -78,7 +79,8 @@ const appRoutes: Routes = [
         DialogModelEditComponent,
         MaterialIconPickerComponent,
         DialogLocalStorageModelComponent,
-        DialogMarkingChangeComponent
+        DialogMarkingChangeComponent,
+        DialogAssistantComponent
     ],
     imports: [
         BrowserModule,

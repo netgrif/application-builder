@@ -13,9 +13,9 @@
     <div class="chat-scroll px-4 py-3" #scrollArea>
         <ng-container *ngIf="messages?.length; else emptyState">
             <div
-                *ngFor="let msg of messages; trackBy: trackByMsgFn"
-                class="mb-3 flex"
-                [class.justify-end]="msg.role === 'user'">
+                    *ngFor="let msg of messages; trackBy: trackByMsgFn"
+                    class="mb-3 flex"
+                    [class.justify-end]="msg.role === 'user'">
                 <div class="flex max-w-[85%] items-start gap-2" [ngClass]="{ 'flex-row-reverse': msg.role === 'user' }">
 
                     <mat-icon class="mt-1 icon" [ngClass]="{ 'assistant': msg.role==='assistant', 'user': msg.role!=='assistant' }">
@@ -48,17 +48,17 @@
 
                                 <!-- BRD actions -->
                                 <div class="mt-3 flex flex-wrap items-center gap-2">
-                                    <button mat-stroked-button (click)="prompt = makeBrdEditSeed(msg.brd!); promptArea?.nativeElement?.focus()" [disabled]="isLoading">
+                                    <button mat-stroked-button (click)="prompt = makeBrdEditSeed(msg.brd || msg.content || ''); promptArea?.nativeElement?.focus()" [disabled]="isLoading">
                                         Edit BRD
                                     </button>
-                                    <button mat-stroked-button color="primary" (click)="refine('brd')" [disabled]="isLoading || !state?.draft">
+                                    <button mat-stroked-button color="primary" (click)="refine('brd')" [disabled]="isLoading || !(brd.draft$ | async)?.brd">
                                         Refine BRD
                                     </button>
-                                    <button mat-stroked-button color="primary" (click)="refine('both')" [disabled]="isLoading || !state?.draft">
+                                    <button mat-stroked-button color="primary" (click)="refine('both')" [disabled]="isLoading || (!((brd.draft$ | async)?.brd) && !((tech.draft$ | async)?.tech))">
                                         Refine (Both)
                                     </button>
                                     <span class="grow"></span>
-                                    <span class="text-xs opacity-80" *ngIf="state?.draft">v{{ state?.draft?.version }}</span>
+                                    <span class="text-xs opacity-80" *ngIf="(brd.draft$ | async) as ds">v{{ ds.version }}</span>
                                 </div>
 
                                 <!-- change log if present -->
@@ -85,14 +85,15 @@
                                     <mat-icon class="caret" [ngClass]="{ 'rotated': !showTechCollapsedById[msg.id] }">expand_more</mat-icon>
                                     <div class="text-xs opacity-80">Technical Design (Petriflow)</div>
                                     <span class="grow"></span>
-                                    <button mat-stroked-button (click)="prompt = makeTechEditSeed(msg.tech!); promptArea?.nativeElement?.focus(); $event.stopPropagation()" [disabled]="isLoading">
+                                    <button mat-stroked-button (click)="prompt = makeTechEditSeed(msg.tech || msg.content || ''); promptArea?.nativeElement?.focus(); $event.stopPropagation()" [disabled]="isLoading">
                                         Edit TECH (seed)
                                     </button>
-                                    <button mat-stroked-button color="primary" (click)="refine('tech'); $event.stopPropagation()" [disabled]="isLoading || !state?.draft">
+                                    <button mat-stroked-button color="primary" (click)="refine('tech'); $event.stopPropagation()" [disabled]="isLoading || !(tech.draft$ | async)?.tech">
                                         Refine TECH
                                     </button>
-                                    <button mat-flat-button color="primary" (click)="generateXmlFromDraft(); $event.stopPropagation()" [disabled]="isLoading || !state?.draft?.tech">
-                                        Generate Source Code
+                                    <!-- Keep your original label or use “Generate XML” -->
+                                    <button mat-flat-button color="primary" (click)="generateXmlFromDraft(); $event.stopPropagation()" [disabled]="isLoading || !((tech.draft$ | async)?.tech)">
+                                        Generate XML
                                     </button>
                                 </div>
 
@@ -122,7 +123,7 @@
                                 <div class="text-xs opacity-80 mb-1">{{ msg.summary || 'Proposed XML' }}</div>
                                 <div class="mt-2 flex items-center gap-2">
                                     <span class="grow"></span>
-                                    <button mat-stroked-button color="primary" (click)="applyXml(msg.xml!)" [disabled]="isLoading">
+                                    <button mat-stroked-button color="primary" (click)="applyXml(msg.xml || '')" [disabled]="isLoading">
                                         Apply
                                     </button>
                                 </div>
@@ -185,16 +186,15 @@
     <!-- Composer -->
     <mat-form-field appearance="outline" class="w-full max-w-[920px]">
     <textarea
-        matInput
-        #promptArea
-        cdkTextareaAutosize
-        [cdkAutosizeMinRows]="3"
-        [cdkAutosizeMaxRows]="14"
-        placeholder="Type your request or a refine instruction…"
-        [(ngModel)]="prompt"
-        (keydown)="onComposerKeydown($event)"
-        (keydown.enter)="!($event.shiftKey) && send(); $event.preventDefault()"
-        class="text-[15px] leading-7 py-3"
+            matInput
+            #promptArea
+            cdkTextareaAutosize
+            [cdkAutosizeMinRows]="3"
+            [cdkAutosizeMaxRows]="14"
+            placeholder="Type your request or a refine instruction…"
+            [(ngModel)]="prompt"
+            (keydown.enter)="!($event.shiftKey) && send(); $event.preventDefault()"
+            class="text-[15px] leading-7 py-3"
     ></textarea>
 
         <button matSuffix mat-icon-button matTooltip="Send" (click)="send()" [disabled]="!prompt?.trim() || isLoading">

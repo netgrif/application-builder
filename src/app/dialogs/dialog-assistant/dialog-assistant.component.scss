@@ -1,0 +1,162 @@
+/* src/app/dialogs/dialog-assistant/dialog-assistant.component.scss */
+
+/* Layout */
+:host {
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Scrollable chat area */
+.chat-scroll {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 1rem 0;
+    scroll-behavior: smooth;
+}
+
+/* Message cards */
+mat-card {
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.15s ease;
+    max-width: 90%;
+    word-wrap: break-word;
+
+    &:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    &.assistant-card {
+        background: #ffffff;
+        border-left: 3px solid #1976d2;
+    }
+
+    &.user-card {
+        background: #f5f5f5;
+        border-left: 3px solid #9e9e9e;
+    }
+}
+
+/* Card actions (copy icon) */
+.card-actions {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    opacity: 0.1;
+    transition: opacity 0.15s ease;
+
+    mat-icon {
+        font-size: 18px;
+    }
+
+    mat-card:hover & {
+        opacity: 0.9;
+    }
+}
+
+/* BRD / TECH / XML content blocks */
+.tech-pre,
+.xml-pre {
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 0.5rem;
+    padding: 0.75rem 0.875rem;
+    overflow-x: auto;
+}
+
+/* Collapsible tech block */
+.collapsed {
+    display: none;
+}
+
+/* Thinking dots animation */
+.dot {
+    height: 6px;
+    width: 6px;
+    margin-right: 6px;
+    display: inline-block;
+    border-radius: 50%;
+    background: #999;
+    animation: pulse 1.2s infinite ease-in-out;
+
+    &:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+    &:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+}
+
+@keyframes pulse {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* Dividers */
+.border-b {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.border-t {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Bottom composer */
+mat-form-field {
+    width: 100%;
+
+    textarea {
+        resize: vertical;
+        font-size: 15px;
+    }
+
+    mat-icon {
+        color: #1976d2;
+    }
+}
+
+/* Meta info row under messages */
+.meta {
+    margin-top: 0.5rem;
+    font-size: 11px;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .error {
+        color: #d32f2f;
+    }
+}
+
+/* Buttons */
+button[mat-stroked-button],
+button[mat-flat-button] {
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-scroll {
+        max-height: 70vh;
+    }
+
+    mat-card.assistant-card,
+    mat-card.user-card {
+        max-width: 95%;
+    }
+
+    button[mat-stroked-button],
+    button[mat-flat-button] {
+        font-size: 12px;
+    }
+}

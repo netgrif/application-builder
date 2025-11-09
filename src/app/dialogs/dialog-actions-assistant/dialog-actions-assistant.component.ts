@@ -14,7 +14,7 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 import { NgForOf, NgIf } from '@angular/common';
 
 import { EditableAction } from '../../modeler/actions-mode/action-editor/classes/editable-action';
-import { OpenAiService, OpenAiHttpService } from '../dialog-assistant/openai-http.service';
+import {OpenAiHttpService, OpenAiService} from "../dialog-assistant/service/openai-http.service";
 
 export interface AiAssistantDialogData {
     code: string;
