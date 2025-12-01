@@ -1,68 +1,97 @@
 <div class="description" id="description">
-    <nab-action-editor-menu-description id="description-content"
-                                        #descriptionComponent></nab-action-editor-menu-description>
+    <nab-action-editor-menu-description
+        id="description-content"
+        #descriptionComponent>
+    </nab-action-editor-menu-description>
 </div>
-<mat-sidenav-container autosize>
-    <mat-sidenav mode="side" #drawer
-                 mwlResizable mwlResizeHandle
-                 [resizeEdges]="{ left: true }">
 
-        <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
-                                [editor]="editor"></nab-action-editor-menu>
+<mat-sidenav-container autosize>
+
+    <!-- LEFT: Functions drawer -->
+    <mat-sidenav
+        #functionsDrawer
+        mode="side"
+        position="start"
+        mwlResizable
+        mwlResizeHandle
+        [resizeEdges]="{ left: true }">
+
+        <nab-action-editor-menu
+            [descriptionComponent]="descriptionComponent"
+            [editor]="editor">
+        </nab-action-editor-menu>
     </mat-sidenav>
+
+    <!-- LEFT: References drawer (tiež zľava) -->
+    <mat-sidenav
+        #referencesDrawer
+        mode="over"
+        position="start">
+
+        <div class="references-panel">
+            <h3>References</h3>
+
+            <ng-container *ngFor="let configuration of editorConfigurations">
+                <h4 class="references-section-title">
+                    {{ configuration.title }}
+                </h4>
+                <button
+                    mat-stroked-button
+                    class="reference-item"
+                    *ngFor="let item of configuration.items"
+                    (click)="onReferenceItemClick(item)">
+                    <span [innerHTML]="item.label"></span>
+                </button>
+            </ng-container>
+        </div>
+    </mat-sidenav>
+
+    <!-- MAIN CONTENT -->
     <mat-sidenav-content>
-        <div fxLayout="row">
-            <div fxFlex fxLayoutGap="3em" fxLayoutAlign="start center">
-                <button type="button" mat-button (click)="openDrawer()">
-                    <mat-icon *ngIf="drawer.opened; else closed">
+
+        <!-- Top bar with two buttons -->
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="3em">
+
+            <!-- Functions button -->
+            <div fxFlex fxLayoutAlign="start center">
+                <button type="button" mat-button (click)="toggleFunctionsDrawer()">
+                    <mat-icon *ngIf="functionsDrawer.opened; else closedFunctions">
                         keyboard_arrow_left
                     </mat-icon>
-                    <ng-template #closed>
-                        <mat-icon>
-                            keyboard_arrow_right
-                        </mat-icon>
+                    <ng-template #closedFunctions>
+                        <mat-icon>keyboard_arrow_right</mat-icon>
                     </ng-template>
-                    <mat-icon>
-                        functions
-                    </mat-icon>
+                    <mat-icon>functions</mat-icon>
                     Functions
                 </button>
             </div>
 
-            <div fxFlex="50" fxLayoutGap="3em" fxLayoutAlign="end center">
-                <mat-menu #referencesMenu="matMenu">
-                    <ng-container *ngFor="let configuration of editorConfigurations">
-                        <nab-action-editor-menu-item [trigger]="referenceItemTrigger"
-                                                     #referenceItem="menuInOtherComponent"
-                                                     [configuration]="configuration"
-                                                     [hidden]="!referencesOpened"></nab-action-editor-menu-item>
-                        <button mat-menu-item #referenceItemTrigger="matMenuTrigger"
-                                [matMenuTriggerFor]="referenceItem.menu">
-                            {{configuration.title}}
-                        </button>
-                    </ng-container>
-                </mat-menu>
-                <button #matButton fxFlexAlign="end center" type="button" mat-button
-                        #referencesTrigger="matMenuTrigger"
-                        [matMenuTriggerFor]="referencesMenu">
-                    <mat-icon>
-                        link
-                    </mat-icon>
+            <!-- References button -->
+            <div fxFlex fxLayoutAlign="end center">
+                <button type="button" mat-button (click)="toggleReferencesDrawer()">
+                    <mat-icon>link</mat-icon>
                     References
-                    <mat-icon *ngIf="referencesTrigger.menuOpen; else closedMenu">
-                        keyboard_arrow_up
+                    <!-- keďže drawer ide zľava, šípky otočíme opačne -->
+                    <mat-icon *ngIf="referencesDrawer.opened; else closedRefs">
+                        keyboard_arrow_left
                     </mat-icon>
-                    <ng-template #closedMenu>
-                        <mat-icon>
-                            keyboard_arrow_down
-                        </mat-icon>
+                    <ng-template #closedRefs>
+                        <mat-icon>keyboard_arrow_right</mat-icon>
                     </ng-template>
                 </button>
             </div>
         </div>
-        <div fxLayout="column" fxLayoutAlign="start stretch" id="_div'}}">
-            <ngx-monaco-editor class="full-size-editor" id="_editor'}}" [options]="editorOptions"
-                               [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>
+
+        <!-- Editor -->
+        <div fxLayout="column" fxLayoutAlign="start stretch">
+            <ngx-monaco-editor
+                class="full-size-editor"
+                id="_editor"
+                [options]="editorOptions"
+                [formControl]="formControl"
+                (onInit)="onInit($event)">
+            </ngx-monaco-editor>
         </div>
+
     </mat-sidenav-content>
 </mat-sidenav-container>

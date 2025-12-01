@@ -1,14 +1,20 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {MatSidenav} from '@angular/material/sidenav';
-import {MatButton} from '@angular/material/button';
-import {MatMenuTrigger} from '@angular/material/menu';
-import {FormControl} from '@angular/forms';
-import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
-import {ActionEditorService} from '../action-editor.service';
-import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
-import {PetriflowFunction} from '@netgrif/petriflow';
-import {actions} from '../classes/command-action';
-import {ModelService} from '../../../services/model/model.service';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MatButton } from '@angular/material/button';
+import { FormControl } from '@angular/forms';
+
+import { MenuItemConfiguration } from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
+import { MenuItem } from '../action-editor-menu/action-editor-menu-item/menu-item';
+import { PetriflowFunction } from '@netgrif/petriflow';
+import { actions } from '../classes/command-action';
+import { ModelService } from '../../../services/model/model.service';
 
 @Component({
     selector: 'nab-function-editor',
@@ -19,14 +25,16 @@ export class FunctionEditorComponent implements OnInit {
 
     @Output() public actionChanged: EventEmitter<string>;
     @Output() public drawerOpened: EventEmitter<boolean>;
-    @ViewChild('drawer') private drawer: MatSidenav;
+
+    @ViewChild('functionsDrawer') private functionsDrawer: MatSidenav;
+    @ViewChild('referencesDrawer') private referencesDrawer: MatSidenav;
     @ViewChild('matButton') private button: MatButton;
-    @ViewChild('referencesTrigger') trigger: MatMenuTrigger;
+
     private _fn: PetriflowFunction;
 
     public editor: any;
     public formControl: FormControl;
-    public referencesOpened = true;
+
     public transitionItemsConfiguration: MenuItemConfiguration;
     public dataFieldItemsConfiguration: MenuItemConfiguration;
     public behaviourItemsConfiguration: MenuItemConfiguration;
@@ -34,18 +42,9 @@ export class FunctionEditorComponent implements OnInit {
     public propertyItemsConfiguration: MenuItemConfiguration;
     public valueItemsConfiguration: MenuItemConfiguration;
 
-    public editorConfigurations: Array<MenuItemConfiguration>;
+    public editorConfigurations: Array<MenuItemConfiguration> = [];
 
-    constructor(
-        private actionEditorService: ActionEditorService,
-        private modelService: ModelService
-    ) {
-        this.formControl = new FormControl(undefined, {updateOn: 'blur'});
-        this.actionChanged = new EventEmitter<string>();
-        this.drawerOpened = new EventEmitter<boolean>();
-    }
-
-    // options: https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
+    // Monaco options
     editorOptions = {
         language: 'petriflow',
         scrollBeyondLastLine: false,
@@ -54,6 +53,14 @@ export class FunctionEditorComponent implements OnInit {
         colorDecorators: true
     };
 
+    constructor(
+        private modelService: ModelService
+    ) {
+        this.formControl = new FormControl(undefined, { updateOn: 'blur' });
+        this.actionChanged = new EventEmitter<string>();
+        this.drawerOpened = new EventEmitter<boolean>();
+    }
+
     get fn(): PetriflowFunction {
         return this._fn;
     }
@@ -61,43 +68,40 @@ export class FunctionEditorComponent implements OnInit {
     @Input()
     set fn(value: PetriflowFunction) {
         this._fn = value;
-        this.formControl.setValue(this._fn.definition);
-    }
-
-    onInit(editorObject) {
-        this.editor = editorObject;
-        this.editor.onDidChangeModelContent(e => {
-            this.saveAction(this.editor.getModel().getLinesContent().join('\n'));
-        });
-        this.transitionItemsConfiguration.editor = editorObject;
-        this.dataFieldItemsConfiguration.editor = editorObject;
-        this.behaviourItemsConfiguration.editor = editorObject;
-        this.conditionItemsConfiguration.editor = editorObject;
-        this.propertyItemsConfiguration.editor = editorObject;
-        this.valueItemsConfiguration.editor = editorObject;
+        if (this.formControl) {
+            this.formControl.setValue(this._fn.definition);
+        }
     }
 
     ngOnInit(): void {
-        this.formControl.setValue(this._fn.definition);
+        if (this._fn) {
+            this.formControl.setValue(this._fn.definition);
+        }
+
         this.formControl.valueChanges.subscribe(value => {
             this.saveAction(value);
         });
+
         this.transitionItemsConfiguration = new MenuItemConfiguration(
             'Transitions',
             'transition',
             ['<transition>', '<transitionId>'],
             this.editor,
             this,
-            this.modelService.model.getTransitions().map(t => new MenuItem(t.id, `<b>${t.id}</b> ${t.label?.value}`))
+            this.modelService.model.getTransitions()
+                .map(t => new MenuItem(t.id, `<b>${t.id}</b> ${t.label?.value}`))
         );
+
         this.dataFieldItemsConfiguration = new MenuItemConfiguration(
             'Datafields',
             'datafield',
             ['<datafield>'],
             this.editor,
             this,
-            this.modelService.model.getDataSet().map(f => new MenuItem(f.id, `<b>${f.id}</b> ${f.title?.value}`))
+            this.modelService.model.getDataSet()
+                .map(f => new MenuItem(f.id, `<b>${f.id}</b> ${f.title?.value}`))
         );
+
         this.behaviourItemsConfiguration = new MenuItemConfiguration(
             'Behaviours',
             'behaviour',
@@ -112,6 +116,7 @@ export class FunctionEditorComponent implements OnInit {
                 new MenuItem('optional', 'optional')
             ]
         );
+
         this.conditionItemsConfiguration = new MenuItemConfiguration(
             'Conditions',
             'condition',
@@ -132,9 +137,10 @@ export class FunctionEditorComponent implements OnInit {
                 new MenuItem('<datafield>.value > <value>', '&lt;datafield&gt;.value <b>&gt;</b> &lt;value&gt;'),
                 new MenuItem('<datafield>.value >= <value>', '&lt;datafield&gt;.value <b>&gt;=</b> &lt;value&gt;'),
                 new MenuItem('<datafield>.value < <value>', '&lt;datafield&gt;.value <b>&lt;</b> &lt;value&gt;'),
-                new MenuItem('<datafield>.value <= <value>', '&lt;datafield&gt;.value <b>&lt;=</b> &lt;value&gt;'),
+                new MenuItem('<datafield>.value <= <value>', '&lt;datafield&gt;.value <b>&lt;=</b> &lt;value&gt;')
             ]
         );
+
         this.propertyItemsConfiguration = new MenuItemConfiguration(
             'Properties',
             'property',
@@ -144,9 +150,10 @@ export class FunctionEditorComponent implements OnInit {
             [
                 new MenuItem('"title"', 'title'),
                 new MenuItem('"color"', 'color'),
-                new MenuItem('"icon"', 'icon'),
+                new MenuItem('"icon"', 'icon')
             ]
         );
+
         this.valueItemsConfiguration = new MenuItemConfiguration(
             'Values',
             'value',
@@ -166,14 +173,41 @@ export class FunctionEditorComponent implements OnInit {
                 new MenuItem('["a":"a","b":"b"]', 'Map of strings')
             ]
         );
-        this.editorConfigurations = [];
-        this.editorConfigurations.push(this.transitionItemsConfiguration, this.dataFieldItemsConfiguration, this.behaviourItemsConfiguration,
-            this.conditionItemsConfiguration, this.propertyItemsConfiguration, this.valueItemsConfiguration);
+
+        this.editorConfigurations = [
+            this.transitionItemsConfiguration,
+            this.dataFieldItemsConfiguration,
+            this.behaviourItemsConfiguration,
+            this.conditionItemsConfiguration,
+            this.propertyItemsConfiguration,
+            this.valueItemsConfiguration
+        ];
+    }
+
+    onInit(editorObject: any) {
+        this.editor = editorObject;
+
+        this.editor.onDidChangeModelContent(() => {
+            this.saveAction(this.editor.getModel().getLinesContent().join('\n'));
+        });
+
+        if (this.transitionItemsConfiguration) {
+            this.transitionItemsConfiguration.editor = editorObject;
+            this.dataFieldItemsConfiguration.editor = editorObject;
+            this.behaviourItemsConfiguration.editor = editorObject;
+            this.conditionItemsConfiguration.editor = editorObject;
+            this.propertyItemsConfiguration.editor = editorObject;
+            this.valueItemsConfiguration.editor = editorObject;
+        }
     }
 
     private saveAction(value: string) {
+        if (!this._fn) {
+            return;
+        }
         this._fn.definition = value;
         this.actionChanged.emit(value);
+
         actions[actions.length - 1].actions = this.modelService.model.functions.map(fn => {
             return {
                 label: fn.name,
@@ -182,27 +216,39 @@ export class FunctionEditorComponent implements OnInit {
         });
     }
 
-    setHeightOnClose(index: number, action: any): void {
-        const element = document.getElementById(action.event + '_' + action.phase + '_' + index) as HTMLElement;
-        element.style.height = 'auto';
+    // === DRAWER CONTROLS ===
+
+    toggleFunctionsDrawer() {
+        this.functionsDrawer.toggle();
+        this.drawerOpened.emit(this.functionsDrawer.opened);
     }
 
-    openReference() {
-        this.trigger.openMenu();
-        this.trigger.updatePosition();
+    toggleReferencesDrawer() {
+        this.referencesDrawer.toggle();
     }
 
-    closeReference() {
-        this.referencesOpened = false;
-    }
+    // === REFERENCES CLICK HANDLER ===
 
-    closeDrawer() {
-        this.drawer.close();
-        this.drawerOpened.emit(this.drawer.opened);
-    }
+    onReferenceItemClick(item: MenuItem) {
+        if (!this.editor) {
+            return;
+        }
 
-    openDrawer() {
-        this.drawer.toggle();
-        this.drawerOpened.emit(this.drawer.opened);
+        // Veľmi pravdepodobne máš v MenuItem niečo ako .id alebo .title
+        const insertText: string = (item as any).id ?? item.title ?? '';
+
+        if (!insertText) {
+            return;
+        }
+
+        const selection = this.editor.getSelection();
+
+        this.editor.executeEdits('insert-reference', [{
+            range: selection,
+            text: insertText,
+            forceMoveMarkers: true
+        }]);
+
+        this.editor.focus();
     }
 }

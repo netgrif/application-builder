@@ -1,3 +1,5 @@
+/* ================== pôvodné veci ================== */
+
 .not-resizable {
     resize: none;
 }
@@ -10,6 +12,7 @@
     .editor-container {
         height: calc(100vh - 100px);
     }
+
     height: 420px;
     border: 1px solid #0000001f;
     border-radius: 4px;
@@ -30,7 +33,6 @@
     position: relative;
 }
 
-
 .mat-action-row {
     padding: 0 16px 4px 16px;
     border: none;
@@ -44,7 +46,169 @@
     margin: 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
-.full-menu-width{
+
+.full-menu-width {
     height: 5px;
     width: 100%;
+}
+
+/* ================== DRAWER LAYOUT ================== */
+
+/* mat-sidenav pre action editor */
+.action-editor-drawer {
+    display: flex;
+    flex-direction: column;
+    width: 260px; // cca o ~20 % menšie, môžeš doladiť
+    max-width: 100%;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    background: #fafafa;
+}
+
+/* horný prepínač Functions / References v rámci drawera */
+.drawer-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    gap: 4px;
+    padding: 4px 8px;
+    background: #fafafa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* samotné tab tlačidlá */
+.drawer-tab {
+    min-width: 0;
+    font-size: 11px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    opacity: 0.7;
+    padding: 4px 8px;
+    border-radius: 4px 4px 0 0;
+
+    mat-icon {
+        font-size: 16px;
+        margin-right: 4px;
+    }
+}
+
+.drawer-tab-active {
+    opacity: 1;
+    font-weight: 600;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom-color: #ffffff; // vizuálne „prilepené“ k obsahu
+}
+
+/* obsah pod tabs – scrollovateľný */
+.drawer-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 4px 8px 8px;
+}
+
+/* ================== MAIN HEADER nad editorom ================== */
+
+.action-editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+/* button „Show / Hide panel“ nad editorom */
+.action-editor-main-toggle {
+    font-size: 11px;
+    text-transform: uppercase;
+    opacity: 0.9;
+
+    mat-icon {
+        font-size: 18px;
+        margin-right: 4px;
+    }
+}
+
+/* ================== REFERENCES PANEL ================== */
+
+.references-panel {
+    padding-top: 4px;
+}
+
+.references-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.reference-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    padding-inline: 8px;
+
+    .reference-main {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+    }
+
+    .reference-info-btn {
+        margin-left: 4px;
+        flex-shrink: 0;
+
+        mat-icon {
+            font-size: 16px;
+        }
+    }
+}
+
+/* konzistentnejší vzhľad MatExpansionPanel v references */
+.references-panel ::ng-deep .mat-expansion-panel-header {
+    min-height: 40px;
+}
+
+.references-panel ::ng-deep .mat-expansion-panel-header-title {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* ================== FUNCTIONS PANEL (ak ho používaš vľavo) ================== */
+
+.functions-panel {
+    padding-top: 4px;
+}
+
+/* aby bol obsah vo functions / references podobne „vzdušný“ */
+.functions-panel ::ng-deep .mat-list-item {
+    padding-inline: 4px;
+}
+
+/* voliteľne: jemné zmenšenie fontu vo vnútri drawera */
+.action-editor-drawer,
+.action-editor-drawer * {
+    font-size: 12px;
+}
+.action-editor-sidenav {
+    width: 280px; // alebo koľko chceš
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* tabs sú navrchu, sticky */
+.action-editor-drawer-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #fff;
+}
+
+.references-scroll-container {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 8px 16px 16px; // dôležitý je malý top padding
 }

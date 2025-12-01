@@ -1,80 +1,164 @@
 <div class="description" id="description">
-    <nab-action-editor-menu-description id="description-content"
-                                        #descriptionComponent></nab-action-editor-menu-description>
+    <nab-action-editor-menu-description
+        id="description-content"
+        #descriptionComponent>
+    </nab-action-editor-menu-description>
 </div>
-<mat-sidenav-container autosize>
-    <mat-sidenav mode="side" #drawer>
-        <nab-action-editor-menu [descriptionComponent]="descriptionComponent"
-                                [editor]="editor"></nab-action-editor-menu>
-    </mat-sidenav>
-    <mat-sidenav-content>
-        <mat-expansion-panel (closed)="setHeightOnClose(index, action); closeDrawer()"
-                             id="{{action.event + '_' + action.phase + '_' + index}}"
-                             class="panel-fix">
-            <mat-expansion-panel-header class="header">
-                Action: {{action.id}}
-            </mat-expansion-panel-header>
-            <ng-template matExpansionPanelContent>
-                <div fxLayout="row">
-                    <div fxFlex fxLayoutGap="3em" fxLayoutAlign="start center">
-                        <button type="button" mat-button (click)="openDrawer()">
-                            <mat-icon *ngIf="drawer.opened; else closed">
-                                keyboard_arrow_left
-                            </mat-icon>
-                            <ng-template #closed>
-                                <mat-icon>
-                                    keyboard_arrow_right
-                                </mat-icon>
-                            </ng-template>
-                            <mat-icon>
-                                functions
-                            </mat-icon>
-                            Functions
-                        </button>
-                    </div>
 
-                    <div fxFlex="50" fxLayoutGap="3em" fxLayoutAlign="end center">
-                        <mat-menu #referencesMenu="matMenu">
-                            <ng-container *ngFor="let configuration of editorConfigurations">
-                                <nab-action-editor-menu-item [parentTrigger]="referencesTrigger" [trigger]="referenceItemTrigger" #referenceItem="menuInOtherComponent" [configuration]="configuration" [hidden]="!referencesOpened"></nab-action-editor-menu-item>
-                                <button mat-menu-item #referenceItemTrigger="matMenuTrigger" [matMenuTriggerFor]="referenceItem.menu">
-                                    {{configuration.title}}
+<mat-sidenav-container autosize class="action-editor-container">
+
+    <!-- LEFT DRAWER: Functions / References -->
+    <mat-sidenav
+        #drawer
+        mode="side"
+        position="start"
+        class="action-editor-drawer">
+
+        <!-- 🔹 FIXNUTÉ TABY HORE -->
+        <div class="drawer-tabs">
+            <button
+                mat-button
+                class="drawer-tab"
+                [class.drawer-tab-active]="activePanel === 'functions'"
+                (click)="onFunctionsButtonClick()">
+                <mat-icon>functions</mat-icon>
+                Functions
+            </button>
+
+            <button
+                mat-button
+                class="drawer-tab"
+                [class.drawer-tab-active]="activePanel === 'references'"
+                (click)="onReferencesButtonClick()">
+                <mat-icon>link</mat-icon>
+                References
+            </button>
+        </div>
+
+        <!-- 🔹 SCROLLOVATEĽNÝ OBSAH POD TABS -->
+        <div class="drawer-body">
+
+            <!-- pôvodný obsah FUNCTIONS -->
+            <ng-container *ngIf="activePanel === 'functions'">
+                <!-- sem nechaj to, čo tam máš – napr. nab-action-editor-menu... -->
+                <nab-action-editor-menu
+                    [descriptionComponent]="descriptionComponent"
+                    [editor]="editor">
+                </nab-action-editor-menu>
+            </ng-container>
+
+            <!-- pôvodný obsah REFERENCES -->
+            <ng-container *ngIf="activePanel === 'references'">
+                <div class="references-panel">
+                    <mat-accordion multi="true">
+                        <mat-expansion-panel
+                            *ngFor="let configuration of editorConfigurations"
+                            [expanded]="isReferenceExpanded(configuration)"
+                            (opened)="onReferencePanelOpened(configuration)"
+                            (closed)="onReferencePanelClosed(configuration)"
+                            [attr.itemtype]="'ref-' + configuration.itemType">
+
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ getReferenceTitle(configuration) }}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+
+                            <div class="references-items">
+                                <button
+                                    mat-stroked-button
+                                    class="reference-item"
+                                    *ngFor="let item of configuration.items"
+                                    (click)="onReferenceClick(configuration, item)">
+                                <span class="reference-main">
+                                    {{ item.title }}
+                                </span>
+
+                                    <button
+                                        *ngIf="showItemInfo(configuration)"
+                                        mat-icon-button
+                                        class="reference-info-btn"
+                                        (click)="onReferenceItemInfoClick(configuration, item, $event)">
+                                        <mat-icon>info_outline</mat-icon>
+                                    </button>
                                 </button>
-                            </ng-container>
-                        </mat-menu>
-                        <button #matButton fxFlexAlign="end center" type="button" mat-button
-                                #referencesTrigger="matMenuTrigger"
-                                [matMenuTriggerFor]="referencesMenu">
-                            <mat-icon>
-                                link
-                            </mat-icon>
-                            References
-                            <mat-icon *ngIf="referencesTrigger.menuOpen; else closedMenu">
-                                keyboard_arrow_up
-                            </mat-icon>
-                            <ng-template #closedMenu>
-                                <mat-icon>
-                                    keyboard_arrow_down
-                                </mat-icon>
-                            </ng-template>
-                        </button>
-                    </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
                 </div>
-                <div fxLayout="column" fxLayoutAlign="start stretch" id="{{name + '_div'}}">
-                    <ngx-monaco-editor class="full-size-editor" id="{{name + '_editor'}}" [options]="editorOptions"
-                                       [formControl]="formControl" (onInit)="onInit($event)"></ngx-monaco-editor>
+            </ng-container>
+
+        </div>
+    </mat-sidenav>
+
+    <!-- MAIN CONTENT -->
+    <mat-sidenav-content>
+
+        <mat-expansion-panel
+            (closed)="setHeightOnClose(index, action); closeDrawer()"
+            [id]="action.event + '_' + action.phase + '_' + index"
+            class="panel-fix">
+
+            <mat-expansion-panel-header class="header">
+                Action: {{ action.id }}
+            </mat-expansion-panel-header>
+
+            <ng-template matExpansionPanelContent>
+
+                <!-- horný toolbar s jedným buttonom -->
+                <div
+                    fxLayout="row"
+                    fxLayoutAlign="start center"
+                    class="top-toolbar">
+
+                    <button
+                        type="button"
+                        mat-stroked-button
+                        class="toggle-button"
+                        (click)="onMainToggleClick()">
+                        <mat-icon>menu_open</mat-icon>
+                        <span class="toggle-label">
+                            {{ activePanel === 'functions' ? 'Functions' : 'References' }}
+                        </span>
+                        <mat-icon>
+                            {{ drawer.opened ? 'chevron_left' : 'chevron_right' }}
+                        </mat-icon>
+                    </button>
                 </div>
+
+                <!-- editor -->
+                <div
+                    fxLayout="column"
+                    fxLayoutAlign="start stretch"
+                    [id]="name + '_div'">
+                    <ngx-monaco-editor
+                        class="full-size-editor"
+                        [id]="name + '_editor'"
+                        [options]="editorOptions"
+                        [formControl]="formControl"
+                        (onInit)="onInit($event)">
+                    </ngx-monaco-editor>
+                </div>
+
             </ng-template>
+
             <mat-action-row>
-                <button mat-stroked-button color="primary" (click)="openAiAssistantDialog()">
+                <button
+                    mat-stroked-button
+                    color="primary"
+                    (click)="openAiAssistantDialog()">
                     <mat-icon>smart_toy</mat-icon>
                     AI Assistant
                 </button>
 
-                <button mat-icon-button (click)="openDialog(index)" aria-label="Delete action">
+                <button
+                    mat-icon-button
+                    (click)="openDialog(index)"
+                    aria-label="Delete action">
                     <mat-icon>delete</mat-icon>
                 </button>
             </mat-action-row>
         </mat-expansion-panel>
+
     </mat-sidenav-content>
 </mat-sidenav-container>
