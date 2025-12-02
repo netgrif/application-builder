@@ -225,3 +225,7 @@
 .references-scroll-container .mat-accordion {
     margin-top: 0;
 }
+
+mat-sidenav-content mat-expansion-panel.panel-fix + mat-expansion-panel.panel-fix {
+    margin-top: 8px;
+}

@@ -114,13 +114,11 @@ export class ActionEditorComponent implements OnInit {
         this.rebindEditorsToConfigs(editorObject);
         this.initialiseEditorVersioning(editorObject);
 
-        // 🔹 po kliknutí myšou – malé oneskorenie, aby Monaco stihol nastaviť kurzor
-        this.editor.onMouseUp(() => {
+        this.editor.onMouseDown(() => {
             setTimeout(() => this.handleKeywordFocus(), 0);
         });
 
-        // 🔹 zmena selectionu / kurzora (šípky, klikanie) – nemusí mať delay
-        this.editor.onDidChangeCursorSelection(() => {
+        this.editor.onDidChangeCursorPosition(() => {
             this.handleKeywordFocus();
         });
     }
@@ -179,7 +177,7 @@ export class ActionEditorComponent implements OnInit {
         });
     }
 
-    handleKeywordFocus(): void {
+    private handleKeywordFocus(): void {
         if (!this.editor || !this.keywordConfigPairs?.length) {
             return;
         }
@@ -189,29 +187,10 @@ export class ActionEditorComponent implements OnInit {
             return;
         }
 
-        const itemType = cfg.itemType;
-        const alreadyExpanded = this.isReferenceExpanded(cfg);
-
-        // vždy prepneme na REFERENCES
-        this.activePanel = 'references';
-
-        // otvoríme drawer, ak nie je
-        if (!this.drawer.opened) {
-            this.drawer.open();
-            this.drawerOpened.emit(true);
-        }
-
-        // nech je rozbalená len relevantná kategória
-        if (!alreadyExpanded) {
-            this.expandedReferenceTypes.clear();
-            this.expandedReferenceTypes.add(itemType);
-        } else {
-            this.expandedReferenceTypes.add(itemType);
-        }
-
-        // scroll na správny panel
-        this.scrollReferencePanelIntoView(itemType);
+        this.lastFocusedItemType = cfg.itemType;
+        this.openReferencesFor(cfg);
     }
+
 
     ngOnInit(): void {
         this.formControl.setValue(this.action.definition);
@@ -237,7 +216,7 @@ export class ActionEditorComponent implements OnInit {
 
         this.editorConfigurations = built.all;
         this.keywordConfigPairs = built.keywordConfigPairs;
-        this.expandedReferenceTypes = built.defaultExpandedTypes;
+        this.expandedReferenceTypes = new Set<string>();
     }
 
     private saveAction(value: string) {
@@ -329,79 +308,56 @@ export class ActionEditorComponent implements OnInit {
     }
 
     private openReferencesFor(config: MenuItemConfiguration): void {
+        const itemType = config.itemType;
+
+        this.expandedReferenceTypes.clear();
+        this.expandedReferenceTypes.add(itemType);
+
+        // prepneme taby
         this.activePanel = 'references';
 
-        // zavri všetko, otvor iba túto kategóriu
-        this.expandedReferenceTypes.clear();
-        this.expandedReferenceTypes.add(config.itemType);
-
-        // ak je drawer zavretý, otvor ho
+        // otvor drawer, ak je zavretý
         if (!this.drawer.opened) {
             this.drawer.open();
             this.drawerOpened.emit(true);
         }
 
-        // 🔁 počkaj, kým sa referenčný panel reálne vyrenderuje
-        const tryScroll = (retries = 6) => {
-            // ešte nemáme ViewChild => skús o chvíľu znova
-            if (!this.referencesScrollRef && retries > 0) {
-                setTimeout(() => tryScroll(retries - 1), 40); // 40ms je veľmi rýchle, ale bezpečné
-                return;
-            }
-
-            if (!this.referencesScrollRef) {
-                return;
-            }
-
-            // máme container – teraz nech sa panel rozbalí + scrollne
-            setTimeout(() => {
-                this.scrollReferencePanelIntoView(config.itemType);
-            }, 0);
-        };
-
-        tryScroll();
+        // počkáme na render/rozbalenie panelu a scrollneme
+        setTimeout(() => {
+            this.scrollReferencePanelIntoView(itemType);
+        }, 0);
     }
 
     private scrollReferencePanelIntoView(itemType: string): void {
-        if (!this.referencesScrollRef) return;
-
-        const container = this.referencesScrollRef.nativeElement;
+        const container = this.referencesScrollRef?.nativeElement;
+        if (!container) {
+            return;
+        }
 
         const panel = container.querySelector<HTMLElement>(
             `mat-expansion-panel[data-type="${itemType}"]`
         );
-        if (!panel) return;
+        if (!panel) {
+            return;
+        }
 
         const header =
             panel.querySelector<HTMLElement>('.mat-expansion-panel-header') ?? panel;
 
-        const tabsEl = container.parentElement?.querySelector('.drawer-tabs') as HTMLElement;
-        const tabsHeight = tabsEl ? tabsEl.offsetHeight : 44;
-        const offset = tabsHeight + 4;
+        const containerRect = container.getBoundingClientRect();
+        const headerRect = header.getBoundingClientRect();
 
-        const performScroll = () => {
-            const containerRect = container.getBoundingClientRect();
-            const headerRect = header.getBoundingClientRect();
+        const currentScroll = container.scrollTop;
+        const delta = headerRect.top - containerRect.top;
 
-            const currentScroll = container.scrollTop;
-            const desiredTop = headerRect.top - containerRect.top - offset;
+        // mierny offset aby header nebol úplne nalepený
+        const offset = 4;
 
-            let target = currentScroll + desiredTop;
-
-            const maxScroll = container.scrollHeight - container.clientHeight;
-            if (target < 0) target = 0;
-            if (target > maxScroll) target = maxScroll;
-
-            container.scrollTo({
-                top: target,
-                behavior: 'auto' // prípadne 'smooth'
-            });
-        };
-
-        setTimeout(() => {
-            performScroll();
-            setTimeout(performScroll, 60);
-        }, 210);
+        const target = currentScroll + delta - offset;
+        container.scrollTo({
+            top: target < 0 ? 0 : target,
+            behavior: 'auto', // môžeš dať 'smooth', ale 'auto' je responzívnejšie
+        });
     }
 
     isReferenceExpanded(configuration: MenuItemConfiguration): boolean {
