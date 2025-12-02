@@ -61,11 +61,14 @@
                             (closed)="onReferencePanelClosed(configuration)"
                             [attr.data-type]="configuration.itemType">
 
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{ getReferenceTitle(configuration) }}
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title class="ref-panel-title">
+                                    <mat-icon class="ref-panel-icon">
+                                        {{ getReferenceIcon(configuration.itemType) }}
+                                    </mat-icon>
+                                    <span>{{ getReferenceTitle(configuration) }}</span>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
 
                             <div class="references-items">
                                 <button

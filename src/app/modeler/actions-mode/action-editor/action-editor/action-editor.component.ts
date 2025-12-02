@@ -96,6 +96,24 @@ export class ActionEditorComponent implements OnInit {
         colorDecorators: true
     };
 
+    private readonly referenceIconMap: Record<string, string> = {
+        transition: 'list_alt',        // Transitions
+        datafield: 'edit',             // Data fields
+        behaviour: 'tune',             // Behaviours
+        types: 'category',             // Types
+        condition: 'rule',             // Conditions
+        property: 'settings',          // Properties
+        value: '123',                  // Values
+        dataSet: 'table_chart',        // DataSet
+        processInstanceId: 'fingerprint', // Process Instance Id
+        casePredicate: 'filter_alt',   // Case predicates
+        taskPredicate: 'task_alt'      // Task predicates
+    };
+
+    getReferenceIcon(itemType: string): string {
+        return this.referenceIconMap[itemType] ?? 'chevron_right';
+    }
+
     constructor(
         private actionEditorService: ActionEditorService,
         private modelService: ModelService,
