@@ -53,7 +53,7 @@ export class ActionEditorComponent implements OnInit {
     @ViewChild('drawer') private drawer: MatSidenav;
     @ViewChild('matButton') private button: MatButton;
     @ViewChild('drawerBody') private drawerBodyRef: any;
-    @ViewChild('referencesScroll') private referencesScrollRef: ElementRef<HTMLDivElement>;
+    @ViewChild('referencesScroll') private referencesScrollRef?: ElementRef<HTMLDivElement>;
 
 
     public undoEnabled = false;
@@ -84,6 +84,9 @@ export class ActionEditorComponent implements OnInit {
     public DATA_EVENT_TYPES = ['set', 'get'];
     public PHASE_TYPES = ['pre', 'post'];
 
+    private keywordFocusTimeoutId: any;
+    private lastFocusedItemType: string | null = null;
+
     editorOptions = {
         language: 'petriflow',
         scrollBeyondLastLine: false,
@@ -111,11 +114,11 @@ export class ActionEditorComponent implements OnInit {
         this.rebindEditorsToConfigs(editorObject);
         this.initialiseEditorVersioning(editorObject);
 
-        this.editor.onMouseDown(() => {
+        this.editor.onMouseUp(() => {
             this.handleKeywordFocus();
         });
 
-        this.editor.onDidChangeCursorPosition(() => {
+        this.editor.onDidChangeCursorSelection(() => {
             this.handleKeywordFocus();
         });
     }
@@ -174,17 +177,25 @@ export class ActionEditorComponent implements OnInit {
         });
     }
 
- handleKeywordFocus(): void {
+    handleKeywordFocus(): void {
         if (!this.editor || !this.keywordConfigPairs?.length) {
             return;
         }
 
-        const cfg = findConfigForCursor(this.editor, this.keywordConfigPairs);
-        if (!cfg) {
-            return;
+        // ak chceš, debounce nechaj, ale kľudne skráť
+        if (this.keywordFocusTimeoutId) {
+            clearTimeout(this.keywordFocusTimeoutId);
         }
 
-        this.openReferencesFor(cfg);
+        this.keywordFocusTimeoutId = setTimeout(() => {
+            const cfg = findConfigForCursor(this.editor, this.keywordConfigPairs);
+            if (!cfg) {
+                return;
+            }
+
+            // vždy prepni na References a otvor správnu kategóriu
+            this.openReferencesFor(cfg);
+        }, 10);   // kľudne daj 0 alebo 10ms, 40 je zbytočne veľa
     }
 
     ngOnInit(): void {
@@ -304,65 +315,78 @@ export class ActionEditorComponent implements OnInit {
 
     private openReferencesFor(config: MenuItemConfiguration): void {
         this.activePanel = 'references';
+
+        // zavri všetko, otvor iba túto kategóriu
+        this.expandedReferenceTypes.clear();
         this.expandedReferenceTypes.add(config.itemType);
 
+        // ak je drawer zavretý, otvor ho
         if (!this.drawer.opened) {
             this.drawer.open();
             this.drawerOpened.emit(true);
         }
 
-        // necháme Angular a Material dokončiť animáciu expand panelu
-        setTimeout(() => {
-            this.scrollReferencePanelIntoView(config.itemType);
-        }, 120);
-    }
-
-    /** poscrolluje drawer tak, aby daný typ (itemType) bol hneď pod tabs */
-    private scrollReferencePanelIntoView(itemType: string): void {
-        // nájdeme konkrétny mat-expansion-panel
-        const panel = this.referencesScrollRef?.nativeElement
-            .querySelector<HTMLElement>(`mat-expansion-panel[data-type="${itemType}"]`);
-
-        if (!panel) {
-            return;
-        }
-
-        // skutočný scroll-container (nemusí to byť priamo #referencesScroll)
-        const container = this.findScrollableParent(panel);
-        if (!container) {
-            return;
-        }
-
-        // výška tabov (Functions / References) + vnútorný padding nad panelmi
-        const headerOffset = 56; // doladíš si podľa reálneho layoutu
-
-        const containerRect = container.getBoundingClientRect();
-        const panelRect = panel.getBoundingClientRect();
-        const currentScrollTop = container.scrollTop;
-
-        // o koľko treba posunúť scroll, aby bol header panelu tesne pod tabs
-        const delta = panelRect.top - containerRect.top;
-        const targetScrollTop = currentScrollTop + delta - headerOffset;
-
-        container.scrollTo({
-            top: Math.max(targetScrollTop, 0),
-            behavior: 'auto' // alebo 'smooth', ak chceš animáciu
-        });
-    }
-
-    /** nájde najbližšieho scrollovateľného rodiča (overflow-y: auto/scroll) */
-    private findScrollableParent(el: HTMLElement | null): HTMLElement | null {
-        let node: HTMLElement | null = el ? el.parentElement : null;
-
-        while (node) {
-            const style = getComputedStyle(node);
-            if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
-                return node;
+        // 🔁 počkaj, kým sa referenčný panel reálne vyrenderuje
+        const tryScroll = (retries = 6) => {
+            // ešte nemáme ViewChild => skús o chvíľu znova
+            if (!this.referencesScrollRef && retries > 0) {
+                setTimeout(() => tryScroll(retries - 1), 40); // 40ms je veľmi rýchle, ale bezpečné
+                return;
             }
-            node = node.parentElement;
-        }
 
-        return null;
+            if (!this.referencesScrollRef) {
+                return;
+            }
+
+            // máme container – teraz nech sa panel rozbalí + scrollne
+            setTimeout(() => {
+                this.scrollReferencePanelIntoView(config.itemType);
+            }, 0);
+        };
+
+        tryScroll();
+    }
+
+    /** Spoľahlivý scroll: čaká na animáciu a potom presne zarovná header pod tabs */
+    private scrollReferencePanelIntoView(itemType: string): void {
+        if (!this.referencesScrollRef) return;
+
+        const container = this.referencesScrollRef.nativeElement;
+
+        // nájdeme panel
+        const panel = container.querySelector<HTMLElement>(
+            `mat-expansion-panel[data-type="${itemType}"]`
+        );
+        if (!panel) return;
+
+        const header =
+            panel.querySelector<HTMLElement>('.mat-expansion-panel-header') ?? panel;
+
+        // výška tabs (aby header neskončil pod nimi)
+        const tabsEl = document.querySelector('.drawer-tabs') as HTMLElement;
+        const tabsHeight = tabsEl ? tabsEl.offsetHeight : 45;
+        const offset = tabsHeight + 4; // 4px pre estetiku
+
+        // 🟩 FUNKCIA, ktorá reálne spraví scroll (vyvolá sa po animácii)
+        const performScroll = () => {
+            const containerRect = container.getBoundingClientRect();
+            const headerRect = header.getBoundingClientRect();
+
+            const delta = headerRect.top - containerRect.top - offset;
+
+            container.scrollBy({
+                top: delta,
+                behavior: 'auto'
+            });
+        };
+
+        // 🟩 počkajme, kým Material dokončí rozbaľovaciu animáciu
+        // 200 ms je default animácie expansion panelu
+        setTimeout(() => {
+            // niekedy sa výška mení ešte pár ms po animácii - druhý pokus to istí
+            performScroll();
+            setTimeout(performScroll, 50);
+        }, 210);
     }
 
     isReferenceExpanded(configuration: MenuItemConfiguration): boolean {

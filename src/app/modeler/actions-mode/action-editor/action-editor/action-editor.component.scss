@@ -58,10 +58,7 @@
 .action-editor-drawer {
     display: flex;
     flex-direction: column;
-    width: 260px; // cca o ~20 % menšie, môžeš doladiť
-    max-width: 100%;
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
-    background: #fafafa;
+    width: 260px;
 }
 
 /* horný prepínač Functions / References v rámci drawera */
@@ -100,11 +97,9 @@
     border-bottom-color: #ffffff; // vizuálne „prilepené“ k obsahu
 }
 
-/* obsah pod tabs – scrollovateľný */
 .drawer-body {
     flex: 1 1 auto;
-    overflow: auto;
-    padding: 4px 8px 8px;
+    overflow: hidden;       // ⬅️ nech scrolluje len vnútorný refs container
 }
 
 /* ================== MAIN HEADER nad editorom ================== */
@@ -208,7 +203,11 @@
 }
 
 .references-scroll-container {
-    flex: 1 1 auto;
+    max-height: 100%;
     overflow-y: auto;
-    padding: 8px 16px 16px; // dôležitý je malý top padding
+    padding: 4px 8px 8px;
+}
+
+.references-scroll-container .mat-accordion {
+    margin-top: 0;
 }

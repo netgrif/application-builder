@@ -49,40 +49,43 @@
 
             <!-- pôvodný obsah REFERENCES -->
             <ng-container *ngIf="activePanel === 'references'">
-                <div class="references-panel">
+                <!-- 🔹 TOTO bude náš scroll-container -->
+                <div
+                    class="references-panel references-scroll-container"
+                    #referencesScroll>
                     <mat-accordion multi="true">
                         <mat-expansion-panel
                             *ngFor="let configuration of editorConfigurations"
                             [expanded]="isReferenceExpanded(configuration)"
                             (opened)="onReferencePanelOpened(configuration)"
                             (closed)="onReferencePanelClosed(configuration)"
-                            [attr.itemtype]="'ref-' + configuration.itemType">
+                            [attr.data-type]="configuration.itemType">
 
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    {{ getReferenceTitle(configuration) }}
-                                </mat-panel-title>
-                            </mat-expansion-panel-header>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ getReferenceTitle(configuration) }}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
 
-                            <div class="references-items">
+                        <div class="references-items">
+                            <button
+                                mat-stroked-button
+                                class="reference-item"
+                                *ngFor="let item of configuration.items"
+                                (click)="onReferenceClick(configuration, item)">
+                        <span class="reference-main">
+                            {{ item.title }}
+                        </span>
+
                                 <button
-                                    mat-stroked-button
-                                    class="reference-item"
-                                    *ngFor="let item of configuration.items"
-                                    (click)="onReferenceClick(configuration, item)">
-                                <span class="reference-main">
-                                    {{ item.title }}
-                                </span>
-
-                                    <button
-                                        *ngIf="showItemInfo(configuration)"
-                                        mat-icon-button
-                                        class="reference-info-btn"
-                                        (click)="onReferenceItemInfoClick(configuration, item, $event)">
-                                        <mat-icon>info_outline</mat-icon>
-                                    </button>
+                                    *ngIf="showItemInfo(configuration)"
+                                    mat-icon-button
+                                    class="reference-info-btn"
+                                    (click)="onReferenceItemInfoClick(configuration, item, $event)">
+                                    <mat-icon>info_outline</mat-icon>
                                 </button>
-                            </div>
+                            </button>
+                        </div>
                         </mat-expansion-panel>
                     </mat-accordion>
                 </div>
