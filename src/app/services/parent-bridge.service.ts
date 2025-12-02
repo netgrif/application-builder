@@ -52,11 +52,9 @@ export class ParentBridgeService {
 
         return new Promise<T>((resolve, reject) => {
             const onMsg = (ev: MessageEvent) => {
-                // Ak nie je parent (otvorené samostatne), nefiltrujeme origin – ale skontrolujeme id.
                 const hasParent = window.parent !== window;
 
                 if (hasParent) {
-                    // Správa musí prísť z očakávaného originu a od parent okna
                     if (ev.origin !== this.targetOrigin) return;
                     if (ev.source !== window.parent) return;
                 }

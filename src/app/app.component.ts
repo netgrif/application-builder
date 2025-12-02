@@ -11,7 +11,6 @@ import { MortgageService } from './modeler/mortgage.service';
 import { TutorialService } from './tutorial/tutorial-service';
 import { JoyrideService } from 'ngx-joyride';
 
-// !!! NEINJEKTOVAŤ tieto služby do ctoru, získavame ich neskôr
 import { ModelImportService } from './modeler/model-import-service';
 import { ModelExportService } from './modeler/services/model/model-export.service';
 import { ModelService } from './modeler/services/model/model.service';
@@ -25,7 +24,7 @@ function resolveParentOrigin(): string {
             return u.origin;
         }
     } catch { /* ignore */ }
-    return window.location.origin; // single-open fallback
+    return window.location.origin;
 }
 
 @Component({
@@ -41,7 +40,6 @@ export class AppComponent implements AfterViewInit {
     private readonly PARENT_ORIGIN = resolveParentOrigin();
     private messageHandlerBound = false;
 
-    // Keď je editor skutočne pripravený (navigovaný, iniciovaný, stabilný)
     private editorReady$ = new ReplaySubject<boolean>(1);
 
     @HostListener('window:beforeunload', ['$event'])
@@ -60,22 +58,16 @@ export class AppComponent implements AfterViewInit {
         private injector: Injector,
     ) {
         this.config = config.get();
-
-        // ⚠️ Do NOT wipe assistant state on every child boot anymore.
-        // State should persist across dialog closes and only be cleared on deploy/refresh via parent signal.
-        // this.wipeAssistantState();  <-- removed
     }
 
-    /** Precízne vymazanie uloženého kontextu asistenta na požiadanie (z parenta). */
     private clearAssistantState(): void {
         try {
             const toRemove: string[] = [];
             for (let i = 0; i < localStorage.length; i++) {
                 const k = localStorage.key(i) || '';
-                // Support both historical and current key schemes
-                if (k.startsWith('nab.dialog.assistant.')) toRemove.push(k);      // old dot form (v3…)
-                if (k.startsWith('nab:dialog-assistant:')) toRemove.push(k);      // current colon form (v1…)
-                if (k === 'nab:dialog-assistant:v1') toRemove.push(k);            // explicit current storage key
+                if (k.startsWith('nab.dialog.assistant.')) toRemove.push(k);
+                if (k.startsWith('nab:dialog-assistant:')) toRemove.push(k);
+                if (k === 'nab:dialog-assistant:v1') toRemove.push(k);
             }
             toRemove.forEach(k => localStorage.removeItem(k));
         } catch { /* ignore */ }
@@ -90,7 +82,7 @@ export class AppComponent implements AfterViewInit {
 
     private send(type: string, payload?: any) {
         try {
-            if (window.parent === window) return; // nie sme v ifrime
+            if (window.parent === window) return;
             window.parent?.postMessage({ type, payload }, this.PARENT_ORIGIN);
         } catch {
             window.parent?.postMessage({ type, payload }, '*');
@@ -197,27 +189,53 @@ export class AppComponent implements AfterViewInit {
         /** MESSAGE BRIDGE */
         if (!this.messageHandlerBound) {
             window.addEventListener('message', async (event: MessageEvent) => {
-                // ak sme single-open (parent===self), nepodmieňuj origin
                 if (window.parent !== window && event.origin !== this.PARENT_ORIGIN) return;
 
-                const { type, payload } = (event.data || {}) as { type?: string; payload?: any };
+                const { type, payload } = event.data || {};
 
-                if (type === 'LOAD_XML' && typeof payload === 'string') {
-                    await applyXml(payload);
+                // -------------------------------------------
+                // LOAD_XML (with xml + interprocess)
+                // -------------------------------------------
+                if (type === 'LOAD_XML') {
+                    // OLD format (string only)
+                    if (typeof payload === 'string') {
+                        await applyXml(payload);
+                        return;
+                    }
+
+                    // NEW format { xml, interprocess }
+                    if (payload && typeof payload === 'object') {
+                        const xml = payload.xml;
+                        const interprocess = payload.interprocess;
+
+                        console.log("INTERPROCESS (LOAD_XML):", interprocess);
+
+                        // applyXml should use xml only
+                        await applyXml(xml);
+
+                        return;
+                    }
+
+                    console.warn("Unknown LOAD_XML payload", payload);
                     return;
                 }
 
                 if (type === 'CREATE_EMPTY') {
+                    const interprocess = payload?.interprocess;
+                    console.log("INTERPROCESS (CREATE_EMPTY):", interprocess);
+
                     try {
                         if (this.isEmbedded) this.clearDraftStorage();
                         await this.ensureModelerReady();
                         await this.createEmptyModel();
                         await firstValueFrom(this.appRef.isStable.pipe(filter(v => v), first()));
                         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
                         this.send('MODEL_READY');
                     } catch (e: any) {
                         this.send('IMPORT_RESULT', { ok: false, error: e?.message || String(e) });
                     }
+
                     return;
                 }
 
@@ -236,7 +254,6 @@ export class AppComponent implements AfterViewInit {
                     return;
                 }
 
-                // ✅ Newly handled: clear assistant state only when the parent explicitly requests it
                 if (type === 'RESET_ASSISTANT') {
                     this.clearAssistantState();
                     this.send('RESET_ASSISTANT_ACK');
@@ -289,7 +306,6 @@ export class AppComponent implements AfterViewInit {
         this.editorReady$.next(true);
     }
 
-    // UI helpery
     addMortgage() {
         const dialogRef = this.matDialog.open(DialogConfirmComponent);
         dialogRef.afterClosed().subscribe(result => {
