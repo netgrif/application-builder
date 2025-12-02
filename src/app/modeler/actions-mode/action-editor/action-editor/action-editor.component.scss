@@ -42,9 +42,23 @@
     height: 48px !important;
 }
 
+.header.action-header {
+    min-height: 40px;
+    padding: 0 12px;
+    font-size: 13px;
+}
+
 .panel-fix {
-    margin: 0;
+    margin: 4px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+mat-sidenav-content {
+    padding: 0; // ak je tam default z Angular Material
+}
+.action-editor-container {
+    // ak treba, ľahký vnútroný padding
+    padding: 4px 8px;
 }
 
 .full-menu-width {
@@ -228,4 +242,29 @@
 
 mat-sidenav-content mat-expansion-panel.panel-fix + mat-expansion-panel.panel-fix {
     margin-top: 8px;
+}
+
+.top-toolbar {
+    margin: 4px 0 8px;
+    gap: 8px;
+}
+
+.toggle-button {
+    font-size: 11px;
+    padding: 2px 8px;
+
+    mat-icon {
+        font-size: 16px;
+    }
+}
+
+.top-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.top-toolbar-actions button[mat-stroked-button] {
+    font-size: 11px;
+    padding: 2px 8px;
 }
