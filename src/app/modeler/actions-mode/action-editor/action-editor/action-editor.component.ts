@@ -114,10 +114,12 @@ export class ActionEditorComponent implements OnInit {
         this.rebindEditorsToConfigs(editorObject);
         this.initialiseEditorVersioning(editorObject);
 
+        // 🔹 po kliknutí myšou – malé oneskorenie, aby Monaco stihol nastaviť kurzor
         this.editor.onMouseUp(() => {
-            this.handleKeywordFocus();
+            setTimeout(() => this.handleKeywordFocus(), 0);
         });
 
+        // 🔹 zmena selectionu / kurzora (šípky, klikanie) – nemusí mať delay
         this.editor.onDidChangeCursorSelection(() => {
             this.handleKeywordFocus();
         });
@@ -182,20 +184,33 @@ export class ActionEditorComponent implements OnInit {
             return;
         }
 
-        // ak chceš, debounce nechaj, ale kľudne skráť
-        if (this.keywordFocusTimeoutId) {
-            clearTimeout(this.keywordFocusTimeoutId);
+        const cfg = findConfigForCursor(this.editor, this.keywordConfigPairs);
+        if (!cfg) {
+            return;
         }
 
-        this.keywordFocusTimeoutId = setTimeout(() => {
-            const cfg = findConfigForCursor(this.editor, this.keywordConfigPairs);
-            if (!cfg) {
-                return;
-            }
+        const itemType = cfg.itemType;
+        const alreadyExpanded = this.isReferenceExpanded(cfg);
 
-            // vždy prepni na References a otvor správnu kategóriu
-            this.openReferencesFor(cfg);
-        }, 10);   // kľudne daj 0 alebo 10ms, 40 je zbytočne veľa
+        // vždy prepneme na REFERENCES
+        this.activePanel = 'references';
+
+        // otvoríme drawer, ak nie je
+        if (!this.drawer.opened) {
+            this.drawer.open();
+            this.drawerOpened.emit(true);
+        }
+
+        // nech je rozbalená len relevantná kategória
+        if (!alreadyExpanded) {
+            this.expandedReferenceTypes.clear();
+            this.expandedReferenceTypes.add(itemType);
+        } else {
+            this.expandedReferenceTypes.add(itemType);
+        }
+
+        // scroll na správny panel
+        this.scrollReferencePanelIntoView(itemType);
     }
 
     ngOnInit(): void {
@@ -347,13 +362,11 @@ export class ActionEditorComponent implements OnInit {
         tryScroll();
     }
 
-    /** Spoľahlivý scroll: čaká na animáciu a potom presne zarovná header pod tabs */
     private scrollReferencePanelIntoView(itemType: string): void {
         if (!this.referencesScrollRef) return;
 
         const container = this.referencesScrollRef.nativeElement;
 
-        // nájdeme panel
         const panel = container.querySelector<HTMLElement>(
             `mat-expansion-panel[data-type="${itemType}"]`
         );
@@ -362,30 +375,32 @@ export class ActionEditorComponent implements OnInit {
         const header =
             panel.querySelector<HTMLElement>('.mat-expansion-panel-header') ?? panel;
 
-        // výška tabs (aby header neskončil pod nimi)
-        const tabsEl = document.querySelector('.drawer-tabs') as HTMLElement;
-        const tabsHeight = tabsEl ? tabsEl.offsetHeight : 45;
-        const offset = tabsHeight + 4; // 4px pre estetiku
+        const tabsEl = container.parentElement?.querySelector('.drawer-tabs') as HTMLElement;
+        const tabsHeight = tabsEl ? tabsEl.offsetHeight : 44;
+        const offset = tabsHeight + 4;
 
-        // 🟩 FUNKCIA, ktorá reálne spraví scroll (vyvolá sa po animácii)
         const performScroll = () => {
             const containerRect = container.getBoundingClientRect();
             const headerRect = header.getBoundingClientRect();
 
-            const delta = headerRect.top - containerRect.top - offset;
+            const currentScroll = container.scrollTop;
+            const desiredTop = headerRect.top - containerRect.top - offset;
 
-            container.scrollBy({
-                top: delta,
-                behavior: 'auto'
+            let target = currentScroll + desiredTop;
+
+            const maxScroll = container.scrollHeight - container.clientHeight;
+            if (target < 0) target = 0;
+            if (target > maxScroll) target = maxScroll;
+
+            container.scrollTo({
+                top: target,
+                behavior: 'auto' // prípadne 'smooth'
             });
         };
 
-        // 🟩 počkajme, kým Material dokončí rozbaľovaciu animáciu
-        // 200 ms je default animácie expansion panelu
         setTimeout(() => {
-            // niekedy sa výška mení ešte pár ms po animácii - druhý pokus to istí
             performScroll();
-            setTimeout(performScroll, 50);
+            setTimeout(performScroll, 60);
         }, 210);
     }
 

@@ -67,30 +67,25 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
 
-                        <div class="references-items">
-                            <button
-                                mat-stroked-button
-                                class="reference-item"
-                                *ngFor="let item of configuration.items"
-                                (click)="onReferenceClick(configuration, item)">
-                        <span class="reference-main">
-                            {{ item.title }}
-                        </span>
-
+                            <div class="references-items">
                                 <button
-                                    *ngIf="showItemInfo(configuration)"
-                                    mat-icon-button
-                                    class="reference-info-btn"
-                                    (click)="onReferenceItemInfoClick(configuration, item, $event)">
-                                    <mat-icon>info_outline</mat-icon>
+                                    mat-button
+                                    class="reference-item"
+                                    *ngFor="let item of configuration.items"
+                                    (click)="onReferenceClick(configuration, item)"
+                                    [matTooltip]="item.title"
+                                    matTooltipPosition="right">
+
+                                    <span class="reference-main">
+                                      {{ item.title }}
+                                    </span>
                                 </button>
-                            </button>
-                        </div>
+                            </div>
+
                         </mat-expansion-panel>
                     </mat-accordion>
                 </div>
             </ng-container>
-
         </div>
     </mat-sidenav>
 

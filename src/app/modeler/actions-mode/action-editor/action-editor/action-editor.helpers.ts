@@ -72,18 +72,18 @@ export function buildEditorConfigurations(
         [
             new MenuItem('true', 'true'),
             new MenuItem('false', 'false'),
-            new MenuItem('<datafield>.value == <datafield>.value', '&lt;datafield&gt;.value <b>==</b> &lt;datafield&gt;.value'),
-            new MenuItem('<datafield>.value != <datafield>.value', '&lt;datafield&gt;.value <b>!=</b> &lt;datafield&gt;.value'),
-            new MenuItem('<datafield>.value > <datafield>.value', '&lt;datafield&gt;.value <b>&gt;</b> &lt;datafield&gt;.value'),
-            new MenuItem('<datafield>.value >= <datafield>.value', '&lt;datafield&gt;.value <b>&gt;=</b> &lt;datafield&gt;.value'),
-            new MenuItem('<datafield>.value < <datafield>.value', '&lt;datafield&gt;.value <b>&lt;</b> &lt;datafield&gt;.value'),
-            new MenuItem('<datafield>.value <= <datafield>.value', '&lt;datafield&gt;.value <b>&lt;=</b> &lt;datafield&gt;.value'),
-            new MenuItem('<datafield>.value == <value>', '&lt;datafield&gt;.value <b>==</b> &lt;value&gt;'),
-            new MenuItem('<datafield>.value != <value>', '&lt;datafield&gt;.value <b>!=</b> &lt;value&gt;'),
-            new MenuItem('<datafield>.value > <value>', '&lt;datafield&gt;.value <b>&gt;</b> &lt;value&gt;'),
-            new MenuItem('<datafield>.value >= <value>', '&lt;datafield&gt;.value <b>&gt;=</b> &lt;value&gt;'),
-            new MenuItem('<datafield>.value < <value>', '&lt;datafield&gt;.value <b>&lt;</b> &lt;value&gt;'),
-            new MenuItem('<datafield>.value <= <value>', '&lt;datafield&gt;.value <b>&lt;=</b> &lt;value&gt;')
+            new MenuItem('<datafield>.value == <datafield>.value', '<datafield>.value == <datafield>.value'),
+            new MenuItem('<datafield>.value != <datafield>.value', '<datafield>.value != <datafield>.value'),
+            new MenuItem('<datafield>.value > <datafield>.value', '<datafield>.value > <datafield>.value'),
+            new MenuItem('<datafield>.value >= <datafield>.value', '<datafield>.value >= <datafield>.value'),
+            new MenuItem('<datafield>.value < <datafield>.value', '<datafield>.value < <datafield>.value'),
+            new MenuItem('<datafield>.value <= <datafield>.value', '<datafield>.value <= <datafield>.value'),
+            new MenuItem('<datafield>.value == <value>', '<datafield>.value == <value>'),
+            new MenuItem('<datafield>.value != <value>', '<datafield>.value != <value>'),
+            new MenuItem('<datafield>.value > <value>', '<datafield>.value > <value>'),
+            new MenuItem('<datafield>.value >= <value>', '<datafield>.value >= <value>'),
+            new MenuItem('<datafield>.value < <value>', '<datafield>.value < <value>'),
+            new MenuItem('<datafield>.value <= <value>', '<datafield>.value <= <value>'),
         ]
     );
 
@@ -107,9 +107,9 @@ export function buildEditorConfigurations(
         editor,
         actionEditor,
         [
-            new MenuItem('<datafield>.value', '&lt;datafield&gt;.value'),
-            new MenuItem('<datafield>.choices', '&lt;datafield&gt;.choices'),
-            new MenuItem('<datafield>.options', '&lt;datafield&gt;.options'),
+            new MenuItem('<datafield>.value', '<datafield>.value'),
+            new MenuItem('<datafield>.choices', '<datafield>.choices'),
+            new MenuItem('<datafield>.options', '<datafield>.options'),
             new MenuItem('true', 'true'),
             new MenuItem('false', 'false'),
             new MenuItem(' ', 'Empty value'),
@@ -168,7 +168,7 @@ export function buildEditorConfigurations(
         editor,
         actionEditor,
         [
-            new MenuItem(' //Process instance ID can be found in your NAE app', 'Process Instance Id')
+            new MenuItem('', 'Process Instance Id')
         ]
     );
 
@@ -179,8 +179,8 @@ export function buildEditorConfigurations(
         editor,
         actionEditor,
         [
-            new MenuItem('<casePredicate>.and<casePredicate>', '<b>Predicate</b> and <b>Predicate</b>'),
-            new MenuItem('<casePredicate>.or<casePredicate>', '<b>Predicate</b> or <b>Predicate</b>'),
+            new MenuItem('<casePredicate>.and<casePredicate>', 'Predicate AND Predicate'),
+            new MenuItem('<casePredicate>.or<casePredicate>', 'Predicate OR Predicate'),
             new MenuItem('{it.id.eq(<value>)}', 'Case ID equals value'),
             new MenuItem('{it.visualId.eq(<value>)}', 'Case visual ID equals value'),
             new MenuItem('{it.processIdentifier.eq(<processInstanceId>)}', 'Process identifier equals value'),
@@ -198,8 +198,8 @@ export function buildEditorConfigurations(
         editor,
         actionEditor,
         [
-            new MenuItem('<taskPredicate>.and<taskPredicate>', '<b>Predicate</b> and <b>Predicate</b>'),
-            new MenuItem('<taskPredicate>.or<taskPredicate>', '<b>Predicate</b> or <b>Predicate</b>'),
+            new MenuItem('<taskPredicate>.and<taskPredicate>', 'Predicate AND Predicate'),
+            new MenuItem('<taskPredicate>.or<taskPredicate>', 'Predicate OR Predicate'),
             new MenuItem('{it.id.eq(<value>)}', 'Task ID equals value'),
             new MenuItem('{it.transitionId.eq(<value>)}', 'TransitionId equals value'),
             new MenuItem('{it.caseId.eq(<value>)}', 'CaseId equals value'),
