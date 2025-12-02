@@ -1,7 +1,8 @@
 import {
+    ChangeDetectorRef,
     Component, ElementRef,
     EventEmitter,
-    Input,
+    Input, NgZone,
     OnInit,
     Output,
     ViewChild
@@ -99,7 +100,9 @@ export class ActionEditorComponent implements OnInit {
         private actionEditorService: ActionEditorService,
         private modelService: ModelService,
         private deleteDialog: MatDialog,
-        private actionItemProviderService: ActionItemProviderService
+        private actionItemProviderService: ActionItemProviderService,
+        private ngZone: NgZone,
+        private cdr: ChangeDetectorRef
     ) {}
 
     // ================== MONACO INIT ==================
@@ -114,12 +117,17 @@ export class ActionEditorComponent implements OnInit {
         this.rebindEditorsToConfigs(editorObject);
         this.initialiseEditorVersioning(editorObject);
 
-        this.editor.onMouseDown(() => {
-            setTimeout(() => this.handleKeywordFocus(), 0);
-        });
+        // 💡 Monaco eventy mimo Angular, ale handleKeywordFocus už v Angular zóne
+        this.ngZone.runOutsideAngular(() => {
+            // klik myšou – po pustení (mouseUp), keď už je kurzor na mieste
+            this.editor.onMouseUp(() => {
+                this.ngZone.run(() => this.handleKeywordFocus());
+            });
 
-        this.editor.onDidChangeCursorPosition(() => {
-            this.handleKeywordFocus();
+            // pohyb kurzora / selection cez klávesnicu
+            this.editor.onDidChangeCursorSelection(() => {
+                this.ngZone.run(() => this.handleKeywordFocus());
+            });
         });
     }
 
@@ -177,7 +185,7 @@ export class ActionEditorComponent implements OnInit {
         });
     }
 
-    private handleKeywordFocus(): void {
+    handleKeywordFocus(): void {
         if (!this.editor || !this.keywordConfigPairs?.length) {
             return;
         }
@@ -187,10 +195,18 @@ export class ActionEditorComponent implements OnInit {
             return;
         }
 
-        this.lastFocusedItemType = cfg.itemType;
-        this.openReferencesFor(cfg);
-    }
+        // vždy chceme skončiť v REFERENCES
+        if (!this.drawer.opened || this.activePanel !== 'references') {
+            this.activePanel = 'references';
+            this.drawer.open();
+            this.drawerOpened.emit(true);
+        }
 
+        this.openReferencesFor(cfg);
+
+        // pre istotu refresh detectu
+        this.cdr.markForCheck();
+    }
 
     ngOnInit(): void {
         this.formControl.setValue(this.action.definition);
@@ -313,26 +329,18 @@ export class ActionEditorComponent implements OnInit {
         this.expandedReferenceTypes.clear();
         this.expandedReferenceTypes.add(itemType);
 
-        // prepneme taby
-        this.activePanel = 'references';
-
-        // otvor drawer, ak je zavretý
-        if (!this.drawer.opened) {
-            this.drawer.open();
-            this.drawerOpened.emit(true);
-        }
-
-        // počkáme na render/rozbalenie panelu a scrollneme
-        setTimeout(() => {
-            this.scrollReferencePanelIntoView(itemType);
-        }, 0);
+        // Angular už vie, že sme v references + drawer je open
+        setTimeout(() => this.scrollReferencePanelIntoView(itemType), 0);
+        setTimeout(() => this.scrollReferencePanelIntoView(itemType), 60);
     }
 
-    private scrollReferencePanelIntoView(itemType: string): void {
-        const container = this.referencesScrollRef?.nativeElement;
-        if (!container) {
+
+    private scrollReferencePanelIntoView(itemType: string, smooth: boolean = false): void {
+        if (!this.referencesScrollRef) {
             return;
         }
+
+        const container = this.referencesScrollRef.nativeElement;
 
         const panel = container.querySelector<HTMLElement>(
             `mat-expansion-panel[data-type="${itemType}"]`
@@ -344,19 +352,13 @@ export class ActionEditorComponent implements OnInit {
         const header =
             panel.querySelector<HTMLElement>('.mat-expansion-panel-header') ?? panel;
 
-        const containerRect = container.getBoundingClientRect();
-        const headerRect = header.getBoundingClientRect();
+        const headerOffset = 4; // malý odstup pod tabs
+        const targetTop = header.offsetTop - headerOffset;
 
-        const currentScroll = container.scrollTop;
-        const delta = headerRect.top - containerRect.top;
-
-        // mierny offset aby header nebol úplne nalepený
-        const offset = 4;
-
-        const target = currentScroll + delta - offset;
         container.scrollTo({
-            top: target < 0 ? 0 : target,
-            behavior: 'auto', // môžeš dať 'smooth', ale 'auto' je responzívnejšie
+            top: targetTop < 0 ? 0 : targetTop,
+            // 🔹 vždy bez animácie
+            behavior: 'auto'
         });
     }
 
