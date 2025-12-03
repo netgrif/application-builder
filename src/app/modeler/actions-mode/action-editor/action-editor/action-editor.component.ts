@@ -35,6 +35,7 @@ import {
     findConfigForCursor,
     buildAssistantContextFromModel
 } from './action-editor.helpers';
+import {InterprocessState, InterprocessStateService} from "../../../services/interprocess-state.service";
 
 @Component({
     selector: 'nab-action-editor',
@@ -81,6 +82,13 @@ export class ActionEditorComponent implements OnInit {
     private expandedReferenceTypes = new Set<string>();
     private keywordConfigPairs: BuiltEditorConfigs['keywordConfigPairs'] = [];
 
+    public interprocess: InterprocessState | null = null;
+    public interprocessNets: any[] = [];
+    public selectedInterprocessNet: any | null = null;
+
+    public externalTransitionItems: MenuItem[] = [];
+    public externalDataFieldItems: MenuItem[] = [];
+
     public TRANSITION_EVENT_TYPES = ['assign', 'finish', 'cancel', 'delegate'];
     public DATA_EVENT_TYPES = ['set', 'get'];
     public PHASE_TYPES = ['pre', 'post'];
@@ -120,7 +128,8 @@ export class ActionEditorComponent implements OnInit {
         private deleteDialog: MatDialog,
         private actionItemProviderService: ActionItemProviderService,
         private ngZone: NgZone,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private interprocessState: InterprocessStateService,
     ) {}
 
     // ================== MONACO INIT ==================
@@ -222,13 +231,20 @@ export class ActionEditorComponent implements OnInit {
 
         this.openReferencesFor(cfg);
 
-        // pre istotu refresh detectu
         this.cdr.markForCheck();
     }
 
     ngOnInit(): void {
         this.formControl.setValue(this.action.definition);
         this.formControl.valueChanges.subscribe(value => this.saveAction(value));
+        this.interprocessState.state$.subscribe((state) => {
+            this.interprocess = state;
+            this.interprocessNets = state?.interprocess?.data?.nets ?? [];
+            if (!this.selectedInterprocessNet && this.interprocessNets.length) {
+                this.selectedInterprocessNet = this.interprocessNets[0];
+            }
+            this.cdr.markForCheck();
+        });
 
         const built: BuiltEditorConfigs = buildEditorConfigurations(
             this.editor,
@@ -427,8 +443,6 @@ export class ActionEditorComponent implements OnInit {
         event.stopPropagation();
     }
 
-    // ================== UNDO / REDO ==================
-
     undo(): void {
         this.editor.trigger('undo', 'undo');
     }
@@ -437,7 +451,107 @@ export class ActionEditorComponent implements OnInit {
         this.editor.trigger('redo', 'redo');
     }
 
-    // ================== AI ASSISTANT ==================
+    get usingCurrentProcess(): boolean {
+        return this.selectedInterprocessNet === null;
+    }
+
+    onProcessSelect(value: any): void {
+        if (value === 'current') {
+            this.selectedInterprocessNet = null;
+            this.externalTransitionItems = [];
+            this.externalDataFieldItems = [];
+            console.log('%c[ActionEditor] Using CURRENT process', 'color: green; font-weight: bold;');
+        } else {
+            this.selectedInterprocessNet = value;
+
+            console.log(
+                '%c[ActionEditor] Selected external process:',
+                'color: #3f51b5; font-weight: bold;',
+                value.identifier
+            );
+
+            const transitionsSource = Object.values(value.transitions || {});
+            const dataFieldsSource = Object.values(value.dataSet || {});
+
+            this.externalTransitionItems = transitionsSource.map((t: any) =>
+                new MenuItem(t.id, `${t.title ?? t.id} [${t.id}]`)
+            );
+
+            this.externalDataFieldItems = dataFieldsSource.map((d: any) =>
+                new MenuItem(d.id, `${d.title ?? d.id} [${d.id}]`)
+            );
+        }
+
+        this.cdr.markForCheck();
+    }
+
+    onNetChipClick(net: any | null) {
+        this.onProcessSelect(net ?? 'current');
+    }
+
+    private restoreCurrentProcessReferences(): void {
+        const built: BuiltEditorConfigs = buildEditorConfigurations(
+            this.editor,
+            this,
+            this.modelService
+        );
+
+        this.transitionItemsConfiguration = built.transition;
+        this.dataFieldItemsConfiguration = built.dataField;
+
+        this.behaviourItemsConfiguration = built.behaviour;
+        this.conditionItemsConfiguration = built.condition;
+        this.propertyItemsConfiguration = built.property;
+        this.valueItemsConfiguration = built.value;
+        this.typeItemsConfiguration = built.type;
+
+        this.dataSetItemsConfiguration = built.dataSet;
+        this.processInstanceIdItemsConfiguration = built.processInstanceId;
+        this.casePredicateItemsConfiguration = built.casePredicate;
+        this.taskPredicateItemsConfiguration = built.taskPredicate;
+
+        this.editorConfigurations = built.all;
+        this.keywordConfigPairs = built.keywordConfigPairs;
+
+        console.log('%c[ActionEditor] Restored CURRENT process references', 'color:green');
+    }
+
+    private applyExternalProcessReferences(net: any): void {
+        if (!net) {
+            return;
+        }
+
+        console.log('%c[ActionEditor] Applying EXTERNAL references:', 'color:orange', net);
+
+        // 1) transitions z interprocess objektu
+        const transitions: any[] = Object.values(net.transitions || {}).map((t: any) => ({
+            id: t.id,
+            title: t.title || t.id
+        }));
+
+        // 2) data fields z interprocess objektu
+        const dataFields: any[] = Object.values(net.dataSet || {}).map((d: any) => ({
+            id: d.id,
+            title: d.title || d.id
+        }));
+
+        // 3) prepíš iba položky v existujúcich konfiguráciách
+        (this.transitionItemsConfiguration as any).items = transitions;
+        (this.dataFieldItemsConfiguration as any).items = dataFields;
+
+        // 4) update v editorConfigurations – ale s any, aby TS nerýpal
+        this.editorConfigurations = this.editorConfigurations.map((cfg: any) => {
+            if (cfg.itemType === 'transition') {
+                return { ...cfg, items: transitions };
+            }
+            if (cfg.itemType === 'datafield') {
+                return { ...cfg, items: dataFields };
+            }
+            return cfg;
+        }) as any;
+
+        console.log('%c[ActionEditor] External references applied', 'color:orange');
+    }
 
     private buildAssistantContext(): string {
         return buildAssistantContextFromModel(

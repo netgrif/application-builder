@@ -14,7 +14,6 @@
         position="start"
         class="action-editor-drawer">
 
-        <!-- 🔹 FIXNUTÉ TABY HORE -->
         <div class="drawer-tabs">
             <button
                 mat-button
@@ -35,21 +34,41 @@
             </button>
         </div>
 
-        <!-- 🔹 SCROLLOVATEĽNÝ OBSAH POD TABS -->
+        <div class="interprocess-select-wrapper" *ngIf="interprocessNets?.length">
+            <mat-form-field appearance="outline" class="interprocess-select">
+                <mat-label>Reference source</mat-label>
+
+                <mat-select
+                    [value]="selectedInterprocessNet || 'current'"
+                    (selectionChange)="onProcessSelect($event.value)">
+
+                    <!-- Current process -->
+                    <mat-option value="current">
+                        Current process
+                    </mat-option>
+
+                    <!-- Other processes -->
+                    <mat-option
+                        *ngFor="let net of interprocessNets"
+                        [value]="net">
+                        {{ net.identifier }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
         <div class="drawer-body">
 
-            <!-- pôvodný obsah FUNCTIONS -->
             <ng-container *ngIf="activePanel === 'functions'">
-                <!-- sem nechaj to, čo tam máš – napr. nab-action-editor-menu... -->
-                <nab-action-editor-menu
-                    [descriptionComponent]="descriptionComponent"
-                    [editor]="editor">
-                </nab-action-editor-menu>
+                <div class="functions-panel">
+                    <nab-action-editor-menu
+                        [descriptionComponent]="descriptionComponent"
+                        [editor]="editor">
+                    </nab-action-editor-menu>
+                </div>
             </ng-container>
 
-            <!-- pôvodný obsah REFERENCES -->
             <ng-container *ngIf="activePanel === 'references'">
-                <!-- 🔹 TOTO bude náš scroll-container -->
                 <div
                     class="references-panel references-scroll-container"
                     #referencesScroll>
@@ -71,18 +90,86 @@
                             </mat-expansion-panel-header>
 
                             <div class="references-items">
-                                <button
-                                    mat-button
-                                    class="reference-item"
-                                    *ngFor="let item of configuration.items"
-                                    (click)="onReferenceClick(configuration, item)"
-                                    [matTooltip]="item.title"
-                                    matTooltipPosition="right">
 
-                                    <span class="reference-main">
-                                      {{ item.title }}
-                                    </span>
-                                </button>
+                                <ng-container *ngIf="configuration.itemType === 'transition'">
+                                    <ng-container *ngIf="usingCurrentProcess; else externalTransitionsTpl">
+                                        <button
+                                            mat-button
+                                            class="reference-item"
+                                            *ngFor="let item of configuration.items"
+                                            (click)="onReferenceClick(configuration, item)"
+                                            [matTooltip]="item.title"
+                                            matTooltipPosition="right">
+                                        <span class="reference-main">
+                                          {{ item.title }}
+                                        </span>
+                                        </button>
+                                    </ng-container>
+
+                                    <ng-template #externalTransitionsTpl>
+                                        <button
+                                            mat-button
+                                            class="reference-item"
+                                            *ngFor="let item of externalTransitionItems"
+                                            (click)="onReferenceClick(configuration, item)"
+                                            [matTooltip]="item.title"
+                                            matTooltipPosition="right">
+        <span class="reference-main">
+          {{ item.title }}
+        </span>
+                                        </button>
+                                    </ng-template>
+                                </ng-container>
+
+                                <!-- DATA FIELDS -->
+                                <ng-container *ngIf="configuration.itemType === 'datafield'">
+                                    <!-- Current process -->
+                                    <ng-container *ngIf="usingCurrentProcess; else externalDataFieldsTpl">
+                                        <button
+                                            mat-button
+                                            class="reference-item"
+                                            *ngFor="let item of configuration.items"
+                                            (click)="onReferenceClick(configuration, item)"
+                                            [matTooltip]="item.title"
+                                            matTooltipPosition="right">
+        <span class="reference-main">
+          {{ item.title }}
+        </span>
+                                        </button>
+                                    </ng-container>
+
+                                    <!-- Externý proces -->
+                                    <ng-template #externalDataFieldsTpl>
+                                        <button
+                                            mat-button
+                                            class="reference-item"
+                                            *ngFor="let item of externalDataFieldItems"
+                                            (click)="onReferenceClick(configuration, item)"
+                                            [matTooltip]="item.title"
+                                            matTooltipPosition="right">
+        <span class="reference-main">
+          {{ item.title }}
+        </span>
+                                        </button>
+                                    </ng-template>
+                                </ng-container>
+
+                                <!-- VŠETKO OSTATNÉ (behaviours, values, ...) -->
+                                <ng-container
+                                    *ngIf="configuration.itemType !== 'transition' && configuration.itemType !== 'datafield'">
+                                    <button
+                                        mat-button
+                                        class="reference-item"
+                                        *ngFor="let item of configuration.items"
+                                        (click)="onReferenceClick(configuration, item)"
+                                        [matTooltip]="item.title"
+                                        matTooltipPosition="right">
+      <span class="reference-main">
+        {{ item.title }}
+      </span>
+                                    </button>
+                                </ng-container>
+
                             </div>
 
                         </mat-expansion-panel>
@@ -119,8 +206,8 @@
                         (click)="onMainToggleClick()">
                         <mat-icon>menu_open</mat-icon>
                         <span class="toggle-label">
-        {{ activePanel === 'functions' ? 'Functions' : 'References' }}
-      </span>
+                            {{ activePanel === 'functions' ? 'Functions' : 'References' }}
+                        </span>
                         <mat-icon>
                             {{ drawer.opened ? 'chevron_left' : 'chevron_right' }}
                         </mat-icon>

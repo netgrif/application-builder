@@ -105,6 +105,30 @@ mat-sidenav-content {
     border-bottom-color: #ffffff;
 }
 
+/* 🔹 HORIZONTÁLNA LIŠTA S PROCESMI POD TABMI */
+
+.interprocess-strip {
+    padding: 4px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fafafa;
+    overflow-x: auto;
+}
+
+.interprocess-strip-inner {
+    display: flex;
+    gap: 4px;
+    padding-bottom: 4px;
+    min-width: max-content;
+}
+
+.interprocess-chip {
+    white-space: nowrap;
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 2px 8px;
+}
+
+/* telo draweru – scrolluje sa len vnútro */
 .drawer-body {
     flex: 1 1 auto;
     overflow: hidden; // scrolluje len vnútorný container
@@ -248,4 +272,17 @@ mat-sidenav-content {
     mat-icon {
         font-size: 16px;
     }
+}
+
+.interprocess-select-wrapper {
+    padding: 6px 8px 2px;
+}
+
+.interprocess-select {
+    width: 100%;
+    font-size: 12px;
+}
+
+.interprocess-select .mat-form-field-infix {
+    padding: 6px;
 }

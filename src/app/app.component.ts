@@ -14,6 +14,7 @@ import { JoyrideService } from 'ngx-joyride';
 import { ModelImportService } from './modeler/model-import-service';
 import { ModelExportService } from './modeler/services/model/model-export.service';
 import { ModelService } from './modeler/services/model/model.service';
+import {InterprocessStateService} from "./modeler/services/interprocess-state.service";
 
 function resolveParentOrigin(): string {
     const w = window as any;
@@ -56,6 +57,7 @@ export class AppComponent implements AfterViewInit {
         private tutorialService: TutorialService,
         private appRef: ApplicationRef,
         private injector: Injector,
+        private interprocessState: InterprocessStateService,
     ) {
         this.config = config.get();
     }
@@ -193,36 +195,32 @@ export class AppComponent implements AfterViewInit {
 
                 const { type, payload } = event.data || {};
 
-                // -------------------------------------------
-                // LOAD_XML (with xml + interprocess)
-                // -------------------------------------------
                 if (type === 'LOAD_XML') {
-                    // OLD format (string only)
                     if (typeof payload === 'string') {
                         await applyXml(payload);
                         return;
                     }
 
-                    // NEW format { xml, interprocess }
                     if (payload && typeof payload === 'object') {
                         const xml = payload.xml;
                         const interprocess = payload.interprocess;
+                        const identifier = payload.identifier ?? null;
 
-                        console.log("INTERPROCESS (LOAD_XML):", interprocess);
+                        this.interprocessState.setState({ identifier, interprocess });
 
-                        // applyXml should use xml only
                         await applyXml(xml);
-
                         return;
                     }
 
-                    console.warn("Unknown LOAD_XML payload", payload);
+                    console.warn('Unknown LOAD_XML payload', payload);
                     return;
                 }
 
                 if (type === 'CREATE_EMPTY') {
-                    const interprocess = payload?.interprocess;
-                    console.log("INTERPROCESS (CREATE_EMPTY):", interprocess);
+                    const interprocess = payload?.interprocess ?? null;
+                    const identifier = payload?.identifier ?? null;
+
+                    this.interprocessState.setState({ identifier, interprocess });
 
                     try {
                         if (this.isEmbedded) this.clearDraftStorage();
