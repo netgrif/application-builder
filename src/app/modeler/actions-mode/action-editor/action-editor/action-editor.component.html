@@ -7,7 +7,6 @@
 
 <mat-sidenav-container autosize class="action-editor-container">
 
-    <!-- LEFT DRAWER: Functions / References -->
     <mat-sidenav
         #drawer
         mode="side"
@@ -42,12 +41,10 @@
                     [value]="selectedInterprocessNet || 'current'"
                     (selectionChange)="onProcessSelect($event.value)">
 
-                    <!-- Current process -->
                     <mat-option value="current">
                         Current process
                     </mat-option>
 
-                    <!-- Other processes -->
                     <mat-option
                         *ngFor="let net of interprocessNets"
                         [value]="net">
@@ -78,8 +75,11 @@
                             [expanded]="isReferenceExpanded(configuration)"
                             (opened)="onReferencePanelOpened(configuration)"
                             (closed)="onReferencePanelClosed(configuration)"
-                            [attr.data-type]="configuration.itemType">
-
+                            [attr.data-type]="configuration.itemType"
+                            [ngClass]="{
+                                'ref-panel-transition': configuration.itemType === 'transition',
+                                'ref-panel-datafield': configuration.itemType === 'datafield'
+                            }">
                             <mat-expansion-panel-header>
                                 <mat-panel-title class="ref-panel-title">
                                     <mat-icon class="ref-panel-icon">
@@ -95,13 +95,18 @@
                                     <ng-container *ngIf="usingCurrentProcess; else externalTransitionsTpl">
                                         <button
                                             mat-button
-                                            class="reference-item"
+                                            class="reference-item reference-item-transition"
                                             *ngFor="let item of configuration.items"
                                             (click)="onReferenceClick(configuration, item)"
-                                            [matTooltip]="item.title"
+                                            [matTooltip]="getReferenceTooltip(configuration, item)"
                                             matTooltipPosition="right">
                                         <span class="reference-main">
-                                          {{ item.title }}
+                                            <span class="reference-main-label">
+                                                {{ getReferenceLabel(item) }}
+                                            </span>
+                                            <span class="reference-main-id" *ngIf="getReferenceId(item) as id">
+                                                [{{ id }}]
+                                            </span>
                                         </span>
                                         </button>
                                     </ng-container>
@@ -109,52 +114,63 @@
                                     <ng-template #externalTransitionsTpl>
                                         <button
                                             mat-button
-                                            class="reference-item"
+                                            class="reference-item reference-item-transition"
                                             *ngFor="let item of externalTransitionItems"
                                             (click)="onReferenceClick(configuration, item)"
-                                            [matTooltip]="item.title"
+                                            [matTooltip]="getReferenceTooltip(configuration, item)"
                                             matTooltipPosition="right">
-        <span class="reference-main">
-          {{ item.title }}
-        </span>
+                                            <span class="reference-main">
+                                                <span class="reference-main-label">
+                                                    {{ getReferenceLabel(item) }}
+                                                </span>
+                                                <span class="reference-main-id" *ngIf="getReferenceId(item) as id">
+                                                    [{{ id }}]
+                                                </span>
+                                            </span>
                                         </button>
                                     </ng-template>
                                 </ng-container>
 
-                                <!-- DATA FIELDS -->
                                 <ng-container *ngIf="configuration.itemType === 'datafield'">
-                                    <!-- Current process -->
                                     <ng-container *ngIf="usingCurrentProcess; else externalDataFieldsTpl">
                                         <button
                                             mat-button
-                                            class="reference-item"
+                                            class="reference-item reference-item-datafield"
                                             *ngFor="let item of configuration.items"
                                             (click)="onReferenceClick(configuration, item)"
-                                            [matTooltip]="item.title"
+                                            [matTooltip]="getReferenceTooltip(configuration, item)"
                                             matTooltipPosition="right">
-        <span class="reference-main">
-          {{ item.title }}
-        </span>
+                                            <span class="reference-main">
+                                                <span class="reference-main-label">
+                                                    {{ getReferenceLabel(item) }}
+                                                </span>
+                                                <span class="reference-main-id" *ngIf="getReferenceId(item) as id">
+                                                    [{{ id }}]
+                                                </span>
+                                            </span>
                                         </button>
                                     </ng-container>
 
-                                    <!-- Externý proces -->
                                     <ng-template #externalDataFieldsTpl>
                                         <button
                                             mat-button
-                                            class="reference-item"
+                                            class="reference-item reference-item-datafield"
                                             *ngFor="let item of externalDataFieldItems"
                                             (click)="onReferenceClick(configuration, item)"
-                                            [matTooltip]="item.title"
+                                            [matTooltip]="getReferenceTooltip(configuration, item)"
                                             matTooltipPosition="right">
-        <span class="reference-main">
-          {{ item.title }}
-        </span>
+                                            <span class="reference-main">
+                                                <span class="reference-main-label">
+                                                    {{ getReferenceLabel(item) }}
+                                                </span>
+                                                <span class="reference-main-id" *ngIf="getReferenceId(item) as id">
+                                                    [{{ id }}]
+                                                </span>
+                                            </span>
                                         </button>
                                     </ng-template>
                                 </ng-container>
 
-                                <!-- VŠETKO OSTATNÉ (behaviours, values, ...) -->
                                 <ng-container
                                     *ngIf="configuration.itemType !== 'transition' && configuration.itemType !== 'datafield'">
                                     <button
@@ -162,11 +178,16 @@
                                         class="reference-item"
                                         *ngFor="let item of configuration.items"
                                         (click)="onReferenceClick(configuration, item)"
-                                        [matTooltip]="item.title"
+                                        [matTooltip]="getReferenceTooltip(configuration, item)"
                                         matTooltipPosition="right">
-      <span class="reference-main">
-        {{ item.title }}
-      </span>
+                                        <span class="reference-main">
+                                            <span class="reference-main-label">
+                                                {{ getReferenceLabel(item) }}
+                                            </span>
+                                            <span class="reference-main-id" *ngIf="getReferenceId(item) as id">
+                                                [{{ id }}]
+                                            </span>
+                                        </span>
                                     </button>
                                 </ng-container>
 
@@ -179,7 +200,6 @@
         </div>
     </mat-sidenav>
 
-    <!-- MAIN CONTENT -->
     <mat-sidenav-content>
 
         <mat-expansion-panel
@@ -198,7 +218,6 @@
                     fxLayoutAlign="space-between center"
                     class="top-toolbar">
 
-                    <!-- ľavo: toggle Functions / References -->
                     <button
                         type="button"
                         mat-stroked-button
@@ -213,7 +232,6 @@
                         </mat-icon>
                     </button>
 
-                    <!-- pravo: AI + Delete -->
                     <div class="top-toolbar-actions">
                         <button
                             mat-stroked-button
@@ -232,7 +250,6 @@
                     </div>
                 </div>
 
-                <!-- editor -->
                 <div
                     fxLayout="column"
                     fxLayoutAlign="start stretch"

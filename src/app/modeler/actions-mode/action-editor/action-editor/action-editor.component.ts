@@ -1,15 +1,16 @@
 import {
     ChangeDetectorRef,
-    Component, ElementRef,
+    Component,
+    ElementRef,
     EventEmitter,
-    Input, NgZone,
+    Input,
+    NgZone,
     OnInit,
     Output,
     ViewChild
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
-import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 
 import { ChangeType, EditableAction } from '../classes/editable-action';
@@ -35,7 +36,7 @@ import {
     findConfigForCursor,
     buildAssistantContextFromModel
 } from './action-editor.helpers';
-import {InterprocessState, InterprocessStateService} from "../../../services/interprocess-state.service";
+import { InterprocessState, InterprocessStateService } from '../../../services/interprocess-state.service';
 
 @Component({
     selector: 'nab-action-editor',
@@ -53,10 +54,7 @@ export class ActionEditorComponent implements OnInit {
     @Output() public drawerOpened = new EventEmitter<boolean>();
 
     @ViewChild('drawer') private drawer: MatSidenav;
-    @ViewChild('matButton') private button: MatButton;
-    @ViewChild('drawerBody') private drawerBodyRef: any;
     @ViewChild('referencesScroll') private referencesScrollRef?: ElementRef<HTMLDivElement>;
-
 
     public undoEnabled = false;
     public redoEnabled = false;
@@ -93,9 +91,6 @@ export class ActionEditorComponent implements OnInit {
     public DATA_EVENT_TYPES = ['set', 'get'];
     public PHASE_TYPES = ['pre', 'post'];
 
-    private keywordFocusTimeoutId: any;
-    private lastFocusedItemType: string | null = null;
-
     editorOptions = {
         language: 'petriflow',
         scrollBeyondLastLine: false,
@@ -105,17 +100,17 @@ export class ActionEditorComponent implements OnInit {
     };
 
     private readonly referenceIconMap: Record<string, string> = {
-        transition: 'list_alt',        // Transitions
-        datafield: 'edit',             // Data fields
-        behaviour: 'tune',             // Behaviours
-        types: 'category',             // Types
-        condition: 'rule',             // Conditions
-        property: 'settings',          // Properties
-        value: '123',                  // Values
-        dataSet: 'table_chart',        // DataSet
-        processInstanceId: 'fingerprint', // Process Instance Id
-        casePredicate: 'filter_alt',   // Case predicates
-        taskPredicate: 'task_alt'      // Task predicates
+        transition: 'list_alt',
+        datafield: 'edit',
+        behaviour: 'tune',
+        types: 'category',
+        condition: 'rule',
+        property: 'settings',
+        value: '123',
+        dataSet: 'table_chart',
+        processInstanceId: 'fingerprint',
+        casePredicate: 'filter_alt',
+        taskPredicate: 'task_alt'
     };
 
     getReferenceIcon(itemType: string): string {
@@ -129,10 +124,8 @@ export class ActionEditorComponent implements OnInit {
         private actionItemProviderService: ActionItemProviderService,
         private ngZone: NgZone,
         private cdr: ChangeDetectorRef,
-        private interprocessState: InterprocessStateService,
+        private interprocessState: InterprocessStateService
     ) {}
-
-    // ================== MONACO INIT ==================
 
     onInit(editorObject: any) {
         this.editor = editorObject;
@@ -144,14 +137,11 @@ export class ActionEditorComponent implements OnInit {
         this.rebindEditorsToConfigs(editorObject);
         this.initialiseEditorVersioning(editorObject);
 
-        // 💡 Monaco eventy mimo Angular, ale handleKeywordFocus už v Angular zóne
         this.ngZone.runOutsideAngular(() => {
-            // klik myšou – po pustení (mouseUp), keď už je kurzor na mieste
             this.editor.onMouseUp(() => {
                 this.ngZone.run(() => this.handleKeywordFocus());
             });
 
-            // pohyb kurzora / selection cez klávesnicu
             this.editor.onDidChangeCursorSelection(() => {
                 this.ngZone.run(() => this.handleKeywordFocus());
             });
@@ -222,7 +212,6 @@ export class ActionEditorComponent implements OnInit {
             return;
         }
 
-        // vždy chceme skončiť v REFERENCES
         if (!this.drawer.opened || this.activePanel !== 'references') {
             this.activePanel = 'references';
             this.drawer.open();
@@ -230,24 +219,14 @@ export class ActionEditorComponent implements OnInit {
         }
 
         this.openReferencesFor(cfg);
-
         this.cdr.markForCheck();
     }
 
     ngOnInit(): void {
         this.formControl.setValue(this.action.definition);
         this.formControl.valueChanges.subscribe(value => this.saveAction(value));
-        this.interprocessState.state$.subscribe((state) => {
-            this.interprocess = state;
-            this.interprocessNets = state?.interprocess?.data?.nets ?? [];
-            if (!this.selectedInterprocessNet && this.interprocessNets.length) {
-                this.selectedInterprocessNet = this.interprocessNets[0];
-            }
-            this.cdr.markForCheck();
-        });
 
         const built: BuiltEditorConfigs = buildEditorConfigurations(
-            this.editor,
             this,
             this.modelService
         );
@@ -266,7 +245,38 @@ export class ActionEditorComponent implements OnInit {
 
         this.editorConfigurations = built.all;
         this.keywordConfigPairs = built.keywordConfigPairs;
-        this.expandedReferenceTypes = new Set<string>();
+        this.expandedReferenceTypes = built.defaultExpandedTypes;
+
+        this.interprocessState.state$.subscribe((state) => {
+            this.interprocess = state;
+            this.interprocessNets = state?.interprocess?.data?.nets ?? [];
+            this.updateProcessInstanceIds();
+            this.cdr.markForCheck();
+        });
+    }
+
+    private updateProcessInstanceIds(): void {
+        if (!this.processInstanceIdItemsConfiguration) {
+            return;
+        }
+
+        const nets = this.interprocessNets || [];
+
+        const seen = new Set<string>();
+        const items = nets
+            .map((net: any) => {
+                const id = net.processId
+                if (!id || seen.has(id)) {
+                    return null;
+                }
+                seen.add(id);
+
+                const title = net.identifier
+                return new MenuItem(id, title);
+            })
+            .filter((x): x is MenuItem => !!x);
+
+        (this.processInstanceIdItemsConfiguration as any).items = items;
     }
 
     private saveAction(value: string) {
@@ -302,19 +312,6 @@ export class ActionEditorComponent implements OnInit {
     setHeightOnClose(index: number, action: any): void {
         const element = document.getElementById(action.event + '_' + action.phase + '_' + index) as HTMLElement;
         element.style.height = 'auto';
-    }
-
-    onResizeEvent(event: any, name: string): void {
-        const newHeight = event.rectangle.height < 370 ? 370 : event.rectangle.height;
-        const element = document.getElementById(name) as HTMLElement;
-        const headerSize = (element.childNodes[0] as HTMLElement).offsetHeight;
-        const bottomSize = (element.childNodes[1].childNodes[1] as HTMLElement).offsetHeight;
-        const div = document.getElementById(name + '_div') as HTMLElement;
-        const editorObject = document.getElementById(name + '_editor') as HTMLElement;
-        element.style.height = newHeight + 'px';
-        const innerSize = newHeight - headerSize - bottomSize - 45;
-        div.style.height = innerSize + 'px';
-        editorObject.style.height = innerSize + 'px';
     }
 
     openDialog(index: number): void {
@@ -363,13 +360,11 @@ export class ActionEditorComponent implements OnInit {
         this.expandedReferenceTypes.clear();
         this.expandedReferenceTypes.add(itemType);
 
-        // Angular už vie, že sme v references + drawer je open
         setTimeout(() => this.scrollReferencePanelIntoView(itemType), 0);
         setTimeout(() => this.scrollReferencePanelIntoView(itemType), 60);
     }
 
-
-    private scrollReferencePanelIntoView(itemType: string, smooth: boolean = false): void {
+    private scrollReferencePanelIntoView(itemType: string): void {
         if (!this.referencesScrollRef) {
             return;
         }
@@ -386,12 +381,11 @@ export class ActionEditorComponent implements OnInit {
         const header =
             panel.querySelector<HTMLElement>('.mat-expansion-panel-header') ?? panel;
 
-        const headerOffset = 4; // malý odstup pod tabs
+        const headerOffset = 4;
         const targetTop = header.offsetTop - headerOffset;
 
         container.scrollTo({
             top: targetTop < 0 ? 0 : targetTop,
-            // 🔹 vždy bez animácie
             behavior: 'auto'
         });
     }
@@ -413,7 +407,12 @@ export class ActionEditorComponent implements OnInit {
             return;
         }
 
-        const token: string = (item as any).id || (item as any).title || '';
+        const token: string =
+            (item as any).id ||
+            (item as any).value ||
+            (item as any).title ||
+            '';
+
         if (!token) {
             return;
         }
@@ -489,70 +488,6 @@ export class ActionEditorComponent implements OnInit {
         this.onProcessSelect(net ?? 'current');
     }
 
-    private restoreCurrentProcessReferences(): void {
-        const built: BuiltEditorConfigs = buildEditorConfigurations(
-            this.editor,
-            this,
-            this.modelService
-        );
-
-        this.transitionItemsConfiguration = built.transition;
-        this.dataFieldItemsConfiguration = built.dataField;
-
-        this.behaviourItemsConfiguration = built.behaviour;
-        this.conditionItemsConfiguration = built.condition;
-        this.propertyItemsConfiguration = built.property;
-        this.valueItemsConfiguration = built.value;
-        this.typeItemsConfiguration = built.type;
-
-        this.dataSetItemsConfiguration = built.dataSet;
-        this.processInstanceIdItemsConfiguration = built.processInstanceId;
-        this.casePredicateItemsConfiguration = built.casePredicate;
-        this.taskPredicateItemsConfiguration = built.taskPredicate;
-
-        this.editorConfigurations = built.all;
-        this.keywordConfigPairs = built.keywordConfigPairs;
-
-        console.log('%c[ActionEditor] Restored CURRENT process references', 'color:green');
-    }
-
-    private applyExternalProcessReferences(net: any): void {
-        if (!net) {
-            return;
-        }
-
-        console.log('%c[ActionEditor] Applying EXTERNAL references:', 'color:orange', net);
-
-        // 1) transitions z interprocess objektu
-        const transitions: any[] = Object.values(net.transitions || {}).map((t: any) => ({
-            id: t.id,
-            title: t.title || t.id
-        }));
-
-        // 2) data fields z interprocess objektu
-        const dataFields: any[] = Object.values(net.dataSet || {}).map((d: any) => ({
-            id: d.id,
-            title: d.title || d.id
-        }));
-
-        // 3) prepíš iba položky v existujúcich konfiguráciách
-        (this.transitionItemsConfiguration as any).items = transitions;
-        (this.dataFieldItemsConfiguration as any).items = dataFields;
-
-        // 4) update v editorConfigurations – ale s any, aby TS nerýpal
-        this.editorConfigurations = this.editorConfigurations.map((cfg: any) => {
-            if (cfg.itemType === 'transition') {
-                return { ...cfg, items: transitions };
-            }
-            if (cfg.itemType === 'datafield') {
-                return { ...cfg, items: dataFields };
-            }
-            return cfg;
-        }) as any;
-
-        console.log('%c[ActionEditor] External references applied', 'color:orange');
-    }
-
     private buildAssistantContext(): string {
         return buildAssistantContextFromModel(
             this.modelService,
@@ -606,5 +541,33 @@ export class ActionEditorComponent implements OnInit {
                 setTimeout(() => this.editor?.setValue?.(result.updatedCode));
             }
         });
+    }
+
+    getReferenceLabel(item: MenuItem): string {
+        const title = (item as any).title ?? '';
+        if (!title) {
+            return (item as any).id ?? '';
+        }
+        return title;
+    }
+
+    getReferenceId(item: MenuItem): string {
+        const id = (item as any).id ?? '';
+        if (!id) {
+            return '';
+        }
+        if (id.length <= 12) {
+            return id;
+        }
+        return id.slice(0, 9) + '…';
+    }
+
+    getReferenceTooltip(configuration: MenuItemConfiguration, item: MenuItem): string {
+        const id = (item as any).id ?? '';
+        const label = this.getReferenceLabel(item);
+        if (!id) {
+            return label;
+        }
+        return `${label} [${id}]`;
     }
 }

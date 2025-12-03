@@ -1,5 +1,3 @@
-/* ================== ZÁKLAD – EDITOR ================== */
-
 .not-resizable {
     resize: none;
 }
@@ -18,7 +16,6 @@
     border-radius: 4px;
 }
 
-/* popis vpravo hore (pôvodný behaviour) */
 #description {
     position: fixed;
     z-index: 999;
@@ -34,19 +31,15 @@
     position: relative;
 }
 
-/* header action panelu */
-
 .header {
     height: 48px !important;
 }
 
-/* okraje medzi action panelmi a okolo */
 .panel-fix {
     margin: 4px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-/* rozťahni editor viac do šírky – bez veľkých paddingov z Materialu */
 mat-sidenav-content {
     padding: 0;
 }
@@ -55,21 +48,13 @@ mat-sidenav-content {
     padding: 4px 8px;
 }
 
-.full-menu-width {
-    height: 5px;
-    width: 100%;
-}
-
-/* ================== DRAWER – SPOLOČNÝ LAYOUT ================== */
-
 .action-editor-drawer {
     display: flex;
     flex-direction: column;
     width: 260px;
-    padding-right: 4px; // buffer, aby sa ikonky neodrezali
+    padding-right: 4px;
 }
 
-/* tabs Functions / References navrchu, sticky */
 .drawer-tabs {
     position: sticky;
     top: 0;
@@ -81,7 +66,6 @@ mat-sidenav-content {
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-/* samotné tab tlačidlá */
 .drawer-tab {
     min-width: 0;
     font-size: 11px;
@@ -105,58 +89,29 @@ mat-sidenav-content {
     border-bottom-color: #ffffff;
 }
 
-/* 🔹 HORIZONTÁLNA LIŠTA S PROCESMI POD TABMI */
-
-.interprocess-strip {
-    padding: 4px 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    background: #fafafa;
-    overflow-x: auto;
-}
-
-.interprocess-strip-inner {
-    display: flex;
-    gap: 4px;
-    padding-bottom: 4px;
-    min-width: max-content;
-}
-
-.interprocess-chip {
-    white-space: nowrap;
-    font-size: 11px;
-    line-height: 1.4;
-    padding: 2px 8px;
-}
-
-/* telo draweru – scrolluje sa len vnútro */
 .drawer-body {
     flex: 1 1 auto;
-    overflow: hidden; // scrolluje len vnútorný container
+    overflow: hidden;
 }
 
-/* menší font všade v draweri */
 .action-editor-drawer,
 .action-editor-drawer * {
     font-size: 12px;
 }
 
-/* ================== RIADKY V DRAWERI (Functions aj References) ================== */
-
-/* všetky „listové“ tlačidlá – aj functions (mat-stroked) aj references (mat-button) */
 .action-editor-drawer button[mat-stroked-button],
 .action-editor-drawer button[mat-button].reference-item {
     width: 100%;
     box-sizing: border-box;
     min-height: 40px;
     padding: 0 12px;
-
     display: flex;
     align-items: center;
     justify-content: flex-start;
     text-align: left;
+    overflow: hidden;
 }
 
-/* vnútro tlačidla – text + info-icon v jednom riadku */
 .action-editor-drawer button[mat-stroked-button] .mat-button-wrapper,
 .action-editor-drawer button[mat-button].reference-item .mat-button-wrapper {
     display: flex;
@@ -165,9 +120,7 @@ mat-sidenav-content {
     width: 100%;
 }
 
-/* label / názov – jeden riadok s ellipsis */
-.action-editor-drawer .drawer-item-label,
-.action-editor-drawer .reference-main {
+.action-editor-drawer .drawer-item-label {
     flex: 1 1 auto;
     white-space: nowrap;
     overflow: hidden;
@@ -175,7 +128,6 @@ mat-sidenav-content {
     text-align: left;
 }
 
-/* info ikonky (ak sú) – aby sa nezväčšovali a nevyliezali */
 .action-editor-drawer .reference-info-btn,
 .action-editor-drawer .fn-info-btn {
     flex-shrink: 0;
@@ -186,13 +138,10 @@ mat-sidenav-content {
     }
 }
 
-/* ================== REFERENCES PANEL ================== */
-
 .references-panel {
     padding-top: 4px;
 }
 
-/* scrollovateľná časť pod tabs len pre references */
 .references-scroll-container {
     max-height: 100%;
     overflow-y: auto;
@@ -203,14 +152,12 @@ mat-sidenav-content {
     margin-top: 0;
 }
 
-/* layout zoznamu položiek vnútri jednej kategórie */
 .references-items {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-/* header kategórie – ikonka + text (rovnako pre všetky) */
 .references-panel ::ng-deep .mat-expansion-panel-header {
     min-height: 40px;
 }
@@ -220,7 +167,6 @@ mat-sidenav-content {
     font-weight: 500;
 }
 
-/* custom class na headeri – ikonka + text vedľa seba */
 .references-panel ::ng-deep .ref-panel-title {
     display: flex;
     align-items: center;
@@ -232,18 +178,26 @@ mat-sidenav-content {
     color: rgba(63, 81, 181, 0.8);
 }
 
-/* ================== FUNCTIONS PANEL ================== */
+.references-panel .reference-item-transition {
+    background-color: rgba(33, 150, 243, 0.08);
+}
+
+.references-panel .reference-item-datafield {
+    background-color: rgba(3, 169, 244, 0.08);
+}
+
+.references-panel .reference-item-transition:hover,
+.references-panel .reference-item-datafield:hover {
+    background-color: rgba(30, 136, 229, 0.16);
+}
 
 .functions-panel {
     padding-top: 4px;
 }
 
-/* trochu kompaktnejšie list itemy vo functions (ak sa používajú mat-list) */
 .functions-panel ::ng-deep .mat-list-item {
     padding-inline: 4px;
 }
-
-/* ================== HORNÝ TOOLBAR NAD EDITOROM ================== */
 
 .top-toolbar {
     margin: 4px 0 8px;
@@ -285,4 +239,30 @@ mat-sidenav-content {
 
 .interprocess-select .mat-form-field-infix {
     padding: 6px;
+}
+.references-panel ::ng-deep .ref-panel-transition .mat-expansion-panel-header {
+    background-color: rgba(33, 150, 243, 0.06);
+}
+
+.references-panel ::ng-deep .ref-panel-datafield .mat-expansion-panel-header {
+    background-color: rgba(3, 169, 244, 0.06);
+}
+
+.action-editor-drawer .reference-main {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+}
+
+.action-editor-drawer .reference-main-label {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.action-editor-drawer .reference-main-id {
+    flex: 0 1 auto;      /* môže sa trošku zmenšiť */
+    white-space: nowrap;
 }

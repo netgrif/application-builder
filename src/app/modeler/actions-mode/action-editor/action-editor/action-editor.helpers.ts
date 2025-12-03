@@ -21,10 +21,10 @@ export interface BuiltEditorConfigs {
 }
 
 export function buildEditorConfigurations(
-    editor: any,
     actionEditor: any,
     modelService: ModelService
 ): BuiltEditorConfigs {
+    const editor = null;
 
     const transition = new MenuItemConfiguration(
         'Transitions',
@@ -83,7 +83,7 @@ export function buildEditorConfigurations(
             new MenuItem('<datafield>.value > <value>', '<datafield>.value > <value>'),
             new MenuItem('<datafield>.value >= <value>', '<datafield>.value >= <value>'),
             new MenuItem('<datafield>.value < <value>', '<datafield>.value < <value>'),
-            new MenuItem('<datafield>.value <= <value>', '<datafield>.value <= <value>'),
+            new MenuItem('<datafield>.value <= <value>', '<datafield>.value <= <value>')
         ]
     );
 
@@ -157,20 +157,22 @@ export function buildEditorConfigurations(
         actionEditor,
         [
             new MenuItem('[<datafieldId>: ["value": <value>,"type": <type>]]', 'One data in set'),
-            new MenuItem('[<datafieldId>: ["value": <value>,"type": <type>],\n \t\t\t   <datafieldId>: ["value": <value>,"type": <type>]]', 'Two data in set')
+            new MenuItem(
+                '[<datafieldId>: ["value": <value>,"type": <type>],\n \t\t\t   <datafieldId>: ["value": <value>,"type": <type>]]',
+                'Two data in set'
+            )
         ]
     );
 
     const processInstanceId = new MenuItemConfiguration(
-        'Process Instance Id',
+        'Process Instance Ids',
         'processInstanceId',
         ['<processInstanceId>'],
         editor,
         actionEditor,
-        [
-            new MenuItem('', 'Process Instance Id')
-        ]
+        []
     );
+
 
     const casePredicate = new MenuItemConfiguration(
         'Case predicates',
@@ -181,9 +183,9 @@ export function buildEditorConfigurations(
         [
             new MenuItem('<casePredicate>.and<casePredicate>', 'Predicate AND Predicate'),
             new MenuItem('<casePredicate>.or<casePredicate>', 'Predicate OR Predicate'),
-            new MenuItem('{it.id.eq(<value>)}', 'Case ID equals value'),
+            new MenuItem('{it._id.eq(<value>)}', 'Case ID equals value'),
             new MenuItem('{it.visualId.eq(<value>)}', 'Case visual ID equals value'),
-            new MenuItem('{it.processIdentifier.eq(<processInstanceId>)}', 'Process identifier equals value'),
+            new MenuItem('{it.processIdentifier.eq("<processInstanceId>")}', 'Process identifier equals value'),
             new MenuItem('{it.title.eq(<value>)}', 'Title equals value'),
             new MenuItem('{it.author.email.eq(<value>)}', 'Authors email equals value'),
             new MenuItem('{it.author.id.eq(<value>)}', 'Authors id equals value'),
@@ -228,10 +230,7 @@ export function buildEditorConfigurations(
         }
     }
 
-    const defaultExpandedTypes = new Set<string>([
-        transition.itemType,
-        dataField.itemType
-    ]);
+    const defaultExpandedTypes = new Set<string>();
 
     return {
         transition,
@@ -265,7 +264,6 @@ export function findConfigForCursor(
         return null;
     }
 
-    // 1) najprv skúsiť selection – napr. double-click na celý <datafield>
     if (!selection.isEmpty()) {
         const selectedText = model.getValueInRange(selection).trim();
         const bySelection = keywordConfigPairs.find(p => p.keyword === selectedText);
@@ -274,9 +272,8 @@ export function findConfigForCursor(
         }
     }
 
-    // 2) fallback – pozícia kurzora v riadku
     const lineText = model.getLineContent(position.lineNumber);
-    const cursorIndex = position.column - 1; // monaco column je 1-based
+    const cursorIndex = position.column - 1;
 
     for (const pair of keywordConfigPairs) {
         const kw = pair.keyword;
@@ -284,7 +281,6 @@ export function findConfigForCursor(
 
         while (idx !== -1) {
             const end = idx + kw.length;
-            // povolíme aj pozíciu tesne za tagom (cursorIndex == end)
             if (cursorIndex >= idx && cursorIndex <= end) {
                 return pair.config;
             }
@@ -294,9 +290,6 @@ export function findConfigForCursor(
     return null;
 }
 
-/**
- * Kontext pre AI assistant – nechávame ho v helperi, aby komponent nebol tučný.
- */
 export function buildAssistantContextFromModel(
     modelService: ModelService,
     cfgs: {
@@ -330,14 +323,14 @@ export function buildAssistantContextFromModel(
         const takeValues = (cfg?: MenuItemConfiguration) =>
             (cfg?.items ?? []).map((i: any) => i.value || i.id || i.title).filter(Boolean);
 
-        const behaviours   = takeValues(cfgs.behaviour);
-        const conditions   = takeValues(cfgs.condition);
-        const properties   = takeValues(cfgs.property);
-        const values       = takeValues(cfgs.value);
-        const types        = takeValues(cfgs.type);
+        const behaviours = takeValues(cfgs.behaviour);
+        const conditions = takeValues(cfgs.condition);
+        const properties = takeValues(cfgs.property);
+        const values = takeValues(cfgs.value);
+        const types = takeValues(cfgs.type);
         const datasetSnips = takeValues(cfgs.dataSet);
-        const casePred     = takeValues(cfgs.casePredicate);
-        const taskPred     = takeValues(cfgs.taskPredicate);
+        const casePred = takeValues(cfgs.casePredicate);
+        const taskPred = takeValues(cfgs.taskPredicate);
 
         const meta = (() => {
             const a = action as any;
