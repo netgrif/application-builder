@@ -33,7 +33,7 @@ export function buildEditorConfigurations(
         editor,
         actionEditor,
         modelService.model.getTransitions().map(
-            (t: any) => new MenuItem(t.id, `${t.label?.value} [${t.id}]`)
+            (t: any) => new MenuItem(t.id, `${t.label?.value}`)
         )
     );
 
@@ -44,7 +44,7 @@ export function buildEditorConfigurations(
         editor,
         actionEditor,
         modelService.model.getDataSet().map(
-            (f: any) => new MenuItem(f.id, `${f.title?.value} [${f.id}]`)
+            (f: any) => new MenuItem(f.id, `${f.title?.value}`)
         )
     );
 
@@ -113,7 +113,7 @@ export function buildEditorConfigurations(
             new MenuItem('true', 'true'),
             new MenuItem('false', 'false'),
             new MenuItem(' ', 'Empty value'),
-            new MenuItem('', 'New variable or value'),
+            new MenuItem('""', 'Empty string'),
             new MenuItem('[a,b,c]', 'List of objects'),
             new MenuItem('[a:a,b:b]', 'Map of objects'),
             new MenuItem('["a","b","c"]', 'List of strings'),
@@ -181,15 +181,15 @@ export function buildEditorConfigurations(
         editor,
         actionEditor,
         [
-            new MenuItem('<casePredicate>.and<casePredicate>', 'Predicate AND Predicate'),
-            new MenuItem('<casePredicate>.or<casePredicate>', 'Predicate OR Predicate'),
-            new MenuItem('{it._id.eq(<value>)}', 'Case ID equals value'),
-            new MenuItem('{it.visualId.eq(<value>)}', 'Case visual ID equals value'),
-            new MenuItem('{it.processIdentifier.eq("<processInstanceId>")}', 'Process identifier equals value'),
-            new MenuItem('{it.title.eq(<value>)}', 'Title equals value'),
-            new MenuItem('{it.author.email.eq(<value>)}', 'Authors email equals value'),
-            new MenuItem('{it.author.id.eq(<value>)}', 'Authors id equals value'),
-            new MenuItem('{it.author.fullName.eq(<value>)}', 'Authors full name equals value')
+            new MenuItem('<casePredicate>.and(<casePredicate>)', 'Predicate AND Predicate'),
+            new MenuItem('<casePredicate>.or(<casePredicate>)', 'Predicate OR Predicate'),
+            new MenuItem('it._id.eq(<value>)', 'Case ID equals value'),
+            new MenuItem('it.visualId.eq(<value>)', 'Case visual ID equals value'),
+            new MenuItem('it.processIdentifier.eq(<processInstanceId>)', 'Process identifier equals value'),
+            new MenuItem('it.title.eq(<value>)', 'Title equals value'),
+            new MenuItem('it.author.email.eq(<value>)', 'Author\'s email equals value'),
+            new MenuItem('it.author.id.eq(<value>)', 'Author\'s id equals value'),
+            new MenuItem('it.author.fullName.eq(<value>)', 'Author\'s full name equals value')
         ]
     );
 
@@ -200,12 +200,12 @@ export function buildEditorConfigurations(
         editor,
         actionEditor,
         [
-            new MenuItem('<taskPredicate>.and<taskPredicate>', 'Predicate AND Predicate'),
-            new MenuItem('<taskPredicate>.or<taskPredicate>', 'Predicate OR Predicate'),
-            new MenuItem('{it.id.eq(<value>)}', 'Task ID equals value'),
-            new MenuItem('{it.transitionId.eq(<value>)}', 'TransitionId equals value'),
-            new MenuItem('{it.caseId.eq(<value>)}', 'CaseId equals value'),
-            new MenuItem('{it.caseTitle.eq(<value>)}', 'Case title equals value')
+            new MenuItem('<taskPredicate>.and(<taskPredicate>)', 'Predicate AND Predicate'),
+            new MenuItem('<taskPredicate>.or(<taskPredicate>)', 'Predicate OR Predicate'),
+            new MenuItem('it.id.eq(<value>)', 'Task ID equals value'),
+            new MenuItem('it.transitionId.eq(<value>)', 'TransitionId equals value'),
+            new MenuItem('it.caseId.eq(<value>)', 'CaseId equals value'),
+            new MenuItem('it.caseTitle.eq(<value>)', 'Case title equals value')
         ]
     );
 

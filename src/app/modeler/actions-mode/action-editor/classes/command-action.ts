@@ -126,6 +126,19 @@ export const actions: Array<CommandActions> = [
                     '}'
             },
             {
+                label: 'Change value in other case',
+                header: 'change (<Field f>,<Case c>) value <Closure calculation>',
+                action: 'change (<value>.getField("<datafield>"),<value>) value { <value>; }',
+                description:
+                    'Sets a new value to the specified data field in the target case. ' +
+                    'The value is determined by the calculation closure. If the closure returns null, ' +
+                    'the field is set to its default value. If the closure returns unchanged, the field ' +
+                    'remains unchanged and no actions triggered by this field are executed.\n',
+                example: 'def myCase = createCase("spencePatient", "New colenocsopy")\n' +
+                    'def nameField = myCase.getField("name")\n' +
+                    'change (nameField, myCase) value { "Gabriel" }'
+            },
+            {
                 label: 'Change choices',
                 header: 'change <Field f> choices <Closure calculation>',
                 action: 'change <datafield> choices { <choices>; }',
@@ -306,8 +319,19 @@ export const actions: Array<CommandActions> = [
         actions: [
             {
                 label: 'Create a new instance of process using process identifier',
+                header: 'Case createCase(String identifier, String title = null)',
+                action: 'createCase("<processInstanceId>", <value>);',
+                description: 'Create a new instance of the newest version of process identified by the identifier. ' +
+                    'If the title, color, author, or locale is not specified then the default value will be used',
+                example: 'createCase("create_case_net","Create Case Case","color-fg-amber-500", otherUser);\n' +
+                    'createCase("create_case_net","Create Case Case","color-fg-amber-500");\n' +
+                    'createCase("create_case_net","Create Case Case");\n' +
+                    'createCase("create_case_net");'
+            },
+            {
+                label: 'Create a new instance of process using process identifier',
                 header: 'Case createCase(String identifier, String title = null, String color = "", User author = userService.loggedOrSystem, Locale locale = LocaleContextHolder.getLocale())',
-                action: 'createCase(<identifier>, <title>, <color>, <author>, <locale>);',
+                action: 'createCase("<processInstanceId>", <value>, <value>, <value>, <value>);',
                 description: 'Create a new instance of the newest version of process identified by the identifier. ' +
                     'If the title, color, author, or locale is not specified then the default value will be used',
                 example: 'createCase("create_case_net","Create Case Case","color-fg-amber-500", otherUser);\n' +
@@ -478,7 +502,7 @@ export const actions: Array<CommandActions> = [
             {
                 label: 'Find Cases',
                 header: 'List<Case> findCases(Closure<Predicate> predicate)',
-                action: 'findCases(<casePredicate>);',
+                action: 'findCases{<casePredicate>};',
                 description: 'Finds all the cases that match the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate.',
                 example: 'List<Case> cases = findCases( { it.title.eq("Case 1") } );\n' +
                     '...\n' +
@@ -498,7 +522,7 @@ export const actions: Array<CommandActions> = [
             {
                 label: 'Find Case',
                 header: 'Case findCase(Closure<Predicate> predicate)\n',
-                action: 'findCase(<casePredicate>);',
+                action: 'findCase{<casePredicate>};',
                 description: 'Finds the first case that matches the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate.',
                 example: 'Case useCase = findCase( { it.title.eq("Case 1") & it.processIdentifier.eq("insurance") } );\n' +
                     '...\n' +
@@ -507,7 +531,7 @@ export const actions: Array<CommandActions> = [
             {
                 label: 'Find Tasks',
                 header: 'List<Task> findTasks(Closure<Predicate> predicate)',
-                action: 'findTasks(<taskPredicate>);',
+                action: 'findTasks{<taskPredicate>};',
                 description: 'Finds all tasks that match the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate.\n' +
                     '\n',
                 example: 'def useCase = findCase(...)\n' +
@@ -516,7 +540,7 @@ export const actions: Array<CommandActions> = [
             {
                 label: 'Find Tasks with pagination',
                 header: 'List<Task> findTasks(Closure<Predicate> predicate, Pageable pageable)',
-                action: 'findTasks(<taskPredicate>);',
+                action: 'findTasks{<taskPredicate>};',
                 description: 'Finds all tasks that match the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate.\n' +
                     '\n',
                 example: 'def useCase = findCase(...)\n' +
@@ -525,7 +549,7 @@ export const actions: Array<CommandActions> = [
             {
                 label: 'Find Task',
                 header: 'Task findTask(Closure<Predicate> predicate)',
-                action: 'findTask(<taskPredicate>);',
+                action: 'findTask{<taskPredicate>};',
                 description: 'Finds the first task that matches the given predicate. The predicate is a groovy closure that accepts QCase object and returns QueryDSL Predicate.',
                 example: 'List<Task> tasks = findTasks( { it.transitionId.eq("edit_limit") } )\n' +
                     '...\n' +
@@ -535,7 +559,7 @@ export const actions: Array<CommandActions> = [
             {
                 label: 'Find Task by Id',
                 header: 'Task findTask(String mongoId)',
-                action: 'findTask(<value>);',
+                action: 'findTask{<value>};',
                 description: 'Finds task with given id',
                 example:
                     'taskRef: f.taskRef;\n' +

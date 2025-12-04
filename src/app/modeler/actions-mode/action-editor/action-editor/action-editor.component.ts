@@ -87,10 +87,6 @@ export class ActionEditorComponent implements OnInit {
     public externalTransitionItems: MenuItem[] = [];
     public externalDataFieldItems: MenuItem[] = [];
 
-    public TRANSITION_EVENT_TYPES = ['assign', 'finish', 'cancel', 'delegate'];
-    public DATA_EVENT_TYPES = ['set', 'get'];
-    public PHASE_TYPES = ['pre', 'post'];
-
     editorOptions = {
         language: 'petriflow',
         scrollBeyondLastLine: false,
@@ -265,7 +261,7 @@ export class ActionEditorComponent implements OnInit {
         const seen = new Set<string>();
         const items = nets
             .map((net: any) => {
-                const id = net.processId
+                const id = net.identifier
                 if (!id || seen.has(id)) {
                     return null;
                 }
@@ -289,24 +285,6 @@ export class ActionEditorComponent implements OnInit {
         const action = this.leafNode.removeAction(index);
         action.changeType = ChangeType.REMOVED;
         this.actionChanged.emit({ action });
-    }
-
-    actionTransitionEventsChanged(index: number): void {
-        const action = this.leafNode.removeAction(index);
-        action.changeType = ChangeType.MOVED;
-        this.actionChanged.emit({
-            triggerPath: [action.event, action.phase],
-            action
-        });
-    }
-
-    actionDataEventsChanged(index: number): void {
-        const action = this.leafNode.removeAction(index);
-        action.changeType = ChangeType.MOVED;
-        this.actionChanged.emit({
-            triggerPath: [action.event],
-            action
-        });
     }
 
     setHeightOnClose(index: number, action: any): void {
@@ -407,13 +385,73 @@ export class ActionEditorComponent implements OnInit {
             return;
         }
 
-        const token: string =
-            (item as any).id ||
-            (item as any).value ||
-            (item as any).title ||
-            '';
+        const id: string = (item as any).id || '';
+        const value: string = (item as any).value || '';
+        const title: string = (item as any).title || '';
 
+        const token: string = id || value || title || '';
         if (!token) {
+            return;
+        }
+
+        if (!this.usingCurrentProcess &&
+            (configuration.itemType === 'transition' || configuration.itemType === 'datafield')) {
+
+            const model = this.editor.getModel();
+            const selection = this.editor.getSelection();
+            const position = this.editor.getPosition();
+
+            if (model && position) {
+                let range = selection;
+
+                if (!range || range.isEmpty()) {
+                    const lineText = model.getLineContent(position.lineNumber);
+                    const cursorIndex = position.column - 1;
+
+                    let kwRange: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } | null = null;
+
+                    for (const kw of configuration.keywords || []) {
+                        let idx = lineText.indexOf(kw);
+                        while (idx !== -1) {
+                            const end = idx + kw.length;
+                            if (cursorIndex >= idx && cursorIndex <= end) {
+                                kwRange = {
+                                    startLineNumber: position.lineNumber,
+                                    startColumn: idx + 1,
+                                    endLineNumber: position.lineNumber,
+                                    endColumn: end + 1
+                                };
+                                break;
+                            }
+                            idx = lineText.indexOf(kw, idx + 1);
+                        }
+                        if (kwRange) {
+                            break;
+                        }
+                    }
+
+                    if (kwRange) {
+                        range = kwRange as any;
+                    } else {
+                        range = {
+                            startLineNumber: position.lineNumber,
+                            startColumn: position.column,
+                            endLineNumber: position.lineNumber,
+                            endColumn: position.column
+                        } as any;
+                    }
+                }
+
+                this.editor.executeEdits('external-ref', [
+                    {
+                        range,
+                        text: id || token,
+                        forceMoveMarkers: true
+                    }
+                ]);
+            }
+
+            this.editor.focus();
             return;
         }
 
@@ -428,18 +466,6 @@ export class ActionEditorComponent implements OnInit {
 
     getReferenceTitle(configuration: MenuItemConfiguration): string {
         return configuration.title;
-    }
-
-    showItemInfo(configuration: MenuItemConfiguration): boolean {
-        return configuration.itemType !== 'transition' && configuration.itemType !== 'datafield';
-    }
-
-    onReferenceItemInfoClick(
-        configuration: MenuItemConfiguration,
-        item: MenuItem,
-        event: MouseEvent
-    ): void {
-        event.stopPropagation();
     }
 
     undo(): void {
@@ -473,19 +499,15 @@ export class ActionEditorComponent implements OnInit {
             const dataFieldsSource = Object.values(value.dataSet || {});
 
             this.externalTransitionItems = transitionsSource.map((t: any) =>
-                new MenuItem(t.id, `${t.title ?? t.id} [${t.id}]`)
+                new MenuItem(t.id, `${t.title ?? t.id}`)
             );
 
             this.externalDataFieldItems = dataFieldsSource.map((d: any) =>
-                new MenuItem(d.id, `${d.title ?? d.id} [${d.id}]`)
+                new MenuItem(d.id, `${d.title ?? d.id}`)
             );
         }
 
         this.cdr.markForCheck();
-    }
-
-    onNetChipClick(net: any | null) {
-        this.onProcessSelect(net ?? 'current');
     }
 
     private buildAssistantContext(): string {
