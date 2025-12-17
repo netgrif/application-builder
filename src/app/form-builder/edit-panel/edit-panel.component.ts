@@ -3,7 +3,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {GridsterService} from '../gridster/gridster.service';
 import {
     Appearance,
-    Component as PetriflowComponent, DataGroup,
+    Component as PetriflowComponent,
     DataRef,
     DataRefBehavior,
     DataType,
@@ -11,7 +11,7 @@ import {
     I18nString,
     I18nWithDynamic,
     Icon,
-    IconType, LayoutType,
+    IconType,
     Option,
     Property,
     Template,
@@ -226,14 +226,7 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
         this.gridsterService.options.minCols = newCols;
         this.gridsterService.options.maxCols = newCols;
         this.gridsterService.options.maxItemCols = newCols;
-        if (this.modelService.model.getTransition(this.transId).dataGroups?.length > 0) {
-            this.modelService.model.getTransition(this.transId).dataGroups[0].cols = newCols;
-        } else {
-            const dataGroup = new DataGroup(`${this.transId}_0`);
-            dataGroup.layout = LayoutType.GRID;
-            dataGroup.cols = newCols;
-            this.modelService.model.getTransition(this.transId).dataGroups.push(dataGroup);
-        }
+        this.modelService.model.getTransition(this.transId).dataGroups[0].cols = newCols;
         this.gridsterService.options.api.optionsChanged();
         this.registerChange();
     }

@@ -18,7 +18,7 @@ import {
     DataType,
     DataVariable,
     Expression, I18nWithDynamic,
-    LayoutType, Property,
+    Property,
     Template,
     Transition,
     TransitionLayout
@@ -26,7 +26,7 @@ import {
 import {BehaviorSubject, ReplaySubject, Subject} from 'rxjs';
 import {DataFieldUtils} from '../data-field-utils';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
-import {ComponentDef, FieldListService, PropertyDef} from '../field-list/field-list.service';
+import {FieldListService, PropertyDef} from '../field-list/field-list.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
 import {debounceTime} from 'rxjs/operators';
 
@@ -221,12 +221,6 @@ export class GridsterService {
             dataRef.component = new Component(componentName);
         }
         const transition = this.modelService.model.getTransition(this.transitionId);
-        if (transition.dataGroups.length === 0) {
-            const dataGroup = new DataGroup(`${transition.id}_0`);
-            dataGroup.layout = LayoutType.GRID;
-            dataGroup.cols = this.options.minCols;
-            transition.dataGroups.push(dataGroup);
-        }
         transition.dataGroups[0].addDataRef(dataRef);
         if (dataVariable.type === DataType.TASK_REF && dataVariable.init?.value === this.transitionId) {
             dataVariable.init.value = undefined;
