@@ -2,6 +2,9 @@ import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {ModelService} from '../modeler/services/model/model.service';
 import {ModelerUtils} from '../modeler/modeler-utils';
+import {ModelerConfig} from "../modeler/modeler-config";
+import {SelectedTransitionService} from "../modeler/selected-transition.service";
+import {DataGroup, LayoutType} from '@netgrif/petriflow';
 
 @Component({
     selector: 'nab-form-builder',
@@ -12,9 +15,15 @@ export class FormBuilderComponent implements AfterViewInit {
     title = 'form-builder';
     width: number;
 
-    constructor(private router: Router, private modelService: ModelService) {
+    constructor(private router: Router, private modelService: ModelService, private transitionService: SelectedTransitionService) {
         if (!this.modelService.model) {
             this.router.navigate(['/modeler']);
+        }
+        if (this.modelService.model.getTransition(this.transitionService.id)?.dataGroups?.length === 0) {
+            const dataGroup = new DataGroup(`${this.transitionService.id}_0`);
+            dataGroup.layout = LayoutType.GRID;
+            dataGroup.cols = ModelerConfig.LAYOUT_DEFAULT_COLS;
+            this.modelService.model.getTransition(this.transitionService.id).dataGroups.push(dataGroup);
         }
     }
 
