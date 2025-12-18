@@ -167,8 +167,8 @@ export class TutorialService {
         );
         this.demo = TutorialStep.of(
             'demo',
-            'Demo Application',
-            'You can deploy your Petriflow models in our demo application after registration.',
+            'Netgrif eTask',
+            'You can deploy your Petriflow models in our eTask application after registration.',
             () => {
             },
             () => {
