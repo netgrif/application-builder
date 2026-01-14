@@ -1,11 +1,9 @@
-import {Component} from '@angular/core';
-import {
-    FunctionScope,
-} from '@netgrif/petriflow';
 import {ComponentType} from '@angular/cdk/overlay';
+import {Component} from '@angular/core';
+import {FunctionScope} from '@netgrif/petriflow';
 import {ActionDetailComponent} from './action-detail/action-detail.component';
-import {ActionsMasterDetailService} from './actions-master-detail.setvice';
 import {ActionMasterComponent} from './action-master/action-master.component';
+import {ActionsMasterDetailService} from './actions-master-detail.setvice';
 
 export interface Scope {
     viewValue: string;

@@ -1,19 +1,19 @@
+import {Place as SvgPlace, Transition as SvgTransition} from '@netgrif/petri.svg';
+import {Arc, NodeElement, PetriNet, Place, Transition} from '@netgrif/petriflow';
+import {
+  PetriflowCanvas,
+  PetriflowCanvasService,
+  PetriflowPlace as PetriflowSvgPlace,
+  PetriflowTransition as PetriflowSvgTransition,
+} from '@netgrif/petriflow.svg';
 import {ModeService} from '../../control-panel/modes/mode-component/mode.service';
 import {Tool} from '../../control-panel/tools/tool';
-import {Arc, NodeElement, PetriNet, Place, Transition} from '@netgrif/petriflow';
-import {CanvasArc} from '../../edit-mode/domain/canvas-arc';
-import {CanvasPlace} from '../../edit-mode/domain/canvas-place';
-import {
-    PetriflowCanvas,
-    PetriflowCanvasService,
-    PetriflowPlace as PetriflowSvgPlace,
-    PetriflowTransition as PetriflowSvgTransition
-} from '@netgrif/petriflow.svg';
-import {Place as SvgPlace, Transition as SvgTransition} from '@netgrif/petri.svg';
-import {CanvasElementCollection} from '../../edit-mode/domain/canvas-element-collection';
 import {ArcFactory} from '../../edit-mode/domain/arc-builders/arc-factory.service';
-import {ModelService} from '../model/model.service';
+import {CanvasArc} from '../../edit-mode/domain/canvas-arc';
+import {CanvasElementCollection} from '../../edit-mode/domain/canvas-element-collection';
+import {CanvasPlace} from '../../edit-mode/domain/canvas-place';
 import {CanvasTransition} from '../../edit-mode/domain/canvas-transition';
+import {ModelService} from '../model/model.service';
 
 export abstract class CanvasModeService<T extends Tool> extends ModeService<T> {
     private readonly _elements: CanvasElementCollection;

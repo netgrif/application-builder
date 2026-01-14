@@ -1,19 +1,19 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ModelService} from '../../services/model/model.service';
-import {ActionsModeService} from '../actions-mode.service';
 import {NestedTreeControl} from '@angular/cdk/tree';
-import {LeafNode, TreeNode} from '../action-editor/classes/leaf-node';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
-import {ActionType, ChangeType} from '../action-editor/classes/editable-action';
-import {ActionChangedEvent} from '../action-editor/action-editor-list/action-editor-list.component';
-import {ActionEditorService} from '../action-editor/action-editor.service';
 import {DataVariable, FunctionScope, PetriflowFunction, Role, Transition} from '@netgrif/petriflow';
+import {HistoryService} from '../../services/history/history.service';
+import {ModelService} from '../../services/model/model.service';
+import {ActionChangedEvent} from '../action-editor/action-editor-list/action-editor-list.component';
+import {ActionEditorTreeService} from '../action-editor/action-editor-tree.service';
+import {ActionEditorService} from '../action-editor/action-editor.service';
 import {actions} from '../action-editor/classes/command-action';
+import {ActionType, ChangeType} from '../action-editor/classes/editable-action';
+import {LeafNode, TreeNode} from '../action-editor/classes/leaf-node';
+import {MasterItem} from '../action-editor/classes/master-item';
 import {ActionsMasterDetailService} from '../actions-master-detail.setvice';
 import {Scope} from '../actions-mode.component';
-import {MasterItem} from '../action-editor/classes/master-item';
-import {ActionEditorTreeService} from '../action-editor/action-editor-tree.service';
-import {HistoryService} from '../../services/history/history.service';
+import {ActionsModeService} from '../actions-mode.service';
 
 @Component({
   selector: 'nab-action-detail',

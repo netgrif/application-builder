@@ -1,7 +1,7 @@
-import {PetriflowResetArc} from '@netgrif/petriflow.svg';
-import {Place, ResetArc, Transition} from '@netgrif/petriflow';
-import {ArcBuilder} from './arc-builder';
 import {Place as SvgPlace, ResetArc as SvgResetArc, Transition as SvgTransition} from '@netgrif/petri.svg';
+import {Place, ResetArc, Transition} from '@netgrif/petriflow';
+import {PetriflowResetArc} from '@netgrif/petriflow.svg';
+import {ArcBuilder} from './arc-builder';
 
 export class ResetArcBuilder extends ArcBuilder<PetriflowResetArc, ResetArc> {
 

@@ -1,6 +1,6 @@
+import {ComponentType} from '@angular/cdk/overlay';
 import {Component, Input} from '@angular/core';
 import {AbstractMasterDetailService} from './abstract-master-detail.service';
-import {ComponentType} from '@angular/cdk/overlay';
 
 @Component({
     selector: 'nab-abstract-master-component',

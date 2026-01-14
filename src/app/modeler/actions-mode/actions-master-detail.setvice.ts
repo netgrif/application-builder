@@ -1,21 +1,17 @@
 import {Injectable} from '@angular/core';
-import {AbstractMasterDetailService} from '../components/master-detail/abstract-master-detail.service';
-import {DataVariable,
-    FunctionScope,
-    PetriflowFunction,
-    Role,
-    Transition} from '@netgrif/petriflow';
-import {ModelService} from '../services/model/model.service';
 import {Sort} from '@angular/material/sort';
+import {DataVariable, FunctionScope, PetriflowFunction, Role, Transition} from '@netgrif/petriflow';
+import {AbstractMasterDetailService} from '../components/master-detail/abstract-master-detail.service';
+import {ModelerConfig} from '../modeler-config';
+import {ModelService} from '../services/model/model.service';
+import {ActionType} from './action-editor/classes/editable-action';
 import {MasterItem} from './action-editor/classes/master-item';
 import {ActionsModeService} from './actions-mode.service';
 import {DataActionsTool} from './tools/data-actions-tool';
-import {TransitionActionsTool} from './tools/transition-actions-tool';
-import {ActionType} from './action-editor/classes/editable-action';
+import {FunctionsTool} from './tools/functions-tool';
 import {ProcessActionsTool} from './tools/process-actions-tool';
 import {RoleActionsTool} from './tools/role-actions-tool';
-import {FunctionsTool} from './tools/functions-tool';
-import {ModelerConfig} from '../modeler-config';
+import {TransitionActionsTool} from './tools/transition-actions-tool';
 
 @Injectable({
     providedIn: 'root'

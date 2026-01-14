@@ -1,8 +1,8 @@
+import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import {SimulationModeService} from './simulation-mode.service';
-import {HttpClientModule} from '@angular/common/http';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 describe('SimulationModeService', () => {
   let service: SimulationModeService;

@@ -1,6 +1,5 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ModelerTabsService} from './services/modeler-tabs.service';
+import {Injectable} from '@angular/core';
 import {ModelImportService} from './model-import-service';
 
 @Injectable({

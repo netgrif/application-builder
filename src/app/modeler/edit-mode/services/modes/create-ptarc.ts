@@ -1,8 +1,8 @@
+import {ArcType} from '@netgrif/petriflow';
+import {CanvasArc} from '../../domain/canvas-arc';
 import {CanvasPlace} from '../../domain/canvas-place';
 import {CanvasTransition} from '../../domain/canvas-transition';
 import {CreateArcTool} from './create-arc-tool';
-import {ArcType} from '@netgrif/petriflow';
-import {CanvasArc} from '../../domain/canvas-arc';
 
 export abstract class CreatePTArc extends CreateArcTool<CanvasPlace> {
 

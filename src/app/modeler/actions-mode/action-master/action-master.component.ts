@@ -1,18 +1,14 @@
-import {Component, Injector, OnInit} from '@angular/core';
-import {PageMasterComponent} from '../../components/master-detail/page-master.component';
-import {ActionsModeService} from '../actions-mode.service';
-import {Sort} from '@angular/material/sort';
-import {DataActionsTool} from '../tools/data-actions-tool';
-import {TransitionActionsTool} from '../tools/transition-actions-tool';
-import {RoleActionsTool} from '../tools/role-actions-tool';
 import {ComponentType} from '@angular/cdk/overlay';
-import {ActionMasterItemComponent} from './action-master-item/action-master-item.component';
-import {FunctionMasterItemComponent} from './function-master-item/function-master-item.component';
+import {Component, Injector, OnInit} from '@angular/core';
+import {Sort} from '@angular/material/sort';
+import {PageMasterComponent} from '../../components/master-detail/page-master.component';
+import {MasterItem} from '../action-editor/classes/master-item';
 import {ActionsMasterDetailService} from '../actions-master-detail.setvice';
+import {ActionsModeService} from '../actions-mode.service';
 import {FunctionsTool} from '../tools/functions-tool';
 import {ProcessActionsTool} from '../tools/process-actions-tool';
-import {ModelerConfig} from '../../modeler-config';
-import {MasterItem} from '../action-editor/classes/master-item';
+import {ActionMasterItemComponent} from './action-master-item/action-master-item.component';
+import {FunctionMasterItemComponent} from './function-master-item/function-master-item.component';
 
 @Component({
   selector: 'nab-action-master',

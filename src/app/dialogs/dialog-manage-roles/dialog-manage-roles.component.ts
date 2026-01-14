@@ -1,13 +1,13 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
+import {MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions} from '@angular/material/checkbox';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {MatSort, MatSortable, Sort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
+import {MatSort, MatSortable, Sort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 import {DataVariable, ProcessPermissionRef, Role, TransitionPermissionRef} from '@netgrif/petriflow';
-import {ModelService} from '../../modeler/services/model/model.service';
 import {ModelerConfig} from '../../modeler/modeler-config';
 import {HistoryService} from '../../modeler/services/history/history.service';
-import {MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions} from '@angular/material/checkbox';
+import {ModelService} from '../../modeler/services/model/model.service';
 
 export enum RoleRefType {
     TRANSITION = 'transition',

@@ -1,8 +1,8 @@
-import {Tool} from '../tools/tool';
+import {Injectable} from '@angular/core';
 import {HistoryService} from '../../services/history/history.service';
 import {ControlPanelButton} from '../control-panel-button';
 import {ControlPanelIcon} from '../control-panel-icon';
-import {Injectable} from '@angular/core';
+import {Tool} from '../tools/tool';
 
 @Injectable({
     providedIn: 'root'

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
+import {DataType} from '@netgrif/petriflow';
 import {Subject} from 'rxjs';
-import {DataType, DataVariable, Property} from '@netgrif/petriflow';
 import {GridsterDataField} from '../gridster/classes/gridster-data-field';
 
 export interface PropertyDef {
@@ -157,11 +157,7 @@ export class FieldListService {
                         {
                             name: 'search',
                             defaultValue: 'true'
-                        },
-                        {
-                            name: 'filter',
-                            defaultValue: 'true'
-                        },
+                        }
                     ]
                 }
             ]
@@ -212,11 +208,7 @@ export class FieldListService {
                         {
                             name: 'search',
                             defaultValue: 'true'
-                        },
-                        {
-                            name: 'filter',
-                            defaultValue: 'true'
-                        },
+                        }
                     ]
                 }
             ]
@@ -399,11 +391,7 @@ export class FieldListService {
                 {
                     name: 'search',
                     defaultValue: 'true'
-                },
-                {
-                    name: 'filter',
-                    defaultValue: 'true'
-                },
+                }
             ]
         },
         {
@@ -462,6 +450,9 @@ export class FieldListService {
         }
         const component = !!dataField.dataRef.component ? dataField.dataRef.component : dataField.dataVariable.component;
         const dataDef = this.fieldListArray.find(it => it.type === dataField.dataVariable.type);
+        if (!dataDef) {
+            return true;
+        }
         const simpleComponent = dataDef.components.find(it => !it.name);
         if (!component || !component.name) {
             if (!!simpleComponent && 'showPlaceholder' in simpleComponent) {

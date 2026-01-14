@@ -1,8 +1,8 @@
-import {MenuItem} from '../menu-item';
-import {CanvasTool} from '../../../services/modes/canvas-tool';
+import {ChangedArc} from '../../../../../dialogs/dialog-arc-edit/changed-arc';
 import {ArcEditData, DialogArcEditComponent} from '../../../../../dialogs/dialog-arc-edit/dialog-arc-edit.component';
 import {CanvasArc} from '../../../domain/canvas-arc';
-import {ChangedArc} from '../../../../../dialogs/dialog-arc-edit/changed-arc';
+import {CanvasTool} from '../../../services/modes/canvas-tool';
+import {MenuItem} from '../menu-item';
 
 export class EditArcMenuItem extends MenuItem {
 

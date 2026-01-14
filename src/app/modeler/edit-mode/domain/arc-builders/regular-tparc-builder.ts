@@ -1,11 +1,11 @@
-import {ArcBuilder} from './arc-builder';
-import {PetriflowTransitionPlaceArc} from '@netgrif/petriflow.svg';
-import {Place, RegularTransitionPlaceArc, Transition} from '@netgrif/petriflow';
 import {
-    Place as SvgPlace,
-    RegularTransitionPlaceArc as SvgRegularTransitionPlaceArc,
-    Transition as SvgTransition
+  Place as SvgPlace,
+  RegularTransitionPlaceArc as SvgRegularTransitionPlaceArc,
+  Transition as SvgTransition,
 } from '@netgrif/petri.svg';
+import {Place, RegularTransitionPlaceArc, Transition} from '@netgrif/petriflow';
+import {PetriflowTransitionPlaceArc} from '@netgrif/petriflow.svg';
+import {ArcBuilder} from './arc-builder';
 
 export class RegularTPArcBuilder extends ArcBuilder<PetriflowTransitionPlaceArc, RegularTransitionPlaceArc> {
 

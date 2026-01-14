@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {MenuItem} from './menu-items/menu-item';
+import {Component} from '@angular/core';
 import {EditModeService} from '../edit-mode.service';
+import {MenuItem} from './menu-items/menu-item';
 
 @Component({
     selector: 'nab-context-menu',

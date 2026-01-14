@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
-import {PetriNet} from '@netgrif/petriflow';
-import {ModelSource} from './model-source';
-import {ModelService} from './model.service';
-import {SimulationModeService} from '../../simulation-mode/simulation-mode.service';
 import {Router} from '@angular/router';
+import {PetriNet} from '@netgrif/petriflow';
 import {SimulationModeComponent} from '../../simulation-mode/simulation-mode.component';
+import {SimulationModeService} from '../../simulation-mode/simulation-mode.service';
+import {ModelService} from './model.service';
 
 @Injectable({
     providedIn: 'root'

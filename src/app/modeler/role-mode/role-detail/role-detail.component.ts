@@ -1,14 +1,14 @@
 import {Component, OnDestroy} from '@angular/core';
+import {FormControl, ValidatorFn, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 import {Role} from '@netgrif/petriflow';
+import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../actions-mode/actions-mode.service';
+import {ModelerUtils} from '../../modeler-utils';
+import {HistoryService} from '../../services/history/history.service';
 import {ModelService} from '../../services/model/model.service';
 import {RoleMasterDetailService} from '../role-master-detail.service';
-import {Router} from '@angular/router';
-import {ActionsModeService} from '../../actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
-import {HistoryService} from '../../services/history/history.service';
-import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {ChangedRole} from './changed-role';
-import {ModelerUtils} from '../../modeler-utils';
 
 @Component({
     selector: 'nab-role-detail',

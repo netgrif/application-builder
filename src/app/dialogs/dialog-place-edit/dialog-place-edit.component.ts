@@ -1,8 +1,8 @@
 import {Component, Inject} from '@angular/core';
-import {ModelService} from '../../modeler/services/model/model.service';
+import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {PlaceChange} from '../../modeler/history-mode/model/place/place-change';
-import {FormControl, ValidatorFn, Validators} from '@angular/forms';
+import {ModelService} from '../../modeler/services/model/model.service';
 
 export interface PlaceEditData {
     placeId: string;

@@ -1,25 +1,25 @@
+import {ComponentType} from '@angular/cdk/overlay';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {PetriNet} from '@netgrif/petriflow';
+import {PetriflowCanvas, PetriflowCanvasService} from '@netgrif/petriflow.svg';
+import {ControlPanelButton} from '../../control-panel/control-panel-button';
 import {Tool} from '../../control-panel/tools/tool';
+import {CanvasArc} from '../../edit-mode/domain/canvas-arc';
+import {CanvasElementCollection} from '../../edit-mode/domain/canvas-element-collection';
+import {CanvasObject} from '../../edit-mode/domain/canvas-object';
+import {CanvasPlace} from '../../edit-mode/domain/canvas-place';
+import {CanvasTransition} from '../../edit-mode/domain/canvas-transition';
+import {Hotkey} from '../../edit-mode/services/modes/domain/hotkey';
+import {ModelerConfig} from '../../modeler-config';
+import {SelectedTransitionService} from '../../selected-transition.service';
+import {ModelService} from '../model/model.service';
+import {ArcListener} from './listeners/arc-listener';
+import {ContextMenuInterruptionError} from './listeners/context-menu-interruption-error';
+import {KeyListener} from './listeners/key-listener';
 import {MouseListener} from './listeners/mouse-listener';
 import {PlaceListener} from './listeners/place-listener';
 import {TransitionListener} from './listeners/transition-listener';
-import {ArcListener} from './listeners/arc-listener';
-import {ModelService} from '../model/model.service';
-import {MatDialog} from '@angular/material/dialog';
-import {CanvasPlace} from '../../edit-mode/domain/canvas-place';
-import {CanvasTransition} from '../../edit-mode/domain/canvas-transition';
-import {CanvasArc} from '../../edit-mode/domain/canvas-arc';
-import {PetriflowCanvas, PetriflowCanvasService} from '@netgrif/petriflow.svg';
-import {PetriNet} from '@netgrif/petriflow';
-import {CanvasElementCollection} from '../../edit-mode/domain/canvas-element-collection';
-import {ControlPanelButton} from '../../control-panel/control-panel-button';
-import {Router} from '@angular/router';
-import {SelectedTransitionService} from '../../selected-transition.service';
-import {ComponentType} from '@angular/cdk/overlay';
-import {Hotkey} from '../../edit-mode/services/modes/domain/hotkey';
-import {ModelerConfig} from '../../modeler-config';
-import {KeyListener} from './listeners/key-listener';
-import {ContextMenuInterruptionError} from './listeners/context-menu-interruption-error';
-import {CanvasObject} from '../../edit-mode/domain/canvas-object';
 
 export abstract class CanvasListenerTool extends Tool implements MouseListener, PlaceListener, TransitionListener, ArcListener, KeyListener {
 

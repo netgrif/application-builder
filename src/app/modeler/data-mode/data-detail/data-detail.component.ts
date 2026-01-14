@@ -1,38 +1,37 @@
-import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
-import {DataMasterDetailService} from '../data-master-detail.service';
-import {
-    Component as PetriflowComponent,
-    DataType,
-    DataVariable,
-    Expression,
-    I18nString,
-    I18nWithDynamic,
-    Option,
-    Property,
-    Validation
-} from '@netgrif/petriflow';
-import {MatDialog} from '@angular/material/dialog';
-import {DialogRefactorComponent} from '../../../dialogs/dialog-refactor/dialog-refactor.component';
-import {FormControl} from '@angular/forms';
-import {DataFieldUtils} from '../../../form-builder/data-field-utils';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {EnumerationFieldValue} from '@netgrif/components-core';
-import {ModelService} from '../../services/model/model.service';
+import {Component, OnDestroy} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
-import {ActionsModeService} from '../../actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
-import {HistoryService} from '../../services/history/history.service';
+import {EnumerationFieldValue} from '@netgrif/components-core';
+import {
+  Component as PetriflowComponent,
+  DataType,
+  DataVariable,
+  Expression,
+  I18nString,
+  I18nWithDynamic,
+  Option,
+  Property,
+  Validation,
+} from '@netgrif/petriflow';
 import {Observable} from 'rxjs';
 import {map, startWith, tap} from 'rxjs/operators';
-import {ModelerUtils} from '../../modeler-utils';
+import {DialogRefactorComponent} from '../../../dialogs/dialog-refactor/dialog-refactor.component';
+import {DataFieldUtils} from '../../../form-builder/data-field-utils';
 import {
-    ComponentDef,
-    DataRefDef,
-    FieldListService,
-    PropertyDef
+  ComponentDef,
+  DataRefDef,
+  FieldListService,
+  PropertyDef,
 } from '../../../form-builder/field-list/field-list.service';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {MatChipInputEvent} from '@angular/material/chips';
+import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../actions-mode/actions-mode.service';
+import {ModelerUtils} from '../../modeler-utils';
+import {HistoryService} from '../../services/history/history.service';
+import {ModelService} from '../../services/model/model.service';
+import {DataMasterDetailService} from '../data-master-detail.service';
 
 export interface TypeArray {
     viewValue: string;

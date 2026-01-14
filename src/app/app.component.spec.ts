@@ -1,18 +1,18 @@
-import {waitForAsync, TestBed} from '@angular/core/testing';
-import {AppComponent} from './app.component';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {TestBed, waitForAsync} from '@angular/core/testing';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import {MatListModule} from '@angular/material/list';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MaterialImportModule} from './material-import/material-import.module';
-import {FlexLayoutModule} from '@angular/flex-layout';
-import {FormBuilderModule} from './form-builder/form-builder.module';
 import {RouterTestingModule} from '@angular/router/testing';
-import {MatListModule} from '@angular/material/list';
-import {JoyrideModule} from 'ngx-joyride';
 import {AuthenticationModule, ConfigurationService} from '@netgrif/components-core';
+import {JoyrideModule} from 'ngx-joyride';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {AppComponent} from './app.component';
 import {AppModule} from './app.module';
-import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {FormBuilderModule} from './form-builder/form-builder.module';
+import {MaterialImportModule} from './material-import/material-import.module';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {

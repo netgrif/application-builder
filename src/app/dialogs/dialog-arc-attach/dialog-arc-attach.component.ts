@@ -1,8 +1,8 @@
 import {Component, Inject} from '@angular/core';
-import {DataVariable, Place} from '@netgrif/petriflow';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ModelerConfig} from '../../modeler/modeler-config';
+import {DataVariable, Place} from '@netgrif/petriflow';
 import {ReferenceDialogData} from '../../modeler/edit-mode/domain/reference-dialog-data';
+import {ModelerConfig} from '../../modeler/modeler-config';
 import {ModelService} from '../../modeler/services/model/model.service';
 
 @Component({

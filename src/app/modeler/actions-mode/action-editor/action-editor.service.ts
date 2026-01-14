@@ -1,30 +1,29 @@
 import {Injectable} from '@angular/core';
-import {ActionType, ChangeType, EditableAction} from './classes/editable-action';
-import {ActionGroup} from './classes/action-group';
 import {
-    Action,
-    CaseEvent,
-    CaseEventType,
-    DataEvent,
-    DataEventType,
-    DataRef,
-    DataVariable,
-    Event,
-    EventPhase,
-    PetriNet,
-    ProcessEvent,
-    ProcessEventType,
-    Role,
-    RoleEvent,
-    RoleEventType,
-    Transition,
-    TransitionEvent,
-    TransitionEventType
+  Action,
+  CaseEvent,
+  CaseEventType,
+  DataEvent,
+  DataEventType,
+  DataRef,
+  DataVariable,
+  Event,
+  EventPhase,
+  PetriNet,
+  ProcessEvent,
+  ProcessEventType,
+  Role,
+  RoleEvent,
+  RoleEventType,
+  Transition,
+  TransitionEvent,
+  TransitionEventType,
 } from '@netgrif/petriflow';
+import {ModelService} from '../../services/model/model.service';
+import {ActionGroup} from './classes/action-group';
+import {ActionType, ChangeType, EditableAction} from './classes/editable-action';
 import {MasterItem} from './classes/master-item';
 import {EventType} from './event-type';
-import {SequenceGenerator} from '../../services/model/sequence-generator';
-import {ModelService} from '../../services/model/model.service';
 
 @Injectable({
     providedIn: 'root'

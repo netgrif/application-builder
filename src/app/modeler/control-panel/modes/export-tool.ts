@@ -1,9 +1,9 @@
-import {Tool} from '../tools/tool';
 import {Injectable} from '@angular/core';
+import {TutorialService} from '../../../tutorial/tutorial-service';
+import {ModelExportService} from '../../services/model/model-export.service';
 import {ControlPanelButton} from '../control-panel-button';
 import {ControlPanelIcon} from '../control-panel-icon';
-import {ModelExportService} from '../../services/model/model-export.service';
-import {TutorialService} from '../../../tutorial/tutorial-service';
+import {Tool} from '../tools/tool';
 
 @Injectable({
     providedIn: 'root'

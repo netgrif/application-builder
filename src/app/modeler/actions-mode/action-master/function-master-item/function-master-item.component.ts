@@ -1,9 +1,9 @@
 import {Component, Inject} from '@angular/core';
-import {MASTER_ITEM, MASTER_SERVICE} from '../../../components/master-detail/main-master-item/master-injection-tokens';
-import {PetriflowFunction} from '@netgrif/petriflow';
-import {AbstractMasterDetailService} from '../../../components/master-detail/abstract-master-detail.service';
-import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-delete.component';
 import {MatDialog} from '@angular/material/dialog';
+import {PetriflowFunction} from '@netgrif/petriflow';
+import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-delete.component';
+import {AbstractMasterDetailService} from '../../../components/master-detail/abstract-master-detail.service';
+import {MASTER_ITEM, MASTER_SERVICE} from '../../../components/master-detail/main-master-item/master-injection-tokens';
 
 @Component({
   selector: 'nab-function-master-item',

@@ -1,18 +1,18 @@
 import {Injectable, Injector} from '@angular/core';
-import {Locale} from './classes/locale';
 import {DataType, DataVariable, I18nString, I18nTranslations, I18nWithDynamic} from '@netgrif/petriflow';
-import {I18nStringKeyTemplate} from './translations/i18n-string-key-template';
-import {Locales} from './classes/locales';
-import {ModeService} from '../control-panel/modes/mode-component/mode.service';
-import {Mode} from '../control-panel/modes/mode';
+import {TutorialService} from '../../tutorial/tutorial-service';
 import {ControlPanelButton} from '../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../control-panel/control-panel-icon';
-import {TutorialService} from '../../tutorial/tutorial-service';
-import {ToolGroup} from '../control-panel/tools/tool-group';
-import {TranslationsTool} from './translations/translations-tool';
-import {LanguagesTool} from './languages/languages-tool';
+import {Mode} from '../control-panel/modes/mode';
+import {ModeService} from '../control-panel/modes/mode-component/mode.service';
 import {Tool} from '../control-panel/tools/tool';
+import {ToolGroup} from '../control-panel/tools/tool-group';
 import {ModelService} from '../services/model/model.service';
+import {Locale} from './classes/locale';
+import {Locales} from './classes/locales';
+import {LanguagesTool} from './languages/languages-tool';
+import {I18nStringKeyTemplate} from './translations/i18n-string-key-template';
+import {TranslationsTool} from './translations/translations-tool';
 
 @Injectable({
     providedIn: 'root'

@@ -1,10 +1,10 @@
-import {Tool} from './tool';
 import {ComponentPortal} from '@angular/cdk/portal';
-import {ToolComponent} from './tool-component/tool.component';
 import {Injector, StaticProvider} from '@angular/core';
-import {ModeService} from '../modes/mode-component/mode.service';
 import {AbstractRegistry} from '../../abstract-registry';
 import {NAB_CONTROL_PANEL_MODE, NAB_CONTROL_PANEL_TOOL} from '../control-panel-tool-injection-token';
+import {ModeService} from '../modes/mode-component/mode.service';
+import {Tool} from './tool';
+import {ToolComponent} from './tool-component/tool.component';
 
 export class ToolRegistry extends AbstractRegistry<Tool> {
 

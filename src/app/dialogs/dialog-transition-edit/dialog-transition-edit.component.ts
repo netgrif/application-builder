@@ -1,14 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {AssignPolicy, DataType, FinishPolicy} from '@netgrif/petriflow';
-import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
-import {ModelService} from '../../modeler/services/model/model.service';
-import {ChangedTransition} from './changed-transition';
-import {Router} from '@angular/router';
-import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
-import {DialogManageRolesComponent, RoleRefType} from '../dialog-manage-roles/dialog-manage-roles.component';
-import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
+import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {AssignPolicy, DataType, FinishPolicy} from '@netgrif/petriflow';
 import {ActionsMasterDetailService} from '../../modeler/actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
+import {SelectedTransitionService} from '../../modeler/selected-transition.service';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {DialogManageRolesComponent, RoleRefType} from '../dialog-manage-roles/dialog-manage-roles.component';
+import {ChangedTransition} from './changed-transition';
 
 export interface TransitionEditData {
     transitionId: string;

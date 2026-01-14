@@ -1,12 +1,11 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Locale} from '../classes/locale';
-import {Locales} from '../classes/locales';
-import {I18nModeService} from '../i18n-mode.service';
-import {MatSelect} from '@angular/material/select';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AbstractControl, FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {HistoryService} from '../../services/history/history.service';
+import {Locale} from '../classes/locale';
+import {Locales} from '../classes/locales';
+import {I18nModeService} from '../i18n-mode.service';
 import {LanguageSelectService} from './language-select.service';
 
 @Component({

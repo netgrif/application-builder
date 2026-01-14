@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild} from '@angular/core';
-import {SimulationModeService} from './simulation-mode.service';
 import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
-import {ModelService} from '../services/model/model.service';
 import {ModelerUtils} from '../modeler-utils';
+import {ModelService} from '../services/model/model.service';
+import {SimulationModeService} from './simulation-mode.service';
 
 @Component({
     selector: 'nab-simulation-mode',

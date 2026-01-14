@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Tool} from '../tools/tool';
-import {ControlPanelButton} from '../control-panel-button';
-import {ControlPanelIcon} from '../control-panel-icon';
-import {ModelExportService} from '../../services/model/model-export.service';
 import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
 import {TutorialService} from '../../../tutorial/tutorial-service';
+import {ModelExportService} from '../../services/model/model-export.service';
+import {ControlPanelButton} from '../control-panel-button';
+import {ControlPanelIcon} from '../control-panel-icon';
+import {Tool} from '../tools/tool';
 
 @Injectable({
     providedIn: 'root'

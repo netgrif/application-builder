@@ -1,42 +1,42 @@
-import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {GridsterService} from '../gridster/gridster.service';
-import {
-    Appearance,
-    Component as PetriflowComponent,
-    DataRef,
-    DataRefBehavior,
-    DataType,
-    DataVariable,
-    I18nString,
-    I18nWithDynamic,
-    Icon,
-    IconType,
-    Option,
-    Property,
-    Template,
-    Transition,
-    TransitionEvent,
-    TransitionEventType
-} from '@netgrif/petriflow';
 import {NGX_MAT_DATE_FORMATS} from '@angular-material-components/datetime-picker';
-import {DialogRefactorComponent} from '../../dialogs/dialog-refactor/dialog-refactor.component';
-import {MatDialog} from '@angular/material/dialog';
-import {Observable} from 'rxjs';
-import {FormControl} from '@angular/forms';
-import {map, startWith, tap} from 'rxjs/operators';
-import {MAT_DATE_FORMATS} from '@angular/material/core';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {DataFieldUtils} from '../data-field-utils';
-import {SelectedTransitionService} from '../../modeler/selected-transition.service';
-import {ModelerConfig} from '../../modeler/modeler-config';
-import {ModelService} from '../../modeler/services/model/model.service';
-import {DATE_FORMAT, DATE_TIME_FORMAT, EnumerationFieldValue} from '@netgrif/components-core';
-import {Router} from '@angular/router';
-import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../modeler/actions-mode/actions-master-detail.setvice';
-import {ComponentDef, DataRefDef, FieldListService, PropertyDef} from '../field-list/field-list.service';
+import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
+import {FormControl} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MAT_DATE_FORMATS} from '@angular/material/core';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {DATE_FORMAT, DATE_TIME_FORMAT, EnumerationFieldValue} from '@netgrif/components-core';
+import {
+  Appearance,
+  Component as PetriflowComponent,
+  DataRef,
+  DataRefBehavior,
+  DataType,
+  DataVariable,
+  I18nString,
+  I18nWithDynamic,
+  Icon,
+  IconType,
+  Option,
+  Property,
+  Template,
+  Transition,
+  TransitionEvent,
+  TransitionEventType,
+} from '@netgrif/petriflow';
+import {Observable} from 'rxjs';
+import {map, startWith, tap} from 'rxjs/operators';
+import {DialogRefactorComponent} from '../../dialogs/dialog-refactor/dialog-refactor.component';
+import {ActionsMasterDetailService} from '../../modeler/actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../modeler/actions-mode/actions-mode.service';
+import {ModelerConfig} from '../../modeler/modeler-config';
+import {SelectedTransitionService} from '../../modeler/selected-transition.service';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {DataFieldUtils} from '../data-field-utils';
+import {ComponentDef, DataRefDef, FieldListService, PropertyDef} from '../field-list/field-list.service';
+import {GridsterService} from '../gridster/gridster.service';
 
 @Component({
     selector: 'nab-edit-panel',

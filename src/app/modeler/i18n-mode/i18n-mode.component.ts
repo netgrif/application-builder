@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {I18nModeService} from './i18n-mode.service';
 import {ComponentPortal} from '@angular/cdk/portal';
+import {Component, OnInit} from '@angular/core';
 import {I18nTool} from './classes/i18n-tool';
+import {I18nModeService} from './i18n-mode.service';
 
 @Component({
     selector: 'nab-i18n-mode',

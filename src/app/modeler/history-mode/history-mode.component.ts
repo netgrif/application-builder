@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
 import {ComponentType} from '@angular/cdk/overlay';
+import {Component} from '@angular/core';
+import {HistoryDetailComponent} from './history-detail/history-detail.component';
 import {HistoryMasterDetailService} from './history-master-detail.service';
 import {HistoryMasterItemComponent} from './history-master-item/history-master-item.component';
-import {HistoryDetailComponent} from './history-detail/history-detail.component';
 
 @Component({
     selector: 'nab-history-mode',

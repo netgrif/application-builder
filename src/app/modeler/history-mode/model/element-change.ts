@@ -1,6 +1,4 @@
 import {PetriNet} from '@netgrif/petriflow';
-import {id} from '@swimlane/ngx-charts';
-import {element} from 'protractor';
 
 export abstract class ElementChange<T> {
 

@@ -1,17 +1,17 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {ChangeType, EditableAction} from '../classes/editable-action';
-import {ActionEditorService} from '../action-editor.service';
 import {FormControl} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
-import {ActionChangedEvent} from '../action-editor-list/action-editor-list.component';
-import {LeafNode} from '../classes/leaf-node';
-import {MatSidenav} from '@angular/material/sidenav';
 import {MatButton} from '@angular/material/button';
-import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-delete.component';
-import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
-import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
+import {MatDialog} from '@angular/material/dialog';
 import {MatMenuTrigger} from '@angular/material/menu';
+import {MatSidenav} from '@angular/material/sidenav';
+import {DialogDeleteComponent} from '../../../../dialogs/dialog-delete/dialog-delete.component';
 import {ModelService} from '../../../services/model/model.service';
+import {ActionChangedEvent} from '../action-editor-list/action-editor-list.component';
+import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
+import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
+import {ActionEditorService} from '../action-editor.service';
+import {ChangeType, EditableAction} from '../classes/editable-action';
+import {LeafNode} from '../classes/leaf-node';
 
 @Component({
     selector: 'nab-action-editor',

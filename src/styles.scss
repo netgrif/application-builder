@@ -257,3 +257,8 @@ nab-simulation-mode {
         background-size: contain;
     }
 }
+
+.app-version-text {
+    font-size: 9px;
+    color: map-get(netgif-theme.$netgrif-blue, 200);
+}

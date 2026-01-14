@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Locale} from '../../classes/locale';
 import {I18nModeService} from '../../i18n-mode.service';
 

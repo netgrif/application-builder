@@ -1,10 +1,10 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
-import {PlaceEditData} from '../dialog-place-edit/dialog-place-edit.component';
-import {SimulationModeService} from '../../modeler/simulation-mode/simulation-mode.service';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Place} from '@netgrif/petriflow';
 import {CanvasNodeElement} from '../../modeler/edit-mode/domain/canvas-node-element';
+import {SimulationModeService} from '../../modeler/simulation-mode/simulation-mode.service';
+import {PlaceEditData} from '../dialog-place-edit/dialog-place-edit.component';
 
 @Component({
     selector: 'nab-dialog-marking-change',

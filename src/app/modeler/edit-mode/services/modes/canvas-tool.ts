@@ -1,38 +1,37 @@
-import {CanvasElementCollection} from '../../domain/canvas-element-collection';
-import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
-import {EditModeService} from '../../edit-mode.service';
 import {MatDialog} from '@angular/material/dialog';
-import {ModelService} from '../../../services/model/model.service';
-import {CanvasListenerTool} from '../../../services/canvas/canvas-listener-tool';
-import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {Router} from '@angular/router';
+import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {SelectedTransitionService} from '../../../selected-transition.service';
-import {Hotkey} from './domain/hotkey';
-import {ComponentType} from '@angular/cdk/overlay';
-import {CanvasTransition} from '../../domain/canvas-transition';
-import {CanvasPlace} from '../../domain/canvas-place';
+import {CanvasListenerTool} from '../../../services/canvas/canvas-listener-tool';
+import {ContextMenuInterruptionError} from '../../../services/canvas/listeners/context-menu-interruption-error';
+import {HistoryService} from '../../../services/history/history.service';
+import {ModelService} from '../../../services/model/model.service';
 import {ContextMenu} from '../../context-menu/context-menu';
-import {EditPlaceMenuItem} from '../../context-menu/menu-items/place/edit-place-menu-item';
-import {EditTransitionMenuItem} from '../../context-menu/menu-items/transition/edit-transition-menu-item';
-import {EditFormMenuItem} from '../../context-menu/menu-items/transition/edit-form-menu-item';
-import {
-    EditTransitionPermissionsMenuItem
-} from '../../context-menu/menu-items/transition/edit-transition-permissions-menu-item';
-import {
-    EditTransitionActionsMenuItem
-} from '../../context-menu/menu-items/transition/edit-transition-actions-menu-item';
-import {CanvasArc} from '../../domain/canvas-arc';
-import {EditArcMenuItem} from '../../context-menu/menu-items/arc/edit-arc-menu-item';
-import {DeleteBreakpointMenuItem} from '../../context-menu/menu-items/arc/delete-breakpoint-menu-item';
-import {DeleteTransitionMenuItem} from '../../context-menu/menu-items/transition/delete-transition-menu-item';
 import {DeleteArcMenuItem} from '../../context-menu/menu-items/arc/delete-arc-menu-item';
+import {DeleteBreakpointMenuItem} from '../../context-menu/menu-items/arc/delete-breakpoint-menu-item';
+import {EditArcMenuItem} from '../../context-menu/menu-items/arc/edit-arc-menu-item';
 import {EditModelMenuItem} from '../../context-menu/menu-items/model/edit-model-menu-item';
 import {ManageModelPermissionsMenuItem} from '../../context-menu/menu-items/model/manage-model-permissions-menu-item';
 import {DeletePlaceMenuItem} from '../../context-menu/menu-items/place/delete-place-menu-item';
-import {ContextMenuInterruptionError} from '../../../services/canvas/listeners/context-menu-interruption-error';
-import {HistoryService} from '../../../services/history/history.service';
-import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {EditPlaceMenuItem} from '../../context-menu/menu-items/place/edit-place-menu-item';
+import {DeleteTransitionMenuItem} from '../../context-menu/menu-items/transition/delete-transition-menu-item';
+import {EditFormMenuItem} from '../../context-menu/menu-items/transition/edit-form-menu-item';
+import {
+  EditTransitionActionsMenuItem,
+} from '../../context-menu/menu-items/transition/edit-transition-actions-menu-item';
+import {EditTransitionMenuItem} from '../../context-menu/menu-items/transition/edit-transition-menu-item';
+import {
+  EditTransitionPermissionsMenuItem,
+} from '../../context-menu/menu-items/transition/edit-transition-permissions-menu-item';
+import {CanvasArc} from '../../domain/canvas-arc';
+import {CanvasElementCollection} from '../../domain/canvas-element-collection';
+import {CanvasPlace} from '../../domain/canvas-place';
+import {CanvasTransition} from '../../domain/canvas-transition';
+import {EditModeService} from '../../edit-mode.service';
+import {Hotkey} from './domain/hotkey';
 
 export abstract class CanvasTool extends CanvasListenerTool {
 

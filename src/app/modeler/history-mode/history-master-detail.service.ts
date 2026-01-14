@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {AbstractMasterDetailService} from '../components/master-detail/abstract-master-detail.service';
-import {PetriNet} from '@netgrif/petriflow';
 import {Sort} from '@angular/material/sort';
+import {PetriNet} from '@netgrif/petriflow';
+import {AbstractMasterDetailService} from '../components/master-detail/abstract-master-detail.service';
+import {ModelerConfig} from '../modeler-config';
 import {HistoryChange} from '../services/history/history-change';
 import {HistoryService} from '../services/history/history.service';
-import {ModelerConfig} from '../modeler-config';
 
 @Injectable({
     providedIn: 'root'

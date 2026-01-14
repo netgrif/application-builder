@@ -1,15 +1,14 @@
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {NodeElement} from '@netgrif/petriflow';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
 import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../../../control-panel/control-panel-icon';
-import {NodeElement} from '@netgrif/petriflow';
-import {CanvasTool} from './canvas-tool';
-import {Injectable} from '@angular/core';
-import {ModelService} from '../../../services/model/model.service';
-import {MatDialog} from '@angular/material/dialog';
-import {EditModeService} from '../../edit-mode.service';
-import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../../selected-transition.service';
-import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {ModelService} from '../../../services/model/model.service';
+import {EditModeService} from '../../edit-mode.service';
+import {CanvasTool} from './canvas-tool';
 
 export class SwitchLabelTool extends CanvasTool {
 

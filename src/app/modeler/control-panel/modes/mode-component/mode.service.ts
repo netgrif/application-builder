@@ -1,7 +1,7 @@
-import {Mode} from '../mode';
-import {ToolGroup} from '../../tools/tool-group';
-import {Tool} from '../../tools/tool';
 import {BehaviorSubject} from 'rxjs';
+import {Tool} from '../../tools/tool';
+import {ToolGroup} from '../../tools/tool-group';
+import {Mode} from '../mode';
 
 export abstract class ModeService<T extends Tool> {
 

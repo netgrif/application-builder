@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
-import {MASTER_ITEM, MASTER_SERVICE} from '../../components/master-detail/main-master-item/master-injection-tokens';
 import {PetriNet} from '@netgrif/petriflow';
 import {AbstractMasterDetailService} from '../../components/master-detail/abstract-master-detail.service';
+import {MASTER_ITEM, MASTER_SERVICE} from '../../components/master-detail/main-master-item/master-injection-tokens';
 import {HistoryChange} from '../../services/history/history-change';
 import {ModelService} from '../../services/model/model.service';
 

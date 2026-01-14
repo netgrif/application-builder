@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {I18nTranslations} from '@netgrif/petriflow';
+import {HistoryService} from '../../services/history/history.service';
+import {ModelService} from '../../services/model/model.service';
 import {Locale} from '../classes/locale';
 import {I18nModeService} from '../i18n-mode.service';
-import {TranslationGroupConfiguration, Type} from './translation-group/translation-group-configuration';
-import {I18nTranslations} from '@netgrif/petriflow';
-import {ModelService} from '../../services/model/model.service';
-import {HistoryService} from '../../services/history/history.service';
 import {LanguageSelectService} from '../languages/language-select.service';
+import {TranslationGroupConfiguration, Type} from './translation-group/translation-group-configuration';
 
 @Component({
     selector: 'nab-translations',

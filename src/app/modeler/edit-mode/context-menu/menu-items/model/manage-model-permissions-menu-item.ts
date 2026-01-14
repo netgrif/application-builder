@@ -1,10 +1,10 @@
-import {MenuItem} from '../menu-item';
-import {CanvasTool} from '../../../services/modes/canvas-tool';
 import {DataType} from '@netgrif/petriflow';
 import {
-    DialogManageRolesComponent,
-    RoleRefType
+  DialogManageRolesComponent,
+  RoleRefType,
 } from '../../../../../dialogs/dialog-manage-roles/dialog-manage-roles.component';
+import {CanvasTool} from '../../../services/modes/canvas-tool';
+import {MenuItem} from '../menu-item';
 
 export class ManageModelPermissionsMenuItem extends MenuItem {
 

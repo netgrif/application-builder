@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {Router} from '@angular/router';
-import {ModelService} from '../modeler/services/model/model.service';
-import {ModelerUtils} from '../modeler/modeler-utils';
-import {ModelerConfig} from "../modeler/modeler-config";
-import {SelectedTransitionService} from "../modeler/selected-transition.service";
 import {DataGroup, LayoutType} from '@netgrif/petriflow';
+import {ModelerConfig} from '../modeler/modeler-config';
+import {ModelerUtils} from '../modeler/modeler-utils';
+import {SelectedTransitionService} from '../modeler/selected-transition.service';
+import {ModelService} from '../modeler/services/model/model.service';
 
 @Component({
     selector: 'nab-form-builder',

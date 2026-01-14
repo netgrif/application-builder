@@ -1,27 +1,27 @@
 import {Injectable, Injector} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {Arc, BasicSimulation, ImportUtils, PetriNet, Place, Transition} from '@netgrif/petriflow';
-import {TutorialService} from '../../tutorial/tutorial-service';
-import {ModelService} from '../services/model/model.service';
-import {EventSimulationTool} from './tool/event-simulation.tool';
-import {TaskSimulationTool} from './tool/task-simulation.tool';
-import {ResetSimulationTool} from './tool/reset-simulation.tool';
-import {ToolGroup} from '../control-panel/tools/tool-group';
-import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
-import {SimulationTool} from './tool/simulation-tool';
-import {ChangeDataTool} from './tool/change-data-tool';
-import {CanvasTransition} from '../edit-mode/domain/canvas-transition';
-import {ArcFactory} from '../edit-mode/domain/arc-builders/arc-factory.service';
-import {CanvasModeService} from '../services/canvas/canvas-mode-service';
-import {CanvasArc} from '../edit-mode/domain/canvas-arc';
 import {MatDialog} from '@angular/material/dialog';
-import {ResetPositionAndZoomTool} from './tool/reset-position-and-zoom-tool';
-import {GridTool} from './tool/grid-tool';
-import {SwitchLabelTool} from './tool/switch-label-tool';
 import {Router} from '@angular/router';
-import {SelectedTransitionService} from '../selected-transition.service';
-import {SimulationMode} from './simulation-mode';
+import {Arc, BasicSimulation, ImportUtils, PetriNet, Place, Transition} from '@netgrif/petriflow';
+import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
+import {BehaviorSubject} from 'rxjs';
+import {TutorialService} from '../../tutorial/tutorial-service';
+import {ToolGroup} from '../control-panel/tools/tool-group';
+import {ArcFactory} from '../edit-mode/domain/arc-builders/arc-factory.service';
+import {CanvasArc} from '../edit-mode/domain/canvas-arc';
 import {CanvasPlace} from '../edit-mode/domain/canvas-place';
+import {CanvasTransition} from '../edit-mode/domain/canvas-transition';
+import {SelectedTransitionService} from '../selected-transition.service';
+import {CanvasModeService} from '../services/canvas/canvas-mode-service';
+import {ModelService} from '../services/model/model.service';
+import {SimulationMode} from './simulation-mode';
+import {ChangeDataTool} from './tool/change-data-tool';
+import {EventSimulationTool} from './tool/event-simulation.tool';
+import {GridTool} from './tool/grid-tool';
+import {ResetPositionAndZoomTool} from './tool/reset-position-and-zoom-tool';
+import {ResetSimulationTool} from './tool/reset-simulation.tool';
+import {SimulationTool} from './tool/simulation-tool';
+import {SwitchLabelTool} from './tool/switch-label-tool';
+import {TaskSimulationTool} from './tool/task-simulation.tool';
 
 @Injectable({
     providedIn: 'root',

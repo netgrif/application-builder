@@ -1,8 +1,8 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {Tool} from '../tool';
-import {ModeService} from '../../modes/mode-component/mode.service';
-import {NAB_CONTROL_PANEL_MODE, NAB_CONTROL_PANEL_TOOL} from '../../control-panel-tool-injection-token';
+import {Component, Inject} from '@angular/core';
 import {TutorialService} from '../../../../tutorial/tutorial-service';
+import {NAB_CONTROL_PANEL_MODE, NAB_CONTROL_PANEL_TOOL} from '../../control-panel-tool-injection-token';
+import {ModeService} from '../../modes/mode-component/mode.service';
+import {Tool} from '../tool';
 
 @Component({
     selector: 'nab-tool',

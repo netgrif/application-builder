@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {I18nTranslations, PetriNet} from '@netgrif/petriflow';
 import {ModelService} from '../../../../services/model/model.service';
 

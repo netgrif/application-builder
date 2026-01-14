@@ -1,9 +1,9 @@
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-
-import {GridsterComponent} from './gridster.component';
-import {FormBuilderModule} from '../form-builder.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {GridsterModule} from 'angular-gridster2';
+import {FormBuilderModule} from '../form-builder.module';
+
+import {GridsterComponent} from './gridster.component';
 
 describe('GridsterComponent', () => {
   let component: GridsterComponent;

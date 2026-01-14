@@ -1,34 +1,35 @@
 import {Injectable} from '@angular/core';
 import {
-    CompactType,
-    DisplayGrid,
-    GridsterConfig,
-    GridsterItem,
-    GridsterItemComponentInterface,
-    GridType
-} from 'angular-gridster2';
-import {ModelService} from '../../modeler/services/model/model.service';
-import {GridsterDataField} from './classes/gridster-data-field';
-import {
-    Appearance,
-    Component,
-    DataGroup,
-    DataRef,
-    DataRefBehavior,
-    DataType,
-    DataVariable,
-    Expression, I18nWithDynamic,
-    Property,
-    Template,
-    Transition,
-    TransitionLayout
+  Appearance,
+  Component,
+  DataGroup,
+  DataRef,
+  DataRefBehavior,
+  DataType,
+  DataVariable,
+  Expression,
+  I18nWithDynamic,
+  Property,
+  Template,
+  Transition,
+  TransitionLayout,
 } from '@netgrif/petriflow';
+import {
+  CompactType,
+  DisplayGrid,
+  GridsterConfig,
+  GridsterItem,
+  GridsterItemComponentInterface,
+  GridType,
+} from 'angular-gridster2';
 import {BehaviorSubject, ReplaySubject, Subject} from 'rxjs';
-import {DataFieldUtils} from '../data-field-utils';
-import {SelectedTransitionService} from '../../modeler/selected-transition.service';
-import {FieldListService, PropertyDef} from '../field-list/field-list.service';
-import {ModelerConfig} from '../../modeler/modeler-config';
 import {debounceTime} from 'rxjs/operators';
+import {ModelerConfig} from '../../modeler/modeler-config';
+import {SelectedTransitionService} from '../../modeler/selected-transition.service';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {DataFieldUtils} from '../data-field-utils';
+import {FieldListService, PropertyDef} from '../field-list/field-list.service';
+import {GridsterDataField} from './classes/gridster-data-field';
 
 @Injectable({
     providedIn: 'root'
@@ -247,7 +248,7 @@ export class GridsterService {
                 newDataRef.component.properties.push(new Property(property.name, property.defaultValue));
             }
         }
-        this.options.api.optionsChanged();
+        this.options.api?.optionsChanged();
         return newDataRef;
     }
 

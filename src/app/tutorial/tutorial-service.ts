@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {MortgageService} from '../modeler/mortgage.service';
 import {Router} from '@angular/router';
-import {TutorialStep} from './tutorial-step';
+import {MortgageService} from '../modeler/mortgage.service';
 import {ModelService} from '../modeler/services/model/model.service';
+import {TutorialStep} from './tutorial-step';
 
 @Injectable({
     providedIn: 'root'

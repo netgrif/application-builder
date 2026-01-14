@@ -1,16 +1,16 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {ModelService} from '../../modeler/services/model/model.service';
-import {GridsterService} from '../gridster/gridster.service';
-import {Router} from '@angular/router';
-import {ComponentDef, FieldListService} from './field-list.service';
-import {DataType, DataVariable, Property} from '@netgrif/petriflow';
-import {timer} from 'rxjs';
 import {MatExpansionPanel} from '@angular/material/expansion';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {SelectedTransitionService} from '../../modeler/selected-transition.service';
+import {Router} from '@angular/router';
+import {DataType, DataVariable, Property} from '@netgrif/petriflow';
 import {GridsterItem} from 'angular-gridster2';
+import {timer} from 'rxjs';
 import {DialogDeleteComponent} from '../../dialogs/dialog-delete/dialog-delete.component';
+import {SelectedTransitionService} from '../../modeler/selected-transition.service';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {GridsterService} from '../gridster/gridster.service';
+import {ComponentDef, FieldListService} from './field-list.service';
 
 export interface Data {
     title: string;
@@ -154,7 +154,7 @@ export class FieldListComponent implements OnInit, AfterViewInit {
             rows: meta.rows,
             cols: meta.cols
         } as GridsterItem);
-        if (meta.name && meta.properties) {
+        if (meta.name && meta.properties && Array.isArray(meta.properties) && meta.properties.length > 0) {
             for (const property of meta.properties) {
                 dataRef.component.properties.push(new Property(property.name, property.defaultValue));
             }

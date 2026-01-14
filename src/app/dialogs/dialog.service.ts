@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {DialogModelEditComponent} from './dialog-model-edit/dialog-model-edit.component';
 import {MatDialog} from '@angular/material/dialog';
 import {PetriNet} from '@netgrif/petriflow';
-import {ModelService} from '../modeler/services/model/model.service';
-import {ArcEditData, DialogArcEditComponent} from './dialog-arc-edit/dialog-arc-edit.component';
-import {ChangedArc} from './dialog-arc-edit/changed-arc';
 import {CanvasArc} from '../modeler/edit-mode/domain/canvas-arc';
 import {ModelChange} from '../modeler/history-mode/model/model/model-change';
+import {ModelService} from '../modeler/services/model/model.service';
+import {ChangedArc} from './dialog-arc-edit/changed-arc';
+import {ArcEditData, DialogArcEditComponent} from './dialog-arc-edit/dialog-arc-edit.component';
+import {DialogModelEditComponent} from './dialog-model-edit/dialog-model-edit.component';
 
 @Injectable({
     providedIn: 'root'

@@ -1,7 +1,7 @@
-import {AbstractMasterComponent} from './abstract-master.component';
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {MatSort, Sort} from '@angular/material/sort';
 import {PageEvent} from '@angular/material/paginator';
+import {MatSort, Sort} from '@angular/material/sort';
+import {AbstractMasterComponent} from './abstract-master.component';
 
 @Component({
     selector: 'nab-abstract-page-master-component',

@@ -1,6 +1,6 @@
-import {DeleteMenuItem} from '../delete-menu-item';
 import {CanvasArc} from '../../../domain/canvas-arc';
 import {CanvasTool} from '../../../services/modes/canvas-tool';
+import {DeleteMenuItem} from '../delete-menu-item';
 
 export class DeleteArcMenuItem extends DeleteMenuItem {
 

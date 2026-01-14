@@ -1,10 +1,10 @@
-import {ControlPanelButton} from '../control-panel-button';
 import {Type} from '@angular/core';
-import {Identifiable} from '../../edit-mode/domain/identifiable';
-import {ControlPanelIcon} from '../control-panel-icon';
-import {ToolComponent} from './tool-component/tool.component';
 import {BehaviorSubject} from 'rxjs';
 import {TutorialStep} from '../../../tutorial/tutorial-step';
+import {Identifiable} from '../../edit-mode/domain/identifiable';
+import {ControlPanelButton} from '../control-panel-button';
+import {ControlPanelIcon} from '../control-panel-icon';
+import {ToolComponent} from './tool-component/tool.component';
 
 export abstract class Tool extends Identifiable {
 

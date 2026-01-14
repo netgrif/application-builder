@@ -2,12 +2,12 @@ import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild
 import {MatDialog} from '@angular/material/dialog';
 import {NgxDropzoneChangeEvent} from 'ngx-dropzone';
 import {ModelImportService} from '../model-import-service';
-import {EditModeService} from './edit-mode.service';
-import {ModelService} from '../services/model/model.service';
-import {ContextMenuComponent} from './context-menu/context-menu.component';
-import {ContextMenu} from './context-menu/context-menu';
-import {HistoryService} from '../services/history/history.service';
 import {ModelerUtils} from '../modeler-utils';
+import {HistoryService} from '../services/history/history.service';
+import {ModelService} from '../services/model/model.service';
+import {ContextMenu} from './context-menu/context-menu';
+import {ContextMenuComponent} from './context-menu/context-menu.component';
+import {EditModeService} from './edit-mode.service';
 
 @Component({
     selector: 'nab-edit-mode',

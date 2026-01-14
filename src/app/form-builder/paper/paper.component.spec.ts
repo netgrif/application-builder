@@ -1,10 +1,10 @@
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-
-import {PaperComponent} from './paper.component';
-import {FormBuilderModule} from '../form-builder.module';
 import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MaterialImportModule} from '../../material-import/material-import.module';
+import {FormBuilderModule} from '../form-builder.module';
+
+import {PaperComponent} from './paper.component';
 
 describe('PaperComponent', () => {
   let component: PaperComponent;

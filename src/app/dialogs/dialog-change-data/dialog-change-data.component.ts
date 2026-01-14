@@ -1,8 +1,6 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Component, Inject} from '@angular/core';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
-import {CanvasTransition} from '../../modeler/edit-mode/domain/canvas-transition';
-import {CanvasNodeElement} from '../../modeler/edit-mode/domain/canvas-node-element';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 export interface DataSet {
     dataSet: Map<string, number>;
@@ -37,7 +35,7 @@ export class DialogChangeDataComponent {
     private validValue(): ValidatorFn {
         return (fc: FormControl): { [key: string]: any } | null => {
             const value = Math.floor(fc.value as number);
-            if (value !== Infinity && value === fc.value as number && value >= 0) {
+            if (isFinite(value) && value === fc.value as number && value >= 0) {
                 return null;
             }
             return ({validMultiplicity: true})

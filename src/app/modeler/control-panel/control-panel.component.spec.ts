@@ -1,21 +1,21 @@
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {CommonModule} from '@angular/common';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {FormsModule} from '@angular/forms';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSortModule} from '@angular/material/sort';
+import {MatTabsModule} from '@angular/material/tabs';
+import {RouterModule} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {FlexLayoutModule} from '@ngbracket/ngx-layout';
+import {ResizableModule} from 'angular-resizable-element';
+import {HotkeyModule} from 'angular2-hotkeys';
+import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
+import {AppModule} from '../../app.module';
+import {CdkImportModule} from '../../cdk-import/cdk-import.module';
+import {MaterialImportModule} from '../../material-import/material-import.module';
 
 import {ControlPanelComponent} from './control-panel.component';
-import {CommonModule} from '@angular/common';
-import {MaterialImportModule} from '../../material-import/material-import.module';
-import {CdkImportModule} from '../../cdk-import/cdk-import.module';
-import {FormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
-import {HotkeyModule} from 'angular2-hotkeys';
-import {ResizableModule} from 'angular-resizable-element';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatSortModule} from '@angular/material/sort';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {AppModule} from '../../app.module';
-import {FlexLayoutModule} from '@ngbracket/ngx-layout';
-import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
 
 describe('ControlPanelComponent', () => {
     let component: ControlPanelComponent;

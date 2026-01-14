@@ -1,11 +1,11 @@
-import {CanvasPlace} from './canvas-place';
-import {CanvasTransition} from './canvas-transition';
-import {CanvasArc} from './canvas-arc';
-import {CanvasNodeElement} from './canvas-node-element';
 import {NodeElement} from '@netgrif/petriflow';
 import {PetriflowNode} from '@netgrif/petriflow.svg';
-import {CanvasObject} from './canvas-object';
 import {PetriflowCanvasElement} from '@netgrif/petriflow.svg/lib/svg-elements/petriflow-canvas-element';
+import {CanvasArc} from './canvas-arc';
+import {CanvasNodeElement} from './canvas-node-element';
+import {CanvasObject} from './canvas-object';
+import {CanvasPlace} from './canvas-place';
+import {CanvasTransition} from './canvas-transition';
 
 export class CanvasElementCollection {
 

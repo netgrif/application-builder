@@ -7,7 +7,7 @@
             <input matInput [(ngModel)]="role.role.id" (change)="changeId($event)" [formControl]="roleIdForm">
             <mat-error *ngIf="roleIdForm.errors && roleIdForm.errors.required">Id is required</mat-error>
             <mat-error *ngIf="roleIdForm.errors && roleIdForm.errors.validUnique">
-                Transition with given id already exists
+                Role with given id already exists
             </mat-error>
         </mat-form-field>
 

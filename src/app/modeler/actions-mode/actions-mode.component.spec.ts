@@ -1,19 +1,19 @@
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActionsModeComponent} from './actions-mode.component';
-import {HttpClientModule} from '@angular/common/http';
-import {MaterialImportModule} from '../../material-import/material-import.module';
 import {CommonModule} from '@angular/common';
-import {CdkImportModule} from '../../cdk-import/cdk-import.module';
+import {HttpClientModule} from '@angular/common/http';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
-import {HotkeyModule} from 'angular2-hotkeys';
-import {ResizableModule} from 'angular-resizable-element';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatTabsModule} from '@angular/material/tabs';
 import {MatSortModule} from '@angular/material/sort';
-import {ModelerModule} from '../modeler.module';
+import {MatTabsModule} from '@angular/material/tabs';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {RouterModule} from '@angular/router';
+import {ResizableModule} from 'angular-resizable-element';
+import {HotkeyModule} from 'angular2-hotkeys';
 import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
+import {CdkImportModule} from '../../cdk-import/cdk-import.module';
+import {MaterialImportModule} from '../../material-import/material-import.module';
+import {ModelerModule} from '../modeler.module';
+import {ActionsModeComponent} from './actions-mode.component';
 
 describe('ActionsModeComponent', () => {
     let component: ActionsModeComponent;

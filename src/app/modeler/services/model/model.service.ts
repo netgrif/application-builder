@@ -1,34 +1,34 @@
 import {Injectable} from '@angular/core';
-import {
-    Action,
-    Arc,
-    ArcType,
-    Breakpoint,
-    DataType,
-    DataVariable,
-    I18nString,
-    ImportUtils,
-    NodeElement,
-    PetriNet,
-    Place,
-    Role,
-    Transition,
-    XmlArcType,
-} from '@netgrif/petriflow';
-import {ModelConfig} from './model-config';
 import {CanvasConfiguration} from '@netgrif/petri.svg';
+import {
+  Action,
+  Arc,
+  ArcType,
+  Breakpoint,
+  DataType,
+  DataVariable,
+  I18nString,
+  ImportUtils,
+  NodeElement,
+  PetriNet,
+  Place,
+  Role,
+  Transition,
+  XmlArcType,
+} from '@netgrif/petriflow';
 import {BehaviorSubject, Subject} from 'rxjs';
-import {PlaceChange} from '../../history-mode/model/place/place-change';
 import {ChangedTransition} from 'src/app/dialogs/dialog-transition-edit/changed-transition';
 import {ChangedArc} from '../../../dialogs/dialog-arc-edit/changed-arc';
-import {SequenceGenerator} from './sequence-generator';
 import {ArcFactory} from '../../edit-mode/domain/arc-builders/arc-factory.service';
-import {ModelerConfig} from '../../modeler-config';
-import {PlaceMoved} from '../../history-mode/model/place/place-moved';
-import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
 import {ModelChange} from '../../history-mode/model/model/model-change';
-import {ChangedRole} from '../../role-mode/role-detail/changed-role';
+import {PlaceChange} from '../../history-mode/model/place/place-change';
+import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
+import {PlaceMoved} from '../../history-mode/model/place/place-moved';
+import {ModelerConfig} from '../../modeler-config';
 import {ModelerUtils} from '../../modeler-utils';
+import {ChangedRole} from '../../role-mode/role-detail/changed-role';
+import {ModelConfig} from './model-config';
+import {SequenceGenerator} from './sequence-generator';
 
 @Injectable({
     providedIn: 'root',

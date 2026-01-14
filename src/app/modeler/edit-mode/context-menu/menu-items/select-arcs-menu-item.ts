@@ -1,6 +1,6 @@
-import {MenuItem} from './menu-item';
-import {SelectTool} from '../../services/modes/select-tool';
 import {CanvasNodeElement} from '../../domain/canvas-node-element';
+import {SelectTool} from '../../services/modes/select-tool';
+import {MenuItem} from './menu-item';
 
 export class SelectArcsMenuItem extends MenuItem {
 

@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
-import {InhibitorArcBuilder} from './inhibitor-arc-builder';
+import {NodeElement as SvgNodeElement} from '@netgrif/petri.svg';
 import {Arc, ArcType, NodeElement} from '@netgrif/petriflow';
-import {ReadArcBuilder} from './read-arc-builder';
+import {PetriflowArc} from '@netgrif/petriflow.svg';
 import {AbstractRegistry} from '../../../abstract-registry';
 import {ArcBuilder} from './arc-builder';
-import {ResetArcBuilder} from './reset-arc-builder';
+import {InhibitorArcBuilder} from './inhibitor-arc-builder';
+import {ReadArcBuilder} from './read-arc-builder';
 import {RegularPTArcBuilder} from './regular-p-t-arc-builder';
-import {PetriflowArc} from '@netgrif/petriflow.svg';
 import {RegularTPArcBuilder} from './regular-tparc-builder';
-import {NodeElement as SvgNodeElement} from '@netgrif/petri.svg';
+import {ResetArcBuilder} from './reset-arc-builder';
 
 @Injectable({
     providedIn: 'root'

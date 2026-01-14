@@ -1,4 +1,4 @@
-import {NodeElement, Transition} from '@netgrif/petriflow';
+import {NodeElement} from '@netgrif/petriflow';
 import {PetriflowNode} from '@netgrif/petriflow.svg';
 import {CanvasObject} from './canvas-object';
 

@@ -1,5 +1,5 @@
-import {PetriflowPlace} from '@netgrif/petriflow.svg';
 import {Place} from '@netgrif/petriflow';
+import {PetriflowPlace} from '@netgrif/petriflow.svg';
 import {CanvasNodeElement} from './canvas-node-element';
 
 export class CanvasPlace extends CanvasNodeElement<Place, PetriflowPlace>{

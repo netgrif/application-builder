@@ -1,19 +1,18 @@
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {RegularTransitionPlaceArc as SvgArc} from '@netgrif/petri.svg';
+import {ArcType} from '@netgrif/petriflow';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
 import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../../../control-panel/control-panel-icon';
-import {CreateArcTool} from './create-arc-tool';
+import {SelectedTransitionService} from '../../../selected-transition.service';
+import {ModelService} from '../../../services/model/model.service';
+import {CanvasArc} from '../../domain/canvas-arc';
 import {CanvasPlace} from '../../domain/canvas-place';
 import {CanvasTransition} from '../../domain/canvas-transition';
-import {RegularTransitionPlaceArc as SvgArc} from '@netgrif/petri.svg';
-import {CanvasArc} from '../../domain/canvas-arc';
-import {ModelService} from '../../../services/model/model.service';
-import {MatDialog} from '@angular/material/dialog';
 import {EditModeService} from '../../edit-mode.service';
-import {Router} from '@angular/router';
-import {SelectedTransitionService} from '../../../selected-transition.service';
-import {ArcType} from '@netgrif/petriflow';
-import {Observable, of} from 'rxjs';
-import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {CreateArcTool} from './create-arc-tool';
 
 export class CreateRegularArcTool extends CreateArcTool<CanvasPlace | CanvasTransition> {
 

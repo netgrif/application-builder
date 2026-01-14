@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {DataVariable, I18nTranslations, PetriNet} from '@netgrif/petriflow';
-import {I18nModeService} from '../../../i18n-mode.service';
 import {ModelService} from '../../../../services/model/model.service';
+import {I18nModeService} from '../../../i18n-mode.service';
 
 @Component({
     selector: 'nab-data-translation',

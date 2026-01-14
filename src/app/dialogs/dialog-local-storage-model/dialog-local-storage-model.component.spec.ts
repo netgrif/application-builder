@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DialogLocalStorageModelComponent } from './dialog-local-storage-model.component';
+import {DialogLocalStorageModelComponent} from './dialog-local-storage-model.component';
 
 describe('DialogLocalStorageModelComponent', () => {
   let component: DialogLocalStorageModelComponent;

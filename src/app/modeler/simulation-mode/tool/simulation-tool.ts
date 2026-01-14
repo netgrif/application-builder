@@ -1,23 +1,23 @@
-import {SimulationModeService} from '../simulation-mode.service';
-import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
-import {CanvasElementCollection} from '../../edit-mode/domain/canvas-element-collection';
-import {BasicSimulation, Place} from '@netgrif/petriflow';
-import {CanvasListenerTool} from '../../services/canvas/canvas-listener-tool';
-import {ControlPanelButton} from '../../control-panel/control-panel-button';
-import {ModelService} from '../../services/model/model.service';
 import {MatDialog} from '@angular/material/dialog';
-import {CanvasTransition} from '../../edit-mode/domain/canvas-transition';
-import {CanvasPlace} from '../../edit-mode/domain/canvas-place';
-import {CanvasArc} from '../../edit-mode/domain/canvas-arc';
 import {Router} from '@angular/router';
-import {SelectedTransitionService} from '../../selected-transition.service';
+import {BasicSimulation, Place} from '@netgrif/petriflow';
+import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
 import {
-    Data,
-    DataSet,
-    DialogChangeDataComponent
+  Data,
+  DataSet,
+  DialogChangeDataComponent,
 } from '../../../dialogs/dialog-change-data/dialog-change-data.component';
 import {DialogMarkingChangeComponent} from '../../../dialogs/dialog-marking-change/dialog-marking-change.component';
 import {PlaceEditData} from '../../../dialogs/dialog-place-edit/dialog-place-edit.component';
+import {ControlPanelButton} from '../../control-panel/control-panel-button';
+import {CanvasArc} from '../../edit-mode/domain/canvas-arc';
+import {CanvasElementCollection} from '../../edit-mode/domain/canvas-element-collection';
+import {CanvasPlace} from '../../edit-mode/domain/canvas-place';
+import {CanvasTransition} from '../../edit-mode/domain/canvas-transition';
+import {SelectedTransitionService} from '../../selected-transition.service';
+import {CanvasListenerTool} from '../../services/canvas/canvas-listener-tool';
+import {ModelService} from '../../services/model/model.service';
+import {SimulationModeService} from '../simulation-mode.service';
 
 export abstract class SimulationTool extends CanvasListenerTool {
 

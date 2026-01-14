@@ -1,13 +1,9 @@
 import {Component, ElementRef, Input, ViewChild} from '@angular/core';
-import {FlexModule} from '@ngbracket/ngx-layout';
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
-import {MatFormField, MatLabel, MatPrefix} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {FormControl, ReactiveFormsModule} from '@angular/forms';
-import {ModelService} from '../../services/model/model.service';
-import {DataVariable, I18nWithDynamic, Transition} from '@netgrif/petriflow';
-import {MatChipInputEvent} from '@angular/material/chips';
+import {FormControl} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MatChipInputEvent} from '@angular/material/chips';
+import {DataVariable, I18nWithDynamic, Transition} from '@netgrif/petriflow';
+import {ModelService} from '../../services/model/model.service';
 
 @Component({
   selector: 'nab-task-ref-init-field',

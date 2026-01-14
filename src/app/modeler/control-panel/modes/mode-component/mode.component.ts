@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {ControlPanelService} from '../../control-panel.service';
 import {TutorialService} from '../../../../tutorial/tutorial-service';
+import {ControlPanelService} from '../../control-panel.service';
 import {Mode} from '../mode';
 
 @Component({

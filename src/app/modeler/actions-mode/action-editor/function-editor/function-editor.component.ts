@@ -1,14 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {MatSidenav} from '@angular/material/sidenav';
+import {FormControl} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatMenuTrigger} from '@angular/material/menu';
-import {FormControl} from '@angular/forms';
+import {MatSidenav} from '@angular/material/sidenav';
+import {PetriflowFunction} from '@netgrif/petriflow';
+import {ModelService} from '../../../services/model/model.service';
+import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
 import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-item/menu-item-configuration';
 import {ActionEditorService} from '../action-editor.service';
-import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
-import {PetriflowFunction} from '@netgrif/petriflow';
 import {actions} from '../classes/command-action';
-import {ModelService} from '../../../services/model/model.service';
 
 @Component({
     selector: 'nab-function-editor',

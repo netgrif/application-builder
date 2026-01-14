@@ -1,10 +1,10 @@
-import {DeleteMenuItem} from '../delete-menu-item';
+import {
+  DialogPlaceRefDeleteComponent,
+  PlaceRefDeleteData,
+} from '../../../../../dialogs/dialog-place-ref-delete/dialog-place-ref-delete.component';
 import {CanvasPlace} from '../../../domain/canvas-place';
 import {CanvasTool} from '../../../services/modes/canvas-tool';
-import {
-    DialogPlaceRefDeleteComponent,
-    PlaceRefDeleteData
-} from '../../../../../dialogs/dialog-place-ref-delete/dialog-place-ref-delete.component';
+import {DeleteMenuItem} from '../delete-menu-item';
 
 export class DeletePlaceMenuItem extends DeleteMenuItem {
 

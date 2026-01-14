@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { TaskRefInitFieldComponent } from './task-ref-init-field.component';
+import {TaskRefInitFieldComponent} from './task-ref-init-field.component';
 
 describe('TaskRefInitFieldComponent', () => {
   let component: TaskRefInitFieldComponent;

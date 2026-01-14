@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {I18nString, I18nTranslations} from '@netgrif/petriflow';
-import {MaterialModule} from '@netgrif/components-core';
 import {CommonModule} from '@angular/common';
+import {Component, Input, OnInit} from '@angular/core';
+import {MaterialModule} from '@netgrif/components-core';
+import {I18nString, I18nTranslations} from '@netgrif/petriflow';
 import {I18nModeService} from '../../i18n-mode.service';
 
 @Component({
