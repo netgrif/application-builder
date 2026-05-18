@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {DialogErrorsComponent} from '../dialogs/dialog-errors/dialog-errors.component';
-import {ImportSuccessfulComponent} from './control-panel/import-successful/import-successful.component';
-import {ImportService} from '@netgrif/petriflow';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
-import {ModelService} from './services/model/model.service';
+import {ImportService} from '@netgrif/petriflow';
+import {DialogErrorsComponent} from '../dialogs/dialog-errors/dialog-errors.component';
+import {ImportSuccessfulComponent} from './control-panel/import-successful/import-successful.component';
 import {HistoryService} from './services/history/history.service';
+import {ModelService} from './services/model/model.service';
 
 @Injectable({
     providedIn: 'root'

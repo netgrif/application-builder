@@ -1,11 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {ModelService} from '../../modeler/services/model/model.service';
-import {Arc, DataType, TransitionPlaceArc, XmlArcType} from '@netgrif/petriflow';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {ChangedArc} from './changed-arc';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Arc, DataType, TransitionPlaceArc, XmlArcType} from '@netgrif/petriflow';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {ChangedArc} from './changed-arc';
 
 export interface ArcEditData {
     arcId: string;

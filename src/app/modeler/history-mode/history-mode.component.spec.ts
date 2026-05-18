@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { HistoryModeComponent } from './history-mode.component';
+import {HistoryModeComponent} from './history-mode.component';
 
 describe('HistoryModeComponent', () => {
   let component: HistoryModeComponent;

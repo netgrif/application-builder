@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { EditModeComponent } from './edit-mode.component';
+import {EditModeComponent} from './edit-mode.component';
 
 describe('BpmnModeComponent', () => {
   let component: EditModeComponent;

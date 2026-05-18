@@ -1,16 +1,16 @@
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {CommonModule} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import {FormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {GridsterModule} from 'angular-gridster2';
+import {ResizableModule} from 'angular-resizable-element';
+import {AngularResizedEventModule} from 'angular-resize-event';
+import {MaterialImportModule} from '../../material-import/material-import.module';
 
 import {EditPanelComponent} from './edit-panel.component';
-import {CommonModule} from '@angular/common';
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import {GridsterModule} from 'angular-gridster2';
-import {FormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
-import {MaterialImportModule} from '../../material-import/material-import.module';
-import {FlexLayoutModule} from '@angular/flex-layout';
-import {AngularResizedEventModule} from 'angular-resize-event';
-import {ResizableModule} from 'angular-resizable-element';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('EditPanelComponent', () => {
   let component: EditPanelComponent;

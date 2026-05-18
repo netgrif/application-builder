@@ -1,8 +1,8 @@
-import {Mode} from '../control-panel/modes/mode';
+import {Injector} from '@angular/core';
+import {TutorialStep} from '../../tutorial/tutorial-step';
 import {ControlPanelButton} from '../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../control-panel/control-panel-icon';
-import {TutorialStep} from '../../tutorial/tutorial-step';
-import {Injector} from '@angular/core';
+import {Mode} from '../control-panel/modes/mode';
 
 export class SimulationMode extends Mode {
 

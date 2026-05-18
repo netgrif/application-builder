@@ -1,6 +1,6 @@
-import {NgModule} from '@angular/core';
+import {CdkPortalOutlet} from '@angular/cdk/portal';
 import {CdkTreeModule} from '@angular/cdk/tree';
-import {CdkPortal, CdkPortalOutlet} from '@angular/cdk/portal';
+import {NgModule} from '@angular/core';
 
 @NgModule({
     declarations: [],

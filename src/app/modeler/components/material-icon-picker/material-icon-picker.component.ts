@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {MaterialIconList} from './material-icon-list';
+import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
-import {FormControl} from '@angular/forms';
+import {MaterialIconList} from './material-icon-list';
 
 @Component({
     selector: 'nab-material-icon-picker',

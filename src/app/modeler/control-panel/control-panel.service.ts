@@ -1,23 +1,23 @@
 import {Injectable} from '@angular/core';
-import {ModeRegistry} from './modes/mode-registry';
-import {Mode} from './modes/mode';
-import {ModeService} from './modes/mode-component/mode.service';
-import {I18nModeService} from '../i18n-mode/i18n-mode.service';
-import {ActionsModeService} from '../actions-mode/actions-mode.service';
-import {DataModeService} from '../data-mode/data-mode.service';
-import {SimulationModeService} from '../simulation-mode/simulation-mode.service';
-import {RoleModeService} from '../role-mode/role-mode.service';
-import {EditModeService} from '../edit-mode/edit-mode.service';
-import {GlobalToolRegistry} from './tools/global-tool-registry';
-import {ImportTool} from './modes/import-tool';
-import {ExportTool} from './modes/export-tool';
-import {SvgExportTool} from './modes/svg-export-tool';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
-import {RedoTool} from './modes/redo-tool';
-import {UndoTool} from './modes/undo-tool';
-import {Tool} from './tools/tool';
+import {ActionsModeService} from '../actions-mode/actions-mode.service';
+import {DataModeService} from '../data-mode/data-mode.service';
+import {EditModeService} from '../edit-mode/edit-mode.service';
 import {HistoryModeService} from '../history-mode/history-mode.service';
+import {I18nModeService} from '../i18n-mode/i18n-mode.service';
+import {RoleModeService} from '../role-mode/role-mode.service';
+import {SimulationModeService} from '../simulation-mode/simulation-mode.service';
+import {ExportTool} from './modes/export-tool';
+import {ImportTool} from './modes/import-tool';
+import {Mode} from './modes/mode';
+import {ModeService} from './modes/mode-component/mode.service';
+import {ModeRegistry} from './modes/mode-registry';
+import {RedoTool} from './modes/redo-tool';
+import {SvgExportTool} from './modes/svg-export-tool';
+import {UndoTool} from './modes/undo-tool';
+import {GlobalToolRegistry} from './tools/global-tool-registry';
+import {Tool} from './tools/tool';
 
 @Injectable({
     providedIn: 'root'

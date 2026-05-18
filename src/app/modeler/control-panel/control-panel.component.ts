@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {ControlPanelService} from './control-panel.service';
 import {GlobalToolRegistry} from './tools/global-tool-registry';
 

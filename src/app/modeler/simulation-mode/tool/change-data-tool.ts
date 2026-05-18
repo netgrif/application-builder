@@ -1,16 +1,16 @@
-import {SimulationTool} from './simulation-tool';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {
+  Data,
+  DataSet,
+  DialogChangeDataComponent,
+} from '../../../dialogs/dialog-change-data/dialog-change-data.component';
 import {ControlPanelButton} from '../../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../../control-panel/control-panel-icon';
-import {MatDialog} from '@angular/material/dialog';
-import {
-    Data,
-    DataSet,
-    DialogChangeDataComponent
-} from '../../../dialogs/dialog-change-data/dialog-change-data.component';
+import {SelectedTransitionService} from '../../selected-transition.service';
 import {ModelService} from '../../services/model/model.service';
 import {SimulationModeService} from '../simulation-mode.service';
-import {Router} from '@angular/router';
-import {SelectedTransitionService} from '../../selected-transition.service';
+import {SimulationTool} from './simulation-tool';
 
 export class ChangeDataTool extends SimulationTool {
 
@@ -37,13 +37,13 @@ export class ChangeDataTool extends SimulationTool {
 
     onClick() {
         super.onClick();
-        this.dialog.open(DialogChangeDataComponent, {
+        this.openDialog(DialogChangeDataComponent, {
             width: '50%',
             panelClass: "dialog-width-50",
             data: {
                 dataSet: this.simulationModeService.data
             } as DataSet
-        }).afterClosed().subscribe((data: Array<Data>) => {
+        }, (data: Array<Data>) => {
             if (data) {
                 const dataSet = new Map<string, number>(data.map(d => [d.id, d.value]));
                 this.simulationModeService.data = dataSet;

@@ -1,13 +1,13 @@
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {AppBuilderConfigurationService} from '../../../app-builder-configuration.service';
+import {TutorialService} from '../../../tutorial/tutorial-service';
+import {ModelImportService} from '../../model-import-service';
 import {ControlPanelButton} from '../control-panel-button';
 import {ControlPanelIcon} from '../control-panel-icon';
-import {ImportToolButtonComponent} from './import-tool-button/import-tool-button.component';
-import {ModelImportService} from '../../model-import-service';
 import {Tool} from '../tools/tool';
-import {AppBuilderConfigurationService} from '../../../app-builder-configuration.service';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {TutorialService} from '../../../tutorial/tutorial-service';
+import {ImportToolButtonComponent} from './import-tool-button/import-tool-button.component';
 
 @Injectable({
     providedIn: 'root'

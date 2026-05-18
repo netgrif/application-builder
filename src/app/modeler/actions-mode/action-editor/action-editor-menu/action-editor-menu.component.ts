@@ -1,10 +1,10 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {actions, CommandAction, CommandActions} from '../classes/command-action';
-import {ActionItemProviderService} from '../action-item-provider.service';
-import {
-    ActionEditorMenuDescriptionComponent
-} from './action-editor-menu-description/action-editor-menu-description.component';
 import {ModelService} from '../../../services/model/model.service';
+import {ActionItemProviderService} from '../action-item-provider.service';
+import {actions, CommandAction, CommandActions} from '../classes/command-action';
+import {
+  ActionEditorMenuDescriptionComponent,
+} from './action-editor-menu-description/action-editor-menu-description.component';
 
 @Component({
     selector: 'nab-action-editor-menu',
@@ -37,7 +37,7 @@ export class ActionEditorMenuComponent implements OnInit {
     }
 
     addTextToEditor(text: string): void {
-        this.actionItemProviderService.insertText(this.editor, `${text}\n`, 'command');
+        this.actionItemProviderService.insertText(this.editor, !!text ? `${text}\n` : text, 'command');
     }
 
     handleClick(item: CommandAction): void {

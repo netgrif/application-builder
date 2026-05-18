@@ -1,8 +1,7 @@
-import {Component} from '@angular/core';
-import {DataMasterDetailService} from '../data-mode/data-master-detail.service';
 import {ComponentType} from '@angular/cdk/overlay';
-import {RoleMasterDetailService} from './role-master-detail.service';
+import {Component} from '@angular/core';
 import {RoleDetailComponent} from './role-detail/role-detail.component';
+import {RoleMasterDetailService} from './role-master-detail.service';
 import {RoleMasterItemComponent} from './role-master-item/role-master-item.component';
 
 @Component({

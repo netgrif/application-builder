@@ -1,30 +1,30 @@
-import {CanvasTool} from './canvas-tool';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {
+  DialogPlaceRefDeleteComponent,
+  PlaceRefDeleteData,
+} from '../../../../dialogs/dialog-place-ref-delete/dialog-place-ref-delete.component';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
 import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../../../control-panel/control-panel-icon';
-import {CanvasElementCollection} from '../../domain/canvas-element-collection';
+import {ModelerConfig} from '../../../modeler-config';
+import {SelectedTransitionService} from '../../../selected-transition.service';
+import {HistoryService} from '../../../services/history/history.service';
 import {ModelService} from '../../../services/model/model.service';
-import {EditModeService} from '../../edit-mode.service';
-import {MatDialog} from '@angular/material/dialog';
-import {Hotkey} from './domain/hotkey';
+import {ContextMenu} from '../../context-menu/context-menu';
+import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
+import {DeleteSelectedMenuItem} from '../../context-menu/menu-items/delete-selected-menu-item';
+import {SelectArcsMenuItem} from '../../context-menu/menu-items/select-arcs-menu-item';
+import {CanvasArc} from '../../domain/canvas-arc';
+import {CanvasElementCollection} from '../../domain/canvas-element-collection';
+import {CanvasNodeElement} from '../../domain/canvas-node-element';
+import {CanvasObject} from '../../domain/canvas-object';
 import {CanvasPlace} from '../../domain/canvas-place';
 import {CanvasTransition} from '../../domain/canvas-transition';
-import {CanvasArc} from '../../domain/canvas-arc';
-import {CanvasObject} from '../../domain/canvas-object';
-import {Router} from '@angular/router';
-import {SelectedTransitionService} from '../../../selected-transition.service';
-import {ContextMenu} from '../../context-menu/context-menu';
-import {HistoryService} from '../../../services/history/history.service';
-import {
-    DialogPlaceRefDeleteComponent,
-    PlaceRefDeleteData
-} from '../../../../dialogs/dialog-place-ref-delete/dialog-place-ref-delete.component';
-import {ModelerConfig} from '../../../modeler-config';
-import {DeleteSelectedMenuItem} from '../../context-menu/menu-items/delete-selected-menu-item';
-import {DeleteMenuItem} from '../../context-menu/menu-items/delete-menu-item';
-import {SelectArcsMenuItem} from '../../context-menu/menu-items/select-arcs-menu-item';
-import {CanvasNodeElement} from '../../domain/canvas-node-element';
-import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {EditModeService} from '../../edit-mode.service';
+import {CanvasTool} from './canvas-tool';
+import {Hotkey} from './domain/hotkey';
 
 export class SelectTool extends CanvasTool {
 
@@ -91,6 +91,7 @@ export class SelectTool extends CanvasTool {
     reset() {
         super.reset();
         this.restart();
+        this.selectedElements.clear();
         this.clipboardElements.clear();
         this.deselectAll();
     }

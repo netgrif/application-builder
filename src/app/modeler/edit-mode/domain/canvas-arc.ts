@@ -1,6 +1,6 @@
-import {PetriflowArc} from '@netgrif/petriflow.svg';
-import {Arc, NodeElement} from '@netgrif/petriflow';
 import {Arc as SvgArc} from '@netgrif/petri.svg';
+import {Arc, NodeElement} from '@netgrif/petriflow';
+import {PetriflowArc} from '@netgrif/petriflow.svg';
 import {ModelerConfig} from '../../modeler-config';
 import {CanvasObject} from './canvas-object';
 

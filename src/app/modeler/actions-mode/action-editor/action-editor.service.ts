@@ -1,26 +1,27 @@
 import {Injectable} from '@angular/core';
-import {ActionType, ChangeType, EditableAction} from './classes/editable-action';
-import {ActionGroup} from './classes/action-group';
 import {
-    Action,
-    CaseEvent,
-    CaseEventType,
-    DataEvent,
-    DataEventType,
-    DataRef,
-    DataVariable,
-    Event,
-    EventPhase,
-    PetriNet,
-    ProcessEvent,
-    ProcessEventType,
-    Role,
-    RoleEvent,
-    RoleEventType,
-    Transition,
-    TransitionEvent,
-    TransitionEventType
+  Action,
+  CaseEvent,
+  CaseEventType,
+  DataEvent,
+  DataEventType,
+  DataRef,
+  DataVariable,
+  Event,
+  EventPhase,
+  PetriNet,
+  ProcessEvent,
+  ProcessEventType,
+  Role,
+  RoleEvent,
+  RoleEventType,
+  Transition,
+  TransitionEvent,
+  TransitionEventType,
 } from '@netgrif/petriflow';
+import {ModelService} from '../../services/model/model.service';
+import {ActionGroup} from './classes/action-group';
+import {ActionType, ChangeType, EditableAction} from './classes/editable-action';
 import {MasterItem} from './classes/master-item';
 import {EventType} from './event-type';
 
@@ -32,18 +33,17 @@ export class ActionEditorService {
     public editedActions: Array<ActionGroup>;
     public historySave: boolean;
     private _datarefMap: Map<string, DataRef>;
-    private _lastUsedId: number;
     private _currentlyEdited: Transition | DataVariable | PetriNet | Role;
 
-    constructor() {
+    constructor(
+        private _modelService: ModelService,
+    ) {
         this.editedActions = [];
-        this._lastUsedId = 0;
         this._datarefMap = new Map<string, DataRef>();
     }
 
     public nextId(): string {
-        this._lastUsedId++;
-        return String(this._lastUsedId);
+        return this._modelService.nextActionId();
     }
 
     public populateEditedActionsFromTransition(transition: Transition): void {
@@ -116,48 +116,8 @@ export class ActionEditorService {
     private loadAction(action: Action, actionType: ActionType, eventType: EventType, phase: EventPhase, parentDataRefId?: string): EditableAction {
         if (action.id === undefined || action.id === null) {
             action.id = this.nextId();
-        } else {
-            this.updateLastId(action.id);
         }
         return new EditableAction(action.id, actionType, false, action.definition, eventType, phase, parentDataRefId);
-    }
-
-    private updateLastId(id: string): void {
-        const parsedId = parseInt(id, 10);
-        this._lastUsedId = Math.max(this._lastUsedId, isNaN(parsedId) ? 0 : parsedId);
-    }
-
-    public updateIds(model: PetriNet): void {
-        model.getProcessEvents().forEach(e => {
-            e.preActions.forEach(a => this.updateLastId(a.id));
-            e.postActions.forEach(a => this.updateLastId(a.id));
-        });
-        model.getCaseEvents().forEach(e => {
-            e.preActions.forEach(a => this.updateLastId(a.id));
-            e.postActions.forEach(a => this.updateLastId(a.id));
-        });
-        model.getRoles().forEach(r => {
-            r.getEvents().forEach(e => {
-                e.preActions.forEach(a => this.updateLastId(a.id));
-                e.postActions.forEach(a => this.updateLastId(a.id));
-            });
-        });
-        model.getTransitions().forEach(t => {
-            t.eventSource.getEvents().forEach(e => {
-                e.preActions.forEach(a => this.updateLastId(a.id));
-                e.postActions.forEach(a => this.updateLastId(a.id));
-            });
-            t.dataGroups.forEach(g => g.getDataRefs().forEach(d => d.getEvents().forEach(e => {
-                e.preActions.forEach(a => this.updateLastId(a.id));
-                e.postActions.forEach(a => this.updateLastId(a.id));
-            })));
-        });
-        model.getDataSet().forEach(d => {
-            d.getEvents().forEach(e => {
-                e.preActions.forEach(a => this.updateLastId(a.id));
-                e.postActions.forEach(a => this.updateLastId(a.id));
-            });
-        });
     }
 
     public saveActionChange(changedAction: EditableAction) {

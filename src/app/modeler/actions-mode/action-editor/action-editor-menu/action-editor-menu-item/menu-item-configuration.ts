@@ -1,6 +1,6 @@
-import {MenuItem} from './menu-item';
 import {ActionEditorComponent} from '../../action-editor/action-editor.component';
 import {FunctionEditorComponent} from '../../function-editor/function-editor.component';
+import {MenuItem} from './menu-item';
 
 export class MenuItemConfiguration {
     private _title: string;

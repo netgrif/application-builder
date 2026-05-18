@@ -1,6 +1,6 @@
+import {ComponentPortal} from '@angular/cdk/portal';
 import {Injectable, Injector} from '@angular/core';
 import {Tool} from './tool';
-import {ComponentPortal} from '@angular/cdk/portal';
 import {ToolComponent} from './tool-component/tool.component';
 import {ToolRegistry} from './tool-registry';
 

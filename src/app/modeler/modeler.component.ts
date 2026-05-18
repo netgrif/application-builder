@@ -1,14 +1,14 @@
+import {HttpClient} from '@angular/common/http';
 import {Component, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
-import {MatTabGroup} from '@angular/material/tabs';
 import {MatSidenav} from '@angular/material/sidenav';
+import {MatTabGroup} from '@angular/material/tabs';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ImportService, PetriNet as PetriflowPetriNet} from '@netgrif/petriflow';
 import {ProjectService} from '../project-builder/project.service';
-import {HttpClient} from '@angular/common/http';
 import {EditModeService} from './edit-mode/edit-mode.service';
-import {ModelService} from './services/model/model.service';
 import {HistoryService} from './services/history/history.service';
+import {ModelService} from './services/model/model.service';
 
 @Component({
     selector: 'nab-modeler',

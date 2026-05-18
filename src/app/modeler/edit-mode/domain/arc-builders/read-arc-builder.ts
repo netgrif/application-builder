@@ -1,7 +1,7 @@
-import {ArcBuilder} from './arc-builder';
-import {PetriflowReadArc} from '@netgrif/petriflow.svg';
-import {Place, ReadArc, Transition} from '@netgrif/petriflow';
 import {Place as SvgPlace, ReadArc as SvgReadArc, Transition as SvgTransition} from '@netgrif/petri.svg';
+import {Place, ReadArc, Transition} from '@netgrif/petriflow';
+import {PetriflowReadArc} from '@netgrif/petriflow.svg';
+import {ArcBuilder} from './arc-builder';
 
 export class ReadArcBuilder extends ArcBuilder<PetriflowReadArc, ReadArc> {
 

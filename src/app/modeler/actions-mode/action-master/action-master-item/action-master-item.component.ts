@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
-import {MASTER_ITEM, MASTER_SERVICE} from '../../../components/master-detail/main-master-item/master-injection-tokens';
 import {DataVariable, Role, Transition} from '@netgrif/petriflow';
 import {AbstractMasterDetailService} from '../../../components/master-detail/abstract-master-detail.service';
+import {MASTER_ITEM, MASTER_SERVICE} from '../../../components/master-detail/main-master-item/master-injection-tokens';
 
 @Component({
   selector: 'nab-action-master-item',

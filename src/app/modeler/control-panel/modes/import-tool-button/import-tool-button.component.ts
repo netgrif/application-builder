@@ -1,7 +1,7 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import {TutorialService} from '../../../../tutorial/tutorial-service';
 import {NAB_CONTROL_PANEL_TOOL} from '../../control-panel-tool-injection-token';
 import {ImportTool} from '../import-tool';
-import {TutorialService} from '../../../../tutorial/tutorial-service';
 
 @Component({
     selector: 'nab-import-tool-button',

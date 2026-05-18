@@ -1,6 +1,6 @@
-import {Component, Injector, Input, OnInit} from '@angular/core';
-import {ComponentPortal} from '@angular/cdk/portal';
 import {ComponentType} from '@angular/cdk/overlay';
+import {ComponentPortal} from '@angular/cdk/portal';
+import {Component, Injector, Input, OnInit} from '@angular/core';
 import {AbstractMasterDetailService} from '../abstract-master-detail.service';
 import {MASTER_ITEM, MASTER_SERVICE} from './master-injection-tokens';
 

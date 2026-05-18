@@ -1,5 +1,5 @@
-import {ElementChange} from '../element-change';
 import {PetriNet} from '@netgrif/petriflow';
+import {ElementChange} from '../element-change';
 
 export class ModelChange extends ElementChange<PetriNet> {
 

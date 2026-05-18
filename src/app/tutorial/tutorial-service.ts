@@ -1,8 +1,9 @@
+import {environment} from '../../environments/environment';
 import {Injectable} from '@angular/core';
-import {MortgageService} from '../modeler/mortgage.service';
 import {Router} from '@angular/router';
-import {TutorialStep} from './tutorial-step';
+import {MortgageService} from '../modeler/mortgage.service';
 import {ModelService} from '../modeler/services/model/model.service';
+import {TutorialStep} from './tutorial-step';
 
 @Injectable({
     providedIn: 'root'
@@ -36,7 +37,7 @@ export class TutorialService {
     ) {
         this.welcome = TutorialStep.of(
             'welcome',
-            'Welcome to the Netgrif Application Builder',
+            `Welcome to the Netgrif Application Builder v${environment.version}`,
             'Netgrif Application Builder (NAB) is the tool for building process driven applications using Petriflow language. NAB is composed of several modules that help you in different stages of application development.',
             () => {
                 this.mortgageLoaded = false;
@@ -167,8 +168,8 @@ export class TutorialService {
         );
         this.demo = TutorialStep.of(
             'demo',
-            'Demo Application',
-            'You can deploy your Petriflow models in our demo application after registration.',
+            'Netgrif eTask',
+            'You can deploy your Petriflow models in our eTask application after registration.',
             () => {
             },
             () => {

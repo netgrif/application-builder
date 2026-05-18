@@ -1,35 +1,37 @@
 import {Injectable} from '@angular/core';
-import {
-    Arc,
-    ArcType,
-    Breakpoint,
-    DataType,
-    DataVariable,
-    I18nString,
-    NodeElement,
-    PetriNet,
-    Place,
-    Role,
-    Transition,
-    XmlArcType
-} from '@netgrif/petriflow';
-import {ModelConfig} from './model-config';
 import {CanvasConfiguration} from '@netgrif/petri.svg';
+import {
+  Action,
+  Arc,
+  ArcType,
+  Breakpoint,
+  DataType,
+  DataVariable,
+  I18nString,
+  ImportUtils,
+  NodeElement,
+  PetriNet,
+  Place,
+  Role,
+  Transition,
+  XmlArcType,
+} from '@netgrif/petriflow';
 import {BehaviorSubject, Subject} from 'rxjs';
-import {PlaceChange} from '../../history-mode/model/place/place-change';
 import {ChangedTransition} from 'src/app/dialogs/dialog-transition-edit/changed-transition';
 import {ChangedArc} from '../../../dialogs/dialog-arc-edit/changed-arc';
-import {SequenceGenerator} from './sequence-generator';
 import {ArcFactory} from '../../edit-mode/domain/arc-builders/arc-factory.service';
-import {ModelerConfig} from '../../modeler-config';
-import {PlaceMoved} from '../../history-mode/model/place/place-moved';
-import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
 import {ModelChange} from '../../history-mode/model/model/model-change';
-import {ChangedRole} from '../../role-mode/role-detail/changed-role';
+import {PlaceChange} from '../../history-mode/model/place/place-change';
+import {PlaceDeleted} from '../../history-mode/model/place/place-deleted';
+import {PlaceMoved} from '../../history-mode/model/place/place-moved';
+import {ModelerConfig} from '../../modeler-config';
 import {ModelerUtils} from '../../modeler-utils';
+import {ChangedRole} from '../../role-mode/role-detail/changed-role';
+import {ModelConfig} from './model-config';
+import {SequenceGenerator} from './sequence-generator';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ModelService {
     private readonly _model: BehaviorSubject<PetriNet>;
@@ -43,6 +45,7 @@ export class ModelService {
     private _arcIdSequence = new SequenceGenerator('a');
     private _dataIdSequence = new SequenceGenerator('data');
     private _roleIdSequence = new SequenceGenerator('role');
+    private _actionIdSequence = new SequenceGenerator('action');
 
     private xmlArcTypeMapping: Map<XmlArcType, ArcType> = new Map([
         [XmlArcType.REGULAR, ArcType.REGULAR_PT],
@@ -59,7 +62,7 @@ export class ModelService {
     ]);
 
     constructor(
-        private arcFactory: ArcFactory
+        private arcFactory: ArcFactory,
     ) {
         this._model = new BehaviorSubject<PetriNet>(undefined);
         this._placeChange = new Subject<PlaceChange>();
@@ -75,6 +78,7 @@ export class ModelService {
         this._arcIdSequence.reset(newModel.getArcs());
         this._dataIdSequence.reset(newModel.getDataSet());
         this._roleIdSequence.reset(newModel.getRoles());
+        this._actionIdSequence.reset(this.collectActions(newModel));
     }
 
     get model(): PetriNet {
@@ -113,7 +117,7 @@ export class ModelService {
             this.alignPositionCoordinate(x, CanvasConfiguration.WIDTH),
             this.alignPositionCoordinate(y, CanvasConfiguration.HEIGHT),
             false,
-            this.nextPlaceId()
+            this.nextPlaceId(),
         );
         if (this.model.getPlaces().length === 0) {
             place.marking = 1;
@@ -177,7 +181,7 @@ export class ModelService {
         const transition = new Transition(
             this.alignPositionCoordinate(x, CanvasConfiguration.WIDTH),
             this.alignPositionCoordinate(y, CanvasConfiguration.HEIGHT),
-            this.nextTransitionId()
+            this.nextTransitionId(),
         );
         this.addTransition(transition);
         return transition;
@@ -272,10 +276,10 @@ export class ModelService {
         return arc;
     }
 
-    public newArcBreakpoint(arc: Arc<NodeElement, NodeElement>, position: DOMPoint, index: number,): void {
+    public newArcBreakpoint(arc: Arc<NodeElement, NodeElement>, position: DOMPoint, index: number): void {
         const breakPoint = new Breakpoint(
             this.alignPositionX(position.x),
-            this.alignPositionY(position.y)
+            this.alignPositionY(position.y),
         );
         arc.breakpoints.splice(index, 0, breakPoint);
         this.model.lastChanged = Date.now();
@@ -365,6 +369,7 @@ export class ModelService {
         const role = this.model.getRole(newRole.id);
         role.id = newRole.role.id;
         role.title = newRole.role.title;
+        role.global = newRole.role.global;
         this.model.removeRole(newRole.id);
         this.model.addRole(role);
 
@@ -439,6 +444,45 @@ export class ModelService {
         return id;
     }
 
+    public nextActionId(): string {
+        return this._actionIdSequence.next();
+    }
+
+    private collectActions(newModel: PetriNet): Action[] {
+        const actions = new Array<Action>();
+        newModel.getCaseEvents().forEach(e => {
+            actions.push(...e.preActions);
+            actions.push(...e.postActions);
+        });
+        newModel.getProcessEvents().forEach(e => {
+            actions.push(...e.preActions);
+            actions.push(...e.postActions);
+        });
+        newModel.getRoles().forEach(r => {
+            r.getEvents().forEach(e => {
+                actions.push(...e.preActions);
+                actions.push(...e.postActions);
+            });
+        });
+        newModel.getTransitions().forEach(t => {
+            t.eventSource.getEvents().forEach(e => {
+                actions.push(...e.preActions);
+                actions.push(...e.postActions);
+            });
+            t.dataGroups.forEach(g => g.getDataRefs().forEach(d => d.getEvents().forEach(e => {
+                actions.push(...e.preActions);
+                actions.push(...e.postActions);
+            })));
+        });
+        newModel.getDataSet().forEach(d => {
+            d.getEvents().forEach(e => {
+                actions.push(...e.preActions);
+                actions.push(...e.postActions);
+            });
+        });
+        return actions;
+    }
+
     public alignModel(model = this.model): void {
         [...model.getPlaces(), ...model.getTransitions()].forEach(node => {
             node.x = this.alignPositionX(node.x);
@@ -455,7 +499,7 @@ export class ModelService {
     public alignPosition(position: DOMPoint): DOMPoint {
         return new DOMPoint(
             this.alignPositionX(position.x),
-            this.alignPositionY(position.y)
+            this.alignPositionY(position.y),
         );
     }
 
@@ -478,17 +522,19 @@ export class ModelService {
         return newPosition;
     }
 
-    public getReferenceValue(id: string): number {
+    public getReferenceValue(id: string, model: PetriNet = this.model): number {
         // TODO: NAB-326 probably move to petriflow.js
-        const referencedData = this.model.getData(id);
+        const referencedData = model.getData(id);
         if (referencedData) {
-            if (referencedData.init.value) {
-                return Number(referencedData.init.value);
-                // TODO: NAB-326 check if isFinite and >= 0
+            if (referencedData.init?.value) {
+                if (ImportUtils.isInitValueNumber(referencedData.init)) {
+                    return Number(referencedData.init.value);
+                }
+                return 0;
             }
             return 0;
         }
-        const referencedPlace = this.model.getPlace(id);
+        const referencedPlace = model.getPlace(id);
         if (referencedPlace) {
             return referencedPlace.marking;
         }
@@ -531,8 +577,8 @@ export class ModelService {
             .map(dg =>
                 dg.getDataRefs()
                     .map(ref =>
-                        ModelerUtils.numberOfEventActions(ref.getEvents())
-                    ).reduce((sum, current) => sum + current, 0)
+                        ModelerUtils.numberOfEventActions(ref.getEvents()),
+                    ).reduce((sum, current) => sum + current, 0),
             ).reduce((sum, current) => sum + current, 0);
         return eventActions + dataRefActions;
     }

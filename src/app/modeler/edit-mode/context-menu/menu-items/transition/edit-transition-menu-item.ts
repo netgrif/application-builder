@@ -1,11 +1,11 @@
-import {MenuItem} from '../menu-item';
+import {ChangedTransition} from '../../../../../dialogs/dialog-transition-edit/changed-transition';
 import {
-    DialogTransitionEditComponent,
-    TransitionEditData
+  DialogTransitionEditComponent,
+  TransitionEditData,
 } from '../../../../../dialogs/dialog-transition-edit/dialog-transition-edit.component';
 import {CanvasTransition} from '../../../domain/canvas-transition';
 import {CanvasTool} from '../../../services/modes/canvas-tool';
-import {ChangedTransition} from '../../../../../dialogs/dialog-transition-edit/changed-transition';
+import {MenuItem} from '../menu-item';
 
 export class EditTransitionMenuItem extends MenuItem {
 

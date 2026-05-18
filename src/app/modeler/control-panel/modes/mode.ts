@@ -1,9 +1,9 @@
-import {TutorialStep} from '../../../tutorial/tutorial-step';
-import {ToolRegistry} from '../tools/tool-registry';
 import {Injector} from '@angular/core';
+import {TutorialStep} from '../../../tutorial/tutorial-step';
 import {Identifiable} from '../../edit-mode/domain/identifiable';
 import {ControlPanelButton} from '../control-panel-button';
 import {ControlPanelIcon} from '../control-panel-icon';
+import {ToolRegistry} from '../tools/tool-registry';
 
 export class Mode extends Identifiable {
 

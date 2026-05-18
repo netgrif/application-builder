@@ -1,8 +1,8 @@
-import {Component, ViewChild} from '@angular/core';
-import {DataDetailComponent} from './data-detail/data-detail.component';
 import {ComponentType} from '@angular/cdk/overlay';
-import {DataMasterItemComponent} from './data-master-item/data-master-item.component';
+import {Component} from '@angular/core';
+import {DataDetailComponent} from './data-detail/data-detail.component';
 import {DataMasterDetailService} from './data-master-detail.service';
+import {DataMasterItemComponent} from './data-master-item/data-master-item.component';
 
 export interface TypeArray {
     viewValue: string;

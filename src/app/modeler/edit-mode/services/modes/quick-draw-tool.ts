@@ -1,24 +1,24 @@
-import {CanvasTool} from './canvas-tool';
-import {ControlPanelButton} from '../../../control-panel/control-panel-button';
-import {ControlPanelIcon} from '../../../control-panel/control-panel-icon';
-import {CanvasPlace} from '../../domain/canvas-place';
-import {CanvasTransition} from '../../domain/canvas-transition';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
 import {
-    NodeElement as SvgNodeElement,
-    RegularPlaceTransitionArc as SvgRegularPlaceTransitionArc,
-    RegularTransitionPlaceArc as SvgRegularTransitionPlaceArc
+  NodeElement as SvgNodeElement,
+  RegularPlaceTransitionArc as SvgRegularPlaceTransitionArc,
+  RegularTransitionPlaceArc as SvgRegularTransitionPlaceArc,
 } from '@netgrif/petri.svg';
-import {CanvasArc} from '../../domain/canvas-arc';
 import {NodeElement} from '@netgrif/petriflow';
 import {PetriflowNode} from '@netgrif/petriflow.svg';
-import {CanvasNodeElement} from '../../domain/canvas-node-element';
-import {MatDialog} from '@angular/material/dialog';
-import {EditModeService} from '../../edit-mode.service';
-import {ModelService} from '../../../services/model/model.service';
-import {Router} from '@angular/router';
-import {SelectedTransitionService} from '../../../selected-transition.service';
-import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ControlPanelButton} from '../../../control-panel/control-panel-button';
+import {ControlPanelIcon} from '../../../control-panel/control-panel-icon';
+import {SelectedTransitionService} from '../../../selected-transition.service';
+import {ModelService} from '../../../services/model/model.service';
+import {CanvasArc} from '../../domain/canvas-arc';
+import {CanvasNodeElement} from '../../domain/canvas-node-element';
+import {CanvasPlace} from '../../domain/canvas-place';
+import {CanvasTransition} from '../../domain/canvas-transition';
+import {EditModeService} from '../../edit-mode.service';
+import {CanvasTool} from './canvas-tool';
 
 enum Step {
     PLACE,

@@ -2,17 +2,17 @@ import {AfterViewInit, Component, HostListener} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {NetgrifApplicationEngine} from '@netgrif/components-core/';
+import {JoyrideService} from 'ngx-joyride';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
 import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
 import {
-    DialogLocalStorageModelComponent,
+  DialogLocalStorageModelComponent,
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
 import {ModelImportService} from './modeler/model-import-service';
 import {ModelerConfig} from './modeler/modeler-config';
 import {MortgageService} from './modeler/mortgage.service';
 import {ModelService} from './modeler/services/model/model.service';
 import {TutorialService} from './tutorial/tutorial-service';
-import {JoyrideService} from 'ngx-joyride';
 
 @Component({
     selector: 'nab-root',

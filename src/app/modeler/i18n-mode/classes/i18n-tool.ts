@@ -1,7 +1,7 @@
-import {Tool} from '../../control-panel/tools/tool';
 import {ComponentPortal} from '@angular/cdk/portal';
-import {ControlPanelButton} from '../../control-panel/control-panel-button';
 import {Type} from '@angular/core';
+import {ControlPanelButton} from '../../control-panel/control-panel-button';
+import {Tool} from '../../control-panel/tools/tool';
 
 export abstract class I18nTool extends Tool {
 

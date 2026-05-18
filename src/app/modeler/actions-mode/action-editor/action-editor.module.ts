@@ -1,24 +1,24 @@
-import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ActionEditorListComponent} from './action-editor-list/action-editor-list.component';
-import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {tokenProvider} from './definitions/tokens';
-import {actionCompletionProvider} from './definitions/completion-provider';
-import {ActionEditorMenuComponent} from './action-editor-menu/action-editor-menu.component';
-import {
-    ActionEditorMenuDescriptionComponent
-} from './action-editor-menu/action-editor-menu-description/action-editor-menu-description.component';
-import {MaterialImportModule} from '../../../material-import/material-import.module';
-import {ActionEditorComponent} from './action-editor/action-editor.component';
-import {
-    ActionEditorMenuItemComponent
-} from './action-editor-menu/action-editor-menu-item/action-editor-menu-item.component';
-import {SafeHtmlPipe} from './action-editor-menu/action-editor-menu-item/safe-html.pipe';
-import {FunctionEditorComponent} from './function-editor/function-editor.component';
-import {MonacoEditorModule, NgxMonacoEditorConfig} from 'ngx-monaco-editor-v2';
+import {BrowserModule} from '@angular/platform-browser';
 import {FlexModule} from '@ngbracket/ngx-layout';
 import {ResizableModule} from 'angular-resizable-element';
+import {MonacoEditorModule, NgxMonacoEditorConfig} from 'ngx-monaco-editor-v2';
+import {MaterialImportModule} from '../../../material-import/material-import.module';
+import {ActionEditorListComponent} from './action-editor-list/action-editor-list.component';
+import {
+  ActionEditorMenuDescriptionComponent,
+} from './action-editor-menu/action-editor-menu-description/action-editor-menu-description.component';
+import {
+  ActionEditorMenuItemComponent,
+} from './action-editor-menu/action-editor-menu-item/action-editor-menu-item.component';
+import {SafeHtmlPipe} from './action-editor-menu/action-editor-menu-item/safe-html.pipe';
+import {ActionEditorMenuComponent} from './action-editor-menu/action-editor-menu.component';
+import {ActionEditorComponent} from './action-editor/action-editor.component';
+import {actionCompletionProvider} from './definitions/completion-provider';
+import {tokenProvider} from './definitions/tokens';
+import {FunctionEditorComponent} from './function-editor/function-editor.component';
 
 declare var monaco: any;
 

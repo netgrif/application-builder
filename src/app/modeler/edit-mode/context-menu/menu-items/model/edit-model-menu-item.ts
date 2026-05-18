@@ -1,7 +1,7 @@
-import {MenuItem} from '../menu-item';
-import {CanvasTool} from '../../../services/modes/canvas-tool';
 import {DialogModelEditComponent} from '../../../../../dialogs/dialog-model-edit/dialog-model-edit.component';
 import {ModelChange} from '../../../../history-mode/model/model/model-change';
+import {CanvasTool} from '../../../services/modes/canvas-tool';
+import {MenuItem} from '../menu-item';
 
 export class EditModelMenuItem extends MenuItem {
 

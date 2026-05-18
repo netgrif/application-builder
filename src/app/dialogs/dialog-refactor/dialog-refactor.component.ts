@@ -1,9 +1,9 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
-import {ModelService} from '../../modeler/services/model/model.service';
-import escapeStringRegexp from 'escape-string-regexp';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Action, Event} from '@netgrif/petriflow';
+import escapeStringRegexp from 'escape-string-regexp';
+import {ModelService} from '../../modeler/services/model/model.service';
 
 export interface DialogRefactorData {
     originalId: string;

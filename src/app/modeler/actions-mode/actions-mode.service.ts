@@ -1,16 +1,16 @@
 import {Injectable, Injector} from '@angular/core';
 import {TutorialService} from '../../tutorial/tutorial-service';
-import {Mode} from '../control-panel/modes/mode';
 import {ControlPanelButton} from '../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../control-panel/control-panel-icon';
-import {ToolGroup} from '../control-panel/tools/tool-group';
+import {Mode} from '../control-panel/modes/mode';
 import {ModeService} from '../control-panel/modes/mode-component/mode.service';
-import {DataActionsTool} from './tools/data-actions-tool';
-import {TransitionActionsTool} from './tools/transition-actions-tool';
-import {RoleActionsTool} from './tools/role-actions-tool';
-import {ProcessActionsTool} from './tools/process-actions-tool';
-import {FunctionsTool} from './tools/functions-tool';
 import {Tool} from '../control-panel/tools/tool';
+import {ToolGroup} from '../control-panel/tools/tool-group';
+import {DataActionsTool} from './tools/data-actions-tool';
+import {FunctionsTool} from './tools/functions-tool';
+import {ProcessActionsTool} from './tools/process-actions-tool';
+import {RoleActionsTool} from './tools/role-actions-tool';
+import {TransitionActionsTool} from './tools/transition-actions-tool';
 
 @Injectable({
     providedIn: 'root'

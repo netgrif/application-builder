@@ -1,5 +1,5 @@
-import {MenuItem} from './menu-item';
 import {SelectTool} from '../../services/modes/select-tool';
+import {MenuItem} from './menu-item';
 
 export class DeleteSelectedMenuItem extends MenuItem {
 

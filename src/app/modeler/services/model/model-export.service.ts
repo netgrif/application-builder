@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {ModelService} from './model.service';
+import {MatDialog} from '@angular/material/dialog';
+import {CanvasConfiguration} from '@netgrif/petri.svg';
 import {BasicSimulation, ExportService, PetriNet} from '@netgrif/petriflow';
 import format from 'xml-formatter';
-import {MatDialog} from '@angular/material/dialog';
 import {DialogDeadNetComponent} from '../../../dialogs/dialog-dead-net/dialog-dead-net.component';
-import {CanvasConfiguration} from '@netgrif/petri.svg';
 import {ModelerConfig} from '../../modeler-config';
 import {ModelSourceService} from './model-source.service';
+import {ModelService} from './model.service';
 
 @Injectable({
     providedIn: 'root'

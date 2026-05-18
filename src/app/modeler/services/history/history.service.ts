@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {ExportService, PetriNet} from '@netgrif/petriflow';
 import {Subject} from 'rxjs';
+import {RedoTool} from '../../control-panel/modes/redo-tool';
+import {UndoTool} from '../../control-panel/modes/undo-tool';
 import {ModelerConfig} from '../../modeler-config';
 import {ModelService} from '../model/model.service';
 import {History} from './history';
 import {HistoryChange} from './history-change';
-import {UndoTool} from '../../control-panel/modes/undo-tool';
-import {RedoTool} from '../../control-panel/modes/redo-tool';
 
 @Injectable({
     providedIn: 'root'

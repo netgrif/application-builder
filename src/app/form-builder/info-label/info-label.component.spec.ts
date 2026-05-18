@@ -1,8 +1,8 @@
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {MaterialImportModule} from '../../material-import/material-import.module';
 
 import {InfoLabelComponent} from './info-label.component';
-import {MaterialImportModule} from '../../material-import/material-import.module';
-import {RouterTestingModule} from '@angular/router/testing';
 
 describe('InfoLabelComponent', () => {
   let component: InfoLabelComponent;

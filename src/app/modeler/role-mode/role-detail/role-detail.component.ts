@@ -1,25 +1,25 @@
 import {Component, OnDestroy} from '@angular/core';
+import {FormControl, ValidatorFn, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 import {Role} from '@netgrif/petriflow';
+import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../actions-mode/actions-mode.service';
+import {ModelerUtils} from '../../modeler-utils';
+import {HistoryService} from '../../services/history/history.service';
 import {ModelService} from '../../services/model/model.service';
 import {RoleMasterDetailService} from '../role-master-detail.service';
-import {Router} from '@angular/router';
-import {ActionsModeService} from '../../actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../actions-mode/actions-master-detail.setvice';
-import {HistoryService} from '../../services/history/history.service';
-import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {ChangedRole} from './changed-role';
-import {ModelerUtils} from '../../modeler-utils';
 
 @Component({
     selector: 'nab-role-detail',
     templateUrl: './role-detail.component.html',
-    styleUrl: './role-detail.component.scss'
+    styleUrl: './role-detail.component.scss',
 })
 export class RoleDetailComponent implements OnDestroy {
 
     public role: ChangedRole;
     public shouldSave: boolean = false;
-    public form: FormControl;
+    public roleIdForm: FormControl;
 
     public constructor(
         private _masterService: RoleMasterDetailService,
@@ -27,7 +27,7 @@ export class RoleDetailComponent implements OnDestroy {
         private _router: Router,
         private _actionMode: ActionsModeService,
         private _actionsMasterDetail: ActionsMasterDetailService,
-        protected _historyService: HistoryService
+        protected _historyService: HistoryService,
     ) {
         this._masterService.getSelected$().subscribe(item => {
             this.saveChange();
@@ -36,9 +36,9 @@ export class RoleDetailComponent implements OnDestroy {
             }
             this.role = new ChangedRole(item.clone());
         });
-        this.form = new FormControl('', [
+        this.roleIdForm = new FormControl('', [
             Validators.required,
-            this.validUnique()
+            this.validUnique(),
         ]);
     }
 
@@ -72,6 +72,11 @@ export class RoleDetailComponent implements OnDestroy {
 
     changeTitle($event): void {
         this.role.role.title.value = $event.target.value;
+        this.shouldSave = true;
+    }
+
+    changeGlobalFlag($event): void {
+        this.role.role.global = $event.checked;
         this.shouldSave = true;
     }
 

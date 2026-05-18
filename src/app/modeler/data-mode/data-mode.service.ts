@@ -1,11 +1,11 @@
 import {EventEmitter, Injectable, Injector} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
 import {DataType, DataVariable} from '@netgrif/petriflow';
-import {ModeService} from '../control-panel/modes/mode-component/mode.service';
+import {BehaviorSubject} from 'rxjs';
 import {TutorialService} from '../../tutorial/tutorial-service';
-import {Mode} from '../control-panel/modes/mode';
 import {ControlPanelButton} from '../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../control-panel/control-panel-icon';
+import {Mode} from '../control-panel/modes/mode';
+import {ModeService} from '../control-panel/modes/mode-component/mode.service';
 import {Tool} from '../control-panel/tools/tool';
 
 @Injectable({

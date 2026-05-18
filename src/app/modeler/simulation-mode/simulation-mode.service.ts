@@ -1,29 +1,30 @@
 import {Injectable, Injector} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {BasicSimulation, PetriNet, Transition} from '@netgrif/petriflow';
-import {TutorialService} from '../../tutorial/tutorial-service';
-import {ModelService} from '../services/model/model.service';
-import {EventSimulationTool} from './tool/event-simulation.tool';
-import {TaskSimulationTool} from './tool/task-simulation.tool';
-import {ResetSimulationTool} from './tool/reset-simulation.tool';
-import {ToolGroup} from '../control-panel/tools/tool-group';
-import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
-import {SimulationTool} from './tool/simulation-tool';
-import {ChangeDataTool} from './tool/change-data-tool';
-import {CanvasTransition} from '../edit-mode/domain/canvas-transition';
-import {ArcFactory} from '../edit-mode/domain/arc-builders/arc-factory.service';
-import {CanvasModeService} from '../services/canvas/canvas-mode-service';
-import {CanvasArc} from '../edit-mode/domain/canvas-arc';
 import {MatDialog} from '@angular/material/dialog';
-import {ResetPositionAndZoomTool} from './tool/reset-position-and-zoom-tool';
-import {GridTool} from './tool/grid-tool';
-import {SwitchLabelTool} from './tool/switch-label-tool';
 import {Router} from '@angular/router';
+import {Arc, BasicSimulation, ImportUtils, PetriNet, Place, Transition} from '@netgrif/petriflow';
+import {PetriflowCanvasService} from '@netgrif/petriflow.svg';
+import {BehaviorSubject} from 'rxjs';
+import {TutorialService} from '../../tutorial/tutorial-service';
+import {ToolGroup} from '../control-panel/tools/tool-group';
+import {ArcFactory} from '../edit-mode/domain/arc-builders/arc-factory.service';
+import {CanvasArc} from '../edit-mode/domain/canvas-arc';
+import {CanvasPlace} from '../edit-mode/domain/canvas-place';
+import {CanvasTransition} from '../edit-mode/domain/canvas-transition';
 import {SelectedTransitionService} from '../selected-transition.service';
+import {CanvasModeService} from '../services/canvas/canvas-mode-service';
+import {ModelService} from '../services/model/model.service';
 import {SimulationMode} from './simulation-mode';
+import {ChangeDataTool} from './tool/change-data-tool';
+import {EventSimulationTool} from './tool/event-simulation.tool';
+import {GridTool} from './tool/grid-tool';
+import {ResetPositionAndZoomTool} from './tool/reset-position-and-zoom-tool';
+import {ResetSimulationTool} from './tool/reset-simulation.tool';
+import {SimulationTool} from './tool/simulation-tool';
+import {SwitchLabelTool} from './tool/switch-label-tool';
+import {TaskSimulationTool} from './tool/task-simulation.tool';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SimulationModeService extends CanvasModeService<SimulationTool> {
 
@@ -58,7 +59,7 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
                 if (this.data.has(a.modelArc.reference)) {
                     multiplicity = this.data.get(a.modelArc.reference);
                 } else {
-                    multiplicity = this.modelService.getReferenceValue(a.modelArc.reference);
+                    multiplicity = this.modelService.getReferenceValue(a.modelArc.reference, this.model);
                 }
                 return `${a.modelArc.reference} (${multiplicity})`;
             }
@@ -73,7 +74,7 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
             new ChangeDataTool(modelService, dialog, this, router, transitionService),
             new ResetPositionAndZoomTool(modelService, dialog, this, router, transitionService),
             new GridTool(modelService, dialog, this, router, transitionService),
-            new SwitchLabelTool(modelService, dialog, this, router, transitionService)
+            new SwitchLabelTool(modelService, dialog, this, router, transitionService),
         );
         this.switchTools.tools.forEach(t => t.bind());
         this.tools = [
@@ -81,12 +82,18 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
                 this.defaultTool,
                 new EventSimulationTool(modelService, dialog, this, router, transitionService),
             ),
-            this.switchTools
+            this.switchTools,
         ];
         this.originalModel = new BehaviorSubject<PetriNet>(this.modelService.model.clone());
         this.originalModel.subscribe(model => {
             this.data = new Map(model.getArcs().filter(a => !!a.reference && !!model.getData(a.reference))
-                .map(a => [a.reference, Number.parseInt(model.getData(a.reference).init?.value, 10) || 0]));
+                .map(a => {
+                    const data = model.getData(a.reference);
+                    if (ImportUtils.isInitValueNumber(data.init)) {
+                        return [a.reference, Number.parseInt(data.init.value, 10)];
+                    }
+                    return [a.reference, 0];
+                }));
             this.simulation = new BasicSimulation(model, this.data);
             this.renderModel(model);
         });
@@ -113,6 +120,18 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
         this.activeTool.bindTransition(canvasTransition);
         this._onTransitionDraw(canvasTransition);
         return canvasTransition;
+    }
+
+    newSvgPlace(modelPlace: Place): CanvasPlace {
+        const place = super.newSvgPlace(modelPlace);
+        this.activeTool.bindPlace(place);
+        return place;
+    }
+
+    public newSvgArc(modelArc: Arc<any, any>): CanvasArc {
+        const arc = super.newSvgArc(modelArc);
+        this.activeTool.bindArc(arc);
+        return arc;
     }
 
     set onTransitionDraw(value: (t: CanvasTransition) => void) {

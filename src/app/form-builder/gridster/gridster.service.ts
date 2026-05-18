@@ -1,34 +1,35 @@
 import {Injectable} from '@angular/core';
 import {
-    CompactType,
-    DisplayGrid,
-    GridsterConfig,
-    GridsterItem,
-    GridsterItemComponentInterface,
-    GridType
-} from 'angular-gridster2';
-import {ModelService} from '../../modeler/services/model/model.service';
-import {GridsterDataField} from './classes/gridster-data-field';
-import {
-    Appearance,
-    Component,
-    DataGroup,
-    DataRef,
-    DataRefBehavior,
-    DataType,
-    DataVariable,
-    Expression, I18nWithDynamic,
-    LayoutType,
-    Template,
-    Transition,
-    TransitionLayout
+  Appearance,
+  Component,
+  DataGroup,
+  DataRef,
+  DataRefBehavior,
+  DataType,
+  DataVariable,
+  Expression,
+  I18nWithDynamic,
+  Property,
+  Template,
+  Transition,
+  TransitionLayout,
 } from '@netgrif/petriflow';
+import {
+  CompactType,
+  DisplayGrid,
+  GridsterConfig,
+  GridsterItem,
+  GridsterItemComponentInterface,
+  GridType,
+} from 'angular-gridster2';
 import {BehaviorSubject, ReplaySubject, Subject} from 'rxjs';
-import {DataFieldUtils} from '../data-field-utils';
-import {SelectedTransitionService} from '../../modeler/selected-transition.service';
-import {FieldListService} from '../field-list/field-list.service';
-import {ModelerConfig} from '../../modeler/modeler-config';
 import {debounceTime} from 'rxjs/operators';
+import {ModelerConfig} from '../../modeler/modeler-config';
+import {SelectedTransitionService} from '../../modeler/selected-transition.service';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {DataFieldUtils} from '../data-field-utils';
+import {FieldListService, PropertyDef} from '../field-list/field-list.service';
+import {GridsterDataField} from './classes/gridster-data-field';
 
 @Injectable({
     providedIn: 'root'
@@ -196,7 +197,7 @@ export class GridsterService {
         return dataVariable;
     }
 
-    public addDataRef(dataVariable: DataVariable, componentRows: number, componentCols: number, componentName: string, item: GridsterItem) {
+    public addDataRef(dataVariable: DataVariable, componentRows: number, componentCols: number, componentName: string, item: GridsterItem): DataRef {
         const dataRef = new DataRef(dataVariable.id);
         dataRef.layout.x = item.x;
         dataRef.layout.y = item.y;
@@ -221,12 +222,6 @@ export class GridsterService {
             dataRef.component = new Component(componentName);
         }
         const transition = this.modelService.model.getTransition(this.transitionId);
-        if (transition.dataGroups.length === 0) {
-            const dataGroup = new DataGroup(`${transition.id}_0`);
-            dataGroup.layout = LayoutType.GRID;
-            dataGroup.cols = this.options.minCols;
-            transition.dataGroups.push(dataGroup);
-        }
         transition.dataGroups[0].addDataRef(dataRef);
         if (dataVariable.type === DataType.TASK_REF && dataVariable.init?.value === this.transitionId) {
             dataVariable.init.value = undefined;
@@ -241,12 +236,20 @@ export class GridsterService {
     }
 
     private addNewDataRef(data: DataVariable, event: DragEvent, item: GridsterItem): DataRef {
-        return this.addDataRef(
+        const newDataRef =  this.addDataRef(
             data,
             +event.dataTransfer.getData('rows'),
             +event.dataTransfer.getData('cols'),
             event.dataTransfer.getData('ref_component'),
             item);
+        const properties: Array<PropertyDef> = JSON.parse(event.dataTransfer.getData('properties'));
+        if (!!properties) {
+            for (const property of properties) {
+                newDataRef.component.properties.push(new Property(property.name, property.defaultValue));
+            }
+        }
+        this.options.api?.optionsChanged();
+        return newDataRef;
     }
 
     private createId(type: string) {

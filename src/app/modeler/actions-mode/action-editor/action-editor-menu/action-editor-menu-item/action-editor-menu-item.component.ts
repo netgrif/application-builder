@@ -1,8 +1,8 @@
 import {AfterViewChecked, Component, Input, ViewChild} from '@angular/core';
-import {MenuItemConfiguration} from './menu-item-configuration';
 import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
 import {ActionItemProviderService} from '../../action-item-provider.service';
 import {MenuItem} from './menu-item';
+import {MenuItemConfiguration} from './menu-item-configuration';
 
 @Component({
     selector: 'nab-action-editor-menu-item',

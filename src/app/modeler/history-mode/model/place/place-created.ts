@@ -1,5 +1,5 @@
-import {PlaceChange} from './place-change';
 import {PetriNet, Place} from '@netgrif/petriflow';
+import {PlaceChange} from './place-change';
 
 export class PlaceCreated extends PlaceChange {
 

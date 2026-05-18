@@ -1,12 +1,12 @@
 import {MatDialog} from '@angular/material/dialog';
-import { SimulationTool } from './simulation-tool';
-import {ModelService} from '../../services/model/model.service';
-import {SimulationModeService} from '../simulation-mode.service';
+import {Router} from '@angular/router';
+import {NodeElement} from '@netgrif/petriflow';
 import {ControlPanelButton} from '../../control-panel/control-panel-button';
 import {ControlPanelIcon} from '../../control-panel/control-panel-icon';
-import {NodeElement} from '@netgrif/petriflow';
-import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../../selected-transition.service';
+import {ModelService} from '../../services/model/model.service';
+import {SimulationModeService} from '../simulation-mode.service';
+import {SimulationTool} from './simulation-tool';
 
 export class SwitchLabelTool extends SimulationTool {
 

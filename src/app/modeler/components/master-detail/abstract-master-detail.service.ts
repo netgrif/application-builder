@@ -1,6 +1,6 @@
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Injectable, OnDestroy} from '@angular/core';
 import {Sort} from '@angular/material/sort';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 
 @Injectable()
 export abstract class AbstractMasterDetailService<T> implements OnDestroy {

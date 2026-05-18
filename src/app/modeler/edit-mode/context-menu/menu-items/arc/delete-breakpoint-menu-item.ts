@@ -1,6 +1,6 @@
-import {MenuItem} from '../menu-item';
 import {CanvasArc} from '../../../domain/canvas-arc';
 import {CanvasTool} from '../../../services/modes/canvas-tool';
+import {MenuItem} from '../menu-item';
 
 export class DeleteBreakpointMenuItem extends MenuItem {
 

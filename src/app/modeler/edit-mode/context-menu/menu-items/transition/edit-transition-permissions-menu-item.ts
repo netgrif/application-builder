@@ -1,11 +1,11 @@
-import {MenuItem} from '../menu-item';
-import {
-    DialogManageRolesComponent,
-    RoleRefType
-} from '../../../../../dialogs/dialog-manage-roles/dialog-manage-roles.component';
 import {DataType} from '@netgrif/petriflow';
+import {
+  DialogManageRolesComponent,
+  RoleRefType,
+} from '../../../../../dialogs/dialog-manage-roles/dialog-manage-roles.component';
 import {CanvasTransition} from '../../../domain/canvas-transition';
 import {CanvasTool} from '../../../services/modes/canvas-tool';
+import {MenuItem} from '../menu-item';
 
 export class EditTransitionPermissionsMenuItem extends MenuItem {
 

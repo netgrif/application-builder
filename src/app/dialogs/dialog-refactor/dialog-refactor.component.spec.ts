@@ -1,12 +1,12 @@
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {DialogRefactorComponent} from './dialog-refactor.component';
-import {MaterialImportModule} from '../../material-import/material-import.module';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ModelService} from '../../modeler/services/model/model.service';
-import {Subject} from 'rxjs';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {PetriNet} from '@netgrif/petriflow';
+import {Subject} from 'rxjs';
+import {MaterialImportModule} from '../../material-import/material-import.module';
+import {ModelService} from '../../modeler/services/model/model.service';
+
+import {DialogRefactorComponent} from './dialog-refactor.component';
 
 describe('DialogRefactorComponent', () => {
     let component: DialogRefactorComponent;

@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {HistoryMasterDetailService} from '../history-master-detail.service';
-import {HistoryService} from '../../services/history/history.service';
-import {ModelExportService} from '../../services/model/model-export.service';
+import {editor} from 'monaco-editor';
 import {DiffEditorModel} from 'ngx-monaco-editor-v2';
 import {Subscription} from 'rxjs';
-import {editor} from 'monaco-editor';
-import IDiffEditorOptions = editor.IDiffEditorOptions;
+import {HistoryService} from '../../services/history/history.service';
+import {ModelExportService} from '../../services/model/model-export.service';
+import {HistoryMasterDetailService} from '../history-master-detail.service';
 import IDiffEditor = editor.IDiffEditor;
+import IDiffEditorOptions = editor.IDiffEditorOptions;
 
 @Component({
     selector: 'nab-history-detail',

@@ -19,4 +19,10 @@ export abstract class CanvasNodeElement<M extends NodeElement, S extends Petrifl
     getBounds(): DOMRect {
         return this.svgElement.canvasElement.element.getBBox();
     }
+
+    public static pretty(node: NodeElement): string {
+        const title = node.label?.value ? `${node.label.value} ` : '';
+        const id = `[${node.id}]`;
+        return title + id;
+    }
 }

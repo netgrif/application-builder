@@ -1,12 +1,12 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {GridsterConfig} from 'angular-gridster2';
-import {GridsterService} from './gridster.service';
-import {FieldListService} from '../field-list/field-list.service';
-import {ModelService} from '../../modeler/services/model/model.service';
 import {Router} from '@angular/router';
-import {GridsterDataField} from './classes/gridster-data-field';
+import {GridsterConfig} from 'angular-gridster2';
 import {SelectedTransitionService} from '../../modeler/selected-transition.service';
 import {HistoryService} from '../../modeler/services/history/history.service';
+import {ModelService} from '../../modeler/services/model/model.service';
+import {FieldListService} from '../field-list/field-list.service';
+import {GridsterDataField} from './classes/gridster-data-field';
+import {GridsterService} from './gridster.service';
 
 @Component({
     selector: 'nab-gridster-component',

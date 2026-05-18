@@ -1,6 +1,6 @@
-import {ConfigurationService, LoggerService, ViewService} from '@netgrif/components-core';
-import {Router} from '@angular/router';
 import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {ConfigurationService, LoggerService, ViewService} from '@netgrif/components-core';
 
 @Injectable({
   providedIn: 'root',

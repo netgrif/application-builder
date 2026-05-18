@@ -1,9 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NestedTreeControl} from '@angular/cdk/tree';
-import {Trigger, TriggerType} from '@netgrif/petriflow';
 import {NGX_MAT_DATE_FORMATS} from '@angular-material-components/datetime-picker';
+import {NestedTreeControl} from '@angular/cdk/tree';
+import {Component, Input} from '@angular/core';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {DATE_TIME_FORMAT} from '@netgrif/components-core';
+import {Trigger, TriggerType} from '@netgrif/petriflow';
 
 interface TriggerNode {
     name?: string;

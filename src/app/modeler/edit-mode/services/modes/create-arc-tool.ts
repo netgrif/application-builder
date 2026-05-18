@@ -1,19 +1,19 @@
-import {CanvasNodeElement} from '../../domain/canvas-node-element';
-import {ArcType, NodeElement} from '@netgrif/petriflow';
-import {NodeElement as SvgNodeElement} from '@netgrif/petri.svg'
-import {PetriflowNode} from '@netgrif/petriflow.svg';
-import {CanvasTool} from './canvas-tool';
-import {ControlPanelButton} from '../../../control-panel/control-panel-button';
-import {ModelService} from '../../../services/model/model.service';
 import {MatDialog} from '@angular/material/dialog';
-import {EditModeService} from '../../edit-mode.service';
 import {Router} from '@angular/router';
+import {NodeElement as SvgNodeElement} from '@netgrif/petri.svg';
+import {ArcType, NodeElement} from '@netgrif/petriflow';
+import {PetriflowNode} from '@netgrif/petriflow.svg';
+import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
+import {ControlPanelButton} from '../../../control-panel/control-panel-button';
 import {SelectedTransitionService} from '../../../selected-transition.service';
+import {ModelService} from '../../../services/model/model.service';
 import {CanvasArc} from '../../domain/canvas-arc';
+import {CanvasNodeElement} from '../../domain/canvas-node-element';
 import {CanvasPlace} from '../../domain/canvas-place';
 import {CanvasTransition} from '../../domain/canvas-transition';
-import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
-import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {EditModeService} from '../../edit-mode.service';
+import {CanvasTool} from './canvas-tool';
 
 export abstract class CreateArcTool<T extends CanvasNodeElement<NodeElement, PetriflowNode<SvgNodeElement>>> extends CanvasTool {
 
