@@ -1,3 +1,4 @@
+import {environment} from '../../environments/environment';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {MortgageService} from '../modeler/mortgage.service';
@@ -36,7 +37,7 @@ export class TutorialService {
     ) {
         this.welcome = TutorialStep.of(
             'welcome',
-            'Welcome to the Netgrif Application Builder',
+            `Welcome to the Netgrif Application Builder v${environment.version}`,
             'Netgrif Application Builder (NAB) is the tool for building process driven applications using Petriflow language. NAB is composed of several modules that help you in different stages of application development.',
             () => {
                 this.mortgageLoaded = false;
