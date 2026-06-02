@@ -22,6 +22,7 @@ export class TutorialService {
     actions: TutorialStep;
     i18n: TutorialStep;
     history: TutorialStep;
+    aiAssistant: TutorialStep;
     importTool: TutorialStep;
     exportTool: TutorialStep;
     svgExportTool: TutorialStep;
@@ -132,6 +133,18 @@ export class TutorialService {
             },
             () => {
                 this.router.navigate(['/modeler/i18n']);
+            },
+            'right'
+        );
+        this.aiAssistant = TutorialStep.of(
+            'aiAssistant',
+            'AI Builder Agent',
+            'Use the AI Assistant to describe a process in natural language and have it generated for you automatically. Supports Claude, OpenAI, and Google Gemini.',
+            () => {
+                this.router.navigate(['/modeler/ai']);
+            },
+            () => {
+                this.router.navigate(['/modeler/history']);
             },
             'right'
         );

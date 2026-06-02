@@ -26,6 +26,7 @@ import {EditTransitionMenuItem} from '../../context-menu/menu-items/transition/e
 import {
   EditTransitionPermissionsMenuItem,
 } from '../../context-menu/menu-items/transition/edit-transition-permissions-menu-item';
+import {AskAiMenuItem} from '../../context-menu/menu-items/ask-ai-menu-item';
 import {CanvasArc} from '../../domain/canvas-arc';
 import {CanvasElementCollection} from '../../domain/canvas-element-collection';
 import {CanvasPlace} from '../../domain/canvas-place';
@@ -148,7 +149,8 @@ export abstract class CanvasTool extends CanvasListenerTool {
         return new ContextMenu(
             [
                 new EditPlaceMenuItem(place, this),
-                new DeletePlaceMenuItem(place, this)
+                new DeletePlaceMenuItem(place, this),
+                new AskAiMenuItem(this, 'Selected Place')
             ],
             this.windowMousePosition(event)
         );
@@ -161,7 +163,8 @@ export abstract class CanvasTool extends CanvasListenerTool {
                 new EditFormMenuItem(transition, this),
                 new EditTransitionPermissionsMenuItem(transition, this),
                 new EditTransitionActionsMenuItem(transition, this),
-                new DeleteTransitionMenuItem(transition, this)
+                new DeleteTransitionMenuItem(transition, this),
+                new AskAiMenuItem(this, 'Selected Task')
             ],
             this.windowMousePosition(event)
         )
@@ -178,6 +181,7 @@ export abstract class CanvasTool extends CanvasListenerTool {
             items.push(new DeleteBreakpointMenuItem(arc, breakPointIndex, this));
         }
         items.push(new DeleteArcMenuItem(arc, this));
+        items.push(new AskAiMenuItem(this));
 
         return new ContextMenu(
             items,
@@ -188,7 +192,8 @@ export abstract class CanvasTool extends CanvasListenerTool {
     modelContextMenu(event: PointerEvent): ContextMenu {
         return new ContextMenu([
             new EditModelMenuItem(this),
-            new ManageModelPermissionsMenuItem(this)
+            new ManageModelPermissionsMenuItem(this),
+            new AskAiMenuItem(this)
         ], this.windowMousePosition(event));
     }
 

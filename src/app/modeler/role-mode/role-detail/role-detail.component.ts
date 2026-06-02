@@ -9,6 +9,8 @@ import {HistoryService} from '../../services/history/history.service';
 import {ModelService} from '../../services/model/model.service';
 import {RoleMasterDetailService} from '../role-master-detail.service';
 import {ChangedRole} from './changed-role';
+import {ViewHelperService} from '../../services/ai-assistant/view-helper.service';
+import {AiAssistantContextEnum} from '../../services/ai-assistant/ai-assistant.service';
 
 @Component({
     selector: 'nab-role-detail',
@@ -28,6 +30,7 @@ export class RoleDetailComponent implements OnDestroy {
         private _actionMode: ActionsModeService,
         private _actionsMasterDetail: ActionsMasterDetailService,
         protected _historyService: HistoryService,
+        private _viewHelperService: ViewHelperService
     ) {
         this._masterService.getSelected$().subscribe(item => {
             this.saveChange();
@@ -86,6 +89,10 @@ export class RoleDetailComponent implements OnDestroy {
 
     get service(): RoleMasterDetailService {
         return this._masterService;
+    }
+
+    openAiAssistant(): void {
+        this._viewHelperService.openAiAssistant(false, AiAssistantContextEnum.ROLES_LOCAL, null);
     }
 
     openActions(): void {

@@ -9,6 +9,8 @@ import {FunctionsTool} from '../tools/functions-tool';
 import {ProcessActionsTool} from '../tools/process-actions-tool';
 import {ActionMasterItemComponent} from './action-master-item/action-master-item.component';
 import {FunctionMasterItemComponent} from './function-master-item/function-master-item.component';
+import {ViewHelperService} from '../../services/ai-assistant/view-helper.service';
+import {AiAssistantContextEnum} from '../../services/ai-assistant/ai-assistant.service';
 
 @Component({
   selector: 'nab-action-master',
@@ -19,7 +21,8 @@ export class ActionMasterComponent extends PageMasterComponent implements OnInit
 
     constructor(private _parentInjector: Injector,
                 private _actionsModeService: ActionsModeService,
-                public masterService: ActionsMasterDetailService) {
+                public masterService: ActionsMasterDetailService,
+                private _viewHelperService: ViewHelperService) {
         super();
     }
 
@@ -52,6 +55,10 @@ export class ActionMasterComponent extends PageMasterComponent implements OnInit
 
     isProcessAndCase(): boolean {
         return this._actionsModeService.activeTool.id === ProcessActionsTool.ID;
+    }
+
+    openAiAssistant(): void {
+        this._viewHelperService.openAiAssistant(false, AiAssistantContextEnum.ACTION_LOCAL, null);
     }
 
     sortData(event: Sort): void {

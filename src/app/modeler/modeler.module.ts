@@ -72,6 +72,8 @@ import {RoleDetailComponent} from './role-mode/role-detail/role-detail.component
 import {RoleMasterItemComponent} from './role-mode/role-master-item/role-master-item.component';
 import {RoleModeComponent} from './role-mode/role-mode.component';
 import {SimulationModeComponent} from './simulation-mode/simulation-mode.component';
+import {AiModeComponent} from './ai-mode/ai-mode.component';
+import {AiChatComponentComponent} from './components/ai-chat-component/ai-chat-component.component';
 
 @NgModule({
     declarations: [
@@ -118,7 +120,8 @@ import {SimulationModeComponent} from './simulation-mode/simulation-mode.compone
         ActionDetailComponent,
         HistoryMasterItemComponent,
         HistoryDetailComponent,
-        TaskRefInitFieldComponent
+        TaskRefInitFieldComponent,
+        AiModeComponent
     ],
     exports: [
         ActionEditorModule,
@@ -146,7 +149,8 @@ import {SimulationModeComponent} from './simulation-mode/simulation-mode.compone
         RouterModule,
         TaskContentComponentModule,
         MatProgressSpinnerModule,
-        I18nFieldComponent
+        I18nFieldComponent,
+        AiChatComponentComponent
     ]
 })
 export class ModelerModule {

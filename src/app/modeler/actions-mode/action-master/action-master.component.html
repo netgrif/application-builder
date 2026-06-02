@@ -4,6 +4,9 @@
             <div mat-subheader *ngIf="!isProcessAndCase()" class="header-action">
                 <p fxFlex="40" mat-sort-header="id"><strong>ID</strong></p>
                 <p fxFlex mat-sort-header="name">Name</p>
+                <button mat-icon-button matTooltip="Ask AI about actions" (click)="openAiAssistant()">
+                    <mat-icon>auto_awesome</mat-icon>
+                </button>
             </div>
             <mat-action-list class="height-max" >
                 <nab-main-master-item *ngFor="let item of pageData"

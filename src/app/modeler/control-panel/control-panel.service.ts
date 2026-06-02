@@ -18,6 +18,7 @@ import {SvgExportTool} from './modes/svg-export-tool';
 import {UndoTool} from './modes/undo-tool';
 import {GlobalToolRegistry} from './tools/global-tool-registry';
 import {Tool} from './tools/tool';
+import {AiModeService} from '../ai-mode/ai-mode.service';
 
 @Injectable({
     providedIn: 'root'
@@ -42,7 +43,8 @@ export class ControlPanelService {
         private _exportSvgTool: SvgExportTool,
         private _redoTool: RedoTool,
         private _undoTool: UndoTool,
-        private _router: Router
+        private _router: Router,
+        private _aiModeService: AiModeService
     ) {
         this._modeRegistry = new ModeRegistry();
         this.registerMode(_editModeService);
@@ -52,6 +54,7 @@ export class ControlPanelService {
         this.registerMode(_actionModeService);
         this.registerMode(_i18nModeService);
         this.registerMode(_historyModeService);
+        this.registerMode(_aiModeService);
         this._defaultMode = _editModeService.mode;
         this.activate();
         this._globalToolRegistry.registerItem(_importModelTool);

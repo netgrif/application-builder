@@ -32,6 +32,8 @@ import {ModelerUtils} from '../../modeler-utils';
 import {HistoryService} from '../../services/history/history.service';
 import {ModelService} from '../../services/model/model.service';
 import {DataMasterDetailService} from '../data-master-detail.service';
+import {ViewHelperService} from '../../services/ai-assistant/view-helper.service';
+import {AiAssistantContextEnum} from '../../services/ai-assistant/ai-assistant.service';
 
 export interface TypeArray {
     viewValue: string;
@@ -86,7 +88,8 @@ export class DataDetailComponent implements OnDestroy {
         private _router: Router,
         private _actionMode: ActionsModeService,
         private _actionsMasterDetail: ActionsMasterDetailService,
-        private _historyService: HistoryService
+        private _historyService: HistoryService,
+        private _viewHelperService: ViewHelperService
     ) {
         this.formControlRef = new FormControl();
         this.componentNameFormCtrl = new FormControl();
@@ -437,6 +440,10 @@ export class DataDetailComponent implements OnDestroy {
             .find(type => type.type === dataVariable.type)?.components
             .find(compDef => (!dataVariable.component.name && !compDef.name) || (!!dataVariable.component.name && !!compDef.name && dataVariable.component.name === compDef.name))?.properties
             .find(propDef => propDef.name === $event.option.value).defaultValue;
+    }
+
+    openAiAssistant(): void {
+        this._viewHelperService.openAiAssistant(false, AiAssistantContextEnum.DATA_LOCAL, null);
     }
 
     protected readonly DataType = DataType;

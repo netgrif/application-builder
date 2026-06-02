@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://petriflow.com/petriflow.schema.xsd">
+  <id>public_request_process</id>
+  <version>1.0.0</version>
+  <initials>PRP</initials>
+  <title>Public Request and Response</title>
+  <icon>public</icon>
+  <defaultRole>true</defaultRole>
+  <anonymousRole>true</anonymousRole>
+  <transitionRole>false</transitionRole>
+  <role>
+    <id>legal</id>
+    <title>Legal Department</title>
+  </role>
+  <role>
+    <id>pr</id>
+    <title>PR Department</title>
+  </role>
+  <role>
+    <id>registration_desk</id>
+    <title>Registration Desk</title>
+  </role>
+  <data type="file">
+    <id>attachment</id>
+    <title>Attachment</title>
+  </data>
+  <data type="text">
+    <id>email</id>
+    <title>Email</title>
+  </data>
+  <data type="text">
+    <id>lawyer_statement</id>
+    <title>Lawyer's Formal Statement</title>
+    <component>
+      <name>textarea</name>
+    </component>
+  </data>
+  <data type="text">
+    <id>name</id>
+    <title>Name</title>
+  </data>
+  <data type="text">
+    <id>phone</id>
+    <title>Phone Number</title>
+  </data>
+  <data type="text">
+    <id>pr_answer</id>
+    <title>Final Answer</title>
+    <component>
+      <name>textarea</name>
+    </component>
+  </data>
+  <data type="text">
+    <id>request_text</id>
+    <title>Request Description</title>
+    <component>
+      <name>textarea</name>
+    </component>
+  </data>
+  <data type="enumeration_map">
+    <id>route_selection</id>
+    <title>Route To</title>
+    <options>
+      <option key="legal">Legal Department</option>
+      <option key="pr">PR Department</option>
+    </options>
+  </data>
+  <data type="text">
+    <id>status</id>
+    <title>Current Status</title>
+    <init>Submitted</init>
+  </data>
+  <data type="text">
+    <id>surname</id>
+    <title>Surname</title>
+  </data>
+  <data type="number">
+    <id>to_legal</id>
+    <title>To Legal</title>
+    <init>0</init>
+  </data>
+  <data type="number">
+    <id>to_pr</id>
+    <title>To PR</title>
+    <init>0</init>
+  </data>
+  <transition>
+    <id>legal_review</id>
+    <x>880</x>
+    <y>112</y>
+    <label>Legal Statement</label>
+    <icon>gavel</icon>
+    <roleRef>
+      <id>legal</id>
+      <logic>
+        <perform>true</perform>
+      </logic>
+    </roleRef>
+    <dataGroup>
+      <id>dg_legal</id>
+      <cols>2</cols>
+      <layout>grid</layout>
+      <title>Legal Review</title>
+      <dataRef>
+        <id>request_text</id>
+        <logic>
+          <behavior>visible</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>lawyer_statement</id>
+        <logic>
+          <behavior>editable</behavior>
+          <behavior>required</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>1</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+    </dataGroup>
+    <event type="finish">
+      <id>legal_finish</id>
+      <actions phase="pre">
+        <action id="2">
+<![CDATA[
+            status: f.status;
+            change status value { "Under PR Review" }
+            ]]>
+        </action>
+      </actions>
+    </event>
+  </transition>
+  <transition>
+    <id>pr_review</id>
+    <x>1264</x>
+    <y>208</y>
+    <label>PR Response</label>
+    <icon>chat</icon>
+    <roleRef>
+      <id>pr</id>
+      <logic>
+        <perform>true</perform>
+      </logic>
+    </roleRef>
+    <dataGroup>
+      <id>dg_pr</id>
+      <cols>2</cols>
+      <layout>grid</layout>
+      <title>PR Response</title>
+      <dataRef>
+        <id>request_text</id>
+        <logic>
+          <behavior>visible</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>lawyer_statement</id>
+        <logic>
+          <behavior>visible</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>1</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>pr_answer</id>
+        <logic>
+          <behavior>editable</behavior>
+          <behavior>required</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>2</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+    </dataGroup>
+    <event type="finish">
+      <id>pr_finish</id>
+      <actions phase="pre">
+        <action id="3">
+<![CDATA[
+            status: f.status;
+            change status value { "Completed" }
+            ]]>
+        </action>
+      </actions>
+    </event>
+  </transition>
+  <transition>
+    <id>status_view</id>
+    <x>496</x>
+    <y>16</y>
+    <label>Track Your Request</label>
+    <icon>visibility</icon>
+    <roleRef>
+      <id>anonymous</id>
+      <logic>
+        <perform>true</perform>
+      </logic>
+    </roleRef>
+    <dataGroup>
+      <id>dg_status</id>
+      <cols>1</cols>
+      <layout>grid</layout>
+      <title>Request Status</title>
+      <dataRef>
+        <id>status</id>
+        <logic>
+          <behavior>visible</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>1</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>pr_answer</id>
+        <logic>
+          <behavior>visible</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>1</y>
+          <rows>1</rows>
+          <cols>1</cols>
+        </layout>
+      </dataRef>
+    </dataGroup>
+  </transition>
+  <transition>
+    <id>submit_request</id>
+    <x>112</x>
+    <y>208</y>
+    <label>Submit Request</label>
+    <icon>send</icon>
+    <assignPolicy>auto</assignPolicy>
+    <roleRef>
+      <id>anonymous</id>
+      <logic>
+        <perform>true</perform>
+      </logic>
+    </roleRef>
+    <dataGroup>
+      <id>dg_submit</id>
+      <cols>2</cols>
+      <layout>grid</layout>
+      <title>Your Request</title>
+      <dataRef>
+        <id>name</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>1</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>surname</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>1</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>1</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>email</id>
+        <logic>
+          <behavior>editable</behavior>
+          <behavior>required</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>1</y>
+          <rows>1</rows>
+          <cols>1</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>phone</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>1</x>
+          <y>1</y>
+          <rows>1</rows>
+          <cols>1</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>request_text</id>
+        <logic>
+          <behavior>editable</behavior>
+          <behavior>required</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>2</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>attachment</id>
+        <logic>
+          <behavior>editable</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>3</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+    </dataGroup>
+  </transition>
+  <transition>
+    <id>triage</id>
+    <x>496</x>
+    <y>208</y>
+    <label>Review and Route</label>
+    <icon>assignment_ind</icon>
+    <roleRef>
+      <id>registration_desk</id>
+      <logic>
+        <perform>true</perform>
+      </logic>
+    </roleRef>
+    <dataGroup>
+      <id>dg_triage</id>
+      <cols>2</cols>
+      <layout>grid</layout>
+      <title>Triage</title>
+      <dataRef>
+        <id>name</id>
+        <logic>
+          <behavior>visible</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>1</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>surname</id>
+        <logic>
+          <behavior>visible</behavior>
+        </logic>
+        <layout>
+          <x>1</x>
+          <y>0</y>
+          <rows>1</rows>
+          <cols>1</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>request_text</id>
+        <logic>
+          <behavior>visible</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>1</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+      <dataRef>
+        <id>route_selection</id>
+        <logic>
+          <behavior>editable</behavior>
+          <behavior>required</behavior>
+        </logic>
+        <layout>
+          <x>0</x>
+          <y>2</y>
+          <rows>1</rows>
+          <cols>2</cols>
+        </layout>
+      </dataRef>
+    </dataGroup>
+    <event type="finish">
+      <id>triage_finish</id>
+      <actions phase="pre">
+        <action id="1">
+<![CDATA[
+            to_legal: f.to_legal, to_pr: f.to_pr, route: f.route_selection, status: f.status;
+            if (route.value == "legal") {
+            change to_legal value { 1 }
+            change to_pr value { 0 }
+            change status value { "Under Legal Review" }
+            } else {
+            change to_legal value { 0 }
+            change to_pr value { 1 }
+            change status value { "Under PR Review" }
+            }
+            ]]>
+        </action>
+      </actions>
+    </event>
+  </transition>
+  <place>
+    <id>p_done</id>
+    <x>1456</x>
+    <y>208</y>
+    <label>Finished</label>
+    <tokens>0</tokens>
+    <static>false</static>
+  </place>
+  <place>
+    <id>p_legal</id>
+    <x>688</x>
+    <y>112</y>
+    <label>Legal Queue</label>
+    <tokens>0</tokens>
+    <static>false</static>
+  </place>
+  <place>
+    <id>p_pr</id>
+    <x>1072</x>
+    <y>208</y>
+    <label>PR Queue</label>
+    <tokens>0</tokens>
+    <static>false</static>
+  </place>
+  <place>
+    <id>p_status</id>
+    <x>304</x>
+    <y>16</y>
+    <label>Status Tracking</label>
+    <tokens>0</tokens>
+    <static>false</static>
+  </place>
+  <place>
+    <id>p_triage</id>
+    <x>304</x>
+    <y>208</y>
+    <label>Pending Triage</label>
+    <tokens>0</tokens>
+    <static>false</static>
+  </place>
+  <place>
+    <id>start</id>
+    <x>112</x>
+    <y>304</y>
+    <label>Start</label>
+    <tokens>1</tokens>
+    <static>false</static>
+  </place>
+  <arc>
+    <id>a1</id>
+    <type>regular</type>
+    <sourceId>start</sourceId>
+    <destinationId>submit_request</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+  <arc>
+    <id>a10</id>
+    <type>regular</type>
+    <sourceId>pr_review</sourceId>
+    <destinationId>p_done</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+  <arc>
+    <id>a11</id>
+    <type>read</type>
+    <sourceId>p_status</sourceId>
+    <destinationId>status_view</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+  <arc>
+    <id>a2</id>
+    <type>regular</type>
+    <sourceId>submit_request</sourceId>
+    <destinationId>p_triage</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+  <arc>
+    <id>a3</id>
+    <type>regular</type>
+    <sourceId>submit_request</sourceId>
+    <destinationId>p_status</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+  <arc>
+    <id>a4</id>
+    <type>regular</type>
+    <sourceId>p_triage</sourceId>
+    <destinationId>triage</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+  <arc>
+    <id>a5</id>
+    <type>regular</type>
+    <sourceId>triage</sourceId>
+    <destinationId>p_legal</destinationId>
+    <multiplicity>0</multiplicity>
+    <reference>to_legal</reference>
+  </arc>
+  <arc>
+    <id>a6</id>
+    <type>regular</type>
+    <sourceId>triage</sourceId>
+    <destinationId>p_pr</destinationId>
+    <multiplicity>0</multiplicity>
+    <reference>to_pr</reference>
+  </arc>
+  <arc>
+    <id>a7</id>
+    <type>regular</type>
+    <sourceId>p_legal</sourceId>
+    <destinationId>legal_review</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+  <arc>
+    <id>a8</id>
+    <type>regular</type>
+    <sourceId>legal_review</sourceId>
+    <destinationId>p_pr</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+  <arc>
+    <id>a9</id>
+    <type>regular</type>
+    <sourceId>p_pr</sourceId>
+    <destinationId>pr_review</destinationId>
+    <multiplicity>1</multiplicity>
+  </arc>
+</document>
