@@ -1,0 +1,55 @@
+<div class="overlay-backdrop">
+  <div class="overlay-content">
+
+    <div class="overlay-header">
+      <mat-icon class="overlay-logo">device_hub</mat-icon>
+      <h1 class="overlay-title">Ako chcete modelovať?</h1>
+      <p class="overlay-subtitle">
+        Vyberte notáciu pre váš nový model.<br>
+        Po začatí práce môžete prejsť z BPMN na Petriflow, ale nie naopak.
+      </p>
+    </div>
+
+    <div class="mode-cards">
+
+      <!-- BPMN card -->
+      <div class="mode-card mode-card--bpmn" matRipple (click)="selectBpmn.emit()">
+        <div class="card-icon-wrap card-icon-wrap--bpmn">
+          <mat-icon>schema</mat-icon>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">BPMN 2.0</h2>
+          <p class="card-desc">Navrhnite workflow pomocou priemyselného štandardu BPMN. Kedykoľvek môžete konvertovať na Petriflow.</p>
+          <ul class="card-features">
+            <li><mat-icon class="feat-icon">check</mat-icon> Gateways, Events, Lanes</li>
+            <li><mat-icon class="feat-icon">check</mat-icon> Petriflow vlastnosti taskov (form, roly, akcie)</li>
+            <li><mat-icon class="feat-icon">check</mat-icon> Jednoklíkový prechod na Petriflow simuláciu</li>
+          </ul>
+        </div>
+        <div class="card-arrow">
+          <mat-icon>arrow_forward</mat-icon>
+        </div>
+      </div>
+
+      <!-- Petriflow card -->
+      <div class="mode-card mode-card--pf" matRipple (click)="selectPetriflow.emit()">
+        <div class="card-icon-wrap card-icon-wrap--pf">
+          <mat-icon>account_tree</mat-icon>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Petriflow</h2>
+          <p class="card-desc">Priame modelovanie v Petriflow notácii s plnou podporou dát, rolí a akcií.</p>
+          <ul class="card-features">
+            <li><mat-icon class="feat-icon">check</mat-icon> Natívne miesta, prechody a oblúky</li>
+            <li><mat-icon class="feat-icon">check</mat-icon> Plný editor formulárov a dátových polí</li>
+            <li><mat-icon class="feat-icon">check</mat-icon> Priama simulácia Petri sietí</li>
+          </ul>
+        </div>
+        <div class="card-arrow">
+          <mat-icon>arrow_forward</mat-icon>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

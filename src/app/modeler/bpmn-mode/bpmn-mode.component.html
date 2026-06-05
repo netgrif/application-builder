@@ -1,0 +1,30 @@
+<!-- Canvas fills the full mode area — no banner, no floating buttons.
+     Import / Simulation / Petriflow-edit are handled by the existing
+     control-panel modes and global import tool. -->
+<div class="bpmn-host" #canvasWrapper (click)="hideCtxMenu()">
+
+    <!-- bpmn-js canvas -->
+    <div #bpmnCanvas class="bpmn-canvas"></div>
+
+    <!-- Right-click context menu — same style/items as Petriflow edit mode -->
+    <div *ngIf="ctxMenu.visible"
+         class="menu"
+         [style.left.px]="ctxMenu.x"
+         [style.top.px]="ctxMenu.y"
+         (click)="$event.stopPropagation()">
+        <div class="content">
+            <button *ngFor="let item of menuItems" mat-menu-item class="menuItem"
+                    (click)="itemClick(item)">
+                <mat-icon>{{ item.icon }}</mat-icon>
+                <span>{{ item.title }}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Converting overlay (only when a menu action needs an on-demand convert) -->
+    <div class="bpmn-converting" *ngIf="converting">
+        <mat-spinner diameter="36"></mat-spinner>
+        <span>Converting to Petriflow…</span>
+    </div>
+
+</div>

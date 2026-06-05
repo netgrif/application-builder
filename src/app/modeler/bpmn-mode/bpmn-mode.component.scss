@@ -1,0 +1,107 @@
+$primary: #0f4c81;
+$border:  rgba(0, 0, 0, 0.12);
+$text:    rgba(0, 0, 0, 0.87);
+$muted:   rgba(0, 0, 0, 0.54);
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* ─── Host fills the mode area ─────────────────────────────────────────────── */
+
+.bpmn-host {
+    position: relative;
+    flex: 1 1 auto;
+    overflow: hidden;
+    background: #f8f9fb;
+
+    .bpmn-canvas {
+        width: 100%;
+        height: 100%;
+
+        ::ng-deep .bjs-container { width: 100% !important; height: 100% !important; }
+        ::ng-deep .djs-palette    { top: 16px; left: 16px; }
+    }
+}
+
+/* ─── Context menu — copied from Petriflow edit-mode context menu ────────────── */
+
+.menu {
+    position: absolute;
+    z-index: 9999;
+    min-width: 112px;
+    max-width: 280px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 48px);
+    border-radius: 4px;
+    outline: 0;
+    min-height: 64px;
+    background: #fff;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
+}
+
+.menuItem {
+    user-select: none;
+    cursor: pointer;
+    outline: 0;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    line-height: 48px;
+    height: 48px;
+    padding: 0 16px;
+    text-align: left;
+    text-decoration: none;
+    max-width: 100%;
+    position: relative;
+    background: 0 0;
+    color: rgba(0, 0, 0, .87);
+    font-size: 14px;
+    font-weight: 400;
+
+    span { vertical-align: middle; }
+    mat-icon { margin-right: 16px; vertical-align: middle; }
+}
+
+.menuItem:hover:not([disabled]) { background: rgba(0, 0, 0, .04); }
+.menuItem:active:not([disabled]) { background: rgba(0, 0, 0, .3); }
+
+button.menuItem { width: 100%; }
+
+.content {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+/* ─── Converting overlay ────────────────────────────────────────────────────── */
+
+.bpmn-converting {
+    position: absolute;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: rgba(248, 249, 251, 0.78);
+    backdrop-filter: blur(2px);
+
+    span {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: $primary;
+    }
+}
+
+@keyframes ctxIn {
+    from { opacity: 0; transform: scale(0.94) translateY(-4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
