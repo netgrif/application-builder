@@ -25,7 +25,16 @@
                             "buffer",
                             "easymde",
                             "semver",
-                            "rfdc"
+                            "rfdc",
+                            "bpmn-js",
+                            "diagram-js",
+                            "bpmn-moddle",
+                            "moddle",
+                            "moddle-xml",
+                            "ids",
+                            "min-dash",
+                            "min-dom",
+                            "tiny-svg"
                         ],
                         "outputPath": "dist/application-builder",
                         "index": "src/index.html",
@@ -52,7 +61,9 @@
                         ],
                         "styles": [
                             "src/netgif-theme.scss",
-                            "src/styles.scss"
+                            "src/styles.scss",
+                            "node_modules/bpmn-js/dist/assets/diagram-js.css",
+                            "node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css"
                         ],
                         "scripts": []
                     },

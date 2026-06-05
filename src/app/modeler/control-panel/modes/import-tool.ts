@@ -3,7 +3,11 @@ import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AppBuilderConfigurationService} from '../../../app-builder-configuration.service';
 import {TutorialService} from '../../../tutorial/tutorial-service';
+import {assignSystemPerformer, extractTaskIds} from '../../bpmn-mode/bpmn-conversion.util';
+import {BpmnStateService} from '../../bpmn-mode/bpmn-state.service';
+import {EnrichmentService} from '../../bpmn-mode/enrichment.service';
 import {ModelImportService} from '../../model-import-service';
+import {ModelService} from '../../services/model/model.service';
 import {ControlPanelButton} from '../control-panel-button';
 import {ControlPanelIcon} from '../control-panel-icon';
 import {Tool} from '../tools/tool';
@@ -22,7 +26,10 @@ export class ImportTool extends Tool {
         private importService: ModelImportService,
         private http: HttpClient,
         private snackBar: MatSnackBar,
-        tutorialService: TutorialService
+        tutorialService: TutorialService,
+        private modelService: ModelService,
+        private bpmnState: BpmnStateService,
+        private enrichment: EnrichmentService
     ) {
         super(
             'import',
@@ -36,7 +43,10 @@ export class ImportTool extends Tool {
         this.bpmn2pnUrl = config.get().services?.urls?.bpmn2pn;
         this.fileHandlers = new Map();
         this.fileHandlers.set('xml', content => {
-            this.importService.importFromXml(content)
+            // Pure Petriflow import — origin stays Petriflow (BPMN editor blocked).
+            this.bpmnState.clear();
+            this.enrichment.clear();
+            this.importService.importFromXml(content);
         });
         this.fileHandlers.set('bpmn', content => {
             this.http.post(this.bpmn2pnUrl, content, {
@@ -45,7 +55,15 @@ export class ImportTool extends Tool {
                 },
                 responseType: 'text',
             }).pipe().subscribe((xmlContent: string) => {
+                // Fresh BPMN project: drop any stale enrichment, keep the original
+                // BPMN diagram so the BPMN editor can show it, and mark the model as
+                // BPMN-originated so it stays editable in BPMN (also after reload).
+                this.enrichment.clear();
+                this.bpmnState.xml = content;
+                this.bpmnState.isBpmnProject = true;
                 this.importService.importFromXml(xmlContent);
+                assignSystemPerformer(this.modelService.model, extractTaskIds(content));
+                this.modelService.modelOrigin = 'bpmn';
             }, (error: HttpErrorResponse) => {
                 this.snackBar.open(error.message, 'X');
             });

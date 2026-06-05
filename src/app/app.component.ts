@@ -8,6 +8,8 @@ import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.co
 import {
   DialogLocalStorageModelComponent,
 } from './dialogs/dialog-local-storage-model/dialog-local-storage-model.component';
+import {BpmnStateService} from './modeler/bpmn-mode/bpmn-state.service';
+import {EnrichmentService} from './modeler/bpmn-mode/enrichment.service';
 import {ModelImportService} from './modeler/model-import-service';
 import {ModelerConfig} from './modeler/modeler-config';
 import {MortgageService} from './modeler/mortgage.service';
@@ -37,6 +39,8 @@ export class AppComponent implements AfterViewInit {
         private tutorialService: TutorialService,
         private modelService: ModelService,
         private importService: ModelImportService,
+        private bpmnState: BpmnStateService,
+        private enrichment: EnrichmentService,
     ) {
         this.config = config.get();
     }
@@ -56,8 +60,19 @@ export class AppComponent implements AfterViewInit {
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result === true) {
+                // Load the Petriflow draft AND keep it consistent with the persisted
+                // BPMN diagram: if this was a BPMN project, restore the BPMN origin so
+                // the BPMN editor stays reachable and shows the saved diagram.
                 this.importService.importFromXml(oldModel);
+                if (this.bpmnState.isBpmnProject) {
+                    this.modelService.modelOrigin = 'bpmn';
+                }
             } else if (result === false) {
+                // Delete previous work: wipe BOTH the Petriflow draft and the BPMN
+                // diagram + enrichment (in-memory singletons + their localStorage).
+                this.bpmnState.clear();
+                this.enrichment.clear();
+                this.modelService.modelOrigin = 'none';
                 localStorage.clear();
             }
         });

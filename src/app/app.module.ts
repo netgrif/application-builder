@@ -38,6 +38,7 @@ import {BuilderPaginatorIntl} from './modeler/components/master-detail/main-mast
 import {MaterialIconPickerComponent} from './modeler/components/material-icon-picker/material-icon-picker.component';
 import {DataModeComponent} from './modeler/data-mode/data-mode.component';
 import {EditModeComponent} from './modeler/edit-mode/edit-mode.component';
+import {BpmnModeComponent} from './modeler/bpmn-mode/bpmn-mode.component';
 import {HistoryModeComponent} from './modeler/history-mode/history-mode.component';
 import {I18nModeComponent} from './modeler/i18n-mode/i18n-mode.component';
 import {ModelerComponent} from './modeler/modeler.component';
@@ -56,6 +57,7 @@ const appRoutes: Routes = [
             {path: 'actions', component: ActionsModeComponent},
             {path: 'i18n', component: I18nModeComponent},
             {path: 'history', component: HistoryModeComponent},
+            {path: 'bpmn', component: BpmnModeComponent},
         ]
     },
     {path: 'form', component: FormBuilderComponent},

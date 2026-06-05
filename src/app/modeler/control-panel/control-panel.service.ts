@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {ActionsModeService} from '../actions-mode/actions-mode.service';
+import {BpmnModeService} from '../bpmn-mode/bpmn-mode.service';
 import {DataModeService} from '../data-mode/data-mode.service';
 import {EditModeService} from '../edit-mode/edit-mode.service';
 import {HistoryModeService} from '../history-mode/history-mode.service';
@@ -36,6 +37,7 @@ export class ControlPanelService {
         private _actionModeService: ActionsModeService,
         private _i18nModeService: I18nModeService,
         private _historyModeService: HistoryModeService,
+        private _bpmnModeService: BpmnModeService,
         private _globalToolRegistry: GlobalToolRegistry,
         private _importModelTool: ImportTool,
         private _exportModelTool: ExportTool,
@@ -52,6 +54,7 @@ export class ControlPanelService {
         this.registerMode(_actionModeService);
         this.registerMode(_i18nModeService);
         this.registerMode(_historyModeService);
+        this.registerMode(_bpmnModeService);
         this._defaultMode = _editModeService.mode;
         this.activate();
         this._globalToolRegistry.registerItem(_importModelTool);

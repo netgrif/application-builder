@@ -10,6 +10,7 @@ export class EditFormMenuItem extends MenuItem {
             'dashboard',
             () => {
                 tool.transitionService.id = transition.id;
+                tool.transitionService.returnUrl = '/modeler';
                 tool.router.navigate(['/form']);
             }
         );

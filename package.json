@@ -70,6 +70,8 @@
         "angular-gridster2": "^17.0.0",
         "angular-resizable-element": "7.0.2",
         "angular-resize-event": "3.2.0",
+        "angular2-hotkeys": "~16.0.1",
+        "bpmn-js": "^18.16.1",
         "browserify": "~16.5.0",
         "easymde": "~2.16.1",
         "escape-string-regexp": "^4.0.0",
@@ -90,8 +92,7 @@
         "showdown": "^2.0.3",
         "tslib": "^2.4.0",
         "xml-formatter": "^3.6.2",
-        "zone.js": "~0.14.2",
-        "angular2-hotkeys": "~16.0.1"
+        "zone.js": "~0.14.2"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "~17.3.8",

@@ -40,6 +40,8 @@ export class ModelService {
     private readonly _transitionChange: Subject<ChangedTransition>;
     private readonly _arcChange: Subject<ChangedArc>;
 
+    private _modelOrigin: 'none' | 'bpmn' | 'petriflow' = 'none';
+
     private _placeIdSequence = new SequenceGenerator('p');
     private _transitionIdSequence = new SequenceGenerator('t');
     private _arcIdSequence = new SequenceGenerator('a');
@@ -87,6 +89,18 @@ export class ModelService {
 
     get modelSubject(): BehaviorSubject<PetriNet> {
         return this._model;
+    }
+
+    get modelOrigin(): 'none' | 'bpmn' | 'petriflow' {
+        return this._modelOrigin;
+    }
+
+    set modelOrigin(value: 'none' | 'bpmn' | 'petriflow') {
+        this._modelOrigin = value;
+    }
+
+    get isLockedToPetriflow(): boolean {
+        return this._modelOrigin === 'petriflow';
     }
 
     public newModel(): PetriNet {

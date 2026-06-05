@@ -22,6 +22,7 @@ export class TutorialService {
     actions: TutorialStep;
     i18n: TutorialStep;
     history: TutorialStep;
+    bpmn: TutorialStep;
     importTool: TutorialStep;
     exportTool: TutorialStep;
     svgExportTool: TutorialStep;
@@ -132,6 +133,17 @@ export class TutorialService {
             },
             () => {
                 this.router.navigate(['/modeler/i18n']);
+            },
+            'right'
+        );
+        this.bpmn = TutorialStep.of(
+            'bpmn',
+            'BPMN Editor',
+            'V BPMN Editore môžete navrhovať procesy pomocou notácie BPMN 2.0 a jedným kliknutím ich aplikovať ako Petriflow model.',
+            () => {
+            },
+            () => {
+                this.router.navigate(['/modeler/history']);
             },
             'right'
         );
