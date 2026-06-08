@@ -1,4 +1,5 @@
 import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatIconRegistry} from '@angular/material/icon';
@@ -40,6 +41,7 @@ import {DataModeComponent} from './modeler/data-mode/data-mode.component';
 import {EditModeComponent} from './modeler/edit-mode/edit-mode.component';
 import {BpmnModeComponent} from './modeler/bpmn-mode/bpmn-mode.component';
 import {HistoryModeComponent} from './modeler/history-mode/history-mode.component';
+import {AiModeComponent} from './modeler/ai-mode/ai-mode.component';
 import {I18nModeComponent} from './modeler/i18n-mode/i18n-mode.component';
 import {ModelerComponent} from './modeler/modeler.component';
 import {ModelerModule} from './modeler/modeler.module';
@@ -58,6 +60,7 @@ const appRoutes: Routes = [
             {path: 'i18n', component: I18nModeComponent},
             {path: 'history', component: HistoryModeComponent},
             {path: 'bpmn', component: BpmnModeComponent},
+            {path: 'ai', component: AiModeComponent},
         ]
     },
     {path: 'form', component: FormBuilderComponent},
@@ -94,7 +97,8 @@ const appRoutes: Routes = [
         NgOptimizedImage,
         TaskContentComponentModule,
         CommonModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        HttpClientModule
     ],
     providers: [
         ImportService,

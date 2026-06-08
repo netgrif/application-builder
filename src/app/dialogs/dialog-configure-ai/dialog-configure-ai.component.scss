@@ -1,0 +1,20 @@
+.api-key-input {
+    width: 100%;
+}
+
+.config-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.config-field {
+    flex: 1 1 0;
+}
+
+.config-note {
+    margin-top: 12px;
+    font-size: 12px;
+    opacity: 0.7;
+    line-height: 1.4;
+}

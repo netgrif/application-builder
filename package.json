@@ -28,6 +28,9 @@
     ],
     "scripts": {
         "ng": "ng",
+        "prebuild:prompts": "node scripts/embed-petriflow-prompts.js",
+        "prestart": "npm run prebuild:prompts",
+        "prebuild": "npm run prebuild:prompts",
         "start": "ng serve",
         "build": "ng build --configuration production --aot=false --build-optimizer=false",
         "test": "ng test",

@@ -23,6 +23,7 @@ export class TutorialService {
     i18n: TutorialStep;
     history: TutorialStep;
     bpmn: TutorialStep;
+    aiAssistant: TutorialStep;
     importTool: TutorialStep;
     exportTool: TutorialStep;
     svgExportTool: TutorialStep;
@@ -141,6 +142,18 @@ export class TutorialService {
             'BPMN Editor',
             'V BPMN Editore môžete navrhovať procesy pomocou notácie BPMN 2.0 a jedným kliknutím ich aplikovať ako Petriflow model.',
             () => {
+            },
+            () => {
+                this.router.navigate(['/modeler/history']);
+            },
+            'right'
+        );
+        this.aiAssistant = TutorialStep.of(
+            'aiAssistant',
+            'AI Builder Agent',
+            'Use the AI Assistant to describe a process in natural language and have it generated for you automatically. Supports Claude, OpenAI, and Google Gemini.',
+            () => {
+                this.router.navigate(['/modeler/ai']);
             },
             () => {
                 this.router.navigate(['/modeler/history']);

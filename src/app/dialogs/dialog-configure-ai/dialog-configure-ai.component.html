@@ -1,0 +1,65 @@
+<div>
+    <h2 mat-dialog-title>AI Assistant Configuration</h2>
+    <mat-dialog-content class="netgrif-input">
+        <div class="config-row">
+            <mat-form-field class="config-field">
+                <mat-label>Provider</mat-label>
+                <mat-select [(value)]="provider" (selectionChange)="onProviderChange()">
+                    <mat-option *ngFor="let p of providers" [value]="p.id">{{ p.label }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="config-field">
+                <mat-label>Model</mat-label>
+                <mat-select [(value)]="model">
+                    <mat-option *ngFor="let m of availableModels" [value]="m.id">{{ m.label }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <mat-form-field *ngIf="provider === 'claude'" class="api-key-input">
+            <mat-label>Anthropic Claude API key</mat-label>
+            <input matInput [type]="showKey.claude ? 'text' : 'password'"
+                   [(ngModel)]="keys.claude" placeholder="sk-ant-...">
+            <button mat-icon-button matSuffix type="button"
+                    (click)="showKey.claude = !showKey.claude"
+                    [attr.aria-label]="'Toggle visibility'">
+                <mat-icon>{{ showKey.claude ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="provider === 'openai'" class="api-key-input">
+            <mat-label>OpenAI API key</mat-label>
+            <input matInput [type]="showKey.openai ? 'text' : 'password'"
+                   [(ngModel)]="keys.openai" placeholder="sk-...">
+            <button mat-icon-button matSuffix type="button"
+                    (click)="showKey.openai = !showKey.openai"
+                    [attr.aria-label]="'Toggle visibility'">
+                <mat-icon>{{ showKey.openai ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="provider === 'gemini'" class="api-key-input">
+            <mat-label>Google Gemini API key</mat-label>
+            <input matInput [type]="showKey.gemini ? 'text' : 'password'"
+                   [(ngModel)]="keys.gemini" placeholder="AIza...">
+            <button mat-icon-button matSuffix type="button"
+                    (click)="showKey.gemini = !showKey.gemini"
+                    [attr.aria-label]="'Toggle visibility'">
+                <mat-icon>{{ showKey.gemini ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <p class="config-note">
+            Keys are stored in your browser (localStorage) and sent directly to the chosen
+            provider from this page. Use a key with usage limits, and revoke it when done.
+        </p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button [mat-dialog-close]="false" mat-button>Cancel</button>
+        <button [mat-dialog-close]="buildResult()" [disabled]="!canSave()"
+                cdkFocusInitial mat-button color="primary">
+            Save configuration
+        </button>
+    </mat-dialog-actions>
+</div>
