@@ -1,6 +1,7 @@
 import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
 import {firstValueFrom} from 'rxjs';
 import {AiAssistantService} from '../../services/ai-assistant/ai-assistant.service';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
@@ -116,7 +117,8 @@ export class AiChatComponentComponent implements OnDestroy {
         private viewHelperService: ViewHelperService,
         private dialog: MatDialog,
         private snackBar: MatSnackBar,
-        private http: HttpClient
+        private http: HttpClient,
+        private router: Router
     ) {
         this.scrollSubscription = this.viewHelperService.scrollSubject.subscribe(() => {
             this.scrollToBottomIfNear();
@@ -269,10 +271,24 @@ export class AiChatComponentComponent implements OnDestroy {
 
     public applyXml(message: AiChatMessage): void {
         const result = this.aiAssistantService.applyXmlString(message.text);
-        if (result.ok) {
-            this.snackBar.open('XML applied to canvas.', 'OK', {duration: 3000});
-        } else {
+        if (!result.ok) {
             this.snackBar.open(`Import failed: ${result.error}. XML is preserved — you can still download or copy it.`, 'OK', {duration: 6000});
+            return;
+        }
+        if (result.structuralChange) {
+            // BPMN project: the diagram owns the workflow structure, so only the
+            // enrichment (forms/roles/actions/data) was applied.
+            this.snackBar.open(
+                'Forms, roles and actions applied. Structural changes are not reflected in the BPMN diagram.',
+                'OK', {duration: 6000}
+            );
+        } else {
+            this.snackBar.open('XML applied to canvas.', 'OK', {duration: 3000});
+        }
+        // In a BPMN project, return to the BPMN editor so the user keeps seeing
+        // the diagram (importFromXml navigates to the Petriflow edit mode).
+        if (this.aiAssistantService.isBpmnProject()) {
+            this.router.navigate(['/modeler/bpmn']);
         }
     }
 

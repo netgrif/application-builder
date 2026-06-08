@@ -9,6 +9,9 @@ import {ModelImportService} from '../../model-import-service';
 import {MessageHelperService} from './message-helper.service';
 import {AiChatMessage, ChatTurn} from './domain/message-objects';
 import {PETRIFLOW_REFERENCE, PETRIFLOW_SYSTEM_PROMPT} from './generated-petriflow-prompts';
+import {PetriNet} from '@netgrif/petriflow';
+import {BpmnStateService} from '../../bpmn-mode/bpmn-state.service';
+import {EnrichmentService} from '../../bpmn-mode/enrichment.service';
 
 // Public enums — kept for compatibility with master-detail / data / role / action
 // modes that pass an "AI context hint" when opening the sidenav. The hint is now
@@ -83,6 +86,8 @@ export class AiAssistantService {
         private modelService: ModelService,
         private exportService: ModelExportService,
         private importService: ModelImportService,
+        private bpmnState: BpmnStateService,
+        private enrichment: EnrichmentService,
         private http: HttpClient,
         private zone: NgZone
     ) {
@@ -110,6 +115,11 @@ export class AiAssistantService {
 
     public isAiConfigured(): boolean {
         return this.aiProvider.hasKeyForActiveProvider();
+    }
+
+    /** True when the current process originates from an imported BPMN diagram. */
+    public isBpmnProject(): boolean {
+        return this.bpmnState.isBpmnProject;
     }
 
     public configureAiAssistant(cfg: {provider: 'claude' | 'openai' | 'gemini'; model: string; keys: {claude?: string; openai?: string; gemini?: string}}): void {
@@ -146,9 +156,16 @@ export class AiAssistantService {
      */
     public async sendUserMessage(text: string): Promise<AiChatMessage[]> {
         const canvas = this.getCurrentModelAsString();
+        // For a BPMN-derived process only the enrichment layer (forms/roles/
+        // actions/data) can be applied back; the workflow structure is owned by
+        // the BPMN diagram. Steer the model to enrichment-only edits that keep
+        // every transition/place id intact so they re-attach after conversion.
+        const bpmnGuard = this.bpmnState.isBpmnProject
+            ? `[This process originates from a BPMN diagram. Modify ONLY forms, roles, actions and data variables. Do NOT change the workflow structure (places/transitions/arcs) and keep every transition and place id exactly as given.]\n\n`
+            : '';
         const turnContent = canvas
-            ? `[Current process open in the user's visual editor — treat this as up-to-date context for the question that follows.]\n\n\`\`\`xml\n${canvas.trim()}\n\`\`\`\n\n${text}`
-            : text;
+            ? `${bpmnGuard}[Current process open in the user's visual editor — treat this as up-to-date context for the question that follows.]\n\n\`\`\`xml\n${canvas.trim()}\n\`\`\`\n\n${text}`
+            : `${bpmnGuard}${text}`;
 
         // User bubble.
         this.pushMessage(this.makeMessage('text', text, false));
@@ -328,14 +345,44 @@ export class AiAssistantService {
         this.currentStreamSub = null;
     }
 
-    /** Apply XML to the canvas. If parsing fails, the bubble stays so the user can still copy / download. */
-    public applyXmlString(xml: string): {ok: boolean; error?: string} {
+    /**
+     * Apply XML to the canvas. If parsing fails, the bubble stays so the user can still copy / download.
+     *
+     * For a BPMN-originated process the workflow structure lives in the BPMN
+     * diagram and the model is rebuilt on every conversion — so the AI's changes
+     * would be overwritten unless we harvest them into the enrichment store
+     * (per-task forms/roles/actions + process-global roles/data), exactly like
+     * the BPMN editor does on re-entry. Structural changes the AI may have made
+     * cannot be reflected back into the diagram; we report that so the caller can
+     * warn the user.
+     */
+    public applyXmlString(xml: string): {ok: boolean; error?: string; structuralChange?: boolean} {
+        const isBpmn = this.bpmnState.isBpmnProject;
+        const before = isBpmn ? this.structureSignature(this.modelService.model) : '';
         try {
             this.importService.importFromXml(xml);
-            return {ok: true};
         } catch (e) {
             return {ok: false, error: e instanceof Error ? e.message : String(e)};
         }
+        if (!isBpmn) {
+            return {ok: true};
+        }
+        const structuralChange = this.structureSignature(this.modelService.model) !== before;
+        // Capture the just-applied forms/roles/actions/data so they survive the
+        // next BPMN→Petriflow conversion (overlaid by EnrichmentService.materializeInto).
+        this.enrichment.harvestAll(this.modelService.model);
+        return {ok: true, structuralChange};
+    }
+
+    /** Structural fingerprint of a net (places + transitions + arcs), id-based. */
+    private structureSignature(model: PetriNet | undefined): string {
+        if (!model) return '';
+        const places = model.getPlaces().map(p => p.id).sort();
+        const transitions = model.getTransitions().map(t => t.id).sort();
+        const arcs = model.getArcs()
+            .map(a => `${a.source?.id}->${a.destination?.id}:${a.type}`)
+            .sort();
+        return JSON.stringify({places, transitions, arcs});
     }
 
     /** Forget everything — clear local history, clear UI bubbles, drop persisted state. */
