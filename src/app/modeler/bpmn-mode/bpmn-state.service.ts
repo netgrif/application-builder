@@ -20,6 +20,15 @@ export class BpmnStateService {
     private _xml: string | null = null;
     private _isBpmnProject = false;
 
+    /**
+     * Label changes (BPMN element id → new label) that the AI assistant applied
+     * and that must be written back onto the BPMN diagram on the next BPMN-mode
+     * entry. The BPMN element name is the source of truth for a task label, so
+     * label edits cannot live in the enrichment store — they are pushed onto the
+     * diagram instead. Transient (applied immediately, not persisted).
+     */
+    pendingLabelOverrides: Map<string, string> | null = null;
+
     constructor() {
         try {
             this._xml = localStorage.getItem(LS_XML);
@@ -54,6 +63,7 @@ export class BpmnStateService {
     clear(): void {
         this._xml = null;
         this._isBpmnProject = false;
+        this.pendingLabelOverrides = null;
         try {
             localStorage.removeItem(LS_XML);
             localStorage.removeItem(LS_FLAG);

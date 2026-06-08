@@ -12,6 +12,7 @@ import {PETRIFLOW_REFERENCE, PETRIFLOW_SYSTEM_PROMPT} from './generated-petriflo
 import {PetriNet} from '@netgrif/petriflow';
 import {BpmnStateService} from '../../bpmn-mode/bpmn-state.service';
 import {EnrichmentService} from '../../bpmn-mode/enrichment.service';
+import {transitionIdToActivityKey} from '../../bpmn-mode/bpmn-conversion.util';
 
 // Public enums — kept for compatibility with master-detail / data / role / action
 // modes that pass an "AI context hint" when opening the sidenav. The hint is now
@@ -371,6 +372,15 @@ export class AiAssistantService {
         // Capture the just-applied forms/roles/actions/data so they survive the
         // next BPMN→Petriflow conversion (overlaid by EnrichmentService.materializeInto).
         this.enrichment.harvestAll(this.modelService.model);
+        // Task labels are the BPMN element's name — the diagram, not the enrichment
+        // store, is their source of truth (materializeInto deliberately skips labels).
+        // Stash the AI's labels so BpmnModeComponent writes them onto the diagram.
+        const labels = new Map<string, string>();
+        this.modelService.model.getTransitions().forEach(t => {
+            const label = t.label?.value;
+            if (label != null) labels.set(transitionIdToActivityKey(t.id), label);
+        });
+        this.bpmnState.pendingLabelOverrides = labels;
         return {ok: true, structuralChange};
     }
 

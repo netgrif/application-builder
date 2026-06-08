@@ -131,7 +131,11 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
             const init = saved
                 ? this._modeler.importXML(saved)
                 : this._modeler.createDiagram();
-            init.catch(() => this._modeler.createDiagram().catch(() => {}));
+            // After the diagram is in, write back any task-label changes the AI
+            // assistant made (the BPMN name is the source of truth for labels).
+            init
+                .then(() => this._applyPendingLabels())
+                .catch(() => this._modeler.createDiagram().catch(() => {}));
 
             // Keep the underlying Petriflow model in sync on structural changes,
             // and cache the diagram XML so it survives navigation.
@@ -339,6 +343,29 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             } catch { /* ignore */ }
         });
+    }
+
+    /**
+     * Apply task-label changes the AI assistant made onto the BPMN diagram.
+     * Labels live on the BPMN element (not the enrichment store), so updating
+     * them here makes them show on the canvas and survive the next conversion;
+     * the resulting element.changed events trigger the usual cache + sync.
+     * Swallows its own errors so a failure never aborts diagram restoration.
+     */
+    private _applyPendingLabels(): void {
+        const overrides = this._bpmnState.pendingLabelOverrides;
+        if (!overrides || overrides.size === 0) return;
+        this._bpmnState.pendingLabelOverrides = null;
+        try {
+            const reg = this._modeler.get('elementRegistry');
+            const modeling = this._modeler.get('modeling');
+            overrides.forEach((label, elementId) => {
+                const el = reg.get(elementId);
+                if (el && label != null && (el.businessObject?.name ?? '') !== label) {
+                    modeling.updateLabel(el, label);
+                }
+            });
+        } catch { /* ignore */ }
     }
 
     async editForm(): Promise<void> {
