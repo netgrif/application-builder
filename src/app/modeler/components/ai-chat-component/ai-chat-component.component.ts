@@ -80,6 +80,8 @@ export class AiChatComponentComponent implements OnDestroy {
     /** True when user scrolled up — disables auto-scroll, shows jump-to-bottom FAB. */
     public showScrollFab = false;
     private userIsAtBottom = true;
+    /** Message count at the last stream emit — used to scroll only on new bubbles. */
+    private _lastMsgCount = 0;
 
     /**
      * Welcome-screen examples. The first two are FREE MOCKUPS — streamed
@@ -138,8 +140,13 @@ export class AiChatComponentComponent implements OnDestroy {
             this.scrollToBottomIfNear();
         });
         this.messageSubscription = this.aiAssistantService.messages$.subscribe(messages => {
+            // Only snap to the latest when a NEW bubble appears — not on every
+            // streaming token — so the view doesn't keep yanking down while a long
+            // XML reply generates. The jump-to-bottom FAB stays available.
+            const grew = messages.length > this._lastMsgCount;
+            this._lastMsgCount = messages.length;
             this.messages = messages;
-            this.scrollToBottomIfNear();
+            if (grew) this.scrollToBottomIfNear();
         });
     }
 
