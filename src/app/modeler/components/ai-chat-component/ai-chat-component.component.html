@@ -34,18 +34,41 @@
             <!-- Welcome state -->
             <div *ngIf="messages.length === 0" class="ai-welcome">
                 <mat-icon class="ai-welcome-icon">auto_awesome</mat-icon>
-                <h2 class="ai-welcome-title">How can I help?</h2>
-                <p class="ai-welcome-subtitle">Describe a process to model, pick a free mockup, or try an example prompt.</p>
-                <div class="ai-welcome-chips">
-                    <button mat-stroked-button class="ai-welcome-chip"
-                            *ngFor="let ex of quickExamples"
-                            [ngClass]="{'ai-welcome-chip--mockup': ex.kind === 'mockup'}"
-                            [matTooltip]="ex.description || ''"
-                            (click)="runQuickExample(ex)">
-                        <span class="chip-label">{{ ex.label }}</span>
-                        <span class="chip-badge" *ngIf="ex.kind === 'mockup'">FREE MOCKUP</span>
-                    </button>
-                </div>
+
+                <!-- Imported BPMN process: steer toward enriching it, not generating from scratch -->
+                <ng-container *ngIf="aiAssistantService.isBpmnProject(); else scratchWelcome">
+                    <h2 class="ai-welcome-title">Your BPMN process is loaded</h2>
+                    <p class="ai-welcome-subtitle">
+                        I can see your imported BPMN diagram. You can keep editing the workflow in the
+                        BPMN editor — and here enrich it into a full Petriflow process: add
+                        <strong>data fields</strong>, <strong>roles</strong>, <strong>forms</strong> and
+                        <strong>actions</strong> in plain language. The diagram and its structure stay intact.
+                    </p>
+                    <div class="ai-welcome-chips">
+                        <button mat-stroked-button class="ai-welcome-chip"
+                                *ngFor="let ex of bpmnEnrichExamples"
+                                [matTooltip]="ex.description || ''"
+                                (click)="runQuickExample(ex)">
+                            <span class="chip-label">{{ ex.label }}</span>
+                        </button>
+                    </div>
+                </ng-container>
+
+                <!-- Empty / Petriflow project: generate from scratch -->
+                <ng-template #scratchWelcome>
+                    <h2 class="ai-welcome-title">How can I help?</h2>
+                    <p class="ai-welcome-subtitle">Describe a process to model, pick a free mockup, or try an example prompt.</p>
+                    <div class="ai-welcome-chips">
+                        <button mat-stroked-button class="ai-welcome-chip"
+                                *ngFor="let ex of quickExamples"
+                                [ngClass]="{'ai-welcome-chip--mockup': ex.kind === 'mockup'}"
+                                [matTooltip]="ex.description || ''"
+                                (click)="runQuickExample(ex)">
+                            <span class="chip-label">{{ ex.label }}</span>
+                            <span class="chip-badge" *ngIf="ex.kind === 'mockup'">FREE MOCKUP</span>
+                        </button>
+                    </div>
+                </ng-template>
             </div>
 
             <div *ngFor="let msg of messages; trackBy: trackByMsg"
@@ -56,7 +79,16 @@
                 <div *ngIf="msg.type === 'text'" class="markdown-message-bubble"
                      [ngClass]="{'user-bubble': msg.reply === false, 'ai-bubble': msg.reply === true}">
                     <div class="bubble-content">
-                        <td-markdown [content]="msg.text"></td-markdown>
+                        <td-markdown *ngIf="proseOf(msg.text) as prose" [content]="prose"></td-markdown>
+                        <!-- XML rendered as code (whitespace preserved) — looks like XML even mid-stream -->
+                        <div *ngIf="xmlOf(msg.text) as xml" class="xml-code-block"
+                             [ngClass]="{'xml-code-block--collapsed': !isXmlExpanded(msg)}">
+                            <pre class="xml-code"><code>{{ xml }}</code></pre>
+                            <button mat-button class="xml-code-toggle" (click)="toggleXmlExpansion(msg)">
+                                <mat-icon>{{ isXmlExpanded(msg) ? 'unfold_less' : 'unfold_more' }}</mat-icon>
+                                {{ isXmlExpanded(msg) ? 'Show less' : 'Show full XML' }}
+                            </button>
+                        </div>
                     </div>
                     <div class="message-time">{{ msg.date | date:'HH:mm' }}</div>
                 </div>

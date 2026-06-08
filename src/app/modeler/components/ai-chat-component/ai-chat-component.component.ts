@@ -112,6 +112,20 @@ export class AiChatComponentComponent implements OnDestroy {
         {kind: 'prompt', label: 'Add manager approval to current canvas', prompt: 'Add a manager approval transition to the current canvas, between the existing submission and completion steps. Reuse existing roles where possible.'}
     ];
 
+    /**
+     * Example prompts shown when an imported BPMN process is open. Instead of
+     * "generate from scratch", these steer the user toward enriching the existing
+     * diagram with Petriflow concepts (data, roles, forms, actions) — the workflow
+     * structure stays owned by the BPMN diagram.
+     */
+    public bpmnEnrichExamples: QuickExample[] = [
+        {kind: 'prompt', label: '📝 Add forms to tasks', prompt: 'Add a sensible form with the relevant input fields to each user task in this process. Keep the workflow structure and all ids unchanged.'},
+        {kind: 'prompt', label: '👥 Add roles & permissions', prompt: 'Add the roles this process needs and assign view / perform permissions to the appropriate tasks. Keep the workflow structure and all ids unchanged.'},
+        {kind: 'prompt', label: '🔧 Add an action', prompt: 'Add an action that sets a field value when a task is finished (for example a status or a timestamp). Keep the workflow structure and all ids unchanged.'},
+        {kind: 'prompt', label: '🗃️ Add data fields', prompt: 'Add the data fields each task needs to capture, with appropriate types. Keep the workflow structure and all ids unchanged.'},
+        {kind: 'prompt', label: '🏷️ Improve task labels', prompt: 'Rename the tasks to clear, human-readable labels. Keep the workflow structure and all ids unchanged.'}
+    ];
+
     constructor(
         public aiAssistantService: AiAssistantService,
         private viewHelperService: ViewHelperService,
@@ -323,6 +337,47 @@ export class AiChatComponentComponent implements OnDestroy {
     public xmlPreview(message: AiChatMessage): string {
         const lines = message.text.split('\n');
         return lines.slice(0, 6).join('\n') + (lines.length > 6 ? '\n...' : '');
+    }
+
+    // ─── Bubble rendering: split prose from XML ──────────────────────────────
+    //
+    // The assistant reply often ends with a big ```xml … ``` block. Rendering it
+    // through markdown looks bad while streaming (an unclosed fence shows as raw
+    // wrapped text) and never reads like code. So we split the bubble: the prose
+    // goes through markdown, and the XML is shown in a dedicated monospace block
+    // (whitespace preserved) that already looks like XML even mid-stream.
+
+    /** Prose part of an assistant bubble — everything before the XML block. */
+    public proseOf(text: string): string {
+        if (!text) return '';
+        const cut = this.xmlStart(text);
+        return cut < 0 ? text : text.slice(0, cut).trim();
+    }
+
+    /** XML part of an assistant bubble, tolerant of an unclosed fence while streaming. */
+    public xmlOf(text: string): string | null {
+        if (!text) return null;
+        const fence = text.match(/```(?:xml)?[ \t]*\r?\n?/i);
+        if (fence && fence.index !== undefined) {
+            const after = text.slice(fence.index + fence[0].length);
+            const close = after.indexOf('```');
+            const body = close >= 0 ? after.slice(0, close) : after;
+            if (/<\w/.test(body)) return body.trim();
+        }
+        const doc = text.indexOf('<document');
+        if (doc >= 0) {
+            const end = text.lastIndexOf('</document>');
+            return (end > doc ? text.slice(doc, end + '</document>'.length) : text.slice(doc)).trim();
+        }
+        return null;
+    }
+
+    /** Index where the XML region starts (fence or raw <document>), or -1. */
+    private xmlStart(text: string): number {
+        const fence = text.match(/```(?:xml)?/i);
+        if (fence && fence.index !== undefined) return fence.index;
+        const doc = text.indexOf('<document');
+        return doc >= 0 ? doc : -1;
     }
 
     // ─── Scroll handling ─────────────────────────────────────────────────────

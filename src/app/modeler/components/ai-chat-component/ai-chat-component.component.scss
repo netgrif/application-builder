@@ -264,6 +264,50 @@
     }
 }
 
+/* ─── XML code block (split out of the assistant bubble) ──────────────────── */
+
+.xml-code-block {
+    margin-top: var(--space-2);
+    border-radius: var(--radius-md);
+    background: var(--text-strong);
+    overflow: hidden;
+
+    .xml-code {
+        margin: 0;
+        padding: 0.6rem 0.75rem;
+        max-height: 360px;
+        overflow: auto;
+        color: #e6edf3;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        white-space: pre;
+        tab-size: 2;
+
+        code { font-family: inherit; white-space: inherit; }
+    }
+
+    &.xml-code-block--collapsed .xml-code {
+        max-height: 132px;
+    }
+
+    .xml-code-toggle {
+        width: 100%;
+        min-height: 34px;
+        border-radius: 0;
+        color: #9ecbff;
+        font-size: 0.76rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+        mat-icon {
+            font-size: 1rem;
+            width: 1rem;
+            height: 1rem;
+            margin-right: 4px;
+        }
+    }
+}
+
 .user-bubble {
     background-color: var(--color-primary);
     color: var(--text-inverse);
