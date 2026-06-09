@@ -135,10 +135,11 @@ export class AiProviderService {
      * when the provider signals end-of-stream, or errors on HTTP / parse fail.
      *
      * Robustness features:
-     *  - **Overall timeout** (`environment.ai.timeouts.requestMs`): if the full
-     *    response hasn't arrived in this window, the request is aborted with a
-     *    clear "took too long" message. Old generator users reported the chat
-     *    sometimes hanging forever — this guarantees it doesn't.
+     *  - **Time-to-first-token guard** (`environment.ai.timeouts.requestMs`): if
+     *    the stream hasn't STARTED within this window, the request is aborted with
+     *    a clear "took too long to start" message. Once the first token arrives
+     *    this guard is cleared — a long but steadily-streaming response (large XML)
+     *    is governed only by the idle watchdog below and is never cut off.
      *  - **Idle-stream watchdog** (`environment.ai.timeouts.idleStreamMs`): if
      *    no chunk arrives for this long mid-stream (proxy died / provider
      *    stalled), we abort. Without this we'd just spin forever.
@@ -228,6 +229,7 @@ export class AiProviderService {
         return new Observable<string>(observer => {
             const abort = new AbortController();
             let settled = false;
+            let firstChunkSeen = false;
             let idleTimer: ReturnType<typeof setTimeout> | null = null;
 
             const finish = (fn: () => void) => {
@@ -238,11 +240,15 @@ export class AiProviderService {
                 fn();
             };
 
+            // Time-to-first-token guard: only bounds how long we wait for the
+            // stream to START. Once the first token arrives this is cleared and
+            // the idle-stream watchdog takes over, so a long but steadily-
+            // streaming response (e.g. a large XML) is never cut off mid-flight.
             const overallTimer = setTimeout(() => {
                 abort.abort();
                 finish(() => observer.error(new Error(
                     `${this.providerLabel(cfg.provider)} took longer than ` +
-                    `${Math.round(timeouts.requestMs / 1000)}s to respond. ` +
+                    `${Math.round(timeouts.requestMs / 1000)}s to start responding. ` +
                     `Try a smaller model or simpler prompt.`
                 )));
             }, timeouts.requestMs);
@@ -267,7 +273,15 @@ export class AiProviderService {
             }).pipe(
                 switchMap(res => this.consumeSseStream(res, paths, cfg, resetIdleWatchdog))
             ).subscribe({
-                next: chunk => observer.next(chunk),
+                next: chunk => {
+                    // First token arrived → stop the time-to-first-token guard and
+                    // let the idle watchdog govern the rest of the stream.
+                    if (!firstChunkSeen) {
+                        firstChunkSeen = true;
+                        if (overallTimer) clearTimeout(overallTimer);
+                    }
+                    observer.next(chunk);
+                },
                 error: err => {
                     if (err?.name === 'AbortError') {
                         finish(() => observer.complete());

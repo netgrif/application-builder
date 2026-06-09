@@ -57,7 +57,6 @@ export interface AiAssistantCurrentContext {
 export interface LocalContext {
     currentContext: AiAssistantContextEnum | null;
     actionContext:  AiAssistantActionContextEnum | null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     contextObject:  any;
 }
 

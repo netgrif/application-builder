@@ -15,6 +15,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogConfigureAiComponent} from '../../../dialogs/dialog-configure-ai/dialog-configure-ai.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {AiChatMessage} from '../../services/ai-assistant/domain/message-objects';
 import {environment} from '../../../../environments/environment';
 
@@ -134,7 +135,8 @@ export class AiChatComponentComponent implements OnDestroy {
         private dialog: MatDialog,
         private snackBar: MatSnackBar,
         private http: HttpClient,
-        private router: Router
+        private router: Router,
+        private sanitizer: DomSanitizer
     ) {
         this.scrollSubscription = this.viewHelperService.scrollSubject.subscribe(() => {
             this.scrollToBottomIfNear();
@@ -411,6 +413,64 @@ export class AiChatComponentComponent implements OnDestroy {
             return (end > doc ? text.slice(doc, end + '</document>'.length) : text.slice(doc)).trim();
         }
         return null;
+    }
+
+    // ─── XML syntax highlighting ─────────────────────────────────────────────
+    //
+    // Lightweight, dependency-free XML highlighter (tags / attributes / values /
+    // comments). Works mid-stream on partial XML. Result is sanitized HTML bound
+    // via [innerHTML]. A 1-entry cache avoids re-tokenizing the same (growing)
+    // string repeatedly across change-detection cycles.
+
+    private _hlInput: string | null = null;
+    private _hlOutput: SafeHtml = '';
+
+    private static readonly XML_TOKEN_RE =
+        /<!--[\s\S]*?-->|<\?[\s\S]*?\?>|<\/?[A-Za-z_][\w:.\-]*(?:\s+[\w:.\-]+\s*=\s*"[^"]*")*\s*\/?>/g;
+
+    public highlightXml(xml: string): SafeHtml {
+        if (!xml) return '';
+        if (xml === this._hlInput) return this._hlOutput;
+
+        let out = '';
+        let last = 0;
+        const re = new RegExp(AiChatComponentComponent.XML_TOKEN_RE);
+        let m: RegExpExecArray | null;
+        while ((m = re.exec(xml)) !== null) {
+            out += this.esc(xml.slice(last, m.index));   // text content (default colour)
+            out += this.hlTag(m[0]);
+            last = m.index + m[0].length;
+        }
+        out += this.esc(xml.slice(last));
+
+        this._hlInput = xml;
+        this._hlOutput = this.sanitizer.bypassSecurityTrustHtml(out);
+        return this._hlOutput;
+    }
+
+    private esc(s: string): string {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    private hlTag(tag: string): string {
+        if (tag.startsWith('<!--')) return `<span class="xtok-comment">${this.esc(tag)}</span>`;
+        if (tag.startsWith('<?'))   return `<span class="xtok-decl">${this.esc(tag)}</span>`;
+
+        const m = tag.match(/^(<\/?)([\w:.\-]+)([\s\S]*?)(\/?>)$/);
+        if (!m) return this.esc(tag);
+        const [, open, name, attrs, close] = m;
+
+        const attrHtml = attrs.replace(
+            /([\w:.\-]+)(\s*=\s*)("[^"]*")/g,
+            (_full, an: string, eq: string, av: string) =>
+                `<span class="xtok-attr">${this.esc(an)}</span>${this.esc(eq)}` +
+                `<span class="xtok-val">${this.esc(av)}</span>`
+        );
+
+        return `<span class="xtok-punct">${this.esc(open)}</span>` +
+               `<span class="xtok-tag">${this.esc(name)}</span>` +
+               attrHtml +
+               `<span class="xtok-punct">${this.esc(close)}</span>`;
     }
 
     /** Index where the XML region starts (fence or raw <document>), or -1. */

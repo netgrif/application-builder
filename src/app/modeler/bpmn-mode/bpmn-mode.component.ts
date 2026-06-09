@@ -68,7 +68,6 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('bpmnCanvas') private _canvasRef!: ElementRef<HTMLDivElement>;
     @ViewChild('canvasWrapper') private _wrapperRef!: ElementRef<HTMLDivElement>;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _modeler: any;
     private readonly _bpmn2pnUrl: string;
     private _syncTimer: ReturnType<typeof setTimeout> | null = null;

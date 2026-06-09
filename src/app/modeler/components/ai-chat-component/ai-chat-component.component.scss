@@ -269,26 +269,65 @@
 .xml-code-block {
     margin-top: var(--space-2);
     border-radius: var(--radius-md);
-    background: var(--text-strong);
+    background: #0d1117;            // GitHub-dark, softer than pure black
+    border: 1px solid #1f2630;
     overflow: hidden;
+    position: relative;
+
+    // Small header bar so it reads as a code panel, not a raw dump.
+    &::before {
+        content: 'Petriflow XML';
+        display: block;
+        padding: 0.35rem 0.75rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #8b949e;
+        background: #161b22;
+        border-bottom: 1px solid #1f2630;
+    }
 
     .xml-code {
         margin: 0;
-        padding: 0.6rem 0.75rem;
+        padding: 0.6rem 0.85rem;
         max-height: 360px;
         overflow: auto;
-        color: #e6edf3;
+        color: #c9d1d9;            // clean light-grey, monochrome (no garish tags)
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 0.78rem;
-        line-height: 1.5;
+        font-size: 0.76rem;
+        line-height: 1.55;
         white-space: pre;
         tab-size: 2;
 
-        code { font-family: inherit; white-space: inherit; }
+        // Reset the global theme `code{}` rule; token colours come from the spans below.
+        code {
+            font-family: inherit;
+            white-space: inherit;
+            color: inherit;
+            background: none;
+            padding: 0;
+            border: 0;
+            font-size: inherit;
+        }
+
+        // Syntax-highlight tokens (palette ≈ the ai-preview deployment).
+        .xtok-tag     { color: #ff7b9c; }              // element names
+        .xtok-punct   { color: #ff7b9c; opacity: 0.8; } // < > / brackets
+        .xtok-attr    { color: #79c0ff; }              // attribute names
+        .xtok-val     { color: #7ee787; }              // attribute values / URLs
+        .xtok-comment { color: #8b949e; font-style: italic; }
+        .xtok-decl    { color: #8b949e; }              // <?xml … ?>
     }
 
-    &.xml-code-block--collapsed .xml-code {
-        max-height: 132px;
+    // Collapsed: shorter, with a fade-out so it clearly continues.
+    &.xml-code-block--collapsed {
+        .xml-code {
+            max-height: 120px;
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+        }
     }
 
     .xml-code-toggle {
@@ -297,7 +336,7 @@
         border-radius: 0;
         color: #9ecbff;
         font-size: 0.76rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        border-top: 1px solid #1f2630;
 
         mat-icon {
             font-size: 1rem;

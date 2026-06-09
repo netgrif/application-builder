@@ -83,7 +83,7 @@
                         <!-- XML rendered as code (whitespace preserved) — looks like XML even mid-stream -->
                         <div *ngIf="xmlOf(msg.text) as xml" class="xml-code-block"
                              [ngClass]="{'xml-code-block--collapsed': !isXmlExpanded(msg)}">
-                            <pre class="xml-code"><code>{{ xml }}</code></pre>
+                            <pre class="xml-code"><code [innerHTML]="highlightXml(xml)"></code></pre>
                             <button mat-button class="xml-code-toggle" (click)="toggleXmlExpansion(msg)">
                                 <mat-icon>{{ isXmlExpanded(msg) ? 'unfold_less' : 'unfold_more' }}</mat-icon>
                                 {{ isXmlExpanded(msg) ? 'Show less' : 'Show full XML' }}
