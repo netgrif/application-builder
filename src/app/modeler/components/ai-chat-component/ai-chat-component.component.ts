@@ -313,6 +313,40 @@ export class AiChatComponentComponent implements OnDestroy {
         }
     }
 
+    // ─── Patch actions ───────────────────────────────────────────────────────
+
+    /** Human-readable summary of a patch's operations, for the action card. */
+    public patchSummary(message: AiChatMessage): string[] {
+        try {
+            const parsed = JSON.parse(message.text);
+            const ops = Array.isArray(parsed) ? parsed : parsed?.ops;
+            if (!Array.isArray(ops)) return [];
+            return ops.map((o: any) => {
+                switch (o.op) {
+                    case 'setLabel':   return `Rename ${o.task} → “${o.value}”`;
+                    case 'addRole':    return `Add role “${o.title ?? o.id}”`;
+                    case 'assignRole': return `Give ${o.role} ${(o.permissions || ['perform', 'view']).join(' / ')} on ${o.task}`;
+                    case 'addField':   return `Add ${o.type ?? 'text'} field “${o.title ?? o.id}”${o.task ? ' to ' + o.task : ''}`;
+                    case 'addAction':  return `Add ${o.trigger ?? 'finish'} action on ${o.task}`;
+                    default:           return String(o.op ?? 'change');
+                }
+            });
+        } catch {
+            return [];
+        }
+    }
+
+    public applyPatch(message: AiChatMessage): void {
+        const result = this.aiAssistantService.applyPatchString(message.text);
+        if (!result.ok) {
+            this.snackBar.open(`Could not apply changes: ${result.error}`, 'OK', {duration: 6000});
+            return;
+        }
+        const skipped = result.failed ? ` (${result.failed} skipped)` : '';
+        this.snackBar.open(`Applied ${result.applied} change${result.applied === 1 ? '' : 's'}${skipped}.`, 'OK', {duration: 4000});
+        this.router.navigate([this.aiAssistantService.isBpmnProject() ? '/modeler/bpmn' : '/modeler']);
+    }
+
     public downloadXml(message: AiChatMessage): void {
         const blob = new Blob([message.text], {type: 'application/xml'});
         const url = URL.createObjectURL(blob);

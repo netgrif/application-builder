@@ -123,6 +123,27 @@
                     </div>
                 </div>
 
+                <!-- Patch actions card — targeted edit (JSON ops) to the open process -->
+                <div *ngIf="msg.type === 'patch-actions'" class="xml-card patch-card">
+                    <div class="xml-card-header">
+                        <mat-icon class="xml-card-icon">edit_note</mat-icon>
+                        <span class="xml-card-title">Targeted changes</span>
+                    </div>
+                    <ul class="patch-summary">
+                        <li *ngFor="let line of patchSummary(msg)">{{ line }}</li>
+                    </ul>
+                    <div class="xml-card-actions">
+                        <button mat-flat-button color="primary" (click)="applyPatch(msg)">
+                            <mat-icon>check</mat-icon>
+                            Apply changes
+                        </button>
+                        <button mat-stroked-button (click)="copyXml(msg)">
+                            <mat-icon>content_copy</mat-icon>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Error bubble -->
                 <div *ngIf="msg.type === 'error'" class="message-bubble ai-bubble error-bubble">
                     <div class="message-content error-content">
