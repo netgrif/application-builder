@@ -255,6 +255,9 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     hasTextValue(): boolean {
         return this.isSomeGridsterFieldSelected() &&
             this.gridsterService.selectedDataField.dataVariable.type === DataType.TEXT ||
+            this.gridsterService.selectedDataField.dataVariable.type === DataType.PROCESS_FILTER ||
+            this.gridsterService.selectedDataField.dataVariable.type === DataType.TASK_FILTER ||
+            this.gridsterService.selectedDataField.dataVariable.type === DataType.CASE_FILTER ||
             this.gridsterService.selectedDataField.dataVariable.type as string === 'i18n';
     }
 
