@@ -1,6 +1,7 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {Router} from '@angular/router';
 import {AppBuilderConfigurationService} from '../../../app-builder-configuration.service';
 import {TutorialService} from '../../../tutorial/tutorial-service';
 import {assignPoolRoles, assignSystemPerformer, extractRoles, extractTaskIds} from '../../bpmn-mode/bpmn-conversion.util';
@@ -29,7 +30,8 @@ export class ImportTool extends Tool {
         tutorialService: TutorialService,
         private modelService: ModelService,
         private bpmnState: BpmnStateService,
-        private enrichment: EnrichmentService
+        private enrichment: EnrichmentService,
+        private router: Router
     ) {
         super(
             'import',
@@ -68,6 +70,9 @@ export class ImportTool extends Tool {
                 assignPoolRoles(this.modelService.model, extractRoles(content), taskIds);
                 assignSystemPerformer(this.modelService.model, taskIds);
                 this.modelService.modelOrigin = 'bpmn';
+                // importFromXml navigates to the Petriflow edit view; for a BPMN
+                // import keep the user in the BPMN editor (which shows the diagram).
+                this.router.navigate(['/modeler/bpmn']);
             }, (error: HttpErrorResponse) => {
                 this.snackBar.open(error.message, 'X');
             });
