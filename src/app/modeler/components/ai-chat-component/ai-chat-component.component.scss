@@ -311,6 +311,12 @@
             font-size: inherit;
         }
 
+        &.xml-code--tail {
+            max-height: 180px;
+            color: #8b949e;          // muted — it's just a live peek of the tail
+            font-size: 0.72rem;
+        }
+
         // Syntax-highlight tokens (palette ≈ the ai-preview deployment).
         .xtok-tag     { color: #ff7b9c; }              // element names
         .xtok-punct   { color: #ff7b9c; opacity: 0.8; } // < > / brackets
@@ -327,6 +333,26 @@
             overflow: hidden;
             -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
             mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+        }
+    }
+
+    // "Generating Petriflow…" working indicator (shown only while streaming).
+    .xml-generating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        color: #c9d1d9;
+        font-size: 0.82rem;
+
+        .gen-label { font-weight: 500; }
+        .gen-count { color: #8b949e; font-size: 0.74rem; }
+        .gen-peek {
+            margin-left: auto;
+            min-width: 0;
+            color: #9ecbff;
+            font-size: 0.74rem;
+            line-height: 1.4;
         }
     }
 
@@ -546,6 +572,28 @@
             background: var(--surface-muted);
             color: var(--text-base);
             border: 1px solid var(--border-hairline);
+        }
+    }
+
+    // Attachment block: file chip + "what to do with it" quick actions.
+    .ai-attach-block {
+        max-width: 900px;
+        margin: 0 auto var(--space-2);
+
+        .ai-pill { margin-bottom: 8px; }
+
+        .ai-attach-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            .ai-attach-hint {
+                font-size: 0.8rem;
+                color: var(--text-muted);
+                margin-right: 2px;
+            }
+            mat-icon { font-size: 1.05rem; width: 1.05rem; height: 1.05rem; margin-right: 2px; }
         }
     }
 

@@ -80,14 +80,30 @@
                      [ngClass]="{'user-bubble': msg.reply === false, 'ai-bubble': msg.reply === true}">
                     <div class="bubble-content">
                         <td-markdown *ngIf="proseOf(msg.text) as prose" [content]="prose"></td-markdown>
-                        <!-- XML rendered as code (whitespace preserved) — looks like XML even mid-stream -->
+                        <!-- Generating indicator while streaming (keeps the DOM tiny);
+                             full syntax-highlighted code once the reply is complete. -->
                         <div *ngIf="xmlOf(msg.text) as xml" class="xml-code-block"
-                             [ngClass]="{'xml-code-block--collapsed': !isXmlExpanded(msg)}">
-                            <pre class="xml-code"><code *ngIf="aiAssistantService.isStreaming()">{{ xml }}</code><code *ngIf="!aiAssistantService.isStreaming()" [innerHTML]="highlightXml(xml)"></code></pre>
-                            <button mat-button class="xml-code-toggle" (click)="toggleXmlExpansion(msg)">
-                                <mat-icon>{{ isXmlExpanded(msg) ? 'unfold_less' : 'unfold_more' }}</mat-icon>
-                                {{ isXmlExpanded(msg) ? 'Show less' : 'Show full XML' }}
-                            </button>
+                             [ngClass]="{'xml-code-block--collapsed': !isMsgStreaming(msg) && !isXmlExpanded(msg)}">
+
+                            <ng-container *ngIf="isMsgStreaming(msg); else finalXml">
+                                <div class="xml-generating">
+                                    <mat-spinner [diameter]="16"></mat-spinner>
+                                    <span class="gen-label">Generating Petriflow…</span>
+                                    <span class="gen-count">{{ xml.length }} chars</span>
+                                    <button mat-button class="gen-peek" (click)="peekStreaming = !peekStreaming">
+                                        {{ peekStreaming ? 'hide' : 'peek' }}
+                                    </button>
+                                </div>
+                                <pre *ngIf="peekStreaming" class="xml-code xml-code--tail"><code>{{ xmlTail(xml) }}</code></pre>
+                            </ng-container>
+
+                            <ng-template #finalXml>
+                                <pre class="xml-code"><code [innerHTML]="highlightXml(xml)"></code></pre>
+                                <button mat-button class="xml-code-toggle" (click)="toggleXmlExpansion(msg)">
+                                    <mat-icon>{{ isXmlExpanded(msg) ? 'unfold_less' : 'unfold_more' }}</mat-icon>
+                                    {{ isXmlExpanded(msg) ? 'Show less' : 'Show full XML' }}
+                                </button>
+                            </ng-template>
                         </div>
                     </div>
                     <div class="message-time">{{ msg.date | date:'HH:mm' }}</div>
@@ -173,13 +189,25 @@
             </button>
         </div>
 
-        <!-- Pending file attachment chip -->
-        <div class="ai-pill ai-pill--attach" *ngIf="pendingAttachment">
-            <mat-icon>attach_file</mat-icon>
-            <span>{{ pendingAttachment.name }}</span>
-            <button mat-icon-button class="ai-pill-close" (click)="clearAttachment()" matTooltip="Remove file">
-                <mat-icon>close</mat-icon>
-            </button>
+        <!-- Pending file attachment chip + quick actions -->
+        <div class="ai-attach-block" *ngIf="pendingAttachment">
+            <div class="ai-pill ai-pill--attach">
+                <mat-icon>attach_file</mat-icon>
+                <span>{{ pendingAttachment.name }}</span>
+                <button mat-icon-button class="ai-pill-close" (click)="clearAttachment()" matTooltip="Remove file">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            <div class="ai-attach-actions">
+                <span class="ai-attach-hint">What should I do with it?</span>
+                <button mat-flat-button color="primary" (click)="runAttachmentAction('transform')"
+                        [disabled]="loading">
+                    <mat-icon>bolt</mat-icon> Transform to Petriflow
+                </button>
+                <button mat-stroked-button (click)="runAttachmentAction('explain')" [disabled]="loading">
+                    <mat-icon>help_outline</mat-icon> Explain this BPMN
+                </button>
+            </div>
         </div>
 
         <div class="ai-input-container">

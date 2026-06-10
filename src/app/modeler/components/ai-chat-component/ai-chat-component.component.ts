@@ -79,6 +79,10 @@ export class AiChatComponentComponent implements OnDestroy {
     public pendingAttachment: {name: string; content: string} | null = null;
     private static readonly MAX_UPLOAD_BYTES = 1_000_000;
 
+    /** Peek the tail of the XML while it streams (kept tiny to spare the DOM). */
+    public peekStreaming = false;
+    private static readonly XML_TAIL_CHARS = 1200;
+
     /** Per-bubble UI state (full XML expanded / collapsed). Keyed by message id. */
     public xmlExpanded: Record<number, boolean> = {};
 
@@ -254,6 +258,7 @@ export class AiChatComponentComponent implements OnDestroy {
         const attachment = this.pendingAttachment ?? undefined;
         this.currentMessage = '';
         this.pendingAttachment = null;
+        this.peekStreaming = false;
         // Reset textarea height after sending.
         if (this.messageInput?.nativeElement) {
             this.messageInput.nativeElement.style.height = 'auto';
@@ -300,6 +305,31 @@ export class AiChatComponentComponent implements OnDestroy {
 
     public clearAttachment(): void {
         this.pendingAttachment = null;
+    }
+
+    /** Quick action on the attached file: build a process from it, or explain it. */
+    public runAttachmentAction(kind: 'transform' | 'explain'): void {
+        if (!this.pendingAttachment || this.loading) return;
+        this.currentMessage = kind === 'transform'
+            ? 'Transform this BPMN into a complete Petriflow process — workflow, roles, data, forms and actions.'
+            : 'Explain what this BPMN process does, step by step. Do not generate any XML.';
+        this.sendCurrentMessage();
+    }
+
+    // ─── Streaming display helpers ──────────────────────────────────────────────
+
+    /** True only for the single bubble that is currently being streamed. */
+    public isMsgStreaming(msg: AiChatMessage): boolean {
+        return this.aiAssistantService.isStreaming()
+            && this.messages.length > 0
+            && msg === this.messages[this.messages.length - 1];
+    }
+
+    /** Last slice of the streaming XML — bounded so a huge reply can't flood the DOM. */
+    public xmlTail(xml: string): string {
+        return xml.length > AiChatComponentComponent.XML_TAIL_CHARS
+            ? '…' + xml.slice(-AiChatComponentComponent.XML_TAIL_CHARS)
+            : xml;
     }
 
     // ─── Scoped-edit focus ──────────────────────────────────────────────────────
