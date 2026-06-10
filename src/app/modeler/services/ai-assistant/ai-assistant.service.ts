@@ -86,8 +86,15 @@ Supported operations — always reference EXISTING element ids from the process 
       trigger is one of: assign, finish, cancel, delegate.
 
 Rules:
-- Prefer a PATCH for incremental edits. Use a full <document> XML only for a brand-new
-  process or a STRUCTURAL change (adding/removing tasks, transitions or arcs).
+- If the user asks a QUESTION or for advice (e.g. "are variable arcs used properly?",
+  "what roles are there?"), ANSWER IN PROSE ONLY. Do NOT output any XML or json — they
+  did not ask you to change anything.
+- For an incremental edit (add/rename a field, role, action, permission, label) ALWAYS
+  return a PATCH (json ops). Never re-emit the whole document for a small change.
+- Use a full <document> XML ONLY for a brand-new process, or when the user EXPLICITLY
+  asks to (re)generate / rebuild, or a STRUCTURAL change is unavoidable. Before emitting
+  a full document for an existing process, FIRST state in one sentence that this will
+  regenerate the whole process and ask the user to confirm — do not dump the XML unprompted.
 - Keep all existing ids unchanged. Reference tasks by their transition id.
 - Return EITHER a json patch OR an xml document in a single reply — never both.`;
 
@@ -222,13 +229,16 @@ export class AiAssistantService {
         let bubbleText = text;
 
         if (attachment) {
-            // Fresh build from an uploaded file — don't prepend the current canvas.
+            // Use the uploaded file as context; the user's text drives the intent
+            // (transform → full document, explain → prose, etc.). Don't prepend the canvas.
             turnContent =
-                `[The user uploaded a BPMN file "${attachment.name}". Build a COMPLETE Petriflow ` +
-                `process from it: workflow (places, transitions, arcs), roles, data variables, forms ` +
-                `and actions. Return one full <document> XML.]\n\n` +
-                `\`\`\`xml\n${attachment.content.trim()}\n\`\`\`\n\n${text || ''}`;
-            bubbleText = `${text || 'Build a Petriflow process from this BPMN file.'}\n\n📎 ${attachment.name}`;
+                `[The user attached a BPMN file "${attachment.name}". Use it as the basis for the ` +
+                `request below. If they ask to transform/build, return one full <document> XML for a ` +
+                `complete Petriflow process (workflow, roles, data, forms, actions); if they ask a ` +
+                `question, answer in prose only.]\n\n` +
+                `\`\`\`xml\n${attachment.content.trim()}\n\`\`\`\n\n` +
+                `${text || 'Transform this BPMN into a complete Petriflow process.'}`;
+            bubbleText = `${text || 'Transform this BPMN into a Petriflow process.'}\n\n📎 ${attachment.name}`;
         } else {
             const canvas = this.getCurrentModelAsString();
             // For a BPMN-derived process only the enrichment layer (forms/roles/
