@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AppBuilderConfigurationService} from '../../../app-builder-configuration.service';
 import {TutorialService} from '../../../tutorial/tutorial-service';
-import {assignSystemPerformer, extractTaskIds} from '../../bpmn-mode/bpmn-conversion.util';
+import {assignPoolRoles, assignSystemPerformer, extractRoles, extractTaskIds} from '../../bpmn-mode/bpmn-conversion.util';
 import {BpmnStateService} from '../../bpmn-mode/bpmn-state.service';
 import {EnrichmentService} from '../../bpmn-mode/enrichment.service';
 import {ModelImportService} from '../../model-import-service';
@@ -62,7 +62,11 @@ export class ImportTool extends Tool {
                 this.bpmnState.xml = content;
                 this.bpmnState.isBpmnProject = true;
                 this.importService.importFromXml(xmlContent);
-                assignSystemPerformer(this.modelService.model, extractTaskIds(content));
+                const taskIds = extractTaskIds(content);
+                // Recover pool/swimlane roles the bpmn2pn service drops, then
+                // fall back to the system role on synthetic transitions.
+                assignPoolRoles(this.modelService.model, extractRoles(content), taskIds);
+                assignSystemPerformer(this.modelService.model, taskIds);
                 this.modelService.modelOrigin = 'bpmn';
             }, (error: HttpErrorResponse) => {
                 this.snackBar.open(error.message, 'X');
