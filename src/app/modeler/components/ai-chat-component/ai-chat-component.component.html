@@ -83,7 +83,7 @@
                         <!-- XML rendered as code (whitespace preserved) — looks like XML even mid-stream -->
                         <div *ngIf="xmlOf(msg.text) as xml" class="xml-code-block"
                              [ngClass]="{'xml-code-block--collapsed': !isXmlExpanded(msg)}">
-                            <pre class="xml-code"><code [innerHTML]="highlightXml(xml)"></code></pre>
+                            <pre class="xml-code"><code *ngIf="aiAssistantService.isStreaming()">{{ xml }}</code><code *ngIf="!aiAssistantService.isStreaming()" [innerHTML]="highlightXml(xml)"></code></pre>
                             <button mat-button class="xml-code-toggle" (click)="toggleXmlExpansion(msg)">
                                 <mat-icon>{{ isXmlExpanded(msg) ? 'unfold_less' : 'unfold_more' }}</mat-icon>
                                 {{ isXmlExpanded(msg) ? 'Show less' : 'Show full XML' }}
@@ -163,7 +163,30 @@
     </div>
 
     <div class="ai-chat-input">
+
+        <!-- Scoped-edit focus chip: edits target only this task -->
+        <div class="ai-pill ai-pill--focus" *ngIf="focus">
+            <mat-icon>center_focus_strong</mat-icon>
+            <span>Editing only: <strong>{{ focus.label || focus.transitionId }}</strong>{{ focus.aspect ? ' · ' + focus.aspect : '' }}</span>
+            <button mat-icon-button class="ai-pill-close" (click)="clearFocus()" matTooltip="Edit whole process">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <!-- Pending file attachment chip -->
+        <div class="ai-pill ai-pill--attach" *ngIf="pendingAttachment">
+            <mat-icon>attach_file</mat-icon>
+            <span>{{ pendingAttachment.name }}</span>
+            <button mat-icon-button class="ai-pill-close" (click)="clearAttachment()" matTooltip="Remove file">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
         <div class="ai-input-container">
+            <label class="ai-attach-btn" matTooltip="Attach a .bpmn / .xml file">
+                <mat-icon>attach_file</mat-icon>
+                <input type="file" accept=".bpmn,.xml" (change)="onAttachFile($event)" hidden>
+            </label>
             <textarea [(ngModel)]="currentMessage"
                       placeholder="Describe the process you want to build, or ask a question…  (Shift+Enter for newline)"
                       class="ai-message-textarea"

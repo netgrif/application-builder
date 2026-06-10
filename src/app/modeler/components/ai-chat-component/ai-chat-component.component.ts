@@ -75,6 +75,10 @@ export class AiChatComponentComponent implements OnDestroy {
     public loading: boolean = false;
     public currentMessage: string = '';
 
+    /** A .bpmn/.xml file the user attached, pending send. */
+    public pendingAttachment: {name: string; content: string} | null = null;
+    private static readonly MAX_UPLOAD_BYTES = 1_000_000;
+
     /** Per-bubble UI state (full XML expanded / collapsed). Keyed by message id. */
     public xmlExpanded: Record<number, boolean> = {};
 
@@ -247,7 +251,9 @@ export class AiChatComponentComponent implements OnDestroy {
         if (this.stopMessageSending()) return;
 
         const text = this.currentMessage.trim();
+        const attachment = this.pendingAttachment ?? undefined;
         this.currentMessage = '';
+        this.pendingAttachment = null;
         // Reset textarea height after sending.
         if (this.messageInput?.nativeElement) {
             this.messageInput.nativeElement.style.height = 'auto';
@@ -256,13 +262,54 @@ export class AiChatComponentComponent implements OnDestroy {
 
         this.loading = true;
         this.userIsAtBottom = true; // sending message means user wants to see reply
-        this.aiAssistantService.sendUserMessage(text).finally(() => {
+        this.aiAssistantService.sendUserMessage(text, attachment).finally(() => {
             this.loading = false;
         });
     }
 
     public stopMessageSending(): boolean {
-        return this.loading || !this.currentMessage?.trim() || !this.aiAssistantService.isAiConfigured();
+        return this.loading
+            || !this.aiAssistantService.isAiConfigured()
+            || (!this.currentMessage?.trim() && !this.pendingAttachment);
+    }
+
+    // ─── File attachment ──────────────────────────────────────────────────────
+
+    public onAttachFile(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+        input.value = '';
+        if (!file) return;
+
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        if (ext !== 'bpmn' && ext !== 'xml') {
+            this.snackBar.open('Only .bpmn or .xml files are supported.', 'OK', {duration: 3000});
+            return;
+        }
+        if (file.size > AiChatComponentComponent.MAX_UPLOAD_BYTES) {
+            this.snackBar.open('File is too large (max 1 MB).', 'OK', {duration: 3000});
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.pendingAttachment = {name: file.name, content: reader.result as string};
+        };
+        reader.onerror = () => this.snackBar.open('Could not read the file.', 'OK', {duration: 3000});
+        reader.readAsText(file);
+    }
+
+    public clearAttachment(): void {
+        this.pendingAttachment = null;
+    }
+
+    // ─── Scoped-edit focus ──────────────────────────────────────────────────────
+
+    public get focus(): {transitionId: string; label?: string; aspect?: string} | null {
+        return this.aiAssistantService.focus;
+    }
+
+    public clearFocus(): void {
+        this.aiAssistantService.clearFocus();
     }
 
     public resetAgent(): void {
@@ -422,30 +469,43 @@ export class AiChatComponentComponent implements OnDestroy {
     // via [innerHTML]. A 1-entry cache avoids re-tokenizing the same (growing)
     // string repeatedly across change-detection cycles.
 
-    private _hlInput: string | null = null;
-    private _hlOutput: SafeHtml = '';
+    /** Cache highlighted XML by its source string so repeated change-detection
+     *  cycles (and multiple XML bubbles) don't re-tokenize static content. */
+    private _hlCache = new Map<string, SafeHtml>();
 
     private static readonly XML_TOKEN_RE =
         /<!--[\s\S]*?-->|<\?[\s\S]*?\?>|<\/?[A-Za-z_][\w:.\-]*(?:\s+[\w:.\-]+\s*=\s*"[^"]*")*\s*\/?>/g;
 
+    /** Above this size, skip span-based highlighting (would create tens of
+     *  thousands of DOM nodes and jank the page) and render plain escaped text. */
+    private static readonly MAX_HIGHLIGHT_CHARS = 60_000;
+
     public highlightXml(xml: string): SafeHtml {
         if (!xml) return '';
-        if (xml === this._hlInput) return this._hlOutput;
+        const cached = this._hlCache.get(xml);
+        if (cached !== undefined) return cached;
 
-        let out = '';
-        let last = 0;
-        const re = new RegExp(AiChatComponentComponent.XML_TOKEN_RE);
-        let m: RegExpExecArray | null;
-        while ((m = re.exec(xml)) !== null) {
-            out += this.esc(xml.slice(last, m.index));   // text content (default colour)
-            out += this.hlTag(m[0]);
-            last = m.index + m[0].length;
+        let html: SafeHtml;
+        if (xml.length > AiChatComponentComponent.MAX_HIGHLIGHT_CHARS) {
+            html = this.sanitizer.bypassSecurityTrustHtml(this.esc(xml));
+        } else {
+            let out = '';
+            let last = 0;
+            const re = new RegExp(AiChatComponentComponent.XML_TOKEN_RE);
+            let m: RegExpExecArray | null;
+            while ((m = re.exec(xml)) !== null) {
+                out += this.esc(xml.slice(last, m.index));   // text content (default colour)
+                out += this.hlTag(m[0]);
+                last = m.index + m[0].length;
+            }
+            out += this.esc(xml.slice(last));
+            html = this.sanitizer.bypassSecurityTrustHtml(out);
         }
-        out += this.esc(xml.slice(last));
 
-        this._hlInput = xml;
-        this._hlOutput = this.sanitizer.bypassSecurityTrustHtml(out);
-        return this._hlOutput;
+        // Bound the cache so a long session can't grow it without limit.
+        if (this._hlCache.size > 40) this._hlCache.clear();
+        this._hlCache.set(xml, html);
+        return html;
     }
 
     private esc(s: string): string {

@@ -120,6 +120,21 @@ export class AiAssistantService {
     private systemPromptCache: string | null = null;
     private nextMessageId = 1;
 
+    /**
+     * Scoped-edit focus. When set, the assistant is steered to change ONLY this
+     * task (optionally one aspect) and to return a PATCH (ops) rather than a full
+     * document — so right-clicking a task → "Ask AI" edits just that part.
+     */
+    public focus: {transitionId: string; label?: string; aspect?: 'form' | 'actions' | 'roles' | 'task'} | null = null;
+
+    public setFocus(transitionId: string, label?: string, aspect?: 'form' | 'actions' | 'roles' | 'task'): void {
+        this.focus = {transitionId, label, aspect};
+    }
+
+    public clearFocus(): void {
+        this.focus = null;
+    }
+
     /** Subscription to the currently streaming provider response, or null when idle. */
     private currentStreamSub: Subscription | null = null;
     private currentStreamStopped = false;
@@ -199,21 +214,45 @@ export class AiAssistantService {
      * Sends a user message and streams the reply.
      * Bubble updates happen inside NgZone so change detection picks them up.
      */
-    public async sendUserMessage(text: string): Promise<AiChatMessage[]> {
-        const canvas = this.getCurrentModelAsString();
-        // For a BPMN-derived process only the enrichment layer (forms/roles/
-        // actions/data) can be applied back; the workflow structure is owned by
-        // the BPMN diagram. Steer the model to enrichment-only edits that keep
-        // every transition/place id intact so they re-attach after conversion.
-        const bpmnGuard = this.bpmnState.isBpmnProject
-            ? `[This process originates from a BPMN diagram. Modify ONLY forms, roles, actions and data variables. Do NOT change the workflow structure (places/transitions/arcs) and keep every transition and place id exactly as given.]\n\n`
-            : '';
-        const turnContent = canvas
-            ? `${bpmnGuard}[Current process open in the user's visual editor — treat this as up-to-date context for the question that follows.]\n\n\`\`\`xml\n${canvas.trim()}\n\`\`\`\n\n${text}`
-            : `${bpmnGuard}${text}`;
+    public async sendUserMessage(
+        text: string,
+        attachment?: {name: string; content: string}
+    ): Promise<AiChatMessage[]> {
+        let turnContent: string;
+        let bubbleText = text;
+
+        if (attachment) {
+            // Fresh build from an uploaded file — don't prepend the current canvas.
+            turnContent =
+                `[The user uploaded a BPMN file "${attachment.name}". Build a COMPLETE Petriflow ` +
+                `process from it: workflow (places, transitions, arcs), roles, data variables, forms ` +
+                `and actions. Return one full <document> XML.]\n\n` +
+                `\`\`\`xml\n${attachment.content.trim()}\n\`\`\`\n\n${text || ''}`;
+            bubbleText = `${text || 'Build a Petriflow process from this BPMN file.'}\n\n📎 ${attachment.name}`;
+        } else {
+            const canvas = this.getCurrentModelAsString();
+            // For a BPMN-derived process only the enrichment layer (forms/roles/
+            // actions/data) can be applied back; the workflow structure is owned by
+            // the BPMN diagram. Steer the model to enrichment-only edits that keep
+            // every transition/place id intact so they re-attach after conversion.
+            const bpmnGuard = this.bpmnState.isBpmnProject
+                ? `[This process originates from a BPMN diagram. Modify ONLY forms, roles, actions and data variables. Do NOT change the workflow structure (places/transitions/arcs) and keep every transition and place id exactly as given.]\n\n`
+                : '';
+            // Scoped-edit focus → force a minimal PATCH touching only one task.
+            const focus = this.focus;
+            const focusGuard = focus
+                ? `[FOCUS: Edit ONLY the task "${focus.label ?? focus.transitionId}" (id "${focus.transitionId}")` +
+                  `${focus.aspect ? `, specifically its ${focus.aspect}` : ''}. Return a PATCH — a single ` +
+                  `\`\`\`json {"ops":[...]} block — whose every op references task "${focus.transitionId}". ` +
+                  `Do NOT modify any other task and do NOT return a full <document>.]\n\n`
+                : '';
+            turnContent = canvas
+                ? `${focusGuard}${bpmnGuard}[Current process open in the user's visual editor — treat this as up-to-date context for the question that follows.]\n\n\`\`\`xml\n${canvas.trim()}\n\`\`\`\n\n${text}`
+                : `${focusGuard}${bpmnGuard}${text}`;
+        }
 
         // User bubble.
-        this.pushMessage(this.makeMessage('text', text, false));
+        this.pushMessage(this.makeMessage('text', bubbleText, false));
 
         // Thinking spinner — removed when the first token arrives or on error.
         const spinner = this.makeMessage('spinner', 'Thinking…', true);
@@ -615,6 +654,7 @@ export class AiAssistantService {
     public resetAgent(): void {
         this.conversationHistory = [];
         this.uiMessages = [];
+        this.focus = null;
         this.persistHistory();
         this.emitMessages();
     }

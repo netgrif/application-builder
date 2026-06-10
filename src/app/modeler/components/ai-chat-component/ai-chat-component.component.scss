@@ -517,6 +517,38 @@
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03);
     flex-shrink: 0;
 
+    // Focus / attachment pills above the composer.
+    .ai-pill {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        max-width: 900px;
+        margin: 0 auto var(--space-2);
+        padding: 4px 4px 4px 10px;
+        border-radius: var(--radius-pill);
+        font-size: 0.8rem;
+        width: fit-content;
+
+        mat-icon { font-size: 1rem; width: 1rem; height: 1rem; }
+        span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 520px; }
+
+        .ai-pill-close {
+            width: 24px; height: 24px; line-height: 24px;
+            mat-icon { font-size: 0.95rem; width: 0.95rem; height: 0.95rem; }
+        }
+
+        &--focus {
+            background: var(--color-primary-soft);
+            color: var(--color-primary-700);
+            border: 1px solid rgba(15, 76, 129, 0.25);
+        }
+        &--attach {
+            background: var(--surface-muted);
+            color: var(--text-base);
+            border: 1px solid var(--border-hairline);
+        }
+    }
+
     .ai-input-container {
         display: flex;
         gap: var(--space-2);
@@ -524,6 +556,22 @@
         max-width: 900px;
         margin: 0 auto;
         width: 100%;
+    }
+
+    .ai-attach-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        flex-shrink: 0;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: background var(--transition-fast), color var(--transition-fast);
+
+        &:hover { background: var(--surface-muted); color: var(--color-primary); }
+        mat-icon { font-size: 1.25rem; width: 1.25rem; height: 1.25rem; }
     }
 
     .ai-message-textarea {

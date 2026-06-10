@@ -24,7 +24,8 @@ import {ActionsModeService} from '../actions-mode/actions-mode.service';
 import {MenuItem} from '../edit-mode/context-menu/menu-items/menu-item';
 import {ModelService} from '../services/model/model.service';
 import {SelectedTransitionService} from '../selected-transition.service';
-import {assignSystemPerformer, transitionIdToActivityKey} from './bpmn-conversion.util';
+import {AiAssistantService} from '../services/ai-assistant/ai-assistant.service';
+import {activityKeyToTransitionId, assignPoolRoles, assignSystemPerformer, extractRoles, transitionIdToActivityKey} from './bpmn-conversion.util';
 import {BpmnStateService} from './bpmn-state.service';
 import {EnrichmentService} from './enrichment.service';
 
@@ -89,6 +90,7 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
         private _actionsMD: ActionsMasterDetailService,
         private _bpmnState: BpmnStateService,
         private _enrichment: EnrichmentService,
+        private _ai: AiAssistantService,
         config: AppBuilderConfigurationService,
     ) {
         this._bpmn2pnUrl = config.get().services?.urls?.bpmn2pn;
@@ -208,7 +210,7 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
                     headers: {'Content-Type': 'text/xml;charset=US-ASCII'},
                     responseType: 'text',
                 }).subscribe({
-                    next: (pf: string) => { this._applyModel(pf); resolve(true); },
+                    next: (pf: string) => { this._applyModel(pf, bpmnXml); resolve(true); },
                     error: (e: HttpErrorResponse) => {
                         console.warn('[BpmnMode] conversion failed', e.status);
                         resolve(false);
@@ -218,7 +220,7 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    private _applyModel(petriflowXml: string): void {
+    private _applyModel(petriflowXml: string, bpmnXml: string): void {
         const result = this._petriflowImport.parseFromXml(petriflowXml);
         if (!result.model) return;
 
@@ -237,8 +239,9 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
             });
         } catch { /* modeler not ready */ }
 
-        // Wire the system role as performer only on synthetic transitions
-        // (events/gateways like "finalize"), never on real BPMN tasks.
+        // Recover pool/swimlane roles the bpmn2pn service drops, then put the
+        // system role on any synthetic transition (events/gateways) still bare.
+        assignPoolRoles(result.model, extractRoles(bpmnXml), taskIds);
         assignSystemPerformer(result.model, taskIds);
 
         // Drop enrichment for activities no longer in the diagram (→ quarantine).
@@ -257,11 +260,12 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Same items & order as the Petriflow edit-mode transition context menu
         this.menuItems = [
-            new MenuItem('Edit Task',     'edit',      () => this.editTask()),
-            new MenuItem('Edit form',     'dashboard', () => this.editForm()),
-            new MenuItem('Permissions',   'people',    () => this.editPermissions()),
-            new MenuItem('Edit Actions',  'code',      () => this.editActions()),
-            new MenuItem('Delete',        'delete',    () => this.deleteElement()),
+            new MenuItem('Edit Task',     'edit',         () => this.editTask()),
+            new MenuItem('Edit form',     'dashboard',    () => this.editForm()),
+            new MenuItem('Permissions',   'people',       () => this.editPermissions()),
+            new MenuItem('Edit Actions',  'code',         () => this.editActions()),
+            new MenuItem('Ask AI…',       'auto_awesome', () => this.askAi()),
+            new MenuItem('Delete',        'delete',       () => this.deleteElement()),
         ];
     }
 
@@ -270,6 +274,19 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     hideCtxMenu(): void { this.ctxMenu.visible = false; }
+
+    /** Open the AI assistant focused on this task — scoped, patch-only edits. */
+    askAi(): void {
+        const bpmnId = this.ctxMenu.bpmnElementId;
+        const transitionId = activityKeyToTransitionId(bpmnId);
+        let label = bpmnId;
+        try {
+            label = this._modeler.get('elementRegistry').get(bpmnId)?.businessObject?.name || bpmnId;
+        } catch { /* ignore */ }
+        this.hideCtxMenu();
+        this._ai.setFocus(transitionId, label, 'task');
+        this._router.navigate(['/modeler/ai']);
+    }
 
     deleteElement(): void {
         const id = this.ctxMenu.bpmnElementId;
