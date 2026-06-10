@@ -11,6 +11,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {Router} from '@angular/router';
 import {DataType, ImportService, Transition} from '@netgrif/petriflow';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import {Subscription} from 'rxjs';
 import {AppBuilderConfigurationService} from '../../app-builder-configuration.service';
 import {ChangedTransition} from '../../dialogs/dialog-transition-edit/changed-transition';
 import {RoleRefType} from '../../dialogs/dialog-manage-roles/dialog-manage-roles.component';
@@ -72,6 +73,10 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
     private _modeler: any;
     private readonly _bpmn2pnUrl: string;
     private _syncTimer: ReturnType<typeof setTimeout> | null = null;
+    /** Set once the component is torn down — guards async callbacks from touching a destroyed modeler. */
+    private _destroyed = false;
+    /** In-flight bpmn2pn conversion request, cancelled on destroy. */
+    private _convertSub: Subscription | null = null;
 
     converting = false;
     ctxMenu: ContextMenuState = {visible: false, x: 0, y: 0, bpmnElementId: ''};
@@ -166,16 +171,20 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this._destroyed = true;
         if (this._syncTimer) clearTimeout(this._syncTimer);
-        this._modeler?.destroy();
+        this._convertSub?.unsubscribe();
+        try { this._modeler?.destroy(); } catch { /* ignore */ }
+        this._modeler = null;
     }
 
     // ─── Background "podklad" sync ──────────────────────────────────────────────
 
     /** Cache the current diagram XML (local serialization, no network). */
     private _cacheDiagram(): void {
+        if (this._destroyed || !this._modeler) return;
         this._modeler.saveXML({format: false})
-            .then((r: {xml: string}) => { this._bpmnState.xml = r.xml; })
+            .then((r: {xml: string}) => { if (!this._destroyed) this._bpmnState.xml = r.xml; })
             .catch(() => {});
     }
 
@@ -190,7 +199,7 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
      * on demand when a context-menu action needs an up-to-date model.
      */
     private _convert(): Promise<boolean> {
-        if (!this._bpmn2pnUrl) {
+        if (!this._bpmn2pnUrl || this._destroyed || !this._modeler) {
             return Promise.resolve(false);
         }
         if (this._syncTimer) { clearTimeout(this._syncTimer); this._syncTimer = null; }
@@ -205,12 +214,16 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
                     this._ngZone.run(() => resolve(false));
                     return;
                 }
+                if (this._destroyed) { resolve(false); return; }
 
-                this._http.post(this._bpmn2pnUrl, bpmnXml, {
+                this._convertSub = this._http.post(this._bpmn2pnUrl, bpmnXml, {
                     headers: {'Content-Type': 'text/xml;charset=US-ASCII'},
                     responseType: 'text',
                 }).subscribe({
-                    next: (pf: string) => { this._applyModel(pf, bpmnXml); resolve(true); },
+                    next: (pf: string) => {
+                        if (!this._destroyed) this._applyModel(pf, bpmnXml);
+                        resolve(true);
+                    },
                     error: (e: HttpErrorResponse) => {
                         console.warn('[BpmnMode] conversion failed', e.status);
                         resolve(false);
@@ -221,8 +234,15 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private _applyModel(petriflowXml: string, bpmnXml: string): void {
-        const result = this._petriflowImport.parseFromXml(petriflowXml);
-        if (!result.model) return;
+        if (this._destroyed) return;
+        let result;
+        try {
+            result = this._petriflowImport.parseFromXml(petriflowXml);
+        } catch (e) {
+            console.warn('[BpmnMode] could not parse converted Petriflow XML', e);
+            return;
+        }
+        if (!result?.model) return;
 
         // Overlay the enrichment store onto the freshly-converted structure.
         // (Replaces the old merge that scraped props off the previous conversion.)
@@ -369,6 +389,7 @@ export class BpmnModeComponent implements OnInit, AfterViewInit, OnDestroy {
      * Swallows its own errors so a failure never aborts diagram restoration.
      */
     private _applyPendingLabels(): void {
+        if (this._destroyed || !this._modeler) return;
         const overrides = this._bpmnState.pendingLabelOverrides;
         if (!overrides || overrides.size === 0) return;
         this._bpmnState.pendingLabelOverrides = null;
