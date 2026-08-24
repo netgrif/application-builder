@@ -22,6 +22,7 @@ import {Router} from '@angular/router';
 import {SelectedTransitionService} from '../selected-transition.service';
 import {SimulationMode} from './simulation-mode';
 import {CanvasPlace} from '../edit-mode/domain/canvas-place';
+import {isCanvasModeRoute} from '../services/canvas/canvas-mode-route';
 
 @Injectable({
     providedIn: 'root',
@@ -40,7 +41,7 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
         modelService: ModelService,
         _canvasService: PetriflowCanvasService,
         dialog: MatDialog,
-        router: Router,
+        private router: Router,
         transitionService: SelectedTransitionService,
         private tutorialService: TutorialService,
         private parentInjector: Injector,
@@ -90,7 +91,9 @@ export class SimulationModeService extends CanvasModeService<SimulationTool> {
             this.data = new Map(model.getArcs().filter(a => !!a.reference && !!model.getData(a.reference))
                 .map(a => [a.reference, Number.parseInt(model.getData(a.reference).init?.value, 10) || 0]));
             this.simulation = new BasicSimulation(model, this.data);
-            this.renderModel(model);
+            if (isCanvasModeRoute(this.router.url, '/modeler/simulation')) {
+                this.renderModel(model);
+            }
         });
     }
 

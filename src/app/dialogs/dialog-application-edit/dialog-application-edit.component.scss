@@ -34,3 +34,32 @@ mat-dialog-actions {
 .mat-mdc-list-item-icon {
     color: rgba(0, 0, 0, 0.54);
 }
+
+.no-processes-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+    color: #b3261e;
+    background-color: rgba(179, 38, 30, 0.08);
+    border: 1px solid rgba(179, 38, 30, 0.4);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.process-list {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.process-actions {
+    gap: 8px;
+    margin-top: 14px;
+}
+
+@media (max-width: 700px) {
+    .process-actions {
+        flex-wrap: wrap;
+    }
+}

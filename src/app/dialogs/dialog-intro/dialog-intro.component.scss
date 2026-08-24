@@ -34,3 +34,15 @@ mat-dialog-actions {
 .mat-mdc-list-item-icon {
     color: rgba(0, 0, 0, 0.54);
 }
+
+.saved-applications {
+    gap: 14px;
+    padding: 2px 4px 8px;
+}
+
+.saved-application-card {
+    flex: 0 0 auto;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}

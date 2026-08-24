@@ -77,49 +77,104 @@ export class ApplicationService implements OnDestroy {
         return this._application;
     }
 
-    private deleteModel(processId: string) {
-        if (this.modelService.model.id === processId) {
-            if (this._models.size > 1) {
-                this.switchActiveModel(this._models.keys().next().value);
+    private deleteModel(processId: string): PetriNet | undefined {
+        const deletedModel = this._models.get(processId);
+        if (!deletedModel) {
+            return undefined;
+        }
+
+        const activeModelId = this.modelService.model?.id;
+        this._models.delete(processId);
+
+        if (activeModelId === processId || !this._models.has(activeModelId)) {
+            if (this._models.size === 0) {
+                this.clearActiveModel();
             } else {
-                this.addNewEmptyModel(); // nemôže byť aplikácie bez procesu
                 this.switchActiveModel(this._models.keys().next().value);
             }
         }
-        this._models.delete(processId);
+
         this.updateProcesses();
         console.log('Process removed', processId);
+        return deletedModel;
     }
 
-    removeModel(processId: string, confirmationDialog = true) { // TODO remove cez app edit dialog nefunguje, vymaze iný prvok
+    removeModel(processId: string, confirmationDialog = true): void {
         if (!confirmationDialog) {
-            this.deleteModel(processId);
+            this.removeConfirmedModel(processId);
         } else {
             const dialogRef = this.dialog.open(DialogDeleteModelComponent);
             dialogRef.afterClosed().subscribe(result => {
                 if (result === true) {
-                    const oldId = this.modelService.model.id;
-                    this.deleteModel(oldId);
-                    this.historyService.save(`Model ${oldId} has been deleted.`, this.modelService.model);
+                    this.removeConfirmedModel(processId);
                 }
             });
         }
     }
 
-    addModel(net: PetriNet): void {
+    private removeConfirmedModel(processId: string): void {
+        const deletedModel = this.deleteModel(processId);
+        if (deletedModel) {
+            this.historyService.save(`Model ${processId} has been deleted.`, deletedModel);
+        }
+    }
+
+    addModel(net: PetriNet): boolean {
+        if (this._models.has(net.id)) {
+            return false;
+        }
+
+        const shouldActivate = !this._models.has(this.modelService.model?.id);
         this._models.set(net.id, net);
         this.updateProcesses();
         this.historyService.save(`New model has been created.`, net);
+        if (shouldActivate) {
+            this.switchActiveModel(net.id);
+        }
         console.log('New process added', net.id);
+        return true;
     }
 
-    addNewEmptyModel() {
-        const newModel = this.modelService.newModel();
-        this._models.set(newModel.id, newModel);
+    addNewEmptyModel(): PetriNet {
+        let newModel: PetriNet;
+        do {
+            newModel = this.modelService.newModel();
+        } while (this._models.has(newModel.id));
+        this.addModel(newModel);
+        return newModel;
+    }
+
+    replaceActiveModel(net: PetriNet): boolean {
+        const activeModelId = this.modelService.model?.id;
+        const replacedModelId = this._models.has(activeModelId)
+            ? activeModelId
+            : this._models.size === 1
+                ? this._models.keys().next().value
+                : undefined;
+
+        if (replacedModelId !== undefined && replacedModelId !== net.id && this._models.has(net.id)) {
+            return false;
+        }
+
+        if (replacedModelId === undefined) {
+            this._models.set(net.id, net);
+        } else {
+            const models = [...this._models.entries()];
+            this._models.clear();
+            models.forEach(([id, model]) => {
+                if (id === replacedModelId) {
+                    this._models.set(net.id, net);
+                } else {
+                    this._models.set(id, model);
+                }
+            });
+        }
+
         this.updateProcesses();
-        // this.modelService.model = this.modelService.newModel();
-        this.historyService.save(`New model has been created.`, newModel);
-        console.log('New process added', newModel.id);
+        this.modelService.model = net;
+        this.simulationModeService.originalModel.next(net);
+        console.log('Current process replaced', replacedModelId, '->', net.id);
+        return true;
     }
 
     updateModelId(oldId: string, newId: string) {
@@ -139,12 +194,21 @@ export class ApplicationService implements OnDestroy {
     }
 
     switchToFirst() {
-        if (this._application.processes.length > 0) {
-            this.modelService.model = this._models.get(this._application.processes[0]);
+        if (this._application?.processes.length > 0) {
+            this.switchActiveModel(this._application.processes[0]);
+        } else {
+            this.clearActiveModel();
         }
     }
 
+    private clearActiveModel(): void {
+        this.modelService.model = undefined;
+        this.simulationModeService.originalModel.next(undefined);
+    }
+
     updateProcesses(): void {
-        this._application.processes = [...this._models.keys()];
+        if (this._application) {
+            this._application.processes = [...this._models.keys()];
+        }
     }
 }

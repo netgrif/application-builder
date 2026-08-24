@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {Component, DestroyRef, ElementRef, inject, OnDestroy, ViewChild} from '@angular/core';
 import {DataMasterDetailService} from '../data-master-detail.service';
 import {
     Component as PetriflowComponent,
@@ -33,6 +33,7 @@ import {
 } from '../../../form-builder/field-list/field-list.service';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 export interface TypeArray {
     viewValue: string;
@@ -51,6 +52,7 @@ export interface HistoryDataSave {
 })
 export class DataDetailComponent implements OnDestroy {
 
+    private readonly _destroyRef = inject(DestroyRef);
     counterEnumMap = 0;
     formControlRef: FormControl;
     componentNameFormCtrl: FormControl;
@@ -92,10 +94,21 @@ export class DataDetailComponent implements OnDestroy {
         this.formControlRef = new FormControl();
         this.componentNameFormCtrl = new FormControl();
         this.transitionOptions = this.createTransOptions();
-        this._masterService.getSelected$().subscribe(obj => {
+        this._modelService.modelWillChange.pipe(
+            takeUntilDestroyed(this._destroyRef)
+        ).subscribe(model => {
+            if (this.historyDataSave?.save) {
+                this._historyService.save(`DataVariable ${this.historyDataSave.item.id} has been changed.`, model);
+                this.historyDataSave.save = false;
+            }
+        });
+        this._masterService.getSelected$().pipe(
+            takeUntilDestroyed(this._destroyRef)
+        ).subscribe(obj => {
             if (this.historyDataSave?.save) {
                 this._historyService.save(`DataVariable ${this.historyDataSave.item.id} has been changed.`);
             }
+            this.transitionOptions = this.createTransOptions();
             if (obj) {
                 if (!obj.init) {
                     obj.init = new I18nWithDynamic('');
@@ -105,6 +118,8 @@ export class DataDetailComponent implements OnDestroy {
                     item: obj,
                     save: false
                 }
+            } else {
+                this.historyDataSave = undefined;
             }
         });
         this.filteredOptions = this.formControlRef.valueChanges.pipe(
@@ -135,7 +150,7 @@ export class DataDetailComponent implements OnDestroy {
     }
 
     createTransOptions() {
-        return this._modelService.model.getTransitions().map(trans => ({
+        return (this._modelService.model?.getTransitions() ?? []).map(trans => ({
             key: trans.id,
             value: trans.label?.value ?? ''
         }));

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnDestroy, OnInit} from '@angular/core';
 import {ModelService} from '../../services/model/model.service';
 import {ActionsModeService} from '../actions-mode.service';
 import {NestedTreeControl} from '@angular/cdk/tree';
@@ -14,6 +14,7 @@ import {Scope} from '../actions-mode.component';
 import {MasterItem} from '../action-editor/classes/master-item';
 import {ActionEditorTreeService} from '../action-editor/action-editor-tree.service';
 import {HistoryService} from '../../services/history/history.service';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'nab-action-detail',
@@ -22,6 +23,7 @@ import {HistoryService} from '../../services/history/history.service';
 })
 export class ActionDetailComponent implements OnInit, OnDestroy {
 
+    private readonly _destroyRef = inject(DestroyRef);
     functionScopes: Array<Scope> = [
         {viewValue: 'Process', value: FunctionScope.PROCESS},
         {viewValue: 'Namespace', value: FunctionScope.NAMESPACE},
@@ -40,7 +42,20 @@ export class ActionDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this._masterService.getSelected$().subscribe(item => {
+        this._modelService.modelWillChange.pipe(
+            takeUntilDestroyed(this._destroyRef)
+        ).subscribe(model => {
+            if (this.actionEditorService.historySave) {
+                this._historyService.save("Actions have been changed.", model);
+                this.actionEditorService.historySave = false;
+            }
+        });
+        this._masterService.getSelected$().pipe(
+            takeUntilDestroyed(this._destroyRef)
+        ).subscribe(item => {
+            if (this._modelService.model) {
+                this.actionEditorService.updateIds(this._modelService.model);
+            }
             if (this.actionEditorService.historySave) {
                 this._historyService.save("Actions have been changed.");
                 this.actionEditorService.historySave = false;
@@ -80,6 +95,8 @@ export class ActionDetailComponent implements OnInit, OnDestroy {
                 const role = this._modelService.model.getRole(item.id);
                 this.actionEditorService.populateEditedActionsFromRole(role);
                 this.dataSource.data = this._actionEditorTreeService.createRoleTreeStructure(this.actionEditorService.editedActions[0].editableActions, (leaf: TreeNode, actionCount: number) => this.collapseParentCallback(leaf, actionCount));
+            } else if (!(item instanceof PetriflowFunction)) {
+                this.dataSource.data = [];
             }
         })
     }

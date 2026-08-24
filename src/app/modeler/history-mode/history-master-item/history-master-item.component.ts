@@ -28,6 +28,6 @@ export class HistoryMasterItemComponent {
     }
 
     isActual(): boolean {
-        return this.item.record.id === this._modelService.model.id && this.item.record.lastChanged === this._modelService.model.lastChanged;
+        return this.item.record.id === this._modelService.model?.id && this.item.record.lastChanged === this._modelService.model?.lastChanged;
     }
 }

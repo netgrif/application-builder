@@ -34,6 +34,7 @@ import {ApplicationService} from 'src/app/project-builder/application.service';
 })
 export class ModelService {
     private readonly _model: BehaviorSubject<PetriNet>;
+    private readonly _modelWillChange: Subject<PetriNet>;
     private readonly _modelChange: Subject<ModelChange>;
     private readonly _placeChange: Subject<PlaceChange>;
     private readonly _transitionChange: Subject<ChangedTransition>;
@@ -66,6 +67,7 @@ export class ModelService {
         private injector: Injector,
     ) {
         this._model = new BehaviorSubject<PetriNet>(undefined);
+        this._modelWillChange = new Subject<PetriNet>();
         this._placeChange = new Subject<PlaceChange>();
         this._transitionChange = new Subject<ChangedTransition>();
         this._arcChange = new Subject<ChangedArc>();
@@ -79,6 +81,18 @@ export class ModelService {
     }
 
     set model(newModel: PetriNet) {
+        if (this.model && this.model !== newModel) {
+            this._modelWillChange.next(this.model);
+        }
+        if (!newModel) {
+            this._model.next(undefined);
+            this._placeIdSequence.reset([]);
+            this._transitionIdSequence.reset([]);
+            this._arcIdSequence.reset([]);
+            this._dataIdSequence.reset([]);
+            this._roleIdSequence.reset([]);
+            return;
+        }
         this.alignModel(newModel);
         this._model.next(newModel);
         this._placeIdSequence.reset(newModel.getPlaces());
@@ -94,6 +108,10 @@ export class ModelService {
 
     get modelSubject(): BehaviorSubject<PetriNet> {
         return this._model;
+    }
+
+    get modelWillChange(): Subject<PetriNet> {
+        return this._modelWillChange;
     }
 
     public newModel(): PetriNet {

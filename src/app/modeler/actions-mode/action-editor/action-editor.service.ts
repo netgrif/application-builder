@@ -23,6 +23,7 @@ import {
 } from '@netgrif/petriflow';
 import {MasterItem} from './classes/master-item';
 import {EventType} from './event-type';
+import {normalizeActionIds} from './action-id-utils';
 
 @Injectable({
     providedIn: 'root'
@@ -128,36 +129,7 @@ export class ActionEditorService {
     }
 
     public updateIds(model: PetriNet): void {
-        model.getProcessEvents().forEach(e => {
-            e.preActions.forEach(a => this.updateLastId(a.id));
-            e.postActions.forEach(a => this.updateLastId(a.id));
-        });
-        model.getCaseEvents().forEach(e => {
-            e.preActions.forEach(a => this.updateLastId(a.id));
-            e.postActions.forEach(a => this.updateLastId(a.id));
-        });
-        model.getRoles().forEach(r => {
-            r.getEvents().forEach(e => {
-                e.preActions.forEach(a => this.updateLastId(a.id));
-                e.postActions.forEach(a => this.updateLastId(a.id));
-            });
-        });
-        model.getTransitions().forEach(t => {
-            t.eventSource.getEvents().forEach(e => {
-                e.preActions.forEach(a => this.updateLastId(a.id));
-                e.postActions.forEach(a => this.updateLastId(a.id));
-            });
-            t.dataGroups.forEach(g => g.getDataRefs().forEach(d => d.getEvents().forEach(e => {
-                e.preActions.forEach(a => this.updateLastId(a.id));
-                e.postActions.forEach(a => this.updateLastId(a.id));
-            })));
-        });
-        model.getDataSet().forEach(d => {
-            d.getEvents().forEach(e => {
-                e.preActions.forEach(a => this.updateLastId(a.id));
-                e.postActions.forEach(a => this.updateLastId(a.id));
-            });
-        });
+        this._lastUsedId = normalizeActionIds(model);
     }
 
     public saveActionChange(changedAction: EditableAction) {

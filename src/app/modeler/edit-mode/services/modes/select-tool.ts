@@ -25,6 +25,7 @@ import {SelectArcsMenuItem} from '../../context-menu/menu-items/select-arcs-menu
 import {CanvasNodeElement} from '../../domain/canvas-node-element';
 import {ActionsModeService} from '../../../actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../../../actions-mode/actions-master-detail.setvice';
+import {pointerCaptureTarget} from './pointer-capture-target';
 
 export class SelectTool extends CanvasTool {
 
@@ -38,6 +39,7 @@ export class SelectTool extends CanvasTool {
     private lastDragPoint: DOMPoint;
     private arcPointIndex: number;
     private lastClickTimestamp: number = 0;
+    private capturedPointer?: {element: Element; pointerId: number};
 
     constructor(
         modelService: ModelService,
@@ -97,6 +99,7 @@ export class SelectTool extends CanvasTool {
     }
 
     restart(): void {
+        this.releasePointerCapture();
         if (this.lasso) {
             this.canvasService.canvas.container.removeChild(this.lasso);
         }
@@ -347,6 +350,7 @@ export class SelectTool extends CanvasTool {
         if (!this.isLeftButton(event)) {
             return;
         }
+        this.capturePointer(event);
         this.clickElement = element;
         this.lastDragPoint = this.mousePosition(event);
         if (this.selectedElements.isEmpty()) {
@@ -431,6 +435,34 @@ export class SelectTool extends CanvasTool {
 
     private clearSelection(): void {
         this.selectedElements.getAll().forEach(p => this.removeFromSelection(p));
+    }
+
+    private capturePointer(event: PointerEvent): void {
+        const element = pointerCaptureTarget(event);
+        if (!element?.setPointerCapture) {
+            return;
+        }
+        try {
+            element.setPointerCapture(event.pointerId);
+            this.capturedPointer = {element, pointerId: event.pointerId};
+        } catch (_) {
+            this.capturedPointer = undefined;
+        }
+    }
+
+    private releasePointerCapture(): void {
+        if (!this.capturedPointer) {
+            return;
+        }
+        const {element, pointerId} = this.capturedPointer;
+        this.capturedPointer = undefined;
+        try {
+            if (element.hasPointerCapture(pointerId)) {
+                element.releasePointerCapture(pointerId);
+            }
+        } catch (_) {
+            return;
+        }
     }
 
     get selectedElements(): CanvasElementCollection {

@@ -41,6 +41,7 @@ export abstract class CanvasModeService<T extends Tool> extends ModeService<T> {
 
     public renderModel(model: PetriNet = this.model): void {
         if (model === undefined) {
+            this.reset();
             return;
         }
         this.reset();

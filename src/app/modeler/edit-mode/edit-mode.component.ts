@@ -3,10 +3,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {NgxDropzoneChangeEvent} from 'ngx-dropzone';
 import {ModelImportService} from '../model-import-service';
 import {EditModeService} from './edit-mode.service';
-import {ModelService} from '../services/model/model.service';
 import {ContextMenuComponent} from './context-menu/context-menu.component';
 import {ContextMenu} from './context-menu/context-menu';
-import {HistoryService} from '../services/history/history.service';
 import {ModelerUtils} from '../modeler-utils';
 
 @Component({
@@ -21,9 +19,7 @@ export class EditModeComponent implements AfterViewInit, OnDestroy {
 
     constructor(
         private importService: ModelImportService,
-        private _modelService: ModelService,
         private _editModeService: EditModeService,
-        private historyService: HistoryService,
         public dialog: MatDialog
     ) {
     }
@@ -50,12 +46,7 @@ export class EditModeComponent implements AfterViewInit, OnDestroy {
             }, 100);
         });
         setTimeout(() => {
-            if (this._modelService.model === undefined) {
-                this._modelService.model = this._modelService.newModel(); // TODO toto vytvori novy model aj keď ho nie je treba
-                this.historyService.save(`New model has been created.`);
-            } else {
-                this._editModeService.renderModel();
-            }
+            this._editModeService.renderModel();
         });
     }
 

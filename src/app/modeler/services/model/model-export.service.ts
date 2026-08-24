@@ -7,6 +7,7 @@ import {DialogDeadNetComponent} from '../../../dialogs/dialog-dead-net/dialog-de
 import {CanvasConfiguration} from '@netgrif/petri.svg';
 import {ModelerConfig} from '../../modeler-config';
 import {ModelSourceService} from './model-source.service';
+import {normalizeActionIds} from '../../actions-mode/action-editor/action-id-utils';
 
 @Injectable({
     providedIn: 'root'
@@ -44,7 +45,9 @@ export class ModelExportService {
     }
 
     public exportXml(model = this.model): string {
-        const serialisedModel = this._exportService.exportXml(model);
+        const exportModel = model.clone();
+        normalizeActionIds(exportModel);
+        const serialisedModel = this._exportService.exportXml(exportModel);
         return this.prettyFormat(serialisedModel);
     }
 

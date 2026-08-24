@@ -5,18 +5,27 @@ import {Sort} from '@angular/material/sort';
 import {HistoryChange} from '../services/history/history-change';
 import {HistoryService} from '../services/history/history.service';
 import {ModelerConfig} from '../modeler-config';
+import {ModelService} from '../services/model/model.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class HistoryMasterDetailService extends AbstractMasterDetailService<HistoryChange<PetriNet>> {
 
-    constructor(protected _historyService: HistoryService) {
+    constructor(protected _historyService: HistoryService,
+                protected _modelService: ModelService) {
         super();
+        this._historyService.historyChange.subscribe(change => {
+            if (change.record?.id === this._modelService.model?.id) {
+                this._create.next(change);
+            }
+        });
     }
 
     public get allData(): Array<HistoryChange<PetriNet>> {
-        return this._historyService.history.memory;
+        return this._historyService.history.memory.filter(change =>
+            change.record?.id === this._modelService.model?.id
+        );
     }
 
     public create(): HistoryChange<PetriNet> {

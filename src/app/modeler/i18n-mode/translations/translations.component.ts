@@ -1,11 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnDestroy, OnInit} from '@angular/core';
 import {Locale} from '../classes/locale';
 import {I18nModeService} from '../i18n-mode.service';
 import {TranslationGroupConfiguration, Type} from './translation-group/translation-group-configuration';
-import {I18nTranslations} from '@netgrif/petriflow';
+import {I18nTranslations, PetriNet} from '@netgrif/petriflow';
 import {ModelService} from '../../services/model/model.service';
 import {HistoryService} from '../../services/history/history.service';
 import {LanguageSelectService} from '../languages/language-select.service';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'nab-translations',
@@ -14,6 +15,7 @@ import {LanguageSelectService} from '../languages/language-select.service';
 })
 export class TranslationsComponent implements OnInit, OnDestroy {
 
+    private readonly _destroyRef = inject(DestroyRef);
     locale: Locale;
     modelMetadataConfig: TranslationGroupConfiguration;
     taskMetadataConfig: TranslationGroupConfiguration;
@@ -27,12 +29,14 @@ export class TranslationsComponent implements OnInit, OnDestroy {
                 protected _languageSelect: LanguageSelectService) {
         if (this._languageSelect.locale !== undefined) {
             this.locale = this._languageSelect.locale;
-            this._translation = this.modelService.model.getI18n(this.locale?.languageCode);
             this._languageSelect.locale = undefined;
         }
     }
 
     ngOnInit(): void {
+        this.modelService.modelSubject.pipe(
+            takeUntilDestroyed(this._destroyRef)
+        ).subscribe(model => this.updateSelectedTranslation(model));
         this.modelMetadataConfig = new TranslationGroupConfiguration(
             Type.MODEL,
             'device_hub',
@@ -92,5 +96,16 @@ export class TranslationsComponent implements OnInit, OnDestroy {
 
     set translation(value: I18nTranslations) {
         this._translation = value;
+    }
+
+    private updateSelectedTranslation(model: PetriNet): void {
+        if (!model || !this.locale) {
+            this.locale = undefined;
+            this._translation = undefined;
+            return;
+        }
+        const locale = this.i18nService.locales.find(item => item.languageCode === this.locale.languageCode);
+        this.locale = locale;
+        this._translation = locale ? model.getI18n(locale.languageCode) : undefined;
     }
 }

@@ -375,7 +375,20 @@ export abstract class CanvasListenerTool extends Tool implements MouseListener, 
     }
 
     mousePosition(event: PointerEvent): DOMPoint {
-        return new DOMPoint(event.offsetX, event.offsetY);
+        const bounds = this.canvas?.svg?.getBoundingClientRect();
+        const scale = this.canvasService.panzoom?.getScale() || 1;
+        return new DOMPoint(
+            this.pointerCoordinate(event.offsetX, event.clientX, bounds?.left, scale),
+            this.pointerCoordinate(event.offsetY, event.clientY, bounds?.top, scale),
+        );
+    }
+
+    private pointerCoordinate(offset: number, client: number, origin: number = 0, scale: number = 1): number {
+        if (Number.isFinite(offset)) {
+            return offset;
+        }
+        const coordinate = (client - origin) / scale;
+        return Number.isFinite(coordinate) ? coordinate : 0;
     }
 
     windowMousePosition(event: PointerEvent): DOMPoint {

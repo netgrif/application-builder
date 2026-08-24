@@ -1,18 +1,15 @@
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {PageMasterComponent} from '../../components/master-detail/page-master.component';
 import {ActionsModeService} from '../actions-mode.service';
 import {Sort} from '@angular/material/sort';
-import {DataActionsTool} from '../tools/data-actions-tool';
-import {TransitionActionsTool} from '../tools/transition-actions-tool';
-import {RoleActionsTool} from '../tools/role-actions-tool';
 import {ComponentType} from '@angular/cdk/overlay';
 import {ActionMasterItemComponent} from './action-master-item/action-master-item.component';
 import {FunctionMasterItemComponent} from './function-master-item/function-master-item.component';
 import {ActionsMasterDetailService} from '../actions-master-detail.setvice';
 import {FunctionsTool} from '../tools/functions-tool';
 import {ProcessActionsTool} from '../tools/process-actions-tool';
-import {ModelerConfig} from '../../modeler-config';
-import {MasterItem} from '../action-editor/classes/master-item';
+import {skip} from 'rxjs/operators';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'nab-action-master',
@@ -21,24 +18,21 @@ import {MasterItem} from '../action-editor/classes/master-item';
 })
 export class ActionMasterComponent extends PageMasterComponent implements OnInit {
 
-    constructor(private _parentInjector: Injector,
-                private _actionsModeService: ActionsModeService,
+    private readonly _actionDestroyRef = inject(DestroyRef);
+
+    constructor(private _actionsModeService: ActionsModeService,
                 public masterService: ActionsMasterDetailService) {
         super();
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-        this._actionsModeService.activeToolSubject.subscribe(tool => {
+        this._actionsModeService.activeToolSubject.pipe(
+            skip(1),
+            takeUntilDestroyed(this._actionDestroyRef)
+        ).subscribe(() => {
             this.pageSize = 20;
-            this.pageIndex = 0;
-            this.initializeAndSort();
-            if (this._allData.length > 0 && this.masterService.getSelected()?.constructor?.name !== this._allData[0].constructor.name || this.masterService.getSelected() instanceof MasterItem) {
-                this.masterService.select(this._allData[0]);
-            } else if (this._allData.length === 0) {
-                this.masterService.select(undefined);
-            }
-
+            this.refreshForCurrentModel();
         });
     }
 

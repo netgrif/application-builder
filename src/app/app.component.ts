@@ -7,7 +7,6 @@ import {AppBuilderConfigurationService} from './app-builder-configuration.servic
 import {DialogApplicationEditComponent} from './dialogs/dialog-application-edit/dialog-application-edit.component';
 import {DialogConfirmComponent} from './dialogs/dialog-confirm/dialog-confirm.component';
 import {DialogIntroComponent} from './dialogs/dialog-intro/dialog-intro.component';
-import {ModelImportService} from './modeler/model-import-service';
 import {MortgageService} from './modeler/mortgage.service';
 import {ModelService} from './modeler/services/model/model.service';
 import {ApplicationService} from './project-builder/application.service';
@@ -35,7 +34,6 @@ export class AppComponent implements AfterViewInit {
         private readonly joyrideService: JoyrideService,
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
-        private importService: ModelImportService,
         private db: DatabaseStorageService,
         public modelService: ModelService,
         public applicationService: ApplicationService,
@@ -51,25 +49,6 @@ export class AppComponent implements AfterViewInit {
             disableClose: true,
             data: this.db.getAllApplications(),
         });
-
-        /*const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
-        if (!oldModel) {
-            return;
-        }
-        const dialogRef = this.matDialog.open(DialogLocalStorageModelComponent, {
-            data: {
-                id: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.ID),
-                timestamp: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TIMESTAMP),
-                title: localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TITLE),
-            },
-        });
-        dialogRef.afterClosed().subscribe(result => {
-            if (result === true) {
-                this.importService.importFromXml(oldModel);
-            } else if (result === false) {
-                localStorage.clear();
-            }
-        });*/
     }
 
     openApplicationDialog() {

@@ -24,6 +24,8 @@
                             "moment",
                             "buffer",
                             "easymde",
+                            "escape-string-regexp",
+                            "jszip",
                             "semver",
                             "rfdc"
                         ],
@@ -35,6 +37,7 @@
                         ],
                         "tsConfig": "tsconfig.app.json",
                         "assets": [
+                            "src/env.js",
                             "src/env.template.js",
                             "src/favicon.ico",
                             "src/assets",

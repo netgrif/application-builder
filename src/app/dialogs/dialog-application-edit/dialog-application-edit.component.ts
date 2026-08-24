@@ -1,5 +1,5 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatDialog} from '@angular/material/dialog';
@@ -19,13 +19,15 @@ import {
     SnackBarService,
     SnackBarVerticalPosition
 } from "@netgrif/components-core";
+import {ModelImportService} from '../../modeler/model-import-service';
+import {DatabaseStorageService} from '../../project-builder/database-storage.service';
 
 @Component({
     selector: 'nab-dialog-application-edit',
     templateUrl: './dialog-application-edit.component.html',
     styleUrl: './dialog-application-edit.component.scss',
 })
-export class DialogApplicationEditComponent implements OnInit {
+export class DialogApplicationEditComponent {
 
     readonly chipSeparators = [ENTER, COMMA] as const;
 
@@ -44,7 +46,9 @@ export class DialogApplicationEditComponent implements OnInit {
         private historyService: HistoryService,
         private exportUtils: ExportUtils,
         private snackBarService: SnackBarService,
-        private modelService: ModelService
+        private modelService: ModelService,
+        private modelImportService: ModelImportService,
+        private databaseStorageService: DatabaseStorageService,
     ) {
         this.form = new FormControl('', [
             Validators.required,
@@ -53,9 +57,6 @@ export class DialogApplicationEditComponent implements OnInit {
         this.exportLoading = false;
         this.packageImporter = new ApplicationPackageImport(this.importService);
         this.packageExporter = new ApplicationPackageExport(this.exportUtils, this.exportService);
-    }
-
-    ngOnInit(): void {
     }
 
     exportApplication($event: Event) {
@@ -104,6 +105,61 @@ export class DialogApplicationEditComponent implements OnInit {
         this.fileInput.nativeElement.value = '';
     }
 
+    async importProcess($event: Event): Promise<void> {
+        $event.stopPropagation();
+        const input = $event.target as HTMLInputElement;
+        const files = Array.from(input.files || []);
+        if (files.length === 0) {
+            return;
+        }
+
+        try {
+            for (const file of files) {
+                try {
+                    const content = await file.text();
+                    this.modelImportService.addProcessFromXml(content);
+                } catch (error) {
+                    console.error(error);
+                    const message = error instanceof Error ? error.message : String(error);
+                    this.snackBarService.openErrorSnackBar(
+                        `${file.name}: ${message}`,
+                        SnackBarVerticalPosition.BOTTOM,
+                        SnackBarHorizontalPosition.CENTER,
+                    );
+                }
+            }
+        } finally {
+            input.value = '';
+        }
+    }
+
+    saveApplication(): void {
+        try {
+            const processes = [...this.applicationService.models.entries()].map(([id, model]) => ({
+                id,
+                xml: this.exportService.exportXml(model),
+            }));
+            const saved = this.databaseStorageService.saveApplication(
+                this.applicationService.application,
+                processes,
+            );
+            this.snackBarService.openSuccessSnackBar(
+                `Application ${saved.application.name} saved.`,
+                SnackBarVerticalPosition.BOTTOM,
+                SnackBarHorizontalPosition.CENTER,
+                5000,
+            );
+        } catch (error) {
+            console.error(error);
+            const message = error instanceof Error ? error.message : String(error);
+            this.snackBarService.openErrorSnackBar(
+                message,
+                SnackBarVerticalPosition.BOTTOM,
+                SnackBarHorizontalPosition.CENTER,
+            );
+        }
+    }
+
     addTag(event: MatChipInputEvent): void {
         const tag = (event.value || '').trim();
         if (tag) this.applicationService.application.tags.push(tag);
@@ -135,5 +191,4 @@ export class DialogApplicationEditComponent implements OnInit {
             }
         });
     }
-
 }

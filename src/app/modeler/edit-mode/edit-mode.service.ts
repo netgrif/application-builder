@@ -41,6 +41,7 @@ import {HistoryService} from '../services/history/history.service';
 import {PanzoomOptions} from '@panzoom/panzoom';
 import {ActionsModeService} from '../actions-mode/actions-mode.service';
 import {ActionsMasterDetailService} from '../actions-mode/actions-master-detail.setvice';
+import {isCanvasModeRoute} from "../services/canvas/canvas-mode-route";
 
 @Injectable({
     providedIn: 'root'
@@ -65,13 +66,13 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
         modelService: ModelService,
         _canvasService: PetriflowCanvasService,
         dialog: MatDialog,
-        router: Router,
+        private router: Router,
         transitionService: SelectedTransitionService,
         private _tutorialService: TutorialService,
         private _parentInjector: Injector,
         private _historyService: HistoryService,
         protected _actionMode: ActionsModeService,
-        protected _actionsMasterDetail: ActionsMasterDetailService
+        protected _actionsMasterDetail: ActionsMasterDetailService,
     ) {
         super(_arcFactory, modelService, _canvasService);
         this.mode = new Mode(
@@ -108,7 +109,11 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
             ),
             this.switchTools
         ];
-        this.modelService.modelSubject.subscribe(_ => this.renderModel());
+        this.modelService.modelSubject.subscribe(() => {
+            if (this.isActiveRoute()) {
+                this.renderModel();
+            }
+        });
         this.modelService.placeChange.subscribe(value => this.updatePlace(value));
         this.modelService.transitionChange.subscribe(value => this.updateTransition(value));
         this.modelService.arcChange.subscribe(arc => this.updateArc(arc));
@@ -133,6 +138,10 @@ export class EditModeService extends CanvasModeService<CanvasTool> {
     public renderModel(): void {
         super.renderModel();
         this.activate();
+    }
+
+    private isActiveRoute(): boolean {
+        return isCanvasModeRoute(this.router.url, '/modeler');
     }
 
     // PLACE

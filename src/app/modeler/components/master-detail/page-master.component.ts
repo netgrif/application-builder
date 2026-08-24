@@ -1,7 +1,10 @@
 import {AbstractMasterComponent} from './abstract-master.component';
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, DestroyRef, inject, Input, OnInit, ViewChild} from '@angular/core';
 import {MatSort, Sort} from '@angular/material/sort';
 import {PageEvent} from '@angular/material/paginator';
+import {ModelService} from '../../services/model/model.service';
+import {skip} from 'rxjs/operators';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'nab-abstract-page-master-component',
@@ -9,6 +12,8 @@ import {PageEvent} from '@angular/material/paginator';
 })
 export abstract class PageMasterComponent extends AbstractMasterComponent implements OnInit {
 
+    private readonly _modelService = inject(ModelService);
+    private readonly _destroyRef = inject(DestroyRef);
     @Input()protected _pageSize: number = 20;
     protected _pageIndex: number;
     protected _pageData: Array<any>;
@@ -20,19 +25,22 @@ export abstract class PageMasterComponent extends AbstractMasterComponent implem
     }
 
     ngOnInit(): void {
-        this.pageIndex = 0;
-        this.initializeAndSort();
-        if (this._allData.length > 0 && this.masterService.getSelected()?.constructor?.name !== this._allData[0].constructor.name) {
-            this.masterService.select(this._allData[0]);
-        } else if (this._allData.length === 0) {
-            this.masterService.select(undefined);
-        }
+        this.refreshForCurrentModel();
 
-        this.masterService.getCreateEvent$().subscribe(newItem => {
+        this._modelService.modelSubject.pipe(
+            skip(1),
+            takeUntilDestroyed(this._destroyRef)
+        ).subscribe(() => this.refreshForCurrentModel());
+
+        this.masterService.getCreateEvent$().pipe(
+            takeUntilDestroyed(this._destroyRef)
+        ).subscribe(newItem => {
             this.updateData();
             this.masterService.select(newItem);
         });
-        this.masterService.getDeleteEvent$().subscribe(deletedItem => {
+        this.masterService.getDeleteEvent$().pipe(
+            takeUntilDestroyed(this._destroyRef)
+        ).subscribe(deletedItem => {
             this.updateData();
             if (this.selected === deletedItem) {
                 this.masterService.select(undefined);
@@ -125,5 +133,22 @@ export abstract class PageMasterComponent extends AbstractMasterComponent implem
             this.sort._stateChanges.next();
         }
         this.sortData({active: sort.active, direction: sort.direction});
+    }
+
+    protected refreshForCurrentModel(): void {
+        this.pageIndex = 0;
+        if (!this._modelService.model) {
+            this._allData = [];
+            this.updatePage();
+            this.masterService.select(undefined);
+            return;
+        }
+        this.initializeAndSort();
+        const selected = this.masterService.getSelected();
+        if (this._allData.length === 0) {
+            this.masterService.select(undefined);
+        } else if (!this._allData.includes(selected)) {
+            this.masterService.select(this._allData[0]);
+        }
     }
 }

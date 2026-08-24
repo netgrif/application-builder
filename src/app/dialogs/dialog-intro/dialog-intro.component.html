@@ -7,33 +7,35 @@
     <p>
         You can start where you left of or start with a fresh new application.
     </p>
-    @if (apps && apps.length != 0) {
-        <div fxLayout="column">
-            @for (app of apps; track app.name) {
-                <mat-card>
+    @if (apps && apps.length !== 0) {
+        <div fxLayout="column" class="saved-applications">
+            @for (saved of apps; track saved.storageId) {
+                <mat-card class="saved-application-card">
                     <mat-card-header>
-                        <mat-card-title>{{ app.name }}</mat-card-title>
+                        <mat-card-title>{{ saved.application.name }}</mat-card-title>
+                        <mat-card-subtitle>
+                            {{ saved.legacy ? 'Recovered process draft' : 'Saved application' }} ·
+                            {{ saved.savedAt | date:'medium' }}
+                        </mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
-                        <span>{{ app.description }} </span>
-                        <span>{{ app.version }} </span>
-                        <span>{{ app.author }}</span>
+                        <span>{{ saved.application.description }} </span>
+                        <span>{{ saved.application.version }} </span>
+                        <span>{{ saved.application.author }}</span>
                         <mat-chip-set>
-                            @for (tag of app.tags; track tag) {
+                            @for (tag of saved.application.tags; track tag) {
                                 <mat-chip>{{ tag }}</mat-chip>
                             }
                         </mat-chip-set>
-                        <!--                        TODO tu zobraziť aké procesy tá appka vôbec má-->
-                        <!--                        <div fxLayout="row">-->
-                        <!--                            @for (process of app.processes; track process.id) {-->
-                        <!--                                <p>{{ process.title }}</p>-->
-                        <!--                            }-->
-                        <!--                        </div>-->
                     </mat-card-content>
                     <mat-card-actions align="end">
-                        <button mat-button>
+                        <button mat-button color="warn" (click)="deleteSavedApplication(saved)">
                             <mat-icon>delete</mat-icon>
                             Delete
+                        </button>
+                        <button mat-flat-button color="primary" (click)="openSavedApplication(saved.storageId)">
+                            <mat-icon>folder_open</mat-icon>
+                            Open
                         </button>
                     </mat-card-actions>
                 </mat-card>

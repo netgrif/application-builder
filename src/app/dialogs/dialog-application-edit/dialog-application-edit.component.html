@@ -47,7 +47,13 @@
             </mat-chip-grid>
         </mat-form-field>
         <h4>Processes</h4>
-        <mat-list>
+        @if (applicationService.numberOfProcesses === 0) {
+            <div class="no-processes-warning" role="alert">
+                <mat-icon>warning</mat-icon>
+                <span>This application has no processes.</span>
+            </div>
+        }
+        <mat-list class="process-list">
             @for (process of applicationService.models; track process[0]) {
                 <mat-list-item [disableRipple]="false" [attr.aria-label]="'process ' + process[0] + ' list item'">
                     <mat-icon matListItemIcon>{{ process[1].icon }}</mat-icon>
@@ -58,10 +64,10 @@
                         <span>Version: {{ process[1].version }} </span>
                     </p>
                     <div matListItemMeta>
-                        <button mat-icon-button (click)="editProcess(process[0])">
+                        <button mat-icon-button (click)="editProcess(process[0])" aria-label="Edit process">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button (click)="applicationService.removeModel(process[0])">
+                        <button mat-icon-button (click)="applicationService.removeModel(process[0])" aria-label="Delete process">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </div>
@@ -69,10 +75,20 @@
                 <mat-divider inset="true"></mat-divider>
             }
         </mat-list>
-        <div fxLayout="row" fxLayoutAlign="end center">
+        <div fxLayout="row" fxLayoutAlign="end center" class="process-actions">
+            <input #processFileInput
+                   type="file"
+                   multiple
+                   accept=".xml,application/xml,text/xml"
+                   (change)="importProcess($event)"
+                   hidden>
             <button mat-stroked-button color="primary" (click)="applicationService.addNewEmptyModel()">
                 <mat-icon>add</mat-icon>
                 Add process
+            </button>
+            <button mat-stroked-button color="primary" (click)="processFileInput.click()">
+                <mat-icon>upload</mat-icon>
+                Upload process
             </button>
         </div>
     </div>
@@ -102,7 +118,7 @@
             <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
         </button>
     }
-    <button mat-flat-button color="primary" mat-dialog-close>
+    <button mat-flat-button color="primary" (click)="saveApplication()" mat-dialog-close>
         <mat-icon>done</mat-icon>
         <span>Save</span>
     </button>
