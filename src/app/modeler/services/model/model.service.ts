@@ -3,6 +3,7 @@ import {
     Arc,
     ArcType,
     Breakpoint,
+    DataRefBehavior,
     DataType,
     DataVariable,
     I18nString,
@@ -33,6 +34,8 @@ import {ApplicationService} from 'src/app/project-builder/application.service';
     providedIn: 'root',
 })
 export class ModelService {
+    public static readonly USAGE_ESTIMATE_TAG = "usageEstimate";
+
     private readonly _model: BehaviorSubject<PetriNet>;
     private readonly _modelWillChange: Subject<PetriNet>;
     private readonly _modelChange: Subject<ModelChange>;
@@ -580,4 +583,25 @@ export class ModelService {
             }).reduce((sum, current) => sum + current, 0);
         return rolePermissions + userPermission;
     }
+
+    /**
+     * Calculates the estimated event usage based on the model's dataset and transitions.
+     * The calculation includes a base event, the number of items in the dataset,
+     * and additional events based on transitions and editable data references in each data group.
+     *
+     * @return {number} The estimated number of events required.
+     */
+    public static calculateEventUsage(model: PetriNet): number {
+        // TODO maybe connect AI to analyze action for correcting static approximation
+        let estimate = 1 // starting at 1 because 1 event is always required to create case
+        estimate += model.getDataSet().length;
+        model.getTransitions().forEach(transition => {
+            estimate += 1;
+            transition.dataGroups.forEach(dataGroup => {
+                estimate += dataGroup.getDataRefs().filter(dataRef => dataRef.logic.behavior === DataRefBehavior.EDITABLE).length;
+            });
+        });
+        return estimate;
+    }
+
 }

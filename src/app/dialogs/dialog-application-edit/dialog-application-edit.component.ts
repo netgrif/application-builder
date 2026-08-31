@@ -37,6 +37,7 @@ export class DialogApplicationEditComponent {
     public exportLoading: boolean;
     private packageImporter: ApplicationPackageImport;
     private packageExporter: ApplicationPackageExport;
+    protected readonly ModelService = ModelService;
 
     constructor(
         public applicationService: ApplicationService,

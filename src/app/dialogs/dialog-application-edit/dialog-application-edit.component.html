@@ -21,7 +21,7 @@
             <input type="text" matInput [(ngModel)]="applicationService.application.description">
         </mat-form-field>
         <mat-form-field fxFlex>
-<!--            TODO spraviť to ako authors a spraviť z toho chips-->
+            <!--            TODO spraviť to ako authors a spraviť z toho chips-->
             <mat-label>Author</mat-label>
             <input type="text" matInput [(ngModel)]="applicationService.application.author">
         </mat-form-field>
@@ -61,13 +61,15 @@
                     <p matListItemLine>
                         <span>Id: {{ process[0] }}, &nbsp;</span>
                         <span>Initials: {{ process[1].initials }}, &nbsp;</span>
-                        <span>Version: {{ process[1].version }} </span>
+                        <span>Version: {{ process[1].version }}, &nbsp;</span>
+                        <span>Usage Estimate: {{ process[1].tags.get(ModelService.USAGE_ESTIMATE_TAG) }} events</span>
                     </p>
                     <div matListItemMeta>
                         <button mat-icon-button (click)="editProcess(process[0])" aria-label="Edit process">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button (click)="applicationService.removeModel(process[0])" aria-label="Delete process">
+                        <button mat-icon-button (click)="applicationService.removeModel(process[0])"
+                                aria-label="Delete process">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </div>

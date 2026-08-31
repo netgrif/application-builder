@@ -27,6 +27,7 @@ export class HistoryService {
     public save(message: string, model?: PetriNet): void {
         model = model ?? this.modelService.model;
         model.lastChanged = Date.now();
+        this.reloadUsageEstimate(model);
         this.push(model.clone(), message);
     }
 
@@ -48,6 +49,7 @@ export class HistoryService {
             return undefined;
         }
         this.historyChange.next(HistoryChange.of(this._history, message));
+        this.reloadUsageEstimate(model);
         this.modelService.model = model.clone();
         return model;
     }
@@ -61,6 +63,10 @@ export class HistoryService {
         const update = this._history.push(model, message);
         this.historyChange.next(update);
         this.saveToLocalStorage(model).then();
+    }
+
+    private reloadUsageEstimate(model: PetriNet): void {
+        model.tags.set(ModelService.USAGE_ESTIMATE_TAG, ModelService.calculateEventUsage(model).toString(10));
     }
 
     async saveToLocalStorage(model: PetriNet): Promise<void> {

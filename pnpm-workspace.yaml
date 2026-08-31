@@ -1,7 +1,7 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - es5-ext
-  - esbuild
-  - nice-napi
-  - nx
-  - puppeteer
+allowBuilds:
+  '@parcel/watcher': true
+  es5-ext: true
+  esbuild: true
+  nice-napi: true
+  nx: true
+  puppeteer: true
