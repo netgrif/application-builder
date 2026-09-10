@@ -1,36 +1,35 @@
-import {declarationCompleteProvider} from './declaration-provider';
+import {ActionCompletionModel} from './action-completion-model';
+import {declarationCompleteProvider, declarationReferenceCompleteProvider} from './declaration-provider';
+import {fieldCompletionProposals} from './field-completion-provider';
 import {functionCompletionProposals} from './function-provider';
 
-export function actionCompletionProvider(model, position, languages) {
-    // find out if we are completing a property in the 'dependencies' object.
-    // const textUntilPosition = model.getValueInRange({startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
-    let definition = true;
-    for (let i = 1; i < position.lineNumber; i++) {
-        if (!model.getLineContent(i).match(/^\s*\w+(?:\w|\d)*\s*:\s*[ft]\.(?:\w|\d)*,\s*$/)) {
-            definition = false;
-            break;
-        }
+export function actionCompletionProvider(
+    model: any,
+    position: any,
+    languages: any,
+    completionModel?: ActionCompletionModel,
+): {suggestions: Array<any>} {
+    const prefix = prefixAtPosition(model, position);
+    const declarationCompletion = completeDeclaration(prefix, position, languages, completionModel);
+    if (declarationCompletion) {
+        return {suggestions: declarationCompletion};
     }
-    if (definition) {
-        let def = model.getLineContent(position.lineNumber);
-        def = def.substring(0, position.column - 1);
-        if (def.includes(':')) {
-            let delimeter = def.split(':')[1].search(/\S/);
-            if (delimeter === -1) {
-                delimeter = 0;
-            }
-            const wordStart = def.split(':')[0].length + 1 + delimeter;
-            const r = {
+    const currentLine = model.getLineContent(position.lineNumber).slice(0, position.column - 1);
+    const access = currentLine.match(/([A-Za-z_$][\w$]*)((?:\.[A-Za-z_$][\w$]*)*)\.([A-Za-z_$][\w$]*)?$/);
+    if (access) {
+        const declaration = collectDeclarations(prefix).get(access[1]);
+        if (declaration?.source === 'f') {
+            const field = completionModel?.getDataSet().find(item => item.id === declaration.id);
+            const partial = access[3] ?? '';
+            const range = {
                 startLineNumber: position.lineNumber,
                 endLineNumber: position.lineNumber,
-                startColumn: wordStart + 1,
-                endColumn: position.column
+                startColumn: position.column - partial.length,
+                endColumn: position.column,
             };
-            return {
-                suggestions: declarationCompleteProvider(r, languages)
-            }; // CALL RESOLVER OF VARIABLES
+            const path = access[2] ? access[2].slice(1).split('.') : [];
+            return {suggestions: fieldCompletionProposals(field?.type, path, range, languages)};
         }
-        return {suggestions: []};
     }
     const word = model.getWordUntilPosition(position);
     const range = {
@@ -42,4 +41,68 @@ export function actionCompletionProvider(model, position, languages) {
     return {
         suggestions: functionCompletionProposals(range, languages)
     };
+}
+
+function prefixAtPosition(model: any, position: any): string {
+    const lines = new Array<string>();
+    for (let lineNumber = 1; lineNumber <= position.lineNumber; lineNumber++) {
+        const line = model.getLineContent(lineNumber);
+        lines.push(lineNumber === position.lineNumber ? line.slice(0, position.column - 1) : line);
+    }
+    return lines.join('\n');
+}
+
+function completeDeclaration(
+    prefix: string,
+    position: any,
+    languages: any,
+    model?: ActionCompletionModel,
+): Array<any> | undefined {
+    if (prefix.includes(';')) {
+        return undefined;
+    }
+    const segmentStart = Math.max(prefix.lastIndexOf('\n'), prefix.lastIndexOf(',')) + 1;
+    const segment = prefix.slice(segmentStart);
+    const colon = segment.indexOf(':');
+    if (colon === -1 || !/^\s*[A-Za-z_$][\w$]*\s*$/.test(segment.slice(0, colon))) {
+        return undefined;
+    }
+    const expression = segment.slice(colon + 1);
+    const source = expression.match(/^\s*([ft])\.([\w$-]*)$/);
+    if (source) {
+        const partial = source[2];
+        const range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: position.column - partial.length,
+            endColumn: position.column,
+        };
+        return declarationReferenceCompleteProvider(source[1] as 'f' | 't', range, languages, model);
+    }
+    if (!/^\s*[ft]?$/.test(expression)) {
+        return [];
+    }
+    const typed = expression.trim();
+    const range = {
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+        startColumn: position.column - typed.length,
+        endColumn: position.column,
+    };
+    return declarationCompleteProvider(range, languages);
+}
+
+function collectDeclarations(prefix: string): Map<string, {source: 'f' | 't'; id: string}> {
+    const declarations = new Map<string, {source: 'f' | 't'; id: string}>();
+    const end = prefix.indexOf(';');
+    if (end === -1) {
+        return declarations;
+    }
+    const declarationBlock = prefix.slice(0, end + 1);
+    const pattern = /(?:^|[,\n])\s*([A-Za-z_$][\w$]*)\s*:\s*([ft])\.([\w$-]+)\s*(?=,|;)/g;
+    let match: RegExpExecArray;
+    while ((match = pattern.exec(declarationBlock)) !== null) {
+        declarations.set(match[1], {source: match[2] as 'f' | 't', id: match[3]});
+    }
+    return declarations;
 }

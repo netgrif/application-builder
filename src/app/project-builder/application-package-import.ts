@@ -2,6 +2,7 @@ import {ImportService} from '@netgrif/petriflow';
 import JSZip, {JSZipObject} from 'jszip';
 import ApplicationImport, {ApplicationImportResult} from './application-import';
 import {DialogErrorsComponent} from "../dialogs/dialog-errors/dialog-errors.component";
+import {PetriflowXmlCompatibilityService} from '../modeler/petriflow-xml-compatibility.service';
 
 export default class ApplicationPackageImport {
 
@@ -10,9 +11,11 @@ export default class ApplicationPackageImport {
 
     private applicationImporter = new ApplicationImport();
     private modelImporter: ImportService;
+    private xmlCompatibility: PetriflowXmlCompatibilityService;
 
-    constructor(importService: ImportService) {
+    constructor(importService: ImportService, xmlCompatibility: PetriflowXmlCompatibilityService) {
         this.modelImporter = importService;
+        this.xmlCompatibility = xmlCompatibility;
     }
 
     public async processPackageFile(file: File): Promise<ApplicationImportResult> {
@@ -44,7 +47,7 @@ export default class ApplicationPackageImport {
             appProcesses.has(this.getFileName(file.name, '.xml')?.replace('.xml', '')));
         for (const process of processes) {
             const processXml = await process.async('text');
-            const netResult = this.modelImporter.parseFromXml(processXml);
+            const netResult = this.xmlCompatibility.parseFromXml(this.modelImporter, processXml);
             result.models.push(netResult);
             if (netResult.errors.length !== 0) {
                 console.log('Petri net import errors:');

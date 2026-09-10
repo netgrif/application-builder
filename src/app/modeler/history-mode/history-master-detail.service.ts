@@ -23,9 +23,7 @@ export class HistoryMasterDetailService extends AbstractMasterDetailService<Hist
     }
 
     public get allData(): Array<HistoryChange<PetriNet>> {
-        return this._historyService.history.memory.filter(change =>
-            change.record?.id === this._modelService.model?.id
-        );
+        return this._historyService.changesForModel(this._modelService.model?.id);
     }
 
     public create(): HistoryChange<PetriNet> {

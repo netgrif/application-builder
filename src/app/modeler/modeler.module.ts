@@ -73,6 +73,7 @@ import {HistoryDetailComponent} from './history-mode/history-detail/history-deta
 import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
 import {FileToolComponent} from './control-panel/tools/file-tool-component/file-tool.component';
 import {TaskRefInitFieldComponent} from './data-mode/task-ref-init-field/task-ref-init-field.component';
+import {XmlModeComponent} from './xml-mode/xml-mode.component';
 
 @NgModule({
     declarations: [
@@ -119,7 +120,8 @@ import {TaskRefInitFieldComponent} from './data-mode/task-ref-init-field/task-re
         ActionDetailComponent,
         HistoryMasterItemComponent,
         HistoryDetailComponent,
-        TaskRefInitFieldComponent
+        TaskRefInitFieldComponent,
+        XmlModeComponent
     ],
     exports: [
         ActionEditorModule,

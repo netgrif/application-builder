@@ -8,6 +8,7 @@ import {CanvasConfiguration} from '@netgrif/petri.svg';
 import {ModelerConfig} from '../../modeler-config';
 import {ModelSourceService} from './model-source.service';
 import {normalizeActionIds} from '../../actions-mode/action-editor/action-id-utils';
+import {PetriflowXmlCompatibilityService} from '../../petriflow-xml-compatibility.service';
 
 @Injectable({
     providedIn: 'root'
@@ -21,6 +22,7 @@ export class ModelExportService {
         private _modelSource: ModelSourceService,
         private _exportService: ExportService,
         private matDialog: MatDialog,
+        private xmlCompatibility: PetriflowXmlCompatibilityService,
     ) {
     }
 
@@ -47,7 +49,7 @@ export class ModelExportService {
     public exportXml(model = this.model): string {
         const exportModel = model.clone();
         normalizeActionIds(exportModel);
-        const serialisedModel = this._exportService.exportXml(exportModel);
+        const serialisedModel = this.xmlCompatibility.normalizeExport(this._exportService.exportXml(exportModel));
         return this.prettyFormat(serialisedModel);
     }
 

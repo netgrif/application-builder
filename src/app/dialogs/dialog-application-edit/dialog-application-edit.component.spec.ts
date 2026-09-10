@@ -21,6 +21,7 @@ describe('DialogApplicationEditComponent', () => {
             jasmine.createSpyObj('ModelService', [], {model: undefined}) as never,
             modelImportService,
             jasmine.createSpyObj('DatabaseStorageService', ['saveApplication']) as never,
+            jasmine.createSpyObj('PetriflowXmlCompatibilityService', ['parseFromXml']) as never,
         );
     });
 

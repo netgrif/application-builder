@@ -177,19 +177,50 @@ export class ApplicationService implements OnDestroy {
         return true;
     }
 
-    updateModelId(oldId: string, newId: string) {
-        if (!this._models.get(oldId)) return;
-        this._models.set(newId, this._models.get(oldId));
-        this._models.delete(oldId);
+    updateModel(processId: string, net: PetriNet): boolean {
+        const currentModel = this._models.get(processId);
+        if (!currentModel || (processId !== net.id && this._models.has(net.id))) {
+            return false;
+        }
+
+        const active = this.modelService.model === currentModel || this.modelService.model?.id === processId;
+        const models = [...this._models.entries()];
+        this._models.clear();
+        models.forEach(([id, model]) => {
+            this._models.set(id === processId ? net.id : id, id === processId ? net : model);
+        });
+        this.updateProcesses();
+        if (active) {
+            this.modelService.model = net;
+            this.simulationModeService.originalModel.next(net);
+        }
+        return true;
+    }
+
+    updateModelId(oldId: string, newId: string): boolean {
+        const renamedModel = this._models.get(oldId);
+        if (!renamedModel) {
+            return false;
+        }
+        if (oldId === newId) {
+            return true;
+        }
+        if (this._models.has(newId)) {
+            return false;
+        }
+
+        const models = [...this._models.entries()];
+        this._models.clear();
+        models.forEach(([id, model]) => this._models.set(id === oldId ? newId : id, model));
         this.updateProcesses();
         console.log('Process id updated', oldId, '->', newId);
+        return true;
     }
 
     switchActiveModel(processId: string) {
         if (!this._models.get(processId)) return;
         this.modelService.model = this._models.get(processId);
         this.simulationModeService.originalModel.next(this._models.get(processId));
-        this.historyService.save(`Model ${this.modelService.model.id} has been changed.`, this._models.get(processId));
         console.log('Current process switched', processId);
     }
 

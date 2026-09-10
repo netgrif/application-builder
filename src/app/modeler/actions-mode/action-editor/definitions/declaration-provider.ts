@@ -1,3 +1,4 @@
+import {ActionCompletionModel} from './action-completion-model';
 
 export function declarationCompleteProvider(range, languages) {
     return [
@@ -16,4 +17,33 @@ export function declarationCompleteProvider(range, languages) {
             range
         }
     ];
+}
+
+export function declarationReferenceCompleteProvider(
+    source: 'f' | 't',
+    range: any,
+    languages: any,
+    model?: ActionCompletionModel,
+): Array<any> {
+    if (!model) {
+        return [];
+    }
+    if (source === 'f') {
+        return model.getDataSet().map(field => ({
+            label: field.id,
+            kind: languages.CompletionItemKind.Field,
+            detail: `${field.type} field`,
+            documentation: field.title?.value || `Data field ${field.id}`,
+            insertText: field.id,
+            range,
+        }));
+    }
+    return model.getTransitions().map(transition => ({
+        label: transition.id,
+        kind: languages.CompletionItemKind.Field,
+        detail: 'Transition',
+        documentation: transition.label?.value || `Transition ${transition.id}`,
+        insertText: transition.id,
+        range,
+    }));
 }

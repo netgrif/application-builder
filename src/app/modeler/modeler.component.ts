@@ -8,6 +8,7 @@ import {ImportService} from '@netgrif/petriflow';
 import {EditModeService} from './edit-mode/edit-mode.service';
 import {HistoryService} from './services/history/history.service';
 import {ModelService} from './services/model/model.service';
+import {PetriflowXmlCompatibilityService} from './petriflow-xml-compatibility.service';
 
 @Component({
     selector: 'nab-modeler',
@@ -29,6 +30,7 @@ export class ModelerComponent {
         private _importService: ImportService,
         private _petriflowCanvasService: EditModeService,
         private historyService: HistoryService,
+        private xmlCompatibility: PetriflowXmlCompatibilityService,
     ) {
         this.route.queryParams.subscribe(params => { // TODO spraviť otvorenie procesu z urlky
             if (params.modelUrl) {
@@ -36,7 +38,7 @@ export class ModelerComponent {
                     responseType: 'text',
                 }).subscribe(data => {
                     try {
-                        const model = this._importService.parseFromXml(data as string)?.model;
+                        const model = this.xmlCompatibility.parseFromXml(this._importService, data as string)?.model;
                         if (model) {
                             this.modelService.model = model;
                             this.historyService.save(`Model ${this.modelService.model.id} has been imported.`);

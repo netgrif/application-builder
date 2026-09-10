@@ -2,10 +2,16 @@ import {Injector} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
-import {ImportService, PetriNet} from '@netgrif/petriflow';
+import {ImportService, PetriNet, Role} from '@netgrif/petriflow';
 import {ApplicationService} from '../project-builder/application.service';
 import {ModelImportService} from './model-import-service';
 import {HistoryService} from './services/history/history.service';
+import {PetriflowXmlCompatibilityService} from './petriflow-xml-compatibility.service';
+import {
+    SnackBarHorizontalPosition,
+    SnackBarService,
+    SnackBarVerticalPosition,
+} from '@netgrif/components-core';
 
 describe('ModelImportService', () => {
     let importService: jasmine.SpyObj<ImportService>;
@@ -16,6 +22,7 @@ describe('ModelImportService', () => {
     let applicationService: jasmine.SpyObj<ApplicationService>;
     let injector: jasmine.SpyObj<Injector>;
     let service: ModelImportService;
+    let builderSnackBar: jasmine.SpyObj<SnackBarService>;
     let importedModel: PetriNet;
 
     beforeEach(() => {
@@ -37,6 +44,10 @@ describe('ModelImportService', () => {
         } as never);
         applicationService.replaceActiveModel.and.returnValue(true);
         applicationService.addModel.and.returnValue(true);
+        builderSnackBar = jasmine.createSpyObj<SnackBarService>(
+            'SnackBarService',
+            ['openSuccessSnackBar', 'openWarningSnackBar'],
+        );
 
         service = new ModelImportService(
             importService,
@@ -45,6 +56,8 @@ describe('ModelImportService', () => {
             router,
             historyService,
             injector,
+            new PetriflowXmlCompatibilityService(),
+            builderSnackBar,
         );
     });
 
@@ -66,6 +79,60 @@ describe('ModelImportService', () => {
         );
         expect(snackBar.openFromComponent).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalledWith(['/modeler']);
+    });
+
+    it('applies XML editor changes without leaving the XML mode', () => {
+        const applied = service.applyFromXml('<document/>');
+
+        expect(applied).toBeTrue();
+        expect(applicationService.replaceActiveModel).toHaveBeenCalledOnceWith(importedModel);
+        expect(historyService.save).toHaveBeenCalledWith(
+            `Model ${importedModel.id} has been updated from XML.`,
+            importedModel,
+        );
+        expect(builderSnackBar.openSuccessSnackBar).toHaveBeenCalledWith(
+            'Process changes saved.',
+            SnackBarVerticalPosition.BOTTOM,
+            SnackBarHorizontalPosition.CENTER,
+            3,
+        );
+        expect(snackBar.open).not.toHaveBeenCalled();
+        expect(router.navigate).not.toHaveBeenCalled();
+    });
+
+    it('uses the Builder warning snackbar when XML is saved with diagnostics', () => {
+        importService.parseFromXml.and.returnValue({
+            model: importedModel,
+            errors: [],
+            warnings: [{message: 'warning'}],
+            info: [],
+        } as never);
+
+        service.applyFromXml('<document/>');
+
+        expect(builderSnackBar.openWarningSnackBar).toHaveBeenCalledWith(
+            'Process changes saved with import diagnostics.',
+            SnackBarVerticalPosition.BOTTOM,
+            SnackBarHorizontalPosition.CENTER,
+            3,
+        );
+    });
+
+    it('preserves a global role expressed as an XSD attribute', () => {
+        const role = new Role('manager');
+        importedModel.addRole(role);
+
+        service.applyFromXml('<document><role global="true"><id>manager</id><title>Manager</title></role></document>');
+
+        expect(role.global).toBeTrue();
+    });
+
+    it('reports a failed XML editor update to its caller', () => {
+        applicationService.replaceActiveModel.and.returnValue(false);
+
+        const applied = service.applyFromXml('<document/>');
+
+        expect(applied).toBeFalse();
     });
 
     it('reports an identifier collision without claiming that the import succeeded', () => {

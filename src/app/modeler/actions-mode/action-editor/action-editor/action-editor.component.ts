@@ -12,6 +12,7 @@ import {MenuItemConfiguration} from '../action-editor-menu/action-editor-menu-it
 import {MenuItem} from '../action-editor-menu/action-editor-menu-item/menu-item';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {ModelService} from '../../../services/model/model.service';
+import {PetriflowActionCompletionService} from '../petriflow-action-completion.service';
 
 @Component({
     selector: 'nab-action-editor',
@@ -59,7 +60,8 @@ export class ActionEditorComponent implements OnInit {
     constructor(
         private actionEditorService: ActionEditorService,
         private modelService: ModelService,
-        private deleteDialog: MatDialog
+        private deleteDialog: MatDialog,
+        private actionCompletionService: PetriflowActionCompletionService,
     ) {
         this.formControl = new FormControl(undefined, {updateOn: 'blur'});
         this.actionChanged = new EventEmitter<ActionChangedEvent>();
@@ -76,6 +78,7 @@ export class ActionEditorComponent implements OnInit {
     };
 
     onInit(editorObject) {
+        this.actionCompletionService.register();
         this.editor = editorObject;
         this.editor.onDidChangeModelContent(e => {
             this.saveAction(this.editor.getModel().getLinesContent().join('\n'));

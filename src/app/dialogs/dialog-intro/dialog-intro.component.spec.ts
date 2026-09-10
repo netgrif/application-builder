@@ -44,6 +44,7 @@ describe('DialogIntroComponent', () => {
             jasmine.createSpyObj('ModelService', [], {model: undefined}) as never,
             snackBarService,
             storageService,
+            jasmine.createSpyObj('PetriflowXmlCompatibilityService', ['parseFromXml']) as never,
         );
     });
 

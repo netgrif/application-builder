@@ -7,6 +7,12 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {HistoryService} from './services/history/history.service';
 import {ApplicationService} from '../project-builder/application.service';
+import {PetriflowXmlCompatibilityService} from './petriflow-xml-compatibility.service';
+import {
+    SnackBarHorizontalPosition,
+    SnackBarService,
+    SnackBarVerticalPosition,
+} from '@netgrif/components-core';
 
 @Injectable({
     providedIn: 'root'
@@ -22,6 +28,8 @@ export class ModelImportService {
         private router: Router,
         private historyService: HistoryService,
         private injector: Injector,
+        private xmlCompatibility: PetriflowXmlCompatibilityService,
+        private builderSnackBar: SnackBarService,
     ) {
     }
 
@@ -36,12 +44,22 @@ export class ModelImportService {
         this.processXml(content, false);
     }
 
+    public applyFromXml(content: string): boolean {
+        return this.processXml(content, false, false, true);
+    }
+
     public addProcessFromXml(content: string): void {
         this.processXml(content, true);
     }
 
-    private processXml(content: string, addAsNewProcess: boolean): void {
-        const petriNetResult = this.importService.parseFromXml(content);
+    private processXml(
+        content: string,
+        addAsNewProcess: boolean,
+        navigateAfterImport = true,
+        xmlEditorUpdate = false,
+    ): boolean {
+        const petriNetResult = this.xmlCompatibility.parseFromXml(this.importService, content);
+        let imported = false;
 
         if (petriNetResult.errors.length + petriNetResult.warnings.length + petriNetResult.info.length > 0) {
             console.log('Petri net import errors:');
@@ -57,16 +75,41 @@ export class ModelImportService {
         }
 
         if (petriNetResult.model !== undefined) {
-            const imported = addAsNewProcess
+            imported = addAsNewProcess
                 ? this.applicationService.addModel(petriNetResult.model)
                 : this.applicationService.replaceActiveModel(petriNetResult.model);
 
             if (imported) {
-                if (petriNetResult.errors.length + petriNetResult.warnings.length + petriNetResult.info.length === 0) {
+                const hasDiagnostics = petriNetResult.errors.length
+                    + petriNetResult.warnings.length
+                    + petriNetResult.info.length > 0;
+                if (xmlEditorUpdate) {
+                    const message = hasDiagnostics
+                        ? 'Process changes saved with import diagnostics.'
+                        : 'Process changes saved.';
+                    if (hasDiagnostics) {
+                        this.builderSnackBar.openWarningSnackBar(
+                            message,
+                            SnackBarVerticalPosition.BOTTOM,
+                            SnackBarHorizontalPosition.CENTER,
+                            3,
+                        );
+                    } else {
+                        this.builderSnackBar.openSuccessSnackBar(
+                            message,
+                            SnackBarVerticalPosition.BOTTOM,
+                            SnackBarHorizontalPosition.CENTER,
+                            3,
+                        );
+                    }
+                } else if (!hasDiagnostics) {
                     this.snackBar.openFromComponent(ImportSuccessfulComponent, {duration: 5000});
                 }
                 if (!addAsNewProcess) {
-                    this.historyService.save(`Model ${petriNetResult.model.id} has been imported.`, petriNetResult.model);
+                    const historyMessage = xmlEditorUpdate
+                        ? `Model ${petriNetResult.model.id} has been updated from XML.`
+                        : `Model ${petriNetResult.model.id} has been imported.`;
+                    this.historyService.save(historyMessage, petriNetResult.model);
                 }
             } else {
                 this.snackBar.open(
@@ -76,8 +119,9 @@ export class ModelImportService {
                 );
             }
         }
-        if (!addAsNewProcess) {
+        if (!addAsNewProcess && navigateAfterImport) {
             this.router.navigate(['/modeler']);
         }
+        return imported;
     }
 }

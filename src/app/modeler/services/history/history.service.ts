@@ -7,6 +7,7 @@ import {History} from './history';
 import {HistoryChange} from './history-change';
 import {UndoTool} from '../../control-panel/modes/undo-tool';
 import {RedoTool} from '../../control-panel/modes/redo-tool';
+import {PetriflowXmlCompatibilityService} from '../../petriflow-xml-compatibility.service';
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +20,7 @@ export class HistoryService {
     constructor(
         private modelService: ModelService,
         private exportService: ExportService,
+        private xmlCompatibility: PetriflowXmlCompatibilityService,
     ) {
         this._history = new History<PetriNet>();
         this._historyChange = new Subject();
@@ -26,7 +28,10 @@ export class HistoryService {
 
     public save(message: string, model?: PetriNet): void {
         model = model ?? this.modelService.model;
-        model.lastChanged = Date.now();
+        if (!model) {
+            return;
+        }
+        model.lastChanged = this.nextTimestamp();
         this.reloadUsageEstimate(model);
         this.push(model.clone(), message);
     }
@@ -55,9 +60,7 @@ export class HistoryService {
     }
 
     private push(model: PetriNet, message: string): void {
-        if (!model || model.lastChanged === this.currentModel?.lastChanged || this.history.memory.find(change =>
-            change.record.lastChanged === model.lastChanged)
-        ) {
+        if (!model) {
             return;
         }
         const update = this._history.push(model, message);
@@ -69,11 +72,28 @@ export class HistoryService {
         model.tags.set(ModelService.USAGE_ESTIMATE_TAG, ModelService.calculateEventUsage(model).toString(10));
     }
 
+    private nextTimestamp(): number {
+        const latestTimestamp = this._history.memory.reduce(
+            (latest, change) => Math.max(latest, change.record?.lastChanged ?? 0),
+            0,
+        );
+        return Math.max(Date.now(), latestTimestamp + 1);
+    }
+
+    private serialize(model: PetriNet): string {
+        return this.xmlCompatibility.normalizeExport(this.exportService.exportXml(model));
+    }
+
     async saveToLocalStorage(model: PetriNet): Promise<void> {
-        localStorage.setItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY, this.exportService.exportXml(model));
+        const xml = this.serialize(model);
+        localStorage.setItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY, xml);
         localStorage.setItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TIMESTAMP, new Date().toLocaleString());
         localStorage.setItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.ID, `${model.id}`);
         localStorage.setItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.TITLE, `${model.title.value}`);
+    }
+
+    changesForModel(modelId: string): Array<HistoryChange<PetriNet>> {
+        return this._history.memory.filter(change => change.record?.id === modelId);
     }
 
     get historyChange(): Subject<HistoryChange<PetriNet>> {

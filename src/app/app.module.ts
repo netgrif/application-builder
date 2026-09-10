@@ -47,6 +47,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatPaginatorIntl} from '@angular/material/paginator';
 import {BuilderPaginatorIntl} from './modeler/components/master-detail/main-master/builder-paginator-inpl';
 import {DialogMarkingChangeComponent} from './dialogs/dialog-marking-change/dialog-marking-change.component';
+import {XmlModeComponent} from './modeler/xml-mode/xml-mode.component';
+import {XmlModeService} from './modeler/xml-mode/xml-mode.service';
 
 const appRoutes: Routes = [
     {
@@ -58,6 +60,7 @@ const appRoutes: Routes = [
             {path: 'actions', component: ActionsModeComponent},
             {path: 'i18n', component: I18nModeComponent},
             {path: 'history', component: HistoryModeComponent},
+            {path: XmlModeService.URL, component: XmlModeComponent},
         ]
     },
     {path: 'form', component: FormBuilderComponent},

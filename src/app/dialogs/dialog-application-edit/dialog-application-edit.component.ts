@@ -21,6 +21,7 @@ import {
 } from "@netgrif/components-core";
 import {ModelImportService} from '../../modeler/model-import-service';
 import {DatabaseStorageService} from '../../project-builder/database-storage.service';
+import {PetriflowXmlCompatibilityService} from '../../modeler/petriflow-xml-compatibility.service';
 
 @Component({
     selector: 'nab-dialog-application-edit',
@@ -50,13 +51,14 @@ export class DialogApplicationEditComponent {
         private modelService: ModelService,
         private modelImportService: ModelImportService,
         private databaseStorageService: DatabaseStorageService,
+        private xmlCompatibility: PetriflowXmlCompatibilityService,
     ) {
         this.form = new FormControl('', [
             Validators.required,
         ]);
         this.fileInputLoading = false;
         this.exportLoading = false;
-        this.packageImporter = new ApplicationPackageImport(this.importService);
+        this.packageImporter = new ApplicationPackageImport(this.importService, this.xmlCompatibility);
         this.packageExporter = new ApplicationPackageExport(this.exportUtils, this.exportService);
     }
 
@@ -94,7 +96,7 @@ export class DialogApplicationEditComponent {
                     }
                 });
             } else {
-                this.snackBarService.openSuccessSnackBar("Application " + result.application.name + " imported successfully.", SnackBarVerticalPosition.BOTTOM, SnackBarHorizontalPosition.CENTER, 5000);
+                this.snackBarService.openSuccessSnackBar("Application " + result.application.name + " imported successfully.", SnackBarVerticalPosition.BOTTOM, SnackBarHorizontalPosition.CENTER, 5);
             }
         }).catch(error => {
             console.error(error);
@@ -148,7 +150,7 @@ export class DialogApplicationEditComponent {
                 `Application ${saved.application.name} saved.`,
                 SnackBarVerticalPosition.BOTTOM,
                 SnackBarHorizontalPosition.CENTER,
-                5000,
+                5,
             );
         } catch (error) {
             console.error(error);
@@ -182,13 +184,15 @@ export class DialogApplicationEditComponent {
         }).afterClosed().subscribe(value => {
             const changedModel = value as ModelChange;
             if (changedModel != undefined) {
-                if (changedModel.model.id !== processId) {
-                    this.applicationService.updateModelId(processId, changedModel.model.id);
+                if (!this.applicationService.updateModel(processId, changedModel.model)) {
+                    this.snackBarService.openErrorSnackBar(
+                        `A process with id ${changedModel.model.id} already exists.`,
+                        SnackBarVerticalPosition.BOTTOM,
+                        SnackBarHorizontalPosition.CENTER,
+                    );
+                    return;
                 }
-                this.applicationService.models.set(changedModel.model.id, changedModel.model);
-                if (changedModel) {
-                    this.historyService.save(`Model has been changed.`); // TODO sprav historiu pre všetky procesy
-                }
+                this.historyService.save('Model has been changed.', changedModel.model);
             }
         });
     }

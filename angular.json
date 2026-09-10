@@ -26,6 +26,7 @@
                             "easymde",
                             "escape-string-regexp",
                             "jszip",
+                            "@xmldom/xmldom",
                             "semver",
                             "rfdc"
                         ],
@@ -51,6 +52,16 @@
                                 "glob": "**/*",
                                 "input": "node_modules/monaco-editor/min-maps",
                                 "output": "./assets/monaco/min-maps"
+                            },
+                            {
+                                "glob": "xmllint-browser.mjs",
+                                "input": "node_modules/xmllint-wasm",
+                                "output": "./assets/xmllint-wasm"
+                            },
+                            {
+                                "glob": "xmllint.wasm",
+                                "input": "node_modules/xmllint-wasm",
+                                "output": "./assets/xmllint-wasm"
                             }
                         ],
                         "styles": [
@@ -127,7 +138,17 @@
                         "karmaConfig": "karma.conf.js",
                         "assets": [
                             "src/favicon.ico",
-                            "src/assets"
+                            "src/assets",
+                            {
+                                "glob": "xmllint-browser.mjs",
+                                "input": "node_modules/xmllint-wasm",
+                                "output": "./assets/xmllint-wasm"
+                            },
+                            {
+                                "glob": "xmllint.wasm",
+                                "input": "node_modules/xmllint-wasm",
+                                "output": "./assets/xmllint-wasm"
+                            }
                         ],
                         "styles": [
                             "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",

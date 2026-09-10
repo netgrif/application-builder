@@ -17,6 +17,7 @@ import {
     SavedApplicationSummary
 } from '../../project-builder/database-storage.service';
 import {DialogDeleteComponent} from '../dialog-delete/dialog-delete.component';
+import {PetriflowXmlCompatibilityService} from '../../modeler/petriflow-xml-compatibility.service';
 
 @Component({
     selector: 'nab-dialog-intro',
@@ -38,8 +39,9 @@ export class DialogIntroComponent {
         private modelService: ModelService,
         private snackBarService: SnackBarService,
         private databaseStorageService: DatabaseStorageService,
+        private xmlCompatibility: PetriflowXmlCompatibilityService,
     ) {
-        this.packageImporter = new ApplicationPackageImport(this.importService);
+        this.packageImporter = new ApplicationPackageImport(this.importService, this.xmlCompatibility);
     }
 
     createNewApplication() {
@@ -63,7 +65,8 @@ export class DialogIntroComponent {
         }
 
         try {
-            const results = savedApplication.processes.map(process => this.importService.parseFromXml(process.xml));
+            const results = savedApplication.processes.map(process =>
+                this.xmlCompatibility.parseFromXml(this.importService, process.xml));
             this.applicationService.models.clear();
             this.applicationService.application = savedApplication.application;
             results.forEach(result => {
@@ -91,7 +94,7 @@ export class DialogIntroComponent {
                     `Application ${savedApplication.application.name} loaded.`,
                     SnackBarVerticalPosition.BOTTOM,
                     SnackBarHorizontalPosition.CENTER,
-                    5000,
+                    5,
                 );
             }
         } catch (error) {
@@ -119,7 +122,7 @@ export class DialogIntroComponent {
                     `Saved application ${savedApplication.application.name} deleted.`,
                     SnackBarVerticalPosition.BOTTOM,
                     SnackBarHorizontalPosition.CENTER,
-                    5000,
+                    5,
                 );
             }
         });
@@ -149,7 +152,7 @@ export class DialogIntroComponent {
                     }
                 });
             } else {
-                this.snackBarService.openSuccessSnackBar("Application " + result.application.name + " imported successfully.", SnackBarVerticalPosition.BOTTOM, SnackBarHorizontalPosition.CENTER, 5000);
+                this.snackBarService.openSuccessSnackBar("Application " + result.application.name + " imported successfully.", SnackBarVerticalPosition.BOTTOM, SnackBarHorizontalPosition.CENTER, 5);
             }
         }).catch(error => {
             console.error(error);

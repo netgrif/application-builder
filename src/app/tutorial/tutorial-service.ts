@@ -21,6 +21,7 @@ export class TutorialService {
     actions: TutorialStep;
     i18n: TutorialStep;
     history: TutorialStep;
+    xml: TutorialStep;
     importTool: TutorialStep;
     exportTool: TutorialStep;
     svgExportTool: TutorialStep;
@@ -128,9 +129,21 @@ export class TutorialService {
             'History',
             'You can review recent changes of the model as well as download or revert to previous version of the model.',
             () => {
+                this.router.navigate(['/modeler/xml']);
             },
             () => {
                 this.router.navigate(['/modeler/i18n']);
+            },
+            'right'
+        );
+        this.xml = TutorialStep.of(
+            'xml',
+            'Process XML',
+            'You can review the complete process XML and validate it against a selected Petriflow XSD version.',
+            () => {
+            },
+            () => {
+                this.router.navigate(['/modeler/history']);
             },
             'right'
         );
@@ -141,7 +154,7 @@ export class TutorialService {
             () => {
             },
             () => {
-                this.router.navigate(['/modeler/history']);
+                this.router.navigate(['/modeler/xml']);
             },
             'right'
         );
@@ -224,6 +237,7 @@ export class TutorialService {
             this.actions.step,
             this.i18n.step,
             this.history.step,
+            this.xml.step,
             this.importTool.step,
             this.exportTool.step,
             this.svgExportTool.step,

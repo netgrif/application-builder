@@ -18,6 +18,7 @@ import {RedoTool} from './modes/redo-tool';
 import {UndoTool} from './modes/undo-tool';
 import {Tool} from './tools/tool';
 import {HistoryModeService} from '../history-mode/history-mode.service';
+import {XmlModeService} from '../xml-mode/xml-mode.service';
 
 @Injectable({
     providedIn: 'root'
@@ -36,6 +37,7 @@ export class ControlPanelService {
         private _actionModeService: ActionsModeService,
         private _i18nModeService: I18nModeService,
         private _historyModeService: HistoryModeService,
+        private _xmlModeService: XmlModeService,
         private _globalToolRegistry: GlobalToolRegistry,
         private _importModelTool: ImportTool,
         private _exportModelTool: ExportTool,
@@ -52,6 +54,7 @@ export class ControlPanelService {
         this.registerMode(_actionModeService);
         this.registerMode(_i18nModeService);
         this.registerMode(_historyModeService);
+        this.registerMode(_xmlModeService);
         this._defaultMode = _editModeService.mode;
         this.activate();
         this._globalToolRegistry.registerItem(_importModelTool);

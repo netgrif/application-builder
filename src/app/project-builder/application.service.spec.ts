@@ -122,6 +122,21 @@ describe('ApplicationService', () => {
         expect(simulationModeService.originalModel.next).toHaveBeenCalledWith(generatedModel);
     });
 
+    it('does not create a history entry when switching the active process', () => {
+        const firstModel = createModel('first');
+        const secondModel = createModel('second');
+        service.models.set(firstModel.id, firstModel);
+        service.models.set(secondModel.id, secondModel);
+        service.updateProcesses();
+        modelService.model = firstModel;
+
+        service.switchActiveModel(secondModel.id);
+
+        expect(modelService.model).toBe(secondModel);
+        expect(historyService.save).not.toHaveBeenCalled();
+        expect(simulationModeService.originalModel.next).toHaveBeenCalledWith(secondModel);
+    });
+
     it('does not overwrite a process when an added identifier already exists', () => {
         const existingModel = createModel('existing');
         const duplicateModel = createModel(existingModel.id);
@@ -165,6 +180,73 @@ describe('ApplicationService', () => {
         expect(modelService.model).toBe(importedModel);
         expect(service.application.processes).toEqual([importedModel.id, untouchedModel.id]);
         expect(simulationModeService.originalModel.next).toHaveBeenCalledWith(importedModel);
+    });
+
+    it('renames a process without moving it in the menu', () => {
+        const firstModel = createModel('first');
+        const renamedModel = createModel('middle');
+        const lastModel = createModel('last');
+        service.models.set(firstModel.id, firstModel);
+        service.models.set(renamedModel.id, renamedModel);
+        service.models.set(lastModel.id, lastModel);
+        service.updateProcesses();
+
+        const renamed = service.updateModelId('middle', 'renamed');
+
+        expect(renamed).toBeTrue();
+        expect([...service.models.keys()]).toEqual(['first', 'renamed', 'last']);
+        expect(service.models.get('renamed')).toBe(renamedModel);
+        expect(service.application.processes).toEqual(['first', 'renamed', 'last']);
+    });
+
+    it('rejects a process rename that would overwrite another process', () => {
+        const firstModel = createModel('first');
+        const secondModel = createModel('second');
+        service.models.set(firstModel.id, firstModel);
+        service.models.set(secondModel.id, secondModel);
+        service.updateProcesses();
+
+        const renamed = service.updateModelId('first', 'second');
+
+        expect(renamed).toBeFalse();
+        expect([...service.models.keys()]).toEqual(['first', 'second']);
+        expect(service.models.get('first')).toBe(firstModel);
+        expect(service.models.get('second')).toBe(secondModel);
+    });
+
+    it('updates an active process atomically without changing its position', () => {
+        const firstModel = createModel('first');
+        const activeModel = createModel('active');
+        const lastModel = createModel('last');
+        const editedModel = createModel('renamed');
+        service.models.set(firstModel.id, firstModel);
+        service.models.set(activeModel.id, activeModel);
+        service.models.set(lastModel.id, lastModel);
+        service.updateProcesses();
+        modelService.model = activeModel;
+
+        const updated = service.updateModel(activeModel.id, editedModel);
+
+        expect(updated).toBeTrue();
+        expect([...service.models.keys()]).toEqual(['first', 'renamed', 'last']);
+        expect(modelService.model).toBe(editedModel);
+        expect(simulationModeService.originalModel.next).toHaveBeenCalledWith(editedModel);
+    });
+
+    it('updates a non-active process without switching the active process', () => {
+        const activeModel = createModel('active');
+        const otherModel = createModel('other');
+        const editedModel = createModel('renamed-other');
+        service.models.set(activeModel.id, activeModel);
+        service.models.set(otherModel.id, otherModel);
+        service.updateProcesses();
+        modelService.model = activeModel;
+
+        const updated = service.updateModel(otherModel.id, editedModel);
+
+        expect(updated).toBeTrue();
+        expect([...service.models.keys()]).toEqual(['active', 'renamed-other']);
+        expect(modelService.model).toBe(activeModel);
     });
 
     it('replaces the sole listed process when an old untracked placeholder is active', () => {

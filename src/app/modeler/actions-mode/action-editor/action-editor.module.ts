@@ -4,7 +4,6 @@ import {ActionEditorListComponent} from './action-editor-list/action-editor-list
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {tokenProvider} from './definitions/tokens';
-import {actionCompletionProvider} from './definitions/completion-provider';
 import {ActionEditorMenuComponent} from './action-editor-menu/action-editor-menu.component';
 import {
     ActionEditorMenuDescriptionComponent
@@ -25,11 +24,6 @@ declare var monaco: any;
 export function onMonacoLoad() {
     monaco.languages.register({id: 'petriflow'});
     monaco.languages.setMonarchTokensProvider('petriflow', tokenProvider() as any);
-    monaco.languages.registerCompletionItemProvider('petriflow', {
-        provideCompletionItems(model, position) {
-            return actionCompletionProvider(model, position, monaco.languages)  ;
-        }
-    } as any);
 }
 
 const monacoConfig: NgxMonacoEditorConfig = {

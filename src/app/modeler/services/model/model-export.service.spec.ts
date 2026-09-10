@@ -12,6 +12,7 @@ import {ModelExportService} from './model-export.service';
 import {ModelService} from './model.service';
 import {ModelSourceService} from './model-source.service';
 import {collectActions} from '../../actions-mode/action-editor/action-id-utils';
+import {PetriflowXmlCompatibilityService} from '../../petriflow-xml-compatibility.service';
 
 describe('ModelExportService', () => {
     it('normalizes duplicate action ids on an export clone', () => {
@@ -40,6 +41,7 @@ describe('ModelExportService', () => {
             {} as ModelSourceService,
             exportService,
             {} as MatDialog,
+            new PetriflowXmlCompatibilityService(),
         );
 
         service.exportXml(model);
