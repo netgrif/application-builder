@@ -171,14 +171,23 @@ export class ModelService {
             return;
         }
         // TODO: NAB-326 validate unique id
-        const place = this.model.getPlace(newPlace.originalPlace.id);
+        const originalId = newPlace.originalPlace.id;
+        const places = this.model.getPlaces();
+        const originalIds = places.map(item => item.id);
+        const place = this.model.getPlace(originalId);
         place.id = newPlace.place.id;
         place.marking = newPlace.place.marking;
         place.label = newPlace.place.label;
-        this.model.removePlace(newPlace.originalPlace.id);
-        this.model.addPlace(place);
+        if (originalId !== place.id) {
+            this.rebuildOrderedCollection(
+                places,
+                originalIds,
+                id => this.model.removePlace(id),
+                item => this.model.addPlace(item),
+            );
+        }
         this.model.getArcs()
-            .filter(arc => arc.reference === newPlace.originalPlace.id)
+            .filter(arc => arc.reference === originalId)
             .forEach(arc => arc.reference = place.id);
         this.model.lastChanged = Date.now();
         this._placeChange.next(new PlaceChange(newPlace.originalPlace, place, this.model.clone()));
@@ -238,6 +247,8 @@ export class ModelService {
             return;
         }
         // TODO: NAB-326 validate unique id
+        const transitions = this.model.getTransitions();
+        const originalIds = transitions.map(item => item.id);
         const transition = this.model.getTransition(newTransition.id);
         transition.id = newTransition.transition.id;
         transition.label = newTransition.transition.label;
@@ -246,8 +257,14 @@ export class ModelService {
         transition.assignPolicy = newTransition.transition.assignPolicy;
         transition.finishPolicy = newTransition.transition.finishPolicy;
         transition.triggers = newTransition.transition.triggers;
-        this.model.removeTransition(newTransition.id);
-        this.model.addTransition(transition);
+        if (newTransition.id !== transition.id) {
+            this.rebuildOrderedCollection(
+                transitions,
+                originalIds,
+                id => this.model.removeTransition(id),
+                item => this.model.addTransition(item),
+            );
+        }
         this.model.lastChanged = Date.now();
         this._transitionChange.next(new ChangedTransition(this.model.clone(), transition, newTransition.id));
     }
@@ -295,9 +312,17 @@ export class ModelService {
         }
         let arc = this.model.getArc(newArc.id);
         if (newArc.arcType !== arc.type) {
+            const arcs = this.model.getArcs();
+            const originalIds = arcs.map(item => item.id);
+            const arcIndex = arcs.indexOf(arc);
             arc = this.arcFactory.buildArc(newArc.arcType, arc.id, arc.source, arc.destination);
-            this.model.removeArc(arc.id);
-            this.model.addArc(arc);
+            arcs[arcIndex] = arc;
+            this.rebuildOrderedCollection(
+                arcs,
+                originalIds,
+                id => this.model.removeArc(id),
+                item => this.model.addArc(item),
+            );
         }
         arc.multiplicity = newArc.arc.multiplicity;
         arc.reference = newArc.arc.reference;
@@ -397,17 +422,23 @@ export class ModelService {
         if (!newRole) {
             return;
         }
+        const roles = this.model.getRoles();
+        const originalIds = roles.map(item => item.id);
         const role = this.model.getRole(newRole.id);
         role.id = newRole.role.id;
         role.title = newRole.role.title;
-        this.model.removeRole(newRole.id);
-        this.model.addRole(role);
+        if (newRole.id !== role.id) {
+            this.rebuildOrderedCollection(
+                roles,
+                originalIds,
+                id => this.model.removeRole(id),
+                item => this.model.addRole(item),
+            );
+        }
 
         const processRoleRef = this.model.getRoleRef(newRole.id);
         if (processRoleRef) {
-            this.model.removeRoleRef(newRole.id);
             processRoleRef.id = role.id;
-            this.model.addRoleRef(processRoleRef);
         }
         this.model.getTransitions()
             .map(t => t.roleRefs.find(ref => ref.id === newRole.id))
@@ -430,6 +461,16 @@ export class ModelService {
             }
         });
         this.model.lastChanged = Date.now();
+    }
+
+    private rebuildOrderedCollection<T>(
+        items: Array<T>,
+        originalIds: Array<string>,
+        remove: (id: string) => void,
+        add: (item: T) => void,
+    ): void {
+        originalIds.forEach(id => remove(id));
+        items.forEach(item => add(item));
     }
 
     // utils

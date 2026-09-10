@@ -1,0 +1,145 @@
+:host {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.xml-mode {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: #fafafa;
+}
+
+.xml-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 56px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #dddddd;
+    background: #ffffff;
+}
+
+.xml-title,
+.xml-actions,
+.validation-status {
+    display: flex;
+    align-items: center;
+}
+
+.xml-title {
+    gap: 8px;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.xml-title code {
+    overflow: hidden;
+    padding: 3px 7px;
+    border-radius: 4px;
+    background: #eeeeee;
+    color: #555555;
+    font-size: 12px;
+    font-weight: 400;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.xml-actions {
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.settings-value {
+    margin-left: 16px;
+    color: #757575;
+    font-size: 12px;
+}
+
+.validation-status {
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.validation-status mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+.validation-status.valid {
+    color: #2e7d32;
+}
+
+.validation-status.invalid {
+    color: #c62828;
+}
+
+.validation-status.loading {
+    color: #555555;
+}
+
+.xml-editor {
+    flex: 1 1 auto;
+    min-height: 260px;
+    height: auto;
+}
+
+.diagnostics {
+    max-height: 180px;
+    overflow: auto;
+    border-top: 1px solid #dddddd;
+    background: #ffffff;
+}
+
+.diagnostic {
+    display: block;
+    width: 100%;
+    padding: 9px 16px;
+    border: 0;
+    border-bottom: 1px solid #eeeeee;
+    background: transparent;
+    color: #424242;
+    text-align: left;
+    cursor: pointer;
+}
+
+.diagnostic:hover {
+    background: #fff3f3;
+}
+
+.diagnostic span {
+    margin-right: 8px;
+    color: #c62828;
+    font-weight: 600;
+}
+
+.empty-state {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #757575;
+    text-align: center;
+}
+
+.empty-state mat-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 56px;
+}
+
+.empty-state h2 {
+    margin: 12px 0 4px;
+}
+
+.empty-state p {
+    margin: 0;
+}

@@ -44,10 +44,12 @@ export class DialogRefactorComponent {
 
     protected fieldIdRefactor() {
         const refactoredModel = this.modelService.model;
+        const dataSet = refactoredModel.getDataSet();
+        const dataIds = dataSet.map(item => item.id);
         const dataField = refactoredModel.getData(this.data.originalId);
         this.changedIfExist(dataField);
-        refactoredModel.removeData(this.data.originalId);
-        refactoredModel.addData(dataField);
+        dataIds.forEach(id => refactoredModel.removeData(id));
+        dataSet.forEach(item => refactoredModel.addData(item));
         if (!refactoredModel.getPlace(this.data.originalId)) {
             const arc = refactoredModel.getArc(this.data.originalId);
             if (arc !== undefined) {
@@ -81,9 +83,11 @@ export class DialogRefactorComponent {
             trans.dataGroups.forEach(group => {
                 const oldDataRef = group.getDataRef(this.data.originalId);
                 if (oldDataRef) {
-                    group.removeDataRef(this.data.originalId);
+                    const dataRefs = group.getDataRefs();
+                    const dataRefIds = dataRefs.map(item => item.id);
                     oldDataRef.id = this.formControl.value;
-                    group.addDataRef(oldDataRef);
+                    dataRefIds.forEach(id => group.removeDataRef(id));
+                    dataRefs.forEach(item => group.addDataRef(item));
                 }
                 group.getDataRefs().forEach(d => d.getEvents().forEach(event => {
                     this.refactorEventActions(event);

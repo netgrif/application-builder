@@ -1,0 +1,96 @@
+<section class="xml-mode">
+    <header class="xml-header">
+        <div class="xml-title">
+            <mat-icon>data_object</mat-icon>
+            <span>Process XML</span>
+            @if (processId) {
+                <code>{{ processId }}</code>
+            }
+        </div>
+        <div class="xml-actions">
+            @if (status === 'loading') {
+                <span class="validation-status loading">
+                    <mat-spinner diameter="18"></mat-spinner>
+                    Validating against XSD
+                </span>
+            }
+            @if (status === 'valid') {
+                <span class="validation-status valid">
+                    <mat-icon>check_circle</mat-icon>
+                    XSD valid
+                </span>
+            }
+            @if (status === 'invalid') {
+                <span class="validation-status invalid">
+                    <mat-icon>error</mat-icon>
+                    {{ validationErrors.length }} XSD {{ validationErrors.length === 1 ? 'error' : 'errors' }}
+                </span>
+            }
+            @if (status === 'error') {
+                <span class="validation-status invalid">
+                    <mat-icon>cloud_off</mat-icon>
+                    Cannot load XSD {{ schemaVersion === 'latest' ? 'Latest' : schemaVersion }}
+                </span>
+            }
+            @if (processId) {
+                <span [matTooltip]="saveTooltip">
+                    <button mat-icon-button
+                            color="primary"
+                            type="button"
+                            [disabled]="!canSave"
+                            (click)="saveChanges()"
+                            aria-label="Save XML changes">
+                        <mat-icon>save</mat-icon>
+                    </button>
+                </span>
+                <button mat-icon-button
+                        type="button"
+                        [matMenuTriggerFor]="xmlSettingsMenu"
+                        matTooltip="XML editor settings"
+                        aria-label="XML editor settings">
+                    <mat-icon>settings</mat-icon>
+                </button>
+                <mat-menu #xmlSettingsMenu="matMenu">
+                    <button mat-menu-item type="button" [matMenuTriggerFor]="schemaVersionMenu">
+                        <mat-icon>verified</mat-icon>
+                        <span>XSD version</span>
+                        <span class="settings-value">{{ schemaVersion === 'latest' ? 'Latest' : schemaVersion }}</span>
+                    </button>
+                </mat-menu>
+                <mat-menu #schemaVersionMenu="matMenu">
+                    @for (version of schemaVersions; track version) {
+                        <button mat-menu-item type="button" (click)="changeSchemaVersion(version)">
+                            <mat-icon>{{ version === schemaVersion ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+                            <span>{{ version === 'latest' ? 'Latest' : version }}</span>
+                        </button>
+                    }
+                </mat-menu>
+            }
+        </div>
+    </header>
+
+    @if (processId) {
+        <ngx-monaco-editor class="xml-editor"
+                           [options]="editorOptions"
+                           [ngModel]="xml"
+                           (ngModelChange)="onXmlChanged($event)"
+                           (onInit)="onEditorInit($event)">
+        </ngx-monaco-editor>
+        @if (validationErrors.length > 0) {
+            <div class="diagnostics">
+                @for (error of validationErrors; track $index) {
+                    <button type="button" class="diagnostic" (click)="revealError(error)">
+                        <span>Line {{ error.loc?.lineNumber ?? 1 }}</span>
+                        {{ error.message }}
+                    </button>
+                }
+            </div>
+        }
+    } @else {
+        <div class="empty-state">
+            <mat-icon>data_object</mat-icon>
+            <h2>No process selected</h2>
+            <p>Add or select a process to view its Petriflow XML.</p>
+        </div>
+    }
+</section>
