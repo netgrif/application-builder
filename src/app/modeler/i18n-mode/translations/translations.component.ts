@@ -50,7 +50,7 @@ export class TranslationsComponent implements OnInit, OnDestroy {
             'auto_awesome_motion',
             'Tasks',
             'Label, event messages, ...',
-            () => this.modelService.model.getTransitions().length === 0,
+            () => !this.modelService.model || this.modelService.model.getTransitions().length === 0,
             'There are no tasks in the model'
         );
         this.dataMetadataConfig = new TranslationGroupConfiguration(
@@ -58,7 +58,7 @@ export class TranslationsComponent implements OnInit, OnDestroy {
             'all_inbox',
             'Data variables',
             'Title, placeholder, description, ...',
-            () => this.modelService.model.getDataSet().length === 0,
+            () => !this.modelService.model || this.modelService.model.getDataSet().length === 0,
             'There are no data variables in the model'
         );
         this.roleMetadataConfig = new TranslationGroupConfiguration(
@@ -66,7 +66,7 @@ export class TranslationsComponent implements OnInit, OnDestroy {
             'person',
             'Roles',
             'Name, event message, ...',
-            () => this.modelService.model.getRoles().length === 0,
+            () => !this.modelService.model || this.modelService.model.getRoles().length === 0,
             'There are no roles in the model'
         );
     }
@@ -87,7 +87,7 @@ export class TranslationsComponent implements OnInit, OnDestroy {
     }
 
     selectLocale() {
-        this._translation = this.modelService.model.getI18n(this.locale?.languageCode);
+        this._translation = this.modelService.model?.getI18n(this.locale?.languageCode);
     }
 
     get translation(): I18nTranslations {

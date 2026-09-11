@@ -1,6 +1,25 @@
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: max-content;
+    min-width: 100%;
+}
+
 mat-divider.style-fix {
     height: 30px;
     margin-top: 0;
     margin-left: 4px;
     margin-right: 4px;
+}
+
+@media (max-width: 700px) {
+    .control {
+        min-width: max-content;
+    }
 }

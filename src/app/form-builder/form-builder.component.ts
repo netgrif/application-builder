@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener} from '@angular/core';
 import {Router} from '@angular/router';
 import {ModelService} from '../modeler/services/model/model.service';
 import {ModelerUtils} from '../modeler/modeler-utils';
@@ -11,6 +11,8 @@ import {ModelerUtils} from '../modeler/modeler-utils';
 export class FormBuilderComponent implements AfterViewInit {
     title = 'form-builder';
     width: number;
+    isMobile = window.innerWidth <= 700;
+    mobilePane: 'fields' | 'canvas' | 'properties' = 'canvas';
 
     constructor(private router: Router, private modelService: ModelService) {
         if (!this.modelService.model) {
@@ -20,6 +22,15 @@ export class FormBuilderComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         ModelerUtils.clearSelection();
+    }
+
+    @HostListener('window:resize')
+    onViewportResize(): void {
+        this.isMobile = window.innerWidth <= 700;
+    }
+
+    showMobilePane(pane: 'fields' | 'canvas' | 'properties'): void {
+        this.mobilePane = pane;
     }
 
     onResizeEvent(event: any): void {

@@ -1,4 +1,4 @@
-import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {PetriNet} from '@netgrif/petriflow';
 import {Subscription} from 'rxjs';
 import type {XMLValidationError} from 'xmllint-wasm';
@@ -30,7 +30,7 @@ export class XmlModeComponent implements OnInit, OnDestroy {
         readOnly: false,
         automaticLayout: true,
         scrollBeyondLastLine: false,
-        minimap: {enabled: true},
+        minimap: {enabled: window.innerWidth > 700},
         wordWrap: 'off',
         wordBasedSuggestions: false,
         suggest: {
@@ -103,6 +103,7 @@ export class XmlModeComponent implements OnInit, OnDestroy {
 
     onEditorInit(editor: any): void {
         this.editor = editor;
+        this.updateEditorForViewport();
         registerPetriflowXmlLanguage(monaco);
         monaco.editor.setModelLanguage(this.editor.getModel(), PETRIFLOW_XML_LANGUAGE_ID);
         this.editor.createContextKey('nabXmlEditor', true);
@@ -117,6 +118,11 @@ export class XmlModeComponent implements OnInit, OnDestroy {
         this.registerCompletion();
         this.actionCompletionRegistration = this.actionCompletionService.register();
         this.updateMarkers();
+    }
+
+    @HostListener('window:resize')
+    onViewportResize(): void {
+        this.updateEditorForViewport();
     }
 
     changeSchemaVersion(version: PetriflowSchemaVersion): void {
@@ -223,6 +229,10 @@ export class XmlModeComponent implements OnInit, OnDestroy {
             this.validationService.schemaUrl(this.schemaVersion),
         );
         this.triggerCompletionAtOpeningBracket();
+    }
+
+    private updateEditorForViewport(): void {
+        this.editor?.updateOptions({minimap: {enabled: window.innerWidth > 700}});
     }
 
     private registerEditorActions(): void {

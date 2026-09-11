@@ -1,12 +1,40 @@
-mat-dialog-content {
+:host {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-height: min(720px, calc(100dvh - 32px));
+    overflow: hidden;
+}
+
+h2[mat-dialog-title] {
+    flex: 0 0 auto;
+}
+
+mat-dialog-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }
 
 mat-dialog-actions {
     display: flex;
+    flex: 0 0 auto;
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
     justify-content: flex-end;
+}
+
+.intro-copy {
+    flex: 0 0 auto;
+}
+
+.intro-copy p {
+    margin: 0 0 12px;
+    line-height: 1.5;
+    text-wrap: pretty;
 }
 
 .icon-select {
@@ -36,8 +64,13 @@ mat-dialog-actions {
 }
 
 .saved-applications {
+    flex: 1 1 auto;
+    min-height: 0;
     gap: 14px;
-    padding: 2px 4px 8px;
+    padding: 2px 8px 8px 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
 }
 
 .saved-application-card {
@@ -51,4 +84,49 @@ mat-dialog-actions {
     gap: 12px;
     margin-right: -16px;
     margin-bottom: -16px;
+}
+
+.empty-applications {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 700px) {
+    :host {
+        max-height: calc(100dvh - 16px);
+    }
+
+    h2[mat-dialog-title] {
+        padding: 18px 16px 8px;
+        font-size: 21px;
+        line-height: 1.25;
+    }
+
+    mat-dialog-content {
+        padding: 8px 16px 0;
+    }
+
+    mat-dialog-actions {
+        padding: 12px 16px 16px;
+    }
+
+    .intro-copy p {
+        margin-bottom: 8px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .saved-applications {
+        gap: 10px;
+        padding-right: 4px;
+    }
+
+    .saved-application-card {
+        border-radius: 6px;
+    }
+
+    .saved-application-actions {
+        gap: 4px;
+        margin: 0;
+        padding: 4px 8px 8px;
+    }
 }

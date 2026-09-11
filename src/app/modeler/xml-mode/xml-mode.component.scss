@@ -143,3 +143,42 @@
 .empty-state p {
     margin: 0;
 }
+
+@media (max-width: 700px) {
+    .xml-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 4px;
+        min-height: auto;
+        padding: 6px 8px;
+    }
+
+    .xml-title {
+        font-size: 14px;
+    }
+
+    .xml-title > span {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .xml-title code {
+        min-width: 0;
+    }
+
+    .xml-actions {
+        justify-content: flex-end;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    .validation-status {
+        min-width: 0;
+        margin-right: auto;
+        font-size: 12px;
+    }
+
+    .diagnostic {
+        padding: 8px;
+    }
+}

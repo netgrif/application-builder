@@ -1,3 +1,15 @@
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.form-canvas {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+}
+
 .app-mat-sidenav-content {
   background: white;
 }
@@ -16,4 +28,56 @@
     width: 5px;
     height: 100vh;
     cursor: col-resize;
+}
+
+.mobile-form-navigation {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .form-canvas {
+    padding-bottom: 56px;
+    overscroll-behavior: contain;
+  }
+
+  .app-mat-sidenav,
+  .app-mat-sidenav-right {
+    top: 0 !important;
+    bottom: 56px !important;
+    width: min(86vw, 360px) !important;
+    max-width: none !important;
+  }
+
+  .app-mat-sidenav-right .handle {
+    display: none;
+  }
+
+  .mobile-form-navigation {
+    position: fixed;
+    z-index: 5;
+    right: 0;
+    bottom: 0;
+    left: 57px;
+    display: flex;
+    height: 56px;
+    border-top: 1px solid #dddddd;
+    background: #ffffff;
+  }
+
+  .mobile-form-navigation button {
+    flex: 1 1 33.333%;
+    min-width: 0;
+    border-radius: 0;
+    font-size: 11px;
+  }
+
+  .mobile-form-navigation button.active {
+    color: #0f4c81;
+    background: #eaf2f8;
+  }
+
+  .mobile-form-navigation mat-icon {
+    display: block;
+    margin: 0 auto;
+  }
 }

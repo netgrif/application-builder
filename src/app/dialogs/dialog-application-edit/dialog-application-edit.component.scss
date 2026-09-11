@@ -1,11 +1,25 @@
-mat-dialog-content {
+:host {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-height: calc(100dvh - 32px);
+    overflow: hidden;
+}
+
+mat-dialog-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 mat-dialog-actions {
     display: flex;
+    flex: 0 0 auto;
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
     justify-content: flex-end;
 }
 
@@ -59,7 +73,36 @@ mat-dialog-actions {
 }
 
 @media (max-width: 700px) {
+    :host {
+        max-height: calc(100dvh - 16px);
+    }
+
+    .application-id-version {
+        flex-direction: column !important;
+    }
+
+    .process-list {
+        max-height: min(42dvh, 360px);
+    }
+
+    .process-meta {
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+
     .process-actions {
+        box-sizing: border-box;
+        flex-direction: column !important;
         flex-wrap: wrap;
+        align-items: stretch !important;
+        width: 100%;
+    }
+
+    .process-actions button {
+        box-sizing: border-box;
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
     }
 }

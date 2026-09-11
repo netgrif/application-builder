@@ -16,3 +16,24 @@ mat-toolbar {
     background: white;
     margin-right: 8px;
 }
+
+@media (max-width: 700px) {
+  mat-toolbar {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    width: 100%;
+  }
+
+  .margins-sides {
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .spacer {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

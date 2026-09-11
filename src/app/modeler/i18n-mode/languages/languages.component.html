@@ -1,6 +1,6 @@
-<div fxLayout="col wrap">
-    <div fxFlex="100" class="netgrif-input" fxLayout="row">
-        <mat-form-field fxFlex="25">
+<div class="languages-view">
+    <div class="netgrif-input language-create">
+        <mat-form-field>
             <mat-label>Add new language</mat-label>
             <input type="text" matInput [formControl]="newLocaleFormControl" [matAutocomplete]="auto">
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn">
@@ -14,7 +14,7 @@
         </button>
     </div>
 
-    <div fxFlex="100" *ngIf="usedLocales().length > 0">
+    <div class="language-list" *ngIf="usedLocales().length > 0">
         <h2 class="margin-none">Translations:</h2>
         <nab-progress *ngFor="let locale of usedLocales()" (deleteLocale)="deleteLocale()" (selectLocale)="selectLocale($event)" [locale]="locale">
         </nab-progress>

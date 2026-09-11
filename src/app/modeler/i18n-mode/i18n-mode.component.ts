@@ -19,7 +19,7 @@ export class I18nModeComponent implements OnInit {
 
     ngOnInit(): void {
         this.i18nService.activeToolSubject.subscribe((selected: I18nTool) => {
-            this.selectedToolPortal = selected.portal;
+            this.selectedToolPortal = selected?.portal;
         });
     }
 }

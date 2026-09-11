@@ -58,7 +58,11 @@ export class I18nModeService extends ModeService<Tool> {
     }
 
     get locales(): Array<Locale> {
-        return this.modelService.model.getI18ns().map(i18n => {
+        const model = this.modelService.model;
+        if (!model) {
+            return [];
+        }
+        return model.getI18ns().map(i18n => {
             let locale = Locales.list.find(l => l.languageCode === i18n.locale);
             if (!locale) {
                 locale = new Locale(i18n.locale, i18n.locale, i18n.locale, i18n.locale, i18n.locale);
@@ -68,23 +72,33 @@ export class I18nModeService extends ModeService<Tool> {
     }
 
     addLocale(locale: string) {
+        const model = this.modelService.model;
+        if (!model) {
+            return;
+        }
         const translation = new I18nTranslations(locale);
         this.updateI18n([translation]);
-        this.modelService.model.addI18n(translation);
+        model.addI18n(translation);
     }
 
     removeLocale(locale: string) {
-        this.modelService.model.removeI18n(locale);
+        this.modelService.model?.removeI18n(locale);
     }
 
     updateI18ns(): void {
         const model = this.modelService.model;
+        if (!model) {
+            return;
+        }
         const translations = model.getI18ns();
         this.updateI18n(translations);
     }
 
     updateI18n(translations: Array<I18nTranslations>): void {
         const model = this.modelService.model;
+        if (!model) {
+            return;
+        }
         // Model
         this.checkI18n(model.title, I18nStringKeyTemplate.model.title(), translations);
         this.checkI18n(model.caseName, I18nStringKeyTemplate.model.defaultCaseName(), translations);
@@ -125,7 +139,10 @@ export class I18nModeService extends ModeService<Tool> {
     }
 
     private checkI18n(i18n: I18nString, key: string, translations: Array<I18nTranslations>): void {
-        if (!i18n?.name) {
+        if (!i18n) {
+            return;
+        }
+        if (!i18n.name) {
             i18n.name = key;
         }
         translations.forEach(t => {

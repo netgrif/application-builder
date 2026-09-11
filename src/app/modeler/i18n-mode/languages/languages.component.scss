@@ -1,3 +1,45 @@
+:host {
+    display: block;
+    min-width: 0;
+    width: 100%;
+}
+
+.languages-view {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    width: 100%;
+}
+
+.language-create {
+    align-items: flex-start;
+    display: flex;
+    gap: 8px;
+    min-width: 0;
+    width: 100%;
+}
+
+.language-create mat-form-field {
+    flex: 0 1 420px;
+    max-width: 420px;
+    min-width: 220px;
+    width: 100%;
+}
+
+.language-list {
+    min-width: 0;
+    width: 100%;
+}
+
 .margin-none {
     margin: 0;
+}
+
+@media (max-width: 700px) {
+    .language-create mat-form-field {
+        flex: 1 1 auto;
+        max-width: none;
+        min-width: 0;
+    }
 }

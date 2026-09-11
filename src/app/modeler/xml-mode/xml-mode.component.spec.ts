@@ -158,4 +158,24 @@ describe('XmlModeComponent', () => {
 
         expect(component.saveChanges).toHaveBeenCalled();
     });
+
+    it('updates the Monaco minimap for the current viewport', () => {
+        const component = new XmlModeComponent(
+            {} as ModelService,
+            {} as ModelExportService,
+            {} as PetriflowXmlValidationService,
+            {} as ModelImportService,
+            {} as PetriflowXsdCompletionService,
+            {} as PetriflowXmlActionCompletionService,
+            {} as NgZone,
+        );
+        const updateOptions = jasmine.createSpy('updateOptions');
+        component['editor'] = {updateOptions};
+
+        component.onViewportResize();
+
+        expect(updateOptions).toHaveBeenCalledOnceWith({
+            minimap: {enabled: window.innerWidth > 700},
+        });
+    });
 });

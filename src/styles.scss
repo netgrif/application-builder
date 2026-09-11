@@ -7,6 +7,7 @@ html, body {
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
+    overflow: hidden;
 }
 
 .app-mat-viewnav {
@@ -167,6 +168,10 @@ nab-tool, nab-control-panel-mode, nab-import-tool-button {
     width: 50% !important;
 }
 
+.dialog-width-40 {
+    width: 40% !important;
+}
+
 .dialog-width-60 {
     width: 60% !important;
 }
@@ -181,6 +186,20 @@ nab-edit-mode {
 
 nab-simulation-mode {
     height: calc(100% - 42px);
+}
+
+nab-data-mode,
+nab-role-mode,
+nab-actions-mode,
+nab-history-mode,
+nab-i18n-mode,
+nab-xml-mode,
+nab-edit-mode,
+nab-simulation-mode {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
 }
 
 .builder-field-input {
@@ -255,5 +274,39 @@ nab-simulation-mode {
         // this way asset gets processed by webpack
         background: url(assets/netgrif_logo.svg) center center no-repeat;
         background-size: contain;
+    }
+}
+
+@media (max-width: 900px) {
+    .dialog-width-40,
+    .dialog-width-50,
+    .dialog-width-60 {
+        width: calc(100vw - 32px) !important;
+        max-width: calc(100vw - 32px) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .dialog-width-40,
+    .dialog-width-50,
+    .dialog-width-60 {
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+    }
+
+    .process-list .mat-mdc-list-item {
+        height: auto !important;
+        min-height: 88px;
+    }
+
+    .process-list .mdc-list-item__content,
+    .process-list .mat-mdc-list-item-unscoped-content {
+        min-width: 0;
+    }
+
+    nab-data-detail .builder-field-input > *,
+    nab-role-detail .builder-field-input > * {
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
     }
 }

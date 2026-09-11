@@ -41,3 +41,36 @@ mat-paginator {
     height: calc(100%);
     overflow: auto;
 }
+
+@media (max-width: 700px) {
+    .header-action {
+        padding-right: 8px;
+        padding-left: 12px;
+    }
+
+    .height-fix {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100%;
+        min-height: 0;
+    }
+
+    .height-max {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: auto;
+    }
+
+    mat-paginator {
+        flex: 0 0 56px !important;
+    }
+}
+.height-fix,
+:host {
+    min-height: 0;
+}
+
+:host {
+    display: block;
+    height: 100%;
+}

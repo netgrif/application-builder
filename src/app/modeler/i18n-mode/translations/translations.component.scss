@@ -1,5 +1,25 @@
-.localeSelect {
-  margin-bottom: 16px;
+:host {
+    display: block;
+    min-width: 0;
+    width: 100%;
+}
+
+.translations-view {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+}
+
+.locale-select-row {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+.locale-select-row mat-form-field {
+    max-width: 420px;
+    width: 100%;
 }
 
 .example-tab-icon {
@@ -7,5 +27,19 @@
 }
 
 .mat-tab-group-height {
-    height: calc(100vh - 140px);
+    flex: 1 1 auto;
+    height: calc(100dvh - 180px);
+    min-height: 420px;
+    min-width: 0;
+}
+
+@media (max-width: 700px) {
+    .example-tab-icon {
+        margin-right: 0;
+    }
+
+    .mat-tab-group-height {
+        height: calc(100dvh - 132px);
+        min-height: 320px;
+    }
 }

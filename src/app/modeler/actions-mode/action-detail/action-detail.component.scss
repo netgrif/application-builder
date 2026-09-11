@@ -35,3 +35,9 @@
 .margin-top6px {
     margin-top: 6px;
 }
+
+@media (max-width: 700px) {
+    .no-overflow {
+        height: 100%;
+    }
+}

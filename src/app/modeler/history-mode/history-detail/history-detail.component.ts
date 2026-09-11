@@ -20,6 +20,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     public editorOptions: IDiffEditorOptions = {
         renderSideBySide: false,
         useInlineViewWhenSpaceIsLimited: false,
+        wordWrap: 'on',
         readOnly: true,
         hideUnchangedRegions: {
             enabled: true

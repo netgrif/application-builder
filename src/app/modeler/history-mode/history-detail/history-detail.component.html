@@ -1,6 +1,6 @@
 <div *ngIf="getSelected() !== undefined; else elseBlock" fxFlex fxLayout="column" fxLayoutAlign="start start"
      class="height-fix netgrif-input">
-    <div fxFlex fxLayout="row" class="full-width top-padding-8">
+    <div fxFlex fxLayout="row" class="full-width top-padding-8 history-actions">
         <mat-form-field appearance="outline" fxFlex>
             <mat-label>Render type</mat-label>
             <mat-select [(ngModel)]="editorOptions.renderSideBySide" (selectionChange)="updateEditor()">
@@ -17,7 +17,7 @@
             <mat-icon>restore</mat-icon>
             <span>Restore</span>
         </button>
-        <div fxFlex fxFill></div>
+        <div fxFlex fxFill class="history-actions-spacer"></div>
     </div>
     <ngx-monaco-diff-editor class="full-height-monaco" fxFill (onInit)="onEditorInit($event)"
                             [options]="editorOptions" [originalModel]="originalModel"

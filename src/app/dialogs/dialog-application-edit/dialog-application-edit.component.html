@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Application</h2>
 <mat-dialog-content>
     <div class="netgrif-input" fxLayout="column">
-        <div fxLayout="row">
+        <div fxLayout="row" class="application-id-version">
             <mat-form-field fxFlex>
                 <mat-label>Id</mat-label>
                 <input type="text" matInput [(ngModel)]="applicationService.application.id">
@@ -58,7 +58,7 @@
                 <mat-list-item [disableRipple]="false" [attr.aria-label]="'process ' + process[0] + ' list item'">
                     <mat-icon matListItemIcon>{{ process[1].icon }}</mat-icon>
                     <h3 matListItemTitle>{{ process[1].title.value }}</h3>
-                    <p matListItemLine>
+                    <p matListItemLine class="process-meta">
                         <span>Id: {{ process[0] }}, &nbsp;</span>
                         <span>Initials: {{ process[1].initials }}, &nbsp;</span>
                         <span>Version: {{ process[1].version }}, &nbsp;</span>

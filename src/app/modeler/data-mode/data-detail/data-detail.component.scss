@@ -126,3 +126,14 @@
 .margin-html {
     margin-top: 6px;
 }
+
+@media (max-width: 700px) {
+    .height-fix {
+        height: 100%;
+    }
+
+    .absolute-detail {
+        position: static;
+        box-sizing: border-box;
+    }
+}
