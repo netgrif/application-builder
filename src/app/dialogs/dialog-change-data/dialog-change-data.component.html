@@ -5,7 +5,7 @@
         <input type="number" step="1" min="0" matInput [formControl]="getControl(i)">
 
         <mat-error *ngIf="getControl(i).errors?.required">Value is required</mat-error>
-        <mat-error *ngIf="getControl(i).errors?.validValue">Value can not be a negative number</mat-error>
+        <mat-error *ngIf="getControl(i).errors?.validMultiplicity">Value can not be a negative number</mat-error>
     </mat-form-field>
     <span *ngIf="dataSet.length === 0">No referenced data found</span>
 </mat-dialog-content>
