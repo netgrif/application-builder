@@ -27,6 +27,6 @@ export class InfoLabelComponent {
     }
 
     redirect() {
-        this.router.navigate(['']);
+        this.router.navigate([''], {queryParamsHandling: 'preserve'});
     }
 }

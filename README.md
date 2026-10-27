@@ -15,7 +15,7 @@ Petriflow processes can be run/interpreted in Netgrif Application Engine.
 Live build: [https://builder.netgrif.cloud](https://builder.netgrif.cloud)
 
 Application Builder consists of several modules that helps with development of business processes, application's dataset, permission schema, and many more.
-Builder can be deployed as is directly from the release artifact or as a docker container. It doesn't save your work on any server. It works only in a browser.
+Builder can be deployed as is directly from the release artifact or as a Docker container. By default, work stays in the browser; the container's optional process-file storage writes only to an explicitly mounted directory and is disabled unless enabled at startup.
 
 * Petriflow low-code language: [http://petriflow.com](https://petriflow.com)
 * Netgrif Application Engine: [NAE repository](https://github.com/netgrif/application-engine), [NAE documentation](https://engine.netgrif.com)
@@ -36,6 +36,43 @@ To run the application from the repository Node.js v18+ is recommended.
 ```shell
 npm i --legacy-peer-deps
 npm run start
+```
+
+### Optional process-file storage
+
+The container can store process files on a mounted directory. Each Petriflow
+application has its own subdirectory, for example `process/demo-app/model.xml`.
+The reserved `manifest.xml` file is not treated as a process model. Process-file
+storage is disabled by default; enable it only on a trusted/private instance.
+
+```shell
+mkdir -p process/demo-app
+docker build -t application-builder:local .
+docker run --rm -p 18080:80 \
+  -e PROCESS_FILES_ENABLED=true \
+  -v "$PWD/process:/data/process:z" \
+  application-builder:local
+```
+
+Open `http://localhost:18080/?process=demo-app/model.xml` to load a named model.
+For local Angular development, start the storage container as above and run
+`npm run start`; the dev-server proxy forwards `/processes` to port `18080`.
+
+The mounted directory must contain a writable subdirectory for each app and be
+owned by a non-root host user (or a non-root user-namespace mapping). Files
+created by the container use the numeric owner of `/data/process`; the entrypoint
+refuses to run process storage as host root.
+ETag checks detect changes made before the save check, but Nginx DAV does not
+make the subsequent PUT conditional; simultaneous writers can still race.
+
+To verify the SPA flow manually, create `process/demo-app/model.xml`, open
+`http://localhost:18080/?process=demo-app/model.xml`, change a model property,
+press **Save process file**, and confirm the mounted XML changed. The image
+smoke test checks the HTTP listing, PUT/GET behavior, manifest exclusion, and
+host ownership:
+
+```shell
+scripts/container-smoke-test.sh application-builder:local
 ```
 
 ## Other projects

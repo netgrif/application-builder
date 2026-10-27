@@ -57,7 +57,7 @@ export class DialogModelEditComponent {
 
     openActions() {
         this._actionMode.activate(this._processTool);
-        this.router.navigate(['modeler/actions']);
+        this.router.navigate(['modeler/actions'], {queryParamsHandling: 'preserve'});
     }
 
     private validVersion(): ValidatorFn {

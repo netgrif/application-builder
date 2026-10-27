@@ -10,6 +10,7 @@ import {RoleModeService} from '../role-mode/role-mode.service';
 import {SimulationModeService} from '../simulation-mode/simulation-mode.service';
 import {ExportTool} from './modes/export-tool';
 import {ImportTool} from './modes/import-tool';
+import {ProcessSaveTool} from './modes/process-save-tool';
 import {Mode} from './modes/mode';
 import {ModeService} from './modes/mode-component/mode.service';
 import {ModeRegistry} from './modes/mode-registry';
@@ -18,6 +19,7 @@ import {SvgExportTool} from './modes/svg-export-tool';
 import {UndoTool} from './modes/undo-tool';
 import {GlobalToolRegistry} from './tools/global-tool-registry';
 import {Tool} from './tools/tool';
+import {ProcessFileService} from '../services/process-file/process-file.service';
 
 @Injectable({
     providedIn: 'root'
@@ -42,6 +44,8 @@ export class ControlPanelService {
         private _exportSvgTool: SvgExportTool,
         private _redoTool: RedoTool,
         private _undoTool: UndoTool,
+        private _processSaveTool: ProcessSaveTool,
+        private _processFileService: ProcessFileService,
         private _router: Router
     ) {
         this._modeRegistry = new ModeRegistry();
@@ -59,6 +63,9 @@ export class ControlPanelService {
         this._globalToolRegistry.registerItem(_exportSvgTool);
         this._globalToolRegistry.registerItem(_undoTool);
         this._globalToolRegistry.registerItem(_redoTool);
+        if (this._processFileService.enabled) {
+            this._globalToolRegistry.registerItem(_processSaveTool);
+        }
         this._router.events
             .pipe(filter(event => event instanceof NavigationEnd))
             .subscribe((event: NavigationEnd) => {
