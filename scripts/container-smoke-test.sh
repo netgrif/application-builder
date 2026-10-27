@@ -4,7 +4,7 @@ set -eu
 image=${1:-application-builder:smoke}
 port=${PROCESS_FILE_TEST_PORT:-18080}
 temporary_directory=$(mktemp -d)
-process_directory="$temporary_directory/process"
+process_directory="$temporary_directory/processes"
 app_directory="$process_directory/demo-app"
 container_id=
 
@@ -27,7 +27,7 @@ printf '%s' '<manifest/>' > "$app_directory/manifest.xml"
 container_id=$(docker run -d --rm \
     -p "127.0.0.1:${port}:80" \
     -e PROCESS_FILES_ENABLED=true \
-    -v "$process_directory:/data/process" \
+    -v "$process_directory:/data/processes" \
     "$image")
 
 base_url="http://127.0.0.1:${port}"

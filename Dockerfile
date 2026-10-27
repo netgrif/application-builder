@@ -11,7 +11,7 @@ MAINTAINER NETGRIF <devops@netgrif.com>
 
 USER root
 
-RUN apk add --no-cache su-exec gettext-envsubst libcap-utils \
+RUN apk add --no-cache su-exec gettext-envsubst libcap-utils curl \
     && setcap cap_net_bind_service=+ep /usr/sbin/nginx \
     && getcap /usr/sbin/nginx | grep -q cap_net_bind_service \
     && nginx -V 2>&1 | grep -q -- '--with-http_dav_module'

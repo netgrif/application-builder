@@ -41,32 +41,40 @@ npm run start
 ### Optional process-file storage
 
 The container can store process files on a mounted directory. Each Petriflow
-application has its own subdirectory, for example `process/demo-app/model.xml`.
+application has its own subdirectory, for example
+`processes/demo-app/demo-app.xml`.
 The reserved `manifest.xml` file is not treated as a process model. Process-file
 storage is disabled by default; enable it only on a trusted/private instance.
+The **Save process file** toolbar action appears only when
+`PROCESS_FILES_ENABLED=true`.
 
 ```shell
-mkdir -p process/demo-app
+mkdir -p processes/demo-app
 docker build -t application-builder:local .
 docker run --rm -p 18080:80 \
   -e PROCESS_FILES_ENABLED=true \
-  -v "$PWD/process:/data/process:z" \
+  -v "$PWD/processes:/data/processes:z" \
   application-builder:local
 ```
 
-Open `http://localhost:18080/?process=demo-app/model.xml` to load a named model.
+Open `http://localhost:18080/?process=demo-app/demo-app.xml` to load a named
+model. For a new model, Save uses its model ID for both the app directory and
+the XML filename (`<model-id>/<model-id>.xml`). For a loaded model, Save keeps
+the path it was opened from.
 For local Angular development, start the storage container as above and run
 `npm run start`; the dev-server proxy forwards `/processes` to port `18080`.
 
-The mounted directory must contain a writable subdirectory for each app and be
-owned by a non-root host user (or a non-root user-namespace mapping). Files
-created by the container use the numeric owner of `/data/process`; the entrypoint
-refuses to run process storage as host root.
-ETag checks detect changes made before the save check, but Nginx DAV does not
-make the subsequent PUT conditional; simultaneous writers can still race.
+The mounted directory must contain a writable subdirectory for each app. The
+entrypoint uses the mounted directory's numeric owner by default. You can set
+`PUID` and `PGID` to select another non-root owner; the selected user must be
+able to write to the mount, and `PUID=0` is refused.
+When an ETag check finds the file has changed, the UI offers reload, overwrite,
+or cancel. This detects changes made before the save check, but Nginx DAV does
+not make the subsequent PUT conditional; simultaneous writers can still race.
 
-To verify the SPA flow manually, create `process/demo-app/model.xml`, open
-`http://localhost:18080/?process=demo-app/model.xml`, change a model property,
+To verify the SPA flow manually, create
+`processes/demo-app/demo-app.xml`, open
+`http://localhost:18080/?process=demo-app/demo-app.xml`, change a model property,
 press **Save process file**, and confirm the mounted XML changed. The image
 smoke test checks the HTTP listing, PUT/GET behavior, manifest exclusion, and
 host ownership:
