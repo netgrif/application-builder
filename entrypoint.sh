@@ -44,4 +44,8 @@ fi
 
 chmod 644 /etc/nginx/process-files.conf
 nginx -t
-exec su-exec "$process_uid:$process_gid" nginx -g 'daemon off;'
+nginx_globals='daemon off;'
+if [ "$process_uid" = "0" ]; then
+    nginx_globals='daemon off; user root;'
+fi
+exec su-exec "$process_uid:$process_gid" nginx -g "$nginx_globals"
