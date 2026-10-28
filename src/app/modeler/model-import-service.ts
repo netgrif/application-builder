@@ -7,6 +7,7 @@ import {DialogErrorsComponent} from '../dialogs/dialog-errors/dialog-errors.comp
 import {ImportSuccessfulComponent} from './control-panel/import-successful/import-successful.component';
 import {HistoryService} from './services/history/history.service';
 import {ModelService} from './services/model/model.service';
+import {ProcessFileService} from './services/process-file/process-file.service';
 
 @Injectable({
     providedIn: 'root'
@@ -19,11 +20,15 @@ export class ModelImportService {
         private snackBar: MatSnackBar,
         private dialog: MatDialog,
         private router: Router,
-        private historyService: HistoryService
+        private historyService: HistoryService,
+        private processFileService: ProcessFileService,
     ) {
     }
 
-    public importFromXml(content: string): void {
+    public importFromXml(content: string, preserveCurrentProcess = false, navigateToModeler = true): void {
+        if (!preserveCurrentProcess) {
+            this.processFileService.clearCurrentProcess();
+        }
         const petriNetResult = this.importService.parseFromXml(content);
 
         if (petriNetResult.errors.length + petriNetResult.warnings.length + petriNetResult.info.length > 0) {
@@ -46,7 +51,11 @@ export class ModelImportService {
         if (petriNetResult.model !== undefined) {
             this.modelService.model = petriNetResult.model;
             this.historyService.save(`Model ${this.modelService.model.id} has been imported.`)
+        } else {
+            this.processFileService.clearCurrentProcess();
         }
-        this.router.navigate(['/modeler']);
+        if (navigateToModeler) {
+            this.router.navigate(['/modeler']);
+        }
     }
 }

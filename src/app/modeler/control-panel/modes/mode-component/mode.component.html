@@ -3,6 +3,7 @@
         [ngClass]="{'button-highlight': isActive()}"
         matTooltip="{{mode.tooltip}}"
         [routerLink]="mode.routerLink"
+        queryParamsHandling="preserve"
         joyrideStep="{{mode.tutorialStep.step}}"
         title="{{mode.tutorialStep.title}}"
         text="{{mode.tutorialStep.text}}"

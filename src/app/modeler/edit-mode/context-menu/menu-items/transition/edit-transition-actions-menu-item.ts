@@ -13,7 +13,7 @@ export class EditTransitionActionsMenuItem extends MenuItem {
                 tool.actionMode.activate(tool.actionMode.transitionActionsTool);
                 tool.actionsMasterDetail.select(transition.modelTransition);
                 tool.transitionService.id = transition.id;
-                tool.router.navigate(['modeler/actions']);
+                tool.router.navigate(['modeler/actions'], {queryParamsHandling: 'preserve'});
             }
         );
     }

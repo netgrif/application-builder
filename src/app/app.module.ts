@@ -28,6 +28,7 @@ import {DialogMarkingChangeComponent} from './dialogs/dialog-marking-change/dial
 import {DialogModelEditComponent} from './dialogs/dialog-model-edit/dialog-model-edit.component';
 import {DialogPlaceEditComponent} from './dialogs/dialog-place-edit/dialog-place-edit.component';
 import {DialogPlaceRefDeleteComponent} from './dialogs/dialog-place-ref-delete/dialog-place-ref-delete.component';
+import {DialogProcessConflictComponent} from './dialogs/dialog-process-conflict/dialog-process-conflict.component';
 import {DialogRefactorComponent} from './dialogs/dialog-refactor/dialog-refactor.component';
 import {DialogTransitionEditComponent} from './dialogs/dialog-transition-edit/dialog-transition-edit.component';
 import {FormBuilderComponent} from './form-builder/form-builder.component';
@@ -78,7 +79,8 @@ const appRoutes: Routes = [
         DialogModelEditComponent,
         MaterialIconPickerComponent,
         DialogLocalStorageModelComponent,
-        DialogMarkingChangeComponent
+        DialogMarkingChangeComponent,
+        DialogProcessConflictComponent
     ],
     imports: [
         BrowserModule,

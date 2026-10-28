@@ -20,28 +20,37 @@ jobs:
                     username: ${{ secrets.DOCKER_USERNAME }}
                     password: ${{ secrets.DOCKER_AUTH_TOKEN }}
 
+            -   name: Set up QEMU
+                uses: docker/setup-qemu-action@v3
+
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
+
             -   name: Read package.json
                 uses: zvonimirsun/read-package-version-actions@v2
                 id: getVersion
 
             -   name: Push Version ${{ steps.getVersion.outputs.version }}
-                uses: docker/build-push-action@v5
+                uses: docker/build-push-action@v6
                 with:
                     push: true
+                    platforms: linux/amd64,linux/arm64
                     tags: netgrif/application-builder:${{ steps.getVersion.outputs.version }}
 
             -   name: Push Latest
                 if: ${{ !contains(steps.getVersion.outputs.version, '-') }}
-                uses: docker/build-push-action@v5
+                uses: docker/build-push-action@v6
                 with:
                     push: true
+                    platforms: linux/amd64,linux/arm64
                     tags: netgrif/application-builder:latest
 
             -   name: Push Next
                 if: ${{ contains(steps.getVersion.outputs.version, '-') }}
-                uses: docker/build-push-action@v5
+                uses: docker/build-push-action@v6
                 with:
                     push: true
+                    platforms: linux/amd64,linux/arm64
                     tags: netgrif/application-builder:next
 
     publish-assets:

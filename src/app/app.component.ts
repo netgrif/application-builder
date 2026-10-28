@@ -12,6 +12,7 @@ import {ModelImportService} from './modeler/model-import-service';
 import {ModelerConfig} from './modeler/modeler-config';
 import {MortgageService} from './modeler/mortgage.service';
 import {ModelService} from './modeler/services/model/model.service';
+import {ProcessFileService} from './modeler/services/process-file/process-file.service';
 import {TutorialService} from './tutorial/tutorial-service';
 
 @Component({
@@ -36,6 +37,7 @@ export class AppComponent implements AfterViewInit {
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
         private modelService: ModelService,
+        private processFileService: ProcessFileService,
         private importService: ModelImportService,
     ) {
         this.config = config.get();
@@ -43,6 +45,10 @@ export class AppComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         // TODO: NAB-326 https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API
+        const queryParams = this.router.routerState.snapshot.root.queryParamMap;
+        if (queryParams.has('process') || queryParams.has('modelUrl')) {
+            return;
+        }
         const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
         if (!oldModel) {
             return;
@@ -68,6 +74,7 @@ export class AppComponent implements AfterViewInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result === true) {
+                this.processFileService.clearCurrentProcess();
                 this._mortgageService.loadModel();
                 this.router.navigate(['/modeler']);
             }
