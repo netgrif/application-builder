@@ -51,7 +51,7 @@ The **Save process file** toolbar action appears only when
 ```shell
 mkdir -p processes/demo-app
 docker build -t application-builder:local .
-docker run --rm -p 18080:80 \
+docker run --rm -p 18080:8080 \
   -e PROCESS_FILES_ENABLED=true \
   -v "$PWD/processes:/data/processes:z" \
   application-builder:local
@@ -82,6 +82,9 @@ host ownership:
 ```shell
 scripts/container-smoke-test.sh application-builder:local
 ```
+
+If using Podman, run the same smoke test with
+`CONTAINER_ENGINE=podman scripts/container-smoke-test.sh application-builder:local`.
 
 ## Other projects
 

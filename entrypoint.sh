@@ -43,7 +43,7 @@ else
 fi
 
 chmod 644 /etc/nginx/process-files.conf
-nginx -t
+su-exec "$process_uid:$process_gid" nginx -t
 nginx_globals='daemon off;'
 if [ "$process_uid" = "0" ]; then
     nginx_globals='daemon off; user root;'

@@ -11,9 +11,7 @@ MAINTAINER NETGRIF <devops@netgrif.com>
 
 USER root
 
-RUN apk add --no-cache su-exec gettext-envsubst libcap-utils curl \
-    && setcap cap_net_bind_service=+ep /usr/sbin/nginx \
-    && getcap /usr/sbin/nginx | grep -q cap_net_bind_service \
+RUN apk add --no-cache su-exec gettext-envsubst curl \
     && nginx -V 2>&1 | grep -q -- '--with-http_dav_module'
 
 COPY default.nginx.conf /etc/nginx/conf.d/default.conf
@@ -23,5 +21,5 @@ COPY entrypoint.sh /usr/local/bin/application-builder-entrypoint
 
 RUN chmod 755 /usr/local/bin/application-builder-entrypoint
 
-EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/application-builder-entrypoint"]
