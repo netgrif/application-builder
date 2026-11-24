@@ -398,7 +398,7 @@ export class DataDetailComponent implements OnDestroy {
     openActions() {
         this._actionMode.activate(this._actionMode.dataActionsTool);
         this._actionsMasterDetail.select(this._masterService.getSelected());
-        this._router.navigate(['modeler/actions']);
+        this._router.navigate(['modeler/actions'], {queryParamsHandling: 'preserve'});
     }
 
     numberOfActions(): number {

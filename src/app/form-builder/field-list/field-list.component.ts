@@ -127,7 +127,7 @@ export class FieldListComponent implements OnInit, AfterViewInit {
 
     backModeler() {
         this.transitionService.id = undefined;
-        this.router.navigate(['/modeler']);
+        this.router.navigate(['/modeler'], {queryParamsHandling: 'preserve'});
         this.gridsterService.placedDataFields = [];
         this.gridsterService.options.api.optionsChanged();
     }

@@ -239,7 +239,7 @@ export class SelectTool extends CanvasTool {
         super.onTransitionUp(event, transition);
         if (this.isDoubleClick(event) && this.isLeftButtonClick(event)) {
             this.transitionService.id = transition.id;
-            this.router.navigate(['/form']);
+            this.router.navigate(['/form'], {queryParamsHandling: 'preserve'});
             return;
         }
         this.lastClickTimestamp = event.timeStamp;

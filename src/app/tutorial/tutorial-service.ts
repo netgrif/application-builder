@@ -46,7 +46,7 @@ export class TutorialService {
                     this.mortgageService.loadModel();
                     this.mortgageLoaded = true;
                 }
-                this.router.navigate(['/modeler']);
+                this.router.navigate(['/modeler'], {queryParamsHandling: 'preserve'});
             },
             () => {
             },
@@ -57,7 +57,7 @@ export class TutorialService {
             'Process Modeler',
             'In Process Modeler you can model business processes by defining tasks and their routing. As a modelling formalism for processes Petriflow language uses Petri nets that consist of state variables, tasks and their interconnections. It supports import of processes in BPMN 2.0 and its automatic translation into Petri nets.',
             () => {
-                this.router.navigate(['/modeler/simulation']);
+                this.router.navigate(['/modeler/simulation'], {queryParamsHandling: 'preserve'});
             },
             () => {
                 this.onClose();
@@ -69,10 +69,10 @@ export class TutorialService {
             'Process Simulation',
             'In Process Simulation you can simulate modeled processes by executing sequences of tasks or task events.',
             () => {
-                this.router.navigate(['/modeler/data']);
+                this.router.navigate(['/modeler/data'], {queryParamsHandling: 'preserve'});
             },
             () => {
-                this.router.navigate(['/modeler']);
+                this.router.navigate(['/modeler'], {queryParamsHandling: 'preserve'});
             },
             'right'
         );
@@ -81,10 +81,10 @@ export class TutorialService {
             'Data Editor',
             'In Data Editor you can define data variables used in the processes. Petriflow supports all types of data variables you will need for your application, including text, numbers, date, datetime, enumerations and choices, files, images and many others. Validation and initial values of the data variables can be easily specified in Petriflow. Petriflow supports reference to a list of tasks as a data type.',
             () => {
-                this.router.navigate(['/modeler/roles']);
+                this.router.navigate(['/modeler/roles'], {queryParamsHandling: 'preserve'});
             },
             () => {
-                this.router.navigate(['/modeler/simulation']);
+                this.router.navigate(['/modeler/simulation'], {queryParamsHandling: 'preserve'});
             },
             'right'
         );
@@ -93,10 +93,10 @@ export class TutorialService {
             'Role Editor',
             'In Role Editor you can define roles and specify which roles can perform tasks in the process.',
             () => {
-                this.router.navigate(['/modeler/actions']);
+                this.router.navigate(['/modeler/actions'], {queryParamsHandling: 'preserve'});
             },
             () => {
-                this.router.navigate(['/modeler/data']);
+                this.router.navigate(['/modeler/data'], {queryParamsHandling: 'preserve'});
             },
             'right'
         );
@@ -105,10 +105,10 @@ export class TutorialService {
             'Actions Editor',
             'In Action Editor you can program reactions on events of process instances, its tasks and data fields. Actions use Groovy as a programming language. Types of events that you can catch includes construction of the process instance, assignment of a task to a user, cancellation of a task, finish  of a task, and change of a data field value. In actions that react on events, you can trigger events in different process instances and in this way for example create a new instance when you finish a task, to assign a new task to a user when you finish actual task, to recalculate a value of a data field whenever you change another data field, or hide/show data fields when you change another data field. In actions you can use search functions to find specific process instances or tasks based on values of process attributes, process instance attributes, task attributes and data variables. In actions you can also call external functions as well as to send and receive data from external systems via rest or soap web services.',
             () => {
-                this.router.navigate(['/modeler/i18n']);
+                this.router.navigate(['/modeler/i18n'], {queryParamsHandling: 'preserve'});
             },
             () => {
-                this.router.navigate(['/modeler/roles']);
+                this.router.navigate(['/modeler/roles'], {queryParamsHandling: 'preserve'});
             },
             'right'
         );
@@ -117,10 +117,10 @@ export class TutorialService {
             'Internationalization',
             'You can add translations for different languages.',
             () => {
-                this.router.navigate(['/modeler/history']);
+                this.router.navigate(['/modeler/history'], {queryParamsHandling: 'preserve'});
             },
             () => {
-                this.router.navigate(['/modeler/actions']);
+                this.router.navigate(['/modeler/actions'], {queryParamsHandling: 'preserve'});
             },
             'right'
         );
@@ -131,7 +131,7 @@ export class TutorialService {
             () => {
             },
             () => {
-                this.router.navigate(['/modeler/i18n']);
+                this.router.navigate(['/modeler/i18n'], {queryParamsHandling: 'preserve'});
             },
             'right'
         );
@@ -142,7 +142,7 @@ export class TutorialService {
             () => {
             },
             () => {
-                this.router.navigate(['/modeler/history']);
+                this.router.navigate(['/modeler/history'], {queryParamsHandling: 'preserve'});
             },
             'right'
         );
@@ -235,7 +235,7 @@ export class TutorialService {
             this.bug.step
         ];
         this.onClose = () => {
-            this.router.navigate(['/modeler']);
+            this.router.navigate(['/modeler'], {queryParamsHandling: 'preserve'});
             if (this.mortgageLoaded) {
                 this.modelService.model = this.modelService.newModel();
             }

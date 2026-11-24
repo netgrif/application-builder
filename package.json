@@ -1,6 +1,6 @@
 {
     "name": "@netgrif/application-builder",
-    "version": "2.1.1-rc.2",
+    "version": "2.1.1-rc.3",
     "description": "Netgrif Application Builder for building, configuring and modeling applications for Application Engine.",
     "homepage": "https://builder.netgrif.com",
     "license": "SEE LICENSE IN LICENSE FILE",
@@ -30,6 +30,7 @@
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build --configuration production --aot=false --build-optimizer=false",
+        "postbuild": "node scripts/postbuild.mjs",
         "test": "ng test",
         "lint": "ng lint",
         "spell": "cspell \"{docs/**/*,**/*.md,src/**/*.ts}\"",

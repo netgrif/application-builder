@@ -29,6 +29,12 @@ jobs:
             -   name: Build
                 run: npm run build
 
+            -   name: Build container image
+                run: docker build -t application-builder:smoke .
+
+            -   name: Smoke-test process file storage
+                run: scripts/container-smoke-test.sh application-builder:smoke
+
 #            -   name: Edit Path
 #                run: |
 #                    sed -i 's/SF:.*.src/SF:src/g' coverage/lcov.info

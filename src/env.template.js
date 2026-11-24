@@ -9,4 +9,5 @@
   window["env"]["services-urls-issues"] = "${ISUUES_URL}";
 
   window["env"]["services-log-level"] = "${LOG_LEVEL}";
+  window["processFilesEnabled"] = "${PROCESS_FILES_ENABLED}";
 })(this)

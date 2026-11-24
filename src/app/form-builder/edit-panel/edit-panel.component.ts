@@ -523,13 +523,13 @@ export class EditPanelComponent implements OnInit, AfterViewInit {
     openActions() {
         this._actionMode.activate(this._actionMode.dataActionsTool);
         this._actionsMasterDetail.select(this.gridsterService.selectedDataField.dataVariable);
-        this._router.navigate(['modeler/actions']);
+        this._router.navigate(['modeler/actions'], {queryParamsHandling: 'preserve'});
     }
 
     openTransitionActions() {
         this._actionMode.activate(this._actionMode.transitionActionsTool);
         this._actionsMasterDetail.select(this.modelService.model.getTransition(this.transitionService.id));
-        this._router.navigate(['modeler/actions']);
+        this._router.navigate(['modeler/actions'], {queryParamsHandling: 'preserve'});
     }
 
     numberOfActions(): number {

@@ -51,14 +51,14 @@ export class DialogTransitionEditComponent implements OnInit {
     openFormBuilder() {
         // TODO: NAB-326 refactor SelectedTransitionService
         this.transitionService.id = this.transition.id;
-        this.router.navigate(['/form']);
+        this.router.navigate(['/form'], {queryParamsHandling: 'preserve'});
     }
 
     openActions() {
         this._actionMode.activate(this._actionMode.transitionActionsTool);
         this._actionsMasterDetail.select(this.transition.transition);
         this.transitionService.id = this.transition.id;
-        this.router.navigate(['modeler/actions']);
+        this.router.navigate(['modeler/actions'], {queryParamsHandling: 'preserve'});
     }
 
     private validUnique(): ValidatorFn {

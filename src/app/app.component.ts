@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, HostListener} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {NetgrifApplicationEngine} from '@netgrif/components-core/';
 import {JoyrideService} from 'ngx-joyride';
 import {AppBuilderConfigurationService} from './app-builder-configuration.service';
@@ -12,7 +12,9 @@ import {ModelImportService} from './modeler/model-import-service';
 import {ModelerConfig} from './modeler/modeler-config';
 import {MortgageService} from './modeler/mortgage.service';
 import {ModelService} from './modeler/services/model/model.service';
+import {ProcessFileService} from './modeler/services/process-file/process-file.service';
 import {TutorialService} from './tutorial/tutorial-service';
+import {filter, take} from 'rxjs/operators';
 
 @Component({
     selector: 'nab-root',
@@ -36,13 +38,29 @@ export class AppComponent implements AfterViewInit {
         private _mortgageService: MortgageService,
         private tutorialService: TutorialService,
         private modelService: ModelService,
+        private processFileService: ProcessFileService,
         private importService: ModelImportService,
     ) {
         this.config = config.get();
     }
 
     ngAfterViewInit(): void {
+        if (this.router.navigated) {
+            this.offerDraftRestore();
+            return;
+        }
+        this.router.events.pipe(
+            filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+            take(1),
+        ).subscribe(() => this.offerDraftRestore());
+    }
+
+    private offerDraftRestore(): void {
         // TODO: NAB-326 https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API
+        const queryParams = this.router.routerState.snapshot.root.queryParamMap;
+        if (queryParams.has('process') || queryParams.has('modelUrl')) {
+            return;
+        }
         const oldModel = localStorage.getItem(ModelerConfig.LOCALSTORAGE.DRAFT_MODEL.KEY);
         if (!oldModel) {
             return;
@@ -68,6 +86,7 @@ export class AppComponent implements AfterViewInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result === true) {
+                this.processFileService.clearCurrentProcess();
                 this._mortgageService.loadModel();
                 this.router.navigate(['/modeler']);
             }

@@ -91,7 +91,7 @@ export class RoleDetailComponent implements OnDestroy {
     openActions(): void {
         this._actionMode.activate(this._actionMode.roleActionsTool);
         this._actionsMasterDetail.select(this.item);
-        this._router.navigate(['modeler/actions']);
+        this._router.navigate(['modeler/actions'], {queryParamsHandling: 'preserve'});
     }
 
     numberOfActions(): number {

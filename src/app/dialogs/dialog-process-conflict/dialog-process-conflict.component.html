@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Process file conflict</h2>
+<mat-dialog-content>
+    <p *ngIf="data.reason === 'changed'">{{ data.process }} changed on disk since it was opened.</p>
+    <p *ngIf="data.reason === 'missing'">{{ data.process }} was removed from disk since it was opened.</p>
+    <p *ngIf="data.reason === 'exists'">{{ data.process }} already exists.</p>
+    <p>Choose how to continue.</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="'reload'">Reload</button>
+    <button mat-button color="warn" [mat-dialog-close]="'overwrite'">Overwrite</button>
+    <button mat-button [mat-dialog-close]="'cancel'">Cancel</button>
+</mat-dialog-actions>

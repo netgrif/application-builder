@@ -1,0 +1,14 @@
+{
+  "/env.js": {
+    "target": "http://localhost:18080",
+    "secure": false,
+    "changeOrigin": false,
+    "logLevel": "warn"
+  },
+  "/processes": {
+    "target": "http://localhost:18080",
+    "secure": false,
+    "changeOrigin": false,
+    "logLevel": "warn"
+  }
+}
