@@ -2,12 +2,16 @@ FROM node:18.20.8 AS build
 MAINTAINER NETGRIF <devops@netgrif.com>
 WORKDIR /app
 COPY . .
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 RUN npm install --legacy-peer-deps
 RUN npm run build
 
 FROM nginx/nginx-unprivileged:1.31.8-alpine-slim
 
-MAINTAINER NETGRIF <devops@netgrif.com>
+LABEL org.opencontainers.image.title="Application Builder" \
+      org.opencontainers.image.authors="devops@netgrif.com" \
+      org.opencontainers.image.url="https://builder.netgrif.cloud" \
+      org.opencontainers.image.vendor="NETGRIF, s.r.o."
 
 USER root
 

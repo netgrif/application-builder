@@ -30,6 +30,7 @@
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build --configuration production --aot=false --build-optimizer=false",
+        "postbuild": "node scripts/postbuild.mjs",
         "test": "ng test",
         "lint": "ng lint",
         "spell": "cspell \"{docs/**/*,**/*.md,src/**/*.ts}\"",
